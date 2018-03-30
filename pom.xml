@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.adolphor</groupId>
+  <artifactId>shadowsocks-java</artifactId>
+  <packaging>pom</packaging>
+  <version>0.0.1</version>
+
+  <modules>
+    <module>shadowsocks-java-server</module>
+    <module>shadowsocks-java-client</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+
+      </plugins>
+
+    </pluginManagement>
+  </build>
+
+</project>
