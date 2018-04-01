@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<client>
+  <host>myhifor.com</host>
+  <port>8989</port>
+  <method>aes-256-cfb</method>
+  <password>haizhu</password>
+</client>
+<!--<client>-->
+  <!--<host>myss.com</host>-->
+  <!--<port>12927</port>-->
+  <!--<method>aes-256-cfb</method>-->
+  <!--<password>123456</password>-->
+<!--</client>-->

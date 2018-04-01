@@ -4,4 +4,7 @@
 
 .idea
 *.iml
-target
+*/target
+pom.xml.versionsBackup
+
+logs
