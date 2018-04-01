@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server>
+	<localPort>1082</localPort>
+	<method>aes-256-cfb</method>
+	<password>123456</password>
+</server>

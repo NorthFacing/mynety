@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN" monitorInterval="30">
+
+  <Properties>
+    <Property name="logPath">./logs</Property>
+    <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss} %-5p] %c.%M(%L): %m%n</Property>
+  </Properties>
+
+  <appenders>
+
+    <console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${logPattern}"/>
+    </console>
+
+    <File name="log" fileName="${logPath}/test.log" append="false">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} %-p %class{36} %L %M - %m%n"/>
+    </File>
+
+    <RollingFile name="DEBUG" fileName="${logPath}/debug.log" filePattern="${logPath}/%d{y}-debug-%i.log">
+      <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${logPattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <SizeBasedTriggeringPolicy size="500K"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+
+    <RollingFile name="INFO" fileName="${logPath}/info.log" filePattern="${logPath}/%d{y}-info-%i.log">
+      <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${logPattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <SizeBasedTriggeringPolicy size="500K"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+    <RollingFile name="WARN" fileName="${logPath}/warn.log" filePattern="${logPath}/%d{y}-warn-%i.log">
+      <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${logPattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <SizeBasedTriggeringPolicy size="500K"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+    <RollingFile name="ERROR" fileName="${logPath}/error.log" filePattern="${logPath}/%d{y}-error-%i.log">
+      <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${logPattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <SizeBasedTriggeringPolicy size="500K"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+  </appenders>
+
+  <loggers>
+    <root level="all">
+      <appender-ref ref="Console"/>
+      <appender-ref ref="DEBUG"/>
+      <appender-ref ref="INFO"/>
+      <appender-ref ref="WARN"/>
+      <appender-ref ref="ERROR"/>
+    </root>
+    <!--过滤掉spring和mybatis的一些无用的DEBUG信息-->
+    <logger name="org.springframework" level="INFO"></logger>
+    <logger name="org.mybatis" level="INFO"></logger>
+  </loggers>
+</configuration>

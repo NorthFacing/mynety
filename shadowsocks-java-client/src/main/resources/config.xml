@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<client>
+  <host>j51.ku315.com</host>
+  <port>12927</port>
+  <method>aes-256-cfb</method>
+  <password>123456</password>
+</client>
