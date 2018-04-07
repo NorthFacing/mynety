@@ -1,5 +1,6 @@
 package com.shadowsocks.client;
 
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.common.config.Constants;
 import com.shadowsocks.common.encryption.CryptFactory;
 import com.shadowsocks.common.encryption.ICrypt;
@@ -29,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 
-//@ChannelHandler.Sharable
 public final class SocksClientConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
 	private static final Logger logger = LoggerFactory.getLogger(SocksClientConnectHandler.class);
@@ -41,7 +41,9 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 	private boolean isProxy = true;
 
 	public SocksClientConnectHandler() {
-		this.crypt = CryptFactory.get(Constants.config.get(Constants.METHOD), Constants.config.get(Constants.PASSWORD));
+		String method = ClientConfig.getServer().getMethod();
+		String password = ClientConfig.getServer().getPassword();
+		this.crypt = CryptFactory.get(method, password);
 	}
 
 	/**
@@ -55,59 +57,71 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 	@Override
 	public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) throws Exception {
 		if (message instanceof Socks5CommandRequest) { // 如果是socks4执行本方法
-			logger.info(Constants.LOG_MSG + ctx.channel() + " Socks5 connection......");
+			logger.info(Constants.LOG_MSG + " Socks5 connection, connection channel={}", ctx.channel());
+
+			final Channel inboundChannel = ctx.channel();
+
 			final Socks5CommandRequest request = (Socks5CommandRequest) message;
 			Promise<Channel> promise = ctx.executor().newPromise(); //
-			promise.addListener((FutureListener<Channel>) future -> { // Promise 继承了 Future，这里 future 即上文的 promise
-				logger.info(Constants.LOG_MSG + ctx.channel() + " Promise.addListener ......");
-				final Channel outboundChannel = future.getNow(); // 通过 getNow 获得 OutboundChannel
-				if (future.isSuccess()) {
-					ChannelFuture responseFuture =
-						ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse( // 向客户端写出成功响应，返回 responseFuture
-							Socks5CommandStatus.SUCCESS,
-							request.dstAddrType(),
-							request.dstAddr(),
-							request.dstPort()));
 
-					responseFuture.addListener((ChannelFutureListener) channelFuture -> { // 监听写出操作，写出完成会回调注册 ChannelFutureListener
-						logger.info(Constants.LOG_MSG + ctx.channel() + " InboundChannel responseFuture.addListener ......");
+			promise.addListener((FutureListener<Channel>) future -> { // Promise 继承了 Future，这里 future 即上文的 promise
+
+				logger.debug(Constants.LOG_MSG + " future={},promise={}", future, promise);
+
+				final Channel outboundChannel = future.getNow(); // 通过 getNow 获得 OutboundChannel
+
+				if (future.isSuccess()) {
+
+					logger.info(Constants.LOG_MSG + " Promise success => inboundChannel={} 和 outboundChannel={}", inboundChannel, outboundChannel);
+
+					ChannelFuture responseFuture =
+						inboundChannel.writeAndFlush(new DefaultSocks5CommandResponse(
+							Socks5CommandStatus.SUCCESS, request.dstAddrType(), request.dstAddr(), request.dstPort()));
+
+
+					responseFuture.addListener((ChannelFutureListener) channelFuture -> {
+
 						if (isProxy) {
-							sendConnectRemoteMessage(request, outboundChannel);
+							sendConnectRemoteMessage(ctx, request, outboundChannel);
+							logger.debug(Constants.LOG_MSG + " Send remote connection success, ");
 						}
-						logger.info(Constants.LOG_MSG + ctx.channel() + " Remove handler " + SocksClientConnectHandler.this);
+
+						check(ctx);
 						ctx.pipeline().remove(SocksClientConnectHandler.this); // 完成任务，从 pipeline 中移除 SocksServerConnectHandler
-						outboundChannel.pipeline().addLast(new SocksClientInRelayHandler(ctx.channel(), isProxy, crypt)); // OutboundChannel 的 pipeline 增加持有 InboundChannel 的 RelayHandler
 						ctx.pipeline().addLast(new SocksClientOutRelayHandler(outboundChannel, isProxy, crypt)); // InboundChannel 的 pipeline 增加持有 OutboundChannel 的 RelayHandler
+						outboundChannel.pipeline().addLast(new SocksClientInRelayHandler(inboundChannel, isProxy, crypt)); // OutboundChannel 的 pipeline 增加持有 InboundChannel 的 RelayHandler
 					});
 				} else {
-					ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
-						Socks5CommandStatus.FAILURE, request.dstAddrType()));
-					SocksServerUtils.closeOnFlush(ctx.channel());
+					logger.info(Constants.LOG_MSG + " Promise failed => promise ctx channel={} 和 outboundChannel={}", inboundChannel, outboundChannel);
+					inboundChannel.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
+					SocksServerUtils.closeOnFlush(inboundChannel);
 				}
 			});
 
-			final Channel inboundChannel = ctx.channel();
-			b.group(inboundChannel.eventLoop())
+			b.group(inboundChannel.eventLoop()) // 《Netty in Action》8.4节：从 Channel 引导客户端，从已经被接受的子 Channel 中引导一个客户端 Channel，在两个 Channel 之间共享 EventLoop
 				.channel(NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
 				.option(ChannelOption.SO_KEEPALIVE, true)
 				.handler(new SocksClientDirectClientHandler(promise)); // DirectClientHandler 中传递了 promise 对象
+
 
 			/**
 			 * 连接目标服务器器
 			 * 1. 不需要proxy：b.connect(request.dstAddr(), request.dstPort())
 			 * 2. 需要proxy：b.connect(proxyHost, proxyPort)
 			 */
-			String proxyHost = Constants.config.get(Constants.HOST);
-			Integer proxyPort = Integer.valueOf(Constants.config.get(Constants.PORT));
+			String proxyHost = ClientConfig.getServer().getHost();
+			Integer proxyPort = Integer.valueOf(ClientConfig.getServer().getPort());
+
 			b.connect(proxyHost, proxyPort)
 				.addListener((ChannelFutureListener) future -> {
+
 					if (future.isSuccess()) {
-						logger.info(Constants.LOG_MSG + ctx.channel() + " Socks5 connection success......");
+						logger.info(Constants.LOG_MSG + " Remote connection success => inboundChannel={} 和 outboundChannel={}", inboundChannel, promise.getNow());
 					} else {
-						logger.error(Constants.LOG_MSG + ctx.channel() + " Socks5 connection failed......");
-						ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
-						SocksServerUtils.closeOnFlush(ctx.channel());
+						logger.error(Constants.LOG_MSG + " Remote connection failed => inboundChannel={} 和 outboundChannel={}", inboundChannel, promise.getNow());
+						inboundChannel.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
+						SocksServerUtils.closeOnFlush(inboundChannel);
 					}
 				});
 		} else {
@@ -123,7 +137,7 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 	}
 
 	/**
-	 * localserver和remoteserver进行connect发送数据的方法以及格式（此格式拼接后需要加密之后才可发送）：
+	 * localServer和remoteServer进行connect时，发送数据的方法以及格式（此格式拼接后需要加密之后才可发送）：
 	 * <p>
 	 * +------+----------+----------+
 	 * | ATYP | DST.ADDR | DST.PORT |
@@ -139,9 +153,9 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 	 * @param request
 	 * @param outboundChannel
 	 */
-	private void sendConnectRemoteMessage(Socks5CommandRequest request, Channel outboundChannel) throws Exception {
+	private void sendConnectRemoteMessage(ChannelHandlerContext ctx, Socks5CommandRequest request, Channel outboundChannel) throws Exception {
+		check(ctx);
 		String dstAddr = request.dstAddr();
-
 		ByteBuf buf = Unpooled.buffer();
 		if (Socks5CommandType.CONNECT == request.type()) { // ATYP 1 byte
 			buf.writeByte(request.type().byteValue());
@@ -153,17 +167,38 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 				buf.writeInt(dstAddrBytes.length); // DST.ADDR len: 1 byte
 				buf.writeBytes(dstAddrBytes);      // DST.ADDR content: N bytes
 			} else if (Socks5AddressType.IPv6 == request.dstAddrType()) { // DST.ADDR: 16 bytes
-				buf.writeBytes(dstAddr.getBytes());
+				InetAddress inetAddress = InetAddress.getByName(dstAddr);
+				buf.writeBytes(inetAddress.getAddress());
 			}
 			buf.writeShort(request.dstPort()); // DST.PORT
 		} else {
 			logger.error(Constants.LOG_MSG + "Connect type error, requst={}, get={}", Socks5CommandType.CONNECT, request.type());
 		}
 
+		check(ctx);
 		byte[] data = ByteBufUtil.getBytes(buf);
 		ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream();
 		crypt.encrypt(data, data.length, _remoteOutStream);
+		check(ctx);
 		data = _remoteOutStream.toByteArray();
 		outboundChannel.writeAndFlush(Unpooled.wrappedBuffer(data)); // 发送数据
+		check(ctx);
+		logger.debug("=========================== sendConnectRemoteMessage success ====================================");
+	}
+
+	public static void check(ChannelHandlerContext ctx) {
+		SocksClientConnectHandler socksClientConnectHandler = ctx.pipeline().get(SocksClientConnectHandler.class);
+		if (socksClientConnectHandler == null)
+			throw new NullPointerException("====================================== SocksClientConnectHandler 丢了 ======================================");
+	}
+
+	public static void main(String[] args) throws Exception {
+//		String dstAddr ="192.168.1.1";
+		String dstAddr = "2001:0db8:0100:f101:0210:a4ff:fee3:9566";
+		InetAddress inetAddress = InetAddress.getByName(dstAddr);
+		byte[] address = inetAddress.getAddress();
+		System.out.println(address.length);
+		String substring = InetAddress.getByAddress(address).toString().substring(1);
+		System.out.println(substring);
 	}
 }

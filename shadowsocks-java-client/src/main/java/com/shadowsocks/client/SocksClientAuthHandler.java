@@ -16,6 +16,8 @@ import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 @ChannelHandler.Sharable // 线程安全
 public final class SocksClientAuthHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
@@ -30,11 +32,17 @@ public final class SocksClientAuthHandler extends SimpleChannelInboundHandler<So
 	public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) throws Exception {
 		switch (socksRequest.version()) {
 			case SOCKS5: // Socks5代理则可以支持TCP和UDP两种应用
+
 				if (socksRequest instanceof Socks5InitialRequest) {
 					logger.info(Constants.LOG_MSG + ctx.channel() + " SOCKS5 auth first request, return Socks5AuthMethod.NO_AUTH");
 					// 不需要auth验证的代码范例
-					ctx.pipeline().addFirst(new Socks5CommandRequestDecoder()); // Socks5CommandRequestDecoder 负责解码接下来会收到的 Command 请求
-					ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH)); // 给客户端发送了采用 NOAUTH 的响应
+					List<Socks5AuthMethod> methods = ((Socks5InitialRequest) socksRequest).authMethods();
+					if (methods.contains(Socks5AuthMethod.NO_AUTH)) {
+						ctx.pipeline().addFirst(new Socks5CommandRequestDecoder()); // Socks5CommandRequestDecoder 负责解码接下来会收到的 Command 请求
+						ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH)); // 给客户端发送了采用 NOAUTH 的响应
+					} else { // 只接受无密码连接
+						ctx.write(new DefaultSocks5InitialResponse(Socks5AuthMethod.UNACCEPTED));
+					}
 					// auth验证的代码范例
 //					ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
 //					ctx.write(new DefaultSocks5AuthMethodResponse(Socks5AuthMethod.PASSWORD));

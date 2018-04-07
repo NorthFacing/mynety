@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config>
+  <localport>1081</localport>
+  <servers>
+    <server>
+      <host>myss.com</host>
+      <port>12927</port>
+      <method>aes-256-cfb</method>
+      <password>123456</password>
+    </server>
+    <server>
+      <host>myhifor.com</host>
+      <port>8989</port>
+      <method>aes-256-cfb</method>
+      <password>haizhu</password>
+    </server>
+    <server>
+      <host>127.0.0.1</host>
+      <port>1082</port>
+      <method>aes-256-cfb</method>
+      <password>123456</password>
+    </server>
+  </servers>
+</config>

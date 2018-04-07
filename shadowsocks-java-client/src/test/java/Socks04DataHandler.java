@@ -48,9 +48,9 @@ public class Socks04DataHandler extends SimpleChannelInboundHandler {
 
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-//		ctx.channel().writeAndFlush(buf);
-//		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕，发送新的网页请求" + ByteBufUtil.hexDump(buf));
-		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕");
+		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕，发送新的网页请求" + ByteBufUtil.hexDump(buf));
+		ctx.channel().writeAndFlush(buf);
+//		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕");
 	}
 
 	@Override
