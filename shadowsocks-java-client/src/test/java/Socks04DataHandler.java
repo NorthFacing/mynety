@@ -19,7 +19,7 @@ public class Socks04DataHandler extends SimpleChannelInboundHandler {
 		buf.writeByte(0x01);
 		buf.writeByte(0x00);
 		buf.writeByte(0x03); // domain
-		byte[] bytes = "baidu.com".getBytes();
+		byte[] bytes = "www.google.com".getBytes();
 		buf.writeByte(bytes.length); // ADDR.LEN
 		buf.writeBytes(bytes); // ADDR.LEN
 		buf.writeShort(443); // port
@@ -27,41 +27,30 @@ public class Socks04DataHandler extends SimpleChannelInboundHandler {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器激活，等待上次请求的返回结果...");
+		logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器激活，等待上次请求的返回结果...");
 	}
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-		ByteBuf result = (ByteBuf) msg;
-		byte ver = result.readByte();
-		byte cmd = result.readByte();
-		byte psv = result.readByte();
-		byte atyp = result.readByte();
-
-		byte dstLen = result.readByte();
-		ByteBuf addrBuf = result.readBytes(dstLen);
-		String addr = ByteBufUtil.hexDump(addrBuf);
-		short port = result.readShort();
-		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器收到消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
-			ver, cmd, psv, atyp, dstLen, addr, port);
+		logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器收到消息：{}", msg);
 	}
 
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕，发送新的网页请求" + ByteBufUtil.hexDump(buf));
+		logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器数据处理完毕，发送新的网页请求" + ByteBufUtil.hexDump(buf));
 		ctx.channel().writeAndFlush(buf);
-//		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器数据处理完毕");
+//		logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器数据处理完毕");
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-		logger.error(Constants.LOG_MSG + ctx.channel() + "数据处理器异常：", throwable);
+		logger.error(Constants.LOG_MSG + ctx.channel() + "【数据】处理器异常：", throwable);
 		ctx.channel().close();
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		logger.info(Constants.LOG_MSG + ctx.channel() + "数据处理器连接断开：" + ctx.channel());
+		logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器连接断开：" + ctx.channel());
 		super.channelInactive(ctx);
 	}
 

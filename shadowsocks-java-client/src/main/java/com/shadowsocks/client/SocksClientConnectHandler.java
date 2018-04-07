@@ -121,7 +121,7 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 					} else {
 						logger.error(Constants.LOG_MSG + " Remote connection failed => inboundChannel={} 和 outboundChannel={}", inboundChannel, promise.getNow());
 						inboundChannel.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
-						SocksServerUtils.closeOnFlush(inboundChannel);
+						SocksServerUtils.closeOnFlush(inboundChannel); // 失败的话就关闭客户端和用户的连接
 					}
 				});
 		} else {
@@ -158,13 +158,13 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 		String dstAddr = request.dstAddr();
 		ByteBuf buf = Unpooled.buffer();
 		if (Socks5CommandType.CONNECT == request.type()) { // ATYP 1 byte
-			buf.writeByte(request.type().byteValue());
+			buf.writeByte(request.dstAddrType().byteValue());
 			if (Socks5AddressType.IPv4 == request.dstAddrType()) { // // DST.ADDR: 4 bytes
 				InetAddress inetAddress = InetAddress.getByName(dstAddr);
 				buf.writeBytes(inetAddress.getAddress());
 			} else if (Socks5AddressType.DOMAIN == request.dstAddrType()) { // DST.ADDR: 1 + N bytes
 				byte[] dstAddrBytes = dstAddr.getBytes(); // DST.ADDR: 变长
-				buf.writeInt(dstAddrBytes.length); // DST.ADDR len: 1 byte
+				buf.writeByte(dstAddrBytes.length); // DST.ADDR len: 1 byte
 				buf.writeBytes(dstAddrBytes);      // DST.ADDR content: N bytes
 			} else if (Socks5AddressType.IPv6 == request.dstAddrType()) { // DST.ADDR: 16 bytes
 				InetAddress inetAddress = InetAddress.getByName(dstAddr);
