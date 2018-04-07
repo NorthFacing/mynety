@@ -1,5 +1,7 @@
 package com.shadowsocks.server.Config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,12 +16,27 @@ import java.io.InputStream;
 /**
  * 加载xml格式config
  */
-public class ConfigXmlLoader {
+public class ConfLoader {
 
-	public static void loadServer(String file) throws Exception {
+	private static final Logger logger = LoggerFactory.getLogger(ConfLoader.class);
+
+	public static void loadServer(String fileName) throws Exception {
+		// 兼容本地文件路径
+		File file = new File(fileName);
+		if (!file.exists()) {
+			StringBuffer sb =
+				new StringBuffer("shadowsocks-java-server").append(File.separator).append("src").append(File.separator)
+					.append("main").append(File.separator).append("resources").append(File.separator).append(fileName);
+			file = new File(sb.toString());
+			if (!file.exists()) {
+				logger.error("配置文件不存在：\n{}\n{}", fileName, sb.toString());
+				throw new NullPointerException("找不到配置文件：" + fileName);
+			}
+		}
+
 		DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder domBuilder = domfac.newDocumentBuilder();
-		try (InputStream is = new FileInputStream(new File(file))) {
+		try (InputStream is = new FileInputStream(file)) {
 			Document doc = domBuilder.parse(is);
 			Element root = doc.getDocumentElement();
 			NodeList configs = root.getChildNodes();
@@ -35,13 +52,13 @@ public class ConfigXmlLoader {
 				String value = server.getFirstChild().getNodeValue();
 				switch (name) {
 					case "localPort":
-						ServerConfig.config.setLocalPort(Integer.valueOf(value));
+						Config.LOCAL_PORT = Integer.valueOf(value);
 						break;
 					case "method":
-						ServerConfig.config.setMethod(value);
+						Config.METHOD = value;
 						break;
 					case "password":
-						ServerConfig.config.setPassword(value);
+						Config.PASSWORD = value;
 						break;
 					default:
 						break;
@@ -49,6 +66,8 @@ public class ConfigXmlLoader {
 				}
 			}
 		}
+		logger.debug("配置加载完毕：Port={}, method={}, password={}",
+			Config.LOCAL_PORT, Config.METHOD, Config.PASSWORD);
 	}
 
 }

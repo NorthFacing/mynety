@@ -85,15 +85,15 @@
 ### 连接响应
 ```
 +----+-----+-------+------+----------+----------+
-|VER | CMD |  RSV  | ATYP | DST.ADDR | DST.PORT |
+|VER | REP |  RSV  | ATYP | DST.ADDR | DST.PORT |
 +----+-----+-------+------+----------+----------+
 | 1  |  1  | X'00' |  1   | Variable |    2     |
 +----+-----+-------+------+----------+----------+
 ```
 
 * field 1: SOCKS protocol version, 1 byte (0x05 for this version)
-* field 2: status, 1 byte
-    - 0x00: request granted
+* REP: status, 1 byte
+    - 0x00: 成功
     - 0x01: general failure
     - 0x02: connection not allowed by ruleset
     - 0x03: network unreachable
@@ -113,7 +113,9 @@
     - 16 bytes for IPv6 address
 * field 6: server bound port number in a network byte order, 2 bytes
 
-# 流程
+# SS流程
+
+![shadowsocks流程图](ss流程图.png)
 
 
 

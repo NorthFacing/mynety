@@ -86,7 +86,6 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 							logger.debug(Constants.LOG_MSG + " Send remote connection success, ");
 						}
 
-						check(ctx);
 						ctx.pipeline().remove(SocksClientConnectHandler.this); // 完成任务，从 pipeline 中移除 SocksServerConnectHandler
 						ctx.pipeline().addLast(new SocksClientOutRelayHandler(outboundChannel, isProxy, crypt)); // InboundChannel 的 pipeline 增加持有 OutboundChannel 的 RelayHandler
 						outboundChannel.pipeline().addLast(new SocksClientInRelayHandler(inboundChannel, isProxy, crypt)); // OutboundChannel 的 pipeline 增加持有 InboundChannel 的 RelayHandler
@@ -154,7 +153,6 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 	 * @param outboundChannel
 	 */
 	private void sendConnectRemoteMessage(ChannelHandlerContext ctx, Socks5CommandRequest request, Channel outboundChannel) throws Exception {
-		check(ctx);
 		String dstAddr = request.dstAddr();
 		ByteBuf buf = Unpooled.buffer();
 		if (Socks5CommandType.CONNECT == request.type()) { // ATYP 1 byte
@@ -175,30 +173,11 @@ public final class SocksClientConnectHandler extends SimpleChannelInboundHandler
 			logger.error(Constants.LOG_MSG + "Connect type error, requst={}, get={}", Socks5CommandType.CONNECT, request.type());
 		}
 
-		check(ctx);
 		byte[] data = ByteBufUtil.getBytes(buf);
 		ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream();
 		crypt.encrypt(data, data.length, _remoteOutStream);
-		check(ctx);
 		data = _remoteOutStream.toByteArray();
 		outboundChannel.writeAndFlush(Unpooled.wrappedBuffer(data)); // 发送数据
-		check(ctx);
-		logger.debug("=========================== sendConnectRemoteMessage success ====================================");
 	}
 
-	public static void check(ChannelHandlerContext ctx) {
-		SocksClientConnectHandler socksClientConnectHandler = ctx.pipeline().get(SocksClientConnectHandler.class);
-		if (socksClientConnectHandler == null)
-			throw new NullPointerException("====================================== SocksClientConnectHandler 丢了 ======================================");
-	}
-
-	public static void main(String[] args) throws Exception {
-//		String dstAddr ="192.168.1.1";
-		String dstAddr = "2001:0db8:0100:f101:0210:a4ff:fee3:9566";
-		InetAddress inetAddress = InetAddress.getByName(dstAddr);
-		byte[] address = inetAddress.getAddress();
-		System.out.println(address.length);
-		String substring = InetAddress.getByAddress(address).toString().substring(1);
-		System.out.println(substring);
-	}
 }

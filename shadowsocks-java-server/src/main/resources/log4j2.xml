@@ -3,7 +3,7 @@
 
   <Properties>
     <Property name="logPath">./logs</Property>
-    <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss} %-5p] %c.%M(%L): %m%n</Property>
+    <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss} %-5p] %-4relative [%thread] %c.%M(%L): %m%n</Property>
   </Properties>
 
   <appenders>
@@ -56,7 +56,7 @@
   </appenders>
 
   <loggers>
-    <root level="all">
+    <root level="DEBUG">
       <appender-ref ref="Console"/>
       <appender-ref ref="DEBUG"/>
       <appender-ref ref="INFO"/>
@@ -64,7 +64,7 @@
       <appender-ref ref="ERROR"/>
     </root>
     <!--过滤掉一些无用的DEBUG信息-->
-    <logger name="io.netty.handler.logging.LoggingHandler" level="WARN"></logger>
-    <logger name="io.netty.handler.codec.socksx.SocksPortUnificationServerHandler" level="WARN"></logger>
+    <!--<logger name="io.netty.handler.logging.LoggingHandler" level="WARN"></logger>-->
+    <!--<logger name="io.netty.handler.codec.socksx.SocksPortUnificationServerHandler" level="WARN"></logger>-->
   </loggers>
 </configuration>
