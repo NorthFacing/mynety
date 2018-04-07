@@ -80,7 +80,7 @@
               <goal>run</goal>
             </goals>
             <configuration>
-              <target name="Move back resources before package jar">
+              <target name="Move back resources after package jar">
                 <copy todir="${project.build.outputDirectory}">
                   <fileset dir="${project.build.outputDirectory}/../conf">
                     <include name="*.xml"/>

@@ -13,6 +13,6 @@ public class Initializer extends ChannelInitializer<SocketChannel> {
 	@Override
 	public void initChannel(SocketChannel ch) throws Exception {
 		logger.info(Constants.LOG_MSG + ch + " Init channels...");
-		ch.pipeline().addLast(new AddressHandler());
+		ch.pipeline().addLast(AddressHandler.INSTANCE);
 	}
 }

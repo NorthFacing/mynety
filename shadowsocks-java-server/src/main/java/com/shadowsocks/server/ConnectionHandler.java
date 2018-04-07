@@ -2,6 +2,7 @@ package com.shadowsocks.server;
 
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
+import com.shadowsocks.server.Config.Config;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -9,9 +10,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
@@ -20,30 +21,27 @@ import org.slf4j.LoggerFactory;
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class ConnectionHandler extends ChannelInboundHandlerAdapter {
+public class ConnectionHandler extends SimpleChannelInboundHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(ConnectionHandler.class);
-	private ICrypt _crypt;
 	private AtomicReference<Channel> remoteChannel = new AtomicReference<>();
 	private ByteBuf clientCache;
-	private ChannelHandlerContext clientProxyChannel;
 
-	public ConnectionHandler(String host, int port, ChannelHandlerContext clientProxyChannel, ByteBuf clientCache,
-	                         ICrypt _crypt) {
-		this._crypt = _crypt;
-		this.clientCache = clientCache;
-		this.clientProxyChannel = clientProxyChannel;
-		init(host, port, _crypt);
-	}
+	@Override
+	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 
-	private void init(final String host, final int port, final ICrypt _crypt) {
+		String host = ctx.channel().attr(Config.HOST).get();
+		Integer port = ctx.channel().attr(Config.PORT).get();
+		ICrypt crypt = ctx.channel().attr(Config.CRYPT_KEY).get();
+		clientCache = ctx.channel().attr(Config.BUF).get();
+
 		Bootstrap bootstrap = new Bootstrap();
-		bootstrap.group(clientProxyChannel.channel().eventLoop()).channel(NioSocketChannel.class)
+		bootstrap.group(ctx.channel().eventLoop()).channel(NioSocketChannel.class)
 			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000).option(ChannelOption.SO_KEEPALIVE, true)
 			.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
-					ch.pipeline().addLast(new RemoteHandler(clientProxyChannel, _crypt, clientCache));
+					ch.pipeline().addLast(new RemoteHandler(ctx, crypt, clientCache));
 				}
 			});
 		try {
@@ -63,15 +61,18 @@ public class ConnectionHandler extends ChannelInboundHandlerAdapter {
 			logger.error("connect intenet error", e);
 			channelClose();
 		}
+
 	}
 
 	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+		ICrypt crypt = ctx.channel().attr(Config.CRYPT_KEY).get();
+
 		ByteBuf buff = (ByteBuf) msg;
 		if (buff.readableBytes() <= 0) {
 			return;
 		}
-		byte[] decrypt = CryptUtil.decrypt(_crypt, msg);
+		byte[] decrypt = CryptUtil.decrypt(crypt, msg);
 		if (remoteChannel.get() != null) {
 			remoteChannel.get().writeAndFlush(Unpooled.wrappedBuffer(decrypt));
 		} else {
@@ -99,9 +100,10 @@ public class ConnectionHandler extends ChannelInboundHandlerAdapter {
 				remoteChannel.get().close();
 				remoteChannel = null;
 			}
-			clientProxyChannel.close();
-			clientCache.clear();
-			clientCache = null;
+			if (clientCache != null) {
+				clientCache.clear();
+				clientCache = null;
+			}
 		} catch (Exception e) {
 			logger.error("close channel error", e);
 		}
