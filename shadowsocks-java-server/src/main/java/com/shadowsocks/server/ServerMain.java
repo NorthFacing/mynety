@@ -1,6 +1,6 @@
 package com.shadowsocks.server;
 
-import com.shadowsocks.server.Config.ConfLoader;
+import com.shadowsocks.server.Config.ConfigLoader;
 import com.shadowsocks.server.Config.Config;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -19,7 +19,7 @@ public class ServerMain {
 
 	public static void main(String[] args) throws Exception {
 
-		ConfLoader.loadServer("server-config.xml");
+		ConfigLoader.loadServer();
 
 		EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 		EventLoopGroup workerGroup = new NioEventLoopGroup();

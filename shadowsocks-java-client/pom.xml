@@ -14,6 +14,7 @@
 
   <properties>
     <app.name>ss-client</app.name>
+    <app.mainClass>com.shadowsocks.client.ClientMain</app.mainClass>
   </properties>
 
   <dependencies>
@@ -35,41 +36,32 @@
     <finalName>${app.name}-${project.version}</finalName>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.2.1</version>
-        <executions>
-          <execution>
-            <id>make-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>assemble</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
-          <configurationDirectory>conf</configurationDirectory>
-          <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
-          <copyConfigurationDirectory>true</copyConfigurationDirectory>
-          <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
           <assembleDirectory>${project.build.directory}/${app.name}</assembleDirectory>
-          <extraJvmArguments>
-          </extraJvmArguments>
-          <binFileExtensions>
-            <unix>.sh</unix>
-          </binFileExtensions>
-          <platforms>
-            <!--<platform>windows</platform>-->
-            <platform>unix</platform>
-          </platforms>
-          <repositoryLayout>flat</repositoryLayout>
-          <repositoryName>lib</repositoryName>
           <programs>
             <program>
-              <mainClass>com.shadowsocks.client.SocksClientMain</mainClass>
               <name>${app.name}</name>
+              <mainClass>${app.mainClass}</mainClass>
             </program>
           </programs>
+        </configuration>
+      </plugin>
+      <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
+      <plugin>
+        <groupId>com.jolira</groupId>
+        <artifactId>onejar-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>${app.mainClass}</mainClass>
         </configuration>
       </plugin>
     </plugins>

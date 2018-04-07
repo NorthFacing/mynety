@@ -7,15 +7,15 @@ import io.netty.handler.codec.socksx.SocksPortUnificationServerHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class SocksClientInitializer extends ChannelInitializer<SocketChannel> {
+public final class Initializer extends ChannelInitializer<SocketChannel> {
 
-	private static final Logger logger = LoggerFactory.getLogger(SocksClientInitializer.class);
+	private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
 
 	@Override
 	public void initChannel(SocketChannel ch) throws Exception {
 		logger.info(Constants.LOG_MSG + ch);
 		ch.pipeline().addLast(new SocksPortUnificationServerHandler()); // 检测socks版本并初始化对应版本的实例
-		ch.pipeline().addLast(SocksClientAuthHandler.INSTANCE);             // 消息具体处理类
+		ch.pipeline().addLast(AuthHandler.INSTANCE);             // 消息具体处理类
 	}
 }
 

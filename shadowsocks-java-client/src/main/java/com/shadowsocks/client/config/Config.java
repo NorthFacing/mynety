@@ -3,7 +3,7 @@ package com.shadowsocks.client.config;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientConfig {
+public class Config {
 
 	public static String LOCAL_HOST = "0.0.0.0";
 	public static int LOCAL_PORT = 1086;

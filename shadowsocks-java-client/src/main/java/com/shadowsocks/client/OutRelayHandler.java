@@ -4,7 +4,6 @@ import com.shadowsocks.common.config.Constants;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,17 +15,17 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 
 /**
- * 接受remoteServer的数据，发送给客户端
+ * localServer接受到数据发送数据给remoteServer
  */
-public final class SocksClientInRelayHandler extends ChannelInboundHandlerAdapter {
+public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
 
-	private static Logger logger = LoggerFactory.getLogger(SocksClientInRelayHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(OutRelayHandler.class);
 
 	private final ICrypt crypt;
 	private final boolean isProxy;
 	private final Channel relayChannel;
 
-	public SocksClientInRelayHandler(Channel relayChannel, boolean isProxy, ICrypt crypt) {
+	public OutRelayHandler(Channel relayChannel, boolean isProxy, ICrypt crypt) {
 		this.crypt = crypt;
 		this.isProxy = isProxy;
 		this.relayChannel = relayChannel;
@@ -39,26 +38,25 @@ public final class SocksClientInRelayHandler extends ChannelInboundHandlerAdapte
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ByteBuf byteBuf = (ByteBuf) msg;
-		logger.info(Constants.LOG_MSG + ctx.channel() + ctx.channel() + " Receive remoteServer data: {} bytes => {}",
-			byteBuf.readableBytes(), ByteBufUtil.hexDump(byteBuf));
-		try (ByteArrayOutputStream _localOutStream = new ByteArrayOutputStream()) {
+		try (ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream()) {
 			if (relayChannel.isActive()) {
+				ByteBuf byteBuf = (ByteBuf) msg;
 				if (!byteBuf.hasArray()) {
 					int len = byteBuf.readableBytes();
 					byte[] arr = new byte[len];
 					byteBuf.getBytes(0, arr);
+
 					if (isProxy) {
-						crypt.decrypt(arr, arr.length, _localOutStream);
-						arr = _localOutStream.toByteArray();
+						crypt.encrypt(arr, arr.length, _remoteOutStream);
+						arr = _remoteOutStream.toByteArray();
 					}
 					relayChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
-					logger.info(Constants.LOG_MSG + ctx.channel() + " SendLocal message:isProxy = {},length = {}, channel = {}",
+					logger.info(Constants.LOG_MSG + ctx.channel() + " SendRemote message:isProxy = {},length = {}, channel = {}",
 						isProxy, arr.length, relayChannel);
 				}
 			}
 		} catch (Exception e) {
-			logger.error(Constants.LOG_MSG + ctx.channel() + " Receive remoteServer data error: ", e);
+			logger.error(Constants.LOG_MSG + ctx.channel() + " Send data to remoteServer error: ", e);
 		} finally {
 			ReferenceCountUtil.release(msg);
 		}
@@ -68,9 +66,8 @@ public final class SocksClientInRelayHandler extends ChannelInboundHandlerAdapte
 	public void channelInactive(ChannelHandlerContext ctx) {
 		if (relayChannel.isActive()) {
 			SocksServerUtils.closeOnFlush(relayChannel);
-			SocksServerUtils.closeOnFlush(ctx.channel());
 		}
-		logger.info(Constants.LOG_MSG + ctx.channel() + " InRelay channelInactive close");
+		logger.info(Constants.LOG_MSG + ctx.channel() + " OutRelay channelInactive close");
 	}
 
 	@Override
@@ -78,4 +75,5 @@ public final class SocksClientInRelayHandler extends ChannelInboundHandlerAdapte
 		logger.error(Constants.LOG_MSG + ctx.channel(), cause);
 		ctx.close();
 	}
+
 }

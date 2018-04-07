@@ -9,34 +9,23 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
  * 加载xml格式config
  */
-public class ConfigXmlLoader {
+public class ConfigLoader {
 
-	private static final Logger logger = LoggerFactory.getLogger(ConfigXmlLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
-	public static void loadClient(String fileName) throws Exception {
-		// 兼容本地文件路径
-		File file = new File(fileName);
-		if (!file.exists()) {
-			StringBuffer sb =
-				new StringBuffer("shadowsocks-java-client").append(File.separator).append("src").append(File.separator)
-					.append("main").append(File.separator).append("resources").append(File.separator).append(fileName);
-			file = new File(sb.toString());
-			if (!file.exists()) {
-				logger.error("配置文件不存在：\n{}\n{}", fileName, sb.toString());
-				throw new NullPointerException("找不到配置文件：" + fileName);
-			}
-		}
+	public static void loadClient() throws Exception {
+
+		String configFile = "client-config.xml";
 
 		DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder domBuilder = domfac.newDocumentBuilder();
-		try (InputStream is = new FileInputStream(file)) {
+
+		try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
 			Document doc = domBuilder.parse(is);
 			Element root = doc.getDocumentElement();
 			NodeList configs = root.getChildNodes();
@@ -52,7 +41,7 @@ public class ConfigXmlLoader {
 				switch (nodeName) {
 					case "localport":
 						String value = node.getFirstChild().getNodeValue();
-						ClientConfig.LOCAL_PORT = Integer.valueOf(value);
+						Config.LOCAL_PORT = Integer.valueOf(value);
 						break;
 					case "servers":
 						getServers(node);
@@ -80,7 +69,7 @@ public class ConfigXmlLoader {
 			NodeList serverChildNodes = serverWrapperNode.getChildNodes();
 
 			Server bean = new Server();
-			ClientConfig.servers.add(bean);
+			Config.servers.add(bean);
 
 			for (int k = 0; k < serverChildNodes.getLength(); k++) {
 				Node serverChild = serverChildNodes.item(k);
@@ -112,7 +101,7 @@ public class ConfigXmlLoader {
 			}
 			logger.debug("加载服务器：{}", bean);
 		}
-		logger.debug("配置加载完毕：{}", ClientConfig.servers);
+		logger.debug("配置加载完毕：{}", Config.servers);
 	}
 
 }

@@ -1,4 +1,4 @@
-import com.shadowsocks.client.SocksClientDirectClientHandler;
+import com.shadowsocks.client.RemoteHandler;
 import com.shadowsocks.common.config.Constants;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Socks01InitHandler extends SimpleChannelInboundHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(SocksClientDirectClientHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(RemoteHandler.class);
 
 	private final ByteBuf buf;
 

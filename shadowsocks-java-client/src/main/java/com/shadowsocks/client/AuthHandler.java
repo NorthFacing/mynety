@@ -19,13 +19,13 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @ChannelHandler.Sharable // 线程安全
-public final class SocksClientAuthHandler extends SimpleChannelInboundHandler<SocksMessage> {
+public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
-	private static final Logger logger = LoggerFactory.getLogger(SocksClientAuthHandler.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuthHandler.class);
 
-	public static final SocksClientAuthHandler INSTANCE = new SocksClientAuthHandler(); // 因为线程安全，所以只需要初始化一个实例即可
+	public static final AuthHandler INSTANCE = new AuthHandler(); // 因为线程安全，所以只需要初始化一个实例即可
 
-	private SocksClientAuthHandler() {
+	private AuthHandler() {
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public final class SocksClientAuthHandler extends SimpleChannelInboundHandler<So
 					logger.info(Constants.LOG_MSG + ctx.channel() + " SOCKS5 command request, return Socks5AuthMethod.NO_AUTH");
 					Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
 					if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
-						ctx.pipeline().addLast(new SocksClientConnectHandler());
+						ctx.pipeline().addLast(new ConnectHandler());
 						ctx.pipeline().remove(this); // 完成任务，从 pipeline 中移除
 						ctx.fireChannelRead(socksRequest); // 通知执行下一个InboundHandler
 					} else {

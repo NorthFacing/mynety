@@ -14,6 +14,7 @@
 
   <properties>
     <app.name>ss-server</app.name>
+    <app.mainClass>com.shadowsocks.server.ServerMain</app.mainClass>
   </properties>
 
   <dependencies>
@@ -39,59 +40,30 @@
         <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
         <configuration>
           <assembleDirectory>${project.build.directory}/${app.name}</assembleDirectory>
           <programs>
             <program>
-              <mainClass>com.shadowsocks.server.ServerMain</mainClass>
               <name>${app.name}</name>
+              <mainClass>${app.mainClass}</mainClass>
             </program>
           </programs>
         </configuration>
       </plugin>
-
+      <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>Remove resources before package jar</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target name="Remove resources before package jar">
-                <mkdir dir="${project.build.outputDirectory}/../conf"/>
-                <move todir="${project.build.outputDirectory}/../conf">
-                  <fileset dir="${project.build.outputDirectory}">
-                    <include name="*.xml"/>
-                  </fileset>
-                </move>
-              </target>
-            </configuration>
-          </execution>
-          <execution>
-            <id>Move back resources after package jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target name="Move back resources after package jar">
-                <copy todir="${project.build.outputDirectory}">
-                  <fileset dir="${project.build.outputDirectory}/../conf">
-                    <include name="*.xml"/>
-                  </fileset>
-                </copy>
-              </target>
-            </configuration>
-          </execution>
-        </executions>
+        <groupId>com.jolira</groupId>
+        <artifactId>onejar-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>${app.mainClass}</mainClass>
+        </configuration>
       </plugin>
-
     </plugins>
   </build>
 

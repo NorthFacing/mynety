@@ -9,34 +9,23 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
  * 加载xml格式config
  */
-public class ConfLoader {
+public class ConfigLoader {
 
-	private static final Logger logger = LoggerFactory.getLogger(ConfLoader.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
-	public static void loadServer(String fileName) throws Exception {
-		// 兼容本地文件路径
-		File file = new File(fileName);
-		if (!file.exists()) {
-			StringBuffer sb =
-				new StringBuffer("shadowsocks-java-server").append(File.separator).append("src").append(File.separator)
-					.append("main").append(File.separator).append("resources").append(File.separator).append(fileName);
-			file = new File(sb.toString());
-			if (!file.exists()) {
-				logger.error("配置文件不存在：\n{}\n{}", fileName, sb.toString());
-				throw new NullPointerException("找不到配置文件：" + fileName);
-			}
-		}
+	public static void loadServer() throws Exception {
+
+		String configFile = "server-config.xml";
 
 		DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
 		DocumentBuilder domBuilder = domfac.newDocumentBuilder();
-		try (InputStream is = new FileInputStream(file)) {
+
+		try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
 			Document doc = domBuilder.parse(is);
 			Element root = doc.getDocumentElement();
 			NodeList configs = root.getChildNodes();
