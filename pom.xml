@@ -7,7 +7,7 @@
   <groupId>com.shadowsocks</groupId>
   <artifactId>shadowsocks-java</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <modules>
     <module>shadowsocks-java-server</module>
@@ -27,7 +27,7 @@
       <dependency>
         <groupId>com.shadowsocks</groupId>
         <artifactId>shadowsocks-java-common</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
       </dependency>
       <!--netty-all-->
       <dependency>
