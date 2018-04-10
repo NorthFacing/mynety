@@ -4,35 +4,22 @@
 * popular encryption methods supports
 * IP4, IP6 and domain supports
 * auto proxy by pac config
+* auto change to the available server
 
 ## Package & run
 
-* package then run
+```
+mvn clean package
+sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
+sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
+```
 
-    ```
-    mvn versions:set -DnewVersion=0.0.2-SNAPSHOT
-    mvn clean package
-    sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
-    sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
-    ```
+# TODO list
 
-* Run in the background
+* Traffic statistics
+* HTTP protocal
+* UDP protocal
 
-    - unix & linux
-
-    ```Shell
-    nohup sh ss-client.sh >/dev/null 2>&1 &
-    nohup sh ss-server.sh >/dev/null 2>&1 &
-    ```
-    - windows
-    add blew codes at the head of the bat file:
-
-    ```Bat
-    @echo off 
-    if "%1" == "h" goto begin 
-    mshta vbscript:createobject("wscript.shell").run("%~nx0 h",0)(window.close)&&exit 
-    :begin 
-    ```
 
 # References
 
