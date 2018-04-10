@@ -7,7 +7,7 @@
   <parent>
     <artifactId>shadowsocks-java</artifactId>
     <groupId>com.shadowsocks</groupId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>shadowsocks-java-server</artifactId>
@@ -57,13 +57,13 @@
         </configuration>
       </plugin>
       <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
-      <plugin>
-        <groupId>com.jolira</groupId>
-        <artifactId>onejar-maven-plugin</artifactId>
-        <configuration>
-          <mainClass>${app.mainClass}</mainClass>
-        </configuration>
-      </plugin>
+      <!--<plugin>-->
+      <!--<groupId>com.jolira</groupId>-->
+      <!--<artifactId>onejar-maven-plugin</artifactId>-->
+      <!--<configuration>-->
+      <!--<mainClass>${app.mainClass}</mainClass>-->
+      <!--</configuration>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 

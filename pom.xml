@@ -7,7 +7,7 @@
   <groupId>com.shadowsocks</groupId>
   <artifactId>shadowsocks-java</artifactId>
   <packaging>pom</packaging>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
 
   <modules>
     <module>shadowsocks-java-server</module>
@@ -27,7 +27,7 @@
       <dependency>
         <groupId>com.shadowsocks</groupId>
         <artifactId>shadowsocks-java-common</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2-SNAPSHOT</version>
       </dependency>
       <!--netty-all-->
       <dependency>
@@ -138,33 +138,33 @@
             <repositoryName>lib</repositoryName>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>com.jolira</groupId>
-          <artifactId>onejar-maven-plugin</artifactId>
-          <version>1.4.4</version>
-          <executions>
-            <execution>
-              <id>packaged to one single jar</id>
-              <phase>package</phase>
-              <goals>
-                <goal>one-jar</goal>
-              </goals>
-              <configuration>
-                <attachToBuild>true</attachToBuild>
-                <classifier>onejar</classifier>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
+        <!--<plugin>-->
+        <!--<groupId>com.jolira</groupId>-->
+        <!--<artifactId>onejar-maven-plugin</artifactId>-->
+        <!--<version>1.4.4</version>-->
+        <!--<executions>-->
+        <!--<execution>-->
+        <!--<id>packaged to one single jar</id>-->
+        <!--<phase>package</phase>-->
+        <!--<goals>-->
+        <!--<goal>one-jar</goal>-->
+        <!--</goals>-->
+        <!--<configuration>-->
+        <!--<attachToBuild>true</attachToBuild>-->
+        <!--<classifier>onejar</classifier>-->
+        <!--</configuration>-->
+        <!--</execution>-->
+        <!--</executions>-->
+        <!--</plugin>-->
       </plugins>
     </pluginManagement>
   </build>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>onejar-maven-plugin.googlecode.com</id>
-      <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-    </pluginRepository>
-  </pluginRepositories>
+  <!--<pluginRepositories>-->
+  <!--<pluginRepository>-->
+  <!--<id>onejar-maven-plugin.googlecode.com</id>-->
+  <!--<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>-->
+  <!--</pluginRepository>-->
+  <!--</pluginRepositories>-->
 
 </project>

@@ -10,7 +10,7 @@
 * package then run
 
     ```
-    mvn versions:set -DnewVersion=0.0.1-SNAPSHOT
+    mvn versions:set -DnewVersion=0.0.2-SNAPSHOT
     mvn clean package
     sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
     sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh

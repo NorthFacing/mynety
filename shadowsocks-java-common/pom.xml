@@ -7,7 +7,7 @@
   <parent>
     <artifactId>shadowsocks-java</artifactId>
     <groupId>com.shadowsocks</groupId>
-    <version>0.0.1</version>
+    <version>0.0.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>shadowsocks-java-common</artifactId>
