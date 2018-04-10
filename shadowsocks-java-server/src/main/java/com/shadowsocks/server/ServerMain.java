@@ -19,7 +19,7 @@ public class ServerMain {
 
 	public static void main(String[] args) throws Exception {
 
-		ConfigLoader.loadServer();
+		ConfigLoader.loadConfig();
 
 		EventLoopGroup bossGroup = new NioEventLoopGroup(1);
 		EventLoopGroup workerGroup = new NioEventLoopGroup();

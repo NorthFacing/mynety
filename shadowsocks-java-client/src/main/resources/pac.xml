@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pac>
+	<!--PAC优先代理模式下，使用直连的域名-->
+	<direct>
+		<domain>baidu.com</domain>
+	</direct>
+	<!--PAC优先直连模式下，使用代理的域名-->
+	<proxy>
+		<domain>google.com</domain>
+	</proxy>
+</pac>

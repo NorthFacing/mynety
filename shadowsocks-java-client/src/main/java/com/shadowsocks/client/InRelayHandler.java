@@ -1,5 +1,6 @@
 package com.shadowsocks.client;
 
+import com.shadowsocks.client.config.ServerConfig;
 import com.shadowsocks.common.config.Constants;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.SocksServerUtils;
@@ -15,22 +16,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
+import static com.shadowsocks.common.config.Constants.LOG_MSG;
+
 /**
  * 接受remoteServer的数据，发送给客户端
  */
 public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
 	private static Logger logger = LoggerFactory.getLogger(InRelayHandler.class);
-
-	private final ICrypt crypt;
-	private final boolean isProxy;
-	private final Channel relayChannel;
-
-	public InRelayHandler(Channel relayChannel, boolean isProxy, ICrypt crypt) {
-		this.crypt = crypt;
-		this.isProxy = isProxy;
-		this.relayChannel = relayChannel;
-	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
@@ -39,11 +32,19 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
+		Channel clientChannel = ctx.channel().attr(ServerConfig.CLIENT_CHANNEL).get();
+		Boolean isProxy = ctx.channel().attr(ServerConfig.IS_PROXY).get();
+		ICrypt crypt = ctx.channel().attr(ServerConfig.CRYPT_KEY).get();
+		String dstAddr = clientChannel.attr(ServerConfig.DST_ADDR).get();
+
 		ByteBuf byteBuf = (ByteBuf) msg;
 		logger.info(Constants.LOG_MSG + ctx.channel() + ctx.channel() + " Receive remoteServer data: {} bytes => {}",
 			byteBuf.readableBytes(), ByteBufUtil.hexDump(byteBuf));
 		try (ByteArrayOutputStream _localOutStream = new ByteArrayOutputStream()) {
-			if (relayChannel.isActive()) {
+
+			logger.info(LOG_MSG + " 是否使用代理：" + dstAddr + " => " + isProxy);
+
+			if (clientChannel.isActive()) {
 				if (!byteBuf.hasArray()) {
 					int len = byteBuf.readableBytes();
 					byte[] arr = new byte[len];
@@ -52,9 +53,9 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 						crypt.decrypt(arr, arr.length, _localOutStream);
 						arr = _localOutStream.toByteArray();
 					}
-					relayChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
-					logger.info(Constants.LOG_MSG + ctx.channel() + " SendLocal message:isProxy = {},length = {}, channel = {}",
-						isProxy, arr.length, relayChannel);
+					clientChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
+					logger.debug(Constants.LOG_MSG + ctx.channel() + " SendLocal message:isProxy = {},length = {}, channel = {}",
+						isProxy, arr.length, clientChannel);
 				}
 			}
 		} catch (Exception e) {
@@ -66,8 +67,9 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) {
-		if (relayChannel.isActive()) {
-			SocksServerUtils.closeOnFlush(relayChannel);
+		Channel clientChannel = ctx.channel().attr(ServerConfig.CLIENT_CHANNEL).get();
+		if (clientChannel.isActive()) {
+			SocksServerUtils.closeOnFlush(clientChannel);
 			SocksServerUtils.closeOnFlush(ctx.channel());
 		}
 		logger.info(Constants.LOG_MSG + ctx.channel() + " InRelay channelInactive close");

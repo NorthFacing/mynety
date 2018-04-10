@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <config>
+  <!--是否开放给局域网内的其他设备：默认开启-->
+  <public>true</public>
+  <!--监听端口，默认 1086 -->
   <localport>1081</localport>
+  <!-- 代理策略：全局 0；优先使用代理：1；优先直连：2。  默认开启全局代理 -->
+  <proxyStrategy>2</proxyStrategy>
   <servers>
     <server>
-      <host>127.0.0.1</host>
-      <port>1082</port>
+      <host>myss.com</host>
+      <port>12927</port>
       <method>aes-256-cfb</method>
       <password>123456</password>
     </server>
     <server>
-      <host>myss.com</host>
-      <port>12927</port>
+      <host>127.0.0.1</host>
+      <port>1082</port>
       <method>aes-256-cfb</method>
       <password>123456</password>
     </server>

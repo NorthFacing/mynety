@@ -1,19 +1,22 @@
 
-## 打包 & 运行
+# Features
 
-* 打包和运行
+* popular encryption methods supports
+* IP4, IP6 and domain supports
+* auto proxy by pac config
+
+## Package & run
+
+* package then run
 
     ```
-    # 版本管理
     mvn versions:set -DnewVersion=0.0.1-SNAPSHOT
-    # 编译和打包
     mvn clean package
-    # 运行
     sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
     sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
     ```
 
-* 后台运行
+* Run in the background
 
     - unix & linux
 
@@ -22,7 +25,7 @@
     nohup sh ss-server.sh >/dev/null 2>&1 &
     ```
     - windows
-    在代码头部加一段代码就可以了
+    add blew codes at the head of the bat file:
 
     ```Bat
     @echo off 
@@ -31,7 +34,7 @@
     :begin 
     ```
 
-# 参考
+# References
 
 * [Netty - User guide for 4.x](http://netty.io/wiki/user-guide-for-4.x.html)
 * [w3school - XSD Schema](http://www.w3school.com.cn/schema/index.asp)

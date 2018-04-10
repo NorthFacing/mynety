@@ -36,14 +36,17 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
 		clientCache = ctx.channel().attr(Config.BUF).get();
 
 		Bootstrap bootstrap = new Bootstrap();
-		bootstrap.group(ctx.channel().eventLoop()).channel(NioSocketChannel.class)
-			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000).option(ChannelOption.SO_KEEPALIVE, true)
+		bootstrap.group(ctx.channel().eventLoop())
+			.channel(NioSocketChannel.class)
+			.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
+			.option(ChannelOption.SO_KEEPALIVE, true)
 			.handler(new ChannelInitializer<SocketChannel>() {
 				@Override
 				protected void initChannel(SocketChannel ch) throws Exception {
 					ch.pipeline().addLast(new RemoteHandler(ctx, crypt, clientCache));
 				}
 			});
+
 		try {
 			final InetAddress inetAddress = InetAddress.getByName(host);
 			ChannelFuture channelFuture = bootstrap.connect(inetAddress, port);
@@ -57,6 +60,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
 					channelClose();
 				}
 			});
+
 		} catch (Exception e) {
 			logger.error("connect intenet error", e);
 			channelClose();

@@ -18,7 +18,7 @@ public class ConfigLoader {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
-	public static void loadServer() throws Exception {
+	public static void loadConfig() throws Exception {
 
 		String configFile = "server-config.xml";
 
