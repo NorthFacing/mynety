@@ -13,6 +13,7 @@ public final class ClientMain {
 	public static void main(String[] args) throws Exception {
 
 		ConfigLoader.loadConfig();
+		ServerConfig.checkServers();
 
 		String localHost;
 		if (ServerConfig.PUBLIC) {

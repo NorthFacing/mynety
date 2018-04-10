@@ -12,6 +12,6 @@ public class Server {
 	private String method;
 	private String password;
 	private ICrypt crypt;
-	private long ping = -1; // ping 时长（选择ping时间最短的服务器）
+	private boolean available = true; // 是否可用
 
 }

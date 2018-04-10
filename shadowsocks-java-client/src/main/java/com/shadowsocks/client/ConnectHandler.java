@@ -54,6 +54,11 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 		final Channel clientChannel = ctx.channel();
 
 		final Server server = ServerConfig.getServer();
+		if (server == null) {
+			SocksServerUtils.closeOnFlush(ctx.channel());
+			return;
+		}
+
 		final ICrypt crypt = CryptFactory.get(server.getMethod(), server.getPassword());
 
 		// TODO：使用此 crypt 避免每次都重新生成？
