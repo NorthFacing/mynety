@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 
-import static com.shadowsocks.common.config.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
@@ -70,11 +70,19 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 			logger.info(LOG_MSG + " Socks5 connection, connection channel={}", clientChannel);
 
 			final Socks5CommandRequest request = (Socks5CommandRequest) message;
-			isProxy = PacFilter.isProxy(request.dstAddr()); // 是否代理
-			logger.info(LOG_MSG + " 是否使用代理：" + request.dstAddr() + " => " + isProxy);
+			String dstAddr = request.dstAddr();
+
+			boolean isDeny = PacFilter.isDeny(dstAddr);
+			if (isDeny) {
+				logger.error(LOG_MSG + " 此地址拒绝连接：{}", dstAddr);
+				ctx.close();
+			}
+
+			isProxy = PacFilter.isProxy(dstAddr); // 是否代理
+			logger.info(LOG_MSG + " 是否使用代理：" + dstAddr + " => " + isProxy);
 
 			clientChannel.attr(ServerConfig.IS_PROXY).set(isProxy);
-			clientChannel.attr(ServerConfig.DST_ADDR).set(request.dstAddr());
+			clientChannel.attr(ServerConfig.DST_ADDR).set(dstAddr);
 
 			Promise<Channel> promise = ctx.executor().newPromise();
 			promise.addListener((FutureListener<Channel>) future -> { // Promise 继承了 Future，这里 future 即上文的 promise
@@ -83,7 +91,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 				final Channel remoteChannel = future.getNow();
 				remoteChannel.attr(ServerConfig.CRYPT_KEY).set(crypt);
 				remoteChannel.attr(ServerConfig.IS_PROXY).set(isProxy);
-				remoteChannel.attr(ServerConfig.DST_ADDR).set(request.dstAddr());
+				remoteChannel.attr(ServerConfig.DST_ADDR).set(dstAddr);
 
 				// 互相保留对方的channel，进行数据交互
 				clientChannel.attr(ServerConfig.REMOTE_CHANNEL).set(remoteChannel);//
@@ -94,7 +102,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 
 					ChannelFuture responseFuture =
 						clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(
-							Socks5CommandStatus.SUCCESS, request.dstAddrType(), request.dstAddr(), request.dstPort()));
+							Socks5CommandStatus.SUCCESS, request.dstAddrType(), dstAddr, request.dstPort()));
 
 					responseFuture.addListener((ChannelFutureListener) channelFuture -> {
 						if (isProxy) {
@@ -125,17 +133,16 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 				proxyHost = server.getHost();
 				proxyPort = Integer.valueOf(server.getPort());
 			} else {
-				proxyHost = request.dstAddr();
+				proxyHost = dstAddr;
 				proxyPort = request.dstPort();
 			}
 
 			b.connect(proxyHost, proxyPort)
 				.addListener((ChannelFutureListener) future -> {
-
 					if (future.isSuccess()) {
-						logger.info(LOG_MSG + " Remote connection success => clientChannel={} 和 outboundChannel={}", clientChannel, promise.getNow());
+						logger.info(LOG_MSG + " Remote connection success => clientChannel={}", clientChannel);
 					} else {
-						logger.error(LOG_MSG + " Remote connection failed => clientChannel={} 和 outboundChannel={}", clientChannel, promise.getNow());
+						logger.error(LOG_MSG + " Remote connection failed => clientChannel={}", clientChannel);
 						clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
 						SocksServerUtils.closeOnFlush(clientChannel); // 失败的话就关闭客户端和用户的连接
 					}

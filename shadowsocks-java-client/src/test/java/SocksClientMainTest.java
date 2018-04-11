@@ -1,4 +1,4 @@
-import com.shadowsocks.common.config.Constants;
+import com.shadowsocks.common.constants.Constants;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;

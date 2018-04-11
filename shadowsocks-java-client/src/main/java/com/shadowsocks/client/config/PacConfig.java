@@ -11,4 +11,7 @@ public class PacConfig {
 	// PAC优先代理模式下，使用直连的域名
 	public static List<String> directDomains = new ArrayList<>();
 
+	// 拒绝连接
+	public static List<String> denyDomains = new ArrayList<>();
+
 }

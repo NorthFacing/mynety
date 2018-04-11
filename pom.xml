@@ -27,13 +27,13 @@
       <dependency>
         <groupId>com.shadowsocks</groupId>
         <artifactId>shadowsocks-java-common</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <!--netty-all-->
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
-        <version>4.1.22.Final</version>
+        <version>4.1.23.Final</version>
       </dependency>
       <!-- net -->
       <dependency>
@@ -47,13 +47,6 @@
         <artifactId>bcprov-jdk15on</artifactId>
         <version>1.52</version>
       </dependency>
-      <!--lombok-->
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.16.20</version>
-        <scope>provided</scope>
-      </dependency>
       <!--log4j-->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -65,21 +58,49 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.12</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <artifactId>maven-toolchains-plugin</artifactId>
+          <version>1.1</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>toolchain</goal>
+              </goals>
+            </execution>
+          </executions>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <toolchains>
+              <jdk>
+                <version>1.8</version>
+                <vendor>oracle</vendor>
+              </jdk>
+            </toolchains>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.7.0</version>
+          <configuration>
             <encoding>UTF-8</encoding>
+            <showWarnings>true</showWarnings>
+            <showDeprecation>true</showDeprecation>
           </configuration>
         </plugin>
         <plugin>
@@ -112,7 +133,9 @@
             <configurationSourceDirectory>src/main/resources</configurationSourceDirectory>
             <copyConfigurationDirectory>true</copyConfigurationDirectory>
             <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
-            <extraJvmArguments></extraJvmArguments>
+            <extraJvmArguments>
+              -classpath ../lib/jre8
+            </extraJvmArguments>
             <binFileExtensions>
               <unix>.sh</unix>
               <windows>.bat</windows>

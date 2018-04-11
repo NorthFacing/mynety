@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pac>
-	<!--PAC优先代理模式下，使用直连的域名-->
-	<direct>
-		<domain>baidu.com</domain>
-	</direct>
-	<!--PAC优先直连模式下，使用代理的域名-->
-	<proxy>
-		<domain>google.com</domain>
-	</proxy>
+  <!--PAC优先代理模式下，使用直连的域名-->
+  <direct>
+    <domain>baidu.com</domain>
+  </direct>
+  <!--PAC优先直连模式下，使用代理的域名-->
+  <proxy>
+    <domain>google.com</domain>
+  </proxy>
+  <!-- 拒绝以下地址连接，屏蔽广告等 -->
+  <deny>
+    <domain>weibo.com</domain>
+  </deny>
 </pac>

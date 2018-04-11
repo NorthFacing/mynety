@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
-import static com.shadowsocks.common.config.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
  * localServer接受到数据发送数据给remoteServer

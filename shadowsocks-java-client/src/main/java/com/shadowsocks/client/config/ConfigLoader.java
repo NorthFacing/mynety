@@ -37,18 +37,18 @@ public class ConfigLoader {
 			Document doc = domBuilder.parse(is);
 			Element root = doc.getDocumentElement();
 
-			addDomains(root, "proxy");
-			addDomains(root, "direct");
+			addDomains(root, "proxy", PacConfig.proxyDomains);
+			addDomains(root, "direct", PacConfig.directDomains);
+			addDomains(root, "deny", PacConfig.denyDomains);
 
 		}
 
 	}
 
 
-	private static void addDomains(Element root, String strategy) {
+	private static void addDomains(Element root, String strategy, List<String> domainList) {
 
 		NodeList proxys = root.getElementsByTagName(strategy);
-		List<String> domainList = "proxy".equalsIgnoreCase(strategy) ? PacConfig.proxyDomains : PacConfig.directDomains;
 
 		if (proxys == null)
 			return;

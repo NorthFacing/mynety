@@ -5,15 +5,22 @@ import com.shadowsocks.client.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.junit.Assert;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class PacFilter {
 
 	private static final Logger logger = LoggerFactory.getLogger(PacFilter.class);
+
+	/**
+	 * 判断是否拒绝连接
+	 *
+	 * @param domain 需要判断的域名
+	 * @return 拒绝连接 true，否则 false
+	 */
+	public static boolean isDeny(String domain) {
+		return regCheck(PacConfig.denyDomains, domain);
+	}
 
 	/**
 	 * 判断是否需要进行代理
@@ -42,7 +49,7 @@ public class PacFilter {
 	 * @param domain   需要校验的域名
 	 * @return domain正则匹配到confList中的元素就返回true，否则false
 	 */
-	private static boolean regCheck(List<String> confList, String domain) {
+	public static boolean regCheck(List<String> confList, String domain) {
 		try {
 			long match = confList.parallelStream()
 				.filter(conf -> Pattern.matches("^(\\w?.?)+" + conf, domain))
@@ -52,36 +59,6 @@ public class PacFilter {
 			logger.error("域名验证出错：{}", e);
 			return false;
 		}
-	}
-
-	public static void main(String[] args) throws Exception {
-		ArrayList<String> list = new ArrayList<>();
-		list.add("baidu.com");
-
-		String domain = "www.baidu.com";
-		boolean b = regCheck(list, domain);
-		Assert.assertTrue(b);
-
-		domain = "abc.baidu.com";
-		b = regCheck(list, domain);
-		Assert.assertTrue(b);
-
-		domain = "baidu.com.cn";
-		b = regCheck(list, domain);
-		Assert.assertTrue(!b);
-
-		domain = "google.com";
-		b = regCheck(list, domain);
-		Assert.assertTrue(!b);
-
-		domain = "abc.google.com";
-		b = regCheck(list, domain);
-		Assert.assertTrue(!b);
-
-		domain = "google.com.hk";
-		b = regCheck(list, domain);
-		Assert.assertTrue(!b);
-
 	}
 
 }

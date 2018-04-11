@@ -1,6 +1,6 @@
 package com.shadowsocks.server;
 
-import com.shadowsocks.common.config.Constants;
+import com.shadowsocks.common.constants.Constants;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import org.slf4j.Logger;

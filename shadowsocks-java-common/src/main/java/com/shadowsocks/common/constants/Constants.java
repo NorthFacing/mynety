@@ -1,4 +1,4 @@
-package com.shadowsocks.common.config;
+package com.shadowsocks.common.constants;
 
 public class Constants {
 

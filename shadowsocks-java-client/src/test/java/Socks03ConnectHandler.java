@@ -1,4 +1,4 @@
-import com.shadowsocks.common.config.Constants;
+import com.shadowsocks.common.constants.Constants;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;

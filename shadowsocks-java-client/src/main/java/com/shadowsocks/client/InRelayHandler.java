@@ -1,7 +1,7 @@
 package com.shadowsocks.client;
 
 import com.shadowsocks.client.config.ServerConfig;
-import com.shadowsocks.common.config.Constants;
+import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 
-import static com.shadowsocks.common.config.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
  * 接受remoteServer的数据，发送给客户端
@@ -38,7 +38,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 		String dstAddr = clientChannel.attr(ServerConfig.DST_ADDR).get();
 
 		ByteBuf byteBuf = (ByteBuf) msg;
-		logger.info(Constants.LOG_MSG + ctx.channel() + ctx.channel() + " Receive remoteServer data: {} bytes => {}",
+		logger.info(LOG_MSG + ctx.channel() + ctx.channel() + " Receive remoteServer data: {} bytes => {}",
 			byteBuf.readableBytes(), ByteBufUtil.hexDump(byteBuf));
 		try (ByteArrayOutputStream _localOutStream = new ByteArrayOutputStream()) {
 
@@ -59,7 +59,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 				}
 			}
 		} catch (Exception e) {
-			logger.error(Constants.LOG_MSG + ctx.channel() + " Receive remoteServer data error: ", e);
+			logger.error(LOG_MSG + ctx.channel() + " Receive remoteServer data error: ", e);
 		} finally {
 			ReferenceCountUtil.release(msg);
 		}
@@ -72,12 +72,12 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 			SocksServerUtils.closeOnFlush(clientChannel);
 			SocksServerUtils.closeOnFlush(ctx.channel());
 		}
-		logger.info(Constants.LOG_MSG + ctx.channel() + " InRelay channelInactive close");
+		logger.info(LOG_MSG + ctx.channel() + " InRelay channelInactive close");
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		logger.error(Constants.LOG_MSG + ctx.channel(), cause);
+		logger.error(LOG_MSG + ctx.channel(), cause);
 		ctx.close();
 	}
 }

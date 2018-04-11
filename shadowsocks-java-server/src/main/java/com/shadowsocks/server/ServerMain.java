@@ -1,7 +1,7 @@
 package com.shadowsocks.server;
 
-import com.shadowsocks.server.Config.ConfigLoader;
 import com.shadowsocks.server.Config.Config;
+import com.shadowsocks.server.Config.ConfigLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

@@ -20,7 +20,7 @@
       <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="${logPattern}"/>
       <Policies>
-        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
         <SizeBasedTriggeringPolicy size="500K"/>
       </Policies>
       <DefaultRolloverStrategy max="20"/>
@@ -30,7 +30,7 @@
       <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="${logPattern}"/>
       <Policies>
-        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
         <SizeBasedTriggeringPolicy size="500K"/>
       </Policies>
       <DefaultRolloverStrategy max="20"/>
@@ -39,7 +39,7 @@
       <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="${logPattern}"/>
       <Policies>
-        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
         <SizeBasedTriggeringPolicy size="500K"/>
       </Policies>
       <DefaultRolloverStrategy max="20"/>
@@ -48,7 +48,7 @@
       <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="${logPattern}"/>
       <Policies>
-        <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
         <SizeBasedTriggeringPolicy size="500K"/>
       </Policies>
       <DefaultRolloverStrategy max="20"/>

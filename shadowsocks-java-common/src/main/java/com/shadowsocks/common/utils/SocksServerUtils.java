@@ -8,6 +8,7 @@ public class SocksServerUtils {
 
 	/**
 	 * 关闭之前刷新一次数据
+	 *
 	 * @param ch
 	 */
 	public static void closeOnFlush(Channel ch) {
