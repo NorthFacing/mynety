@@ -47,6 +47,12 @@
         <artifactId>bcprov-jdk15on</artifactId>
         <version>1.52</version>
       </dependency>
+      <!-- utils -->
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.7</version>
+      </dependency>
       <!--log4j-->
       <dependency>
         <groupId>org.apache.logging.log4j</groupId>
@@ -134,7 +140,6 @@
             <copyConfigurationDirectory>true</copyConfigurationDirectory>
             <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
             <extraJvmArguments>
-              -classpath ../lib/jre8
             </extraJvmArguments>
             <binFileExtensions>
               <unix>.sh</unix>
