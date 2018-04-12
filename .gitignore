@@ -9,3 +9,5 @@ pom.xml.versionsBackup
 
 logs
 conf
+
+dev-client-config.xml

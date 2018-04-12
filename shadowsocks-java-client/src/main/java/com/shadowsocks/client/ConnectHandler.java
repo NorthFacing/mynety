@@ -53,7 +53,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 
 		final Channel clientChannel = ctx.channel();
 
-		final Server server = ServerConfig.getServer();
+		final Server server = ServerConfig.getAvailableServer();
 		if (server == null) {
 			SocksServerUtils.closeOnFlush(ctx.channel());
 			return;
