@@ -16,11 +16,10 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 
 # TODO list
 
-* choose server by ping time
+* looks like has a performance problem
 * Traffic statistics
 * HTTP protocal
 * UDP protocal
-
 
 # References
 
