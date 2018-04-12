@@ -56,7 +56,7 @@
   </appenders>
 
   <loggers>
-    <root level="DEBUG">
+    <root level="WARN">
       <appender-ref ref="Console"/>
       <appender-ref ref="DEBUG"/>
       <appender-ref ref="INFO"/>

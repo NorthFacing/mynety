@@ -75,14 +75,20 @@ public class ServerConfig {
    * check availability of a server of the servers list
    */
   public static void checkServers() {
+    // 验证服务器是否可用，30 秒执行一次
     Executors.newScheduledThreadPool(1)
         .scheduleWithFixedDelay(
-            () -> servers.forEach(server -> {
-              NetUtils.isConnected(server);
-              NetUtils.avgPingTime(server);
-            }),
+            () -> servers.forEach(server -> NetUtils.isConnected(server)),
             0,
-            30,
+            500,
+            TimeUnit.SECONDS
+        );
+    // 查询 ping 所花费的时间，5 分钟执行一次
+    Executors.newScheduledThreadPool(1)
+        .scheduleWithFixedDelay(
+            () -> servers.forEach(server -> NetUtils.avgPingTime(server)),
+            0,
+            300,
             TimeUnit.SECONDS
         );
   }

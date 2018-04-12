@@ -77,6 +77,7 @@ public class NetUtils {
         }
       }
       in.close();
+      Thread.sleep(100);
     } catch (Exception e) {
       logger.warn("remote server: " + server.toString() + " telnet failed");
       return 999999.9;

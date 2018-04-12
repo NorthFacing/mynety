@@ -18,7 +18,7 @@ public class Server {
   private String password;
   private ICrypt crypt;
   private boolean available = true; // 是否可用
-  private Double pingTime;
+  private Double pingTime = 0d;
 
   public String getRemarks() {
     return remarks;
