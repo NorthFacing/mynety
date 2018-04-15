@@ -27,6 +27,7 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 * [w3school - XSD Schema](http://www.w3school.com.cn/schema/index.asp)
 * [Netty Socks代理服务器源码分析](https://alwayswithme.github.io/jekyll/update/2015/07/25/netty-socksproxy-detail.html)
 * [wiki - SOCKS](https://en.wikipedia.org/wiki/SOCKS)
+* [Netty - Native transports](https://github.com/netty/netty/wiki/Native-transports)
 
 
 

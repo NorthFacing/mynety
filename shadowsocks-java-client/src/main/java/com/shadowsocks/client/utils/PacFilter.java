@@ -32,7 +32,6 @@ public class PacFilter {
     // 先看缓存中是否存在
     if (PacConfig.cachedStrategy.containsKey(domain)) {
       Boolean bl = PacConfig.cachedStrategy.get(domain);
-      logger.debug("是否使用代理命中缓存信息：{} => {}", domain, bl);
       return bl;
     }
 

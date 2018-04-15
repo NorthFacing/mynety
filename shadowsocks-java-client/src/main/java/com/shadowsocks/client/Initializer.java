@@ -10,14 +10,14 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 public final class Initializer extends ChannelInitializer<SocketChannel> {
 
-	private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
+  private static final Logger logger = LoggerFactory.getLogger(Initializer.class);
 
-	@Override
-	public void initChannel(SocketChannel ch) throws Exception {
-		logger.info(LOG_MSG + ch);
-		ch.pipeline().addLast(new SocksPortUnificationServerHandler()); // 检测socks版本并初始化对应版本的实例
-		ch.pipeline().addLast(AuthHandler.INSTANCE);             // 消息具体处理类
-	}
+  @Override
+  public void initChannel(SocketChannel ch) throws Exception {
+    logger.info(LOG_MSG + " Init netty handler..." + ch);
+    ch.pipeline().addLast(new SocksPortUnificationServerHandler()); // 检测socks版本并初始化对应版本的实例
+    ch.pipeline().addLast(AuthHandler.INSTANCE);             // 消息具体处理类
+  }
 }
 
 /**

@@ -74,7 +74,6 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
 			b.group(inboundChannel.eventLoop())
 				.channel(NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-				.option(ChannelOption.SO_KEEPALIVE, true)
 				.handler(new DirectClientHandler(promise));
 
 			b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
@@ -127,7 +126,6 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
 			b.group(inboundChannel.eventLoop())
 				.channel(NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-				.option(ChannelOption.SO_KEEPALIVE, true)
 				.handler(new DirectClientHandler(promise));
 
 			b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {

@@ -21,7 +21,6 @@ public final class RemoteHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
-		logger.info(LOG_MSG + " 将 inboundChannel eventLoop channel={} 和 promise={} 进行关联", ctx.channel(), promise.getNow());
 		ctx.pipeline().remove(this);
 		promise.setSuccess(ctx.channel()); // 连接到指定地址成功后，setSuccess 让 Promise 的回调函数执行；在这个 Promise 中放有一个连接远程的 Channel
 	}

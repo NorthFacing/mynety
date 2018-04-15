@@ -21,61 +21,54 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
  */
 public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
 
-	private static Logger logger = LoggerFactory.getLogger(OutRelayHandler.class);
+  private static Logger logger = LoggerFactory.getLogger(OutRelayHandler.class);
 
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) {
-		ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
-	}
+  @Override
+  public void channelActive(ChannelHandlerContext ctx) {
+    ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
+  }
 
-	@Override
-	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
-		Boolean isProxy = ctx.channel().attr(ServerConfig.IS_PROXY).get();
-		ICrypt crypt = ctx.channel().attr(ServerConfig.CRYPT_KEY).get();
-		String dstAddr = remoteChannel.attr(ServerConfig.DST_ADDR).get();
+  @Override
+  public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
+    Boolean isProxy = ctx.channel().attr(ServerConfig.IS_PROXY).get();
+    ICrypt crypt = ctx.channel().attr(ServerConfig.CRYPT_KEY).get();
 
-		try (ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream()) {
-			if (remoteChannel.isActive()) {
+    ByteBuf byteBuf = (ByteBuf) msg;
+    try (ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream()) {
+      if (remoteChannel.isActive()) {
 
-				logger.info(LOG_MSG + " 是否使用代理：" + dstAddr + " => " + isProxy);
+        if (!byteBuf.hasArray()) {
+          int len = byteBuf.readableBytes();
+          byte[] arr = new byte[len];
+          byteBuf.getBytes(0, arr);
 
-				ByteBuf byteBuf = (ByteBuf) msg;
-				if (!byteBuf.hasArray()) {
-					int len = byteBuf.readableBytes();
-					byte[] arr = new byte[len];
-					byteBuf.getBytes(0, arr);
+          if (isProxy) {
+            crypt.encrypt(arr, arr.length, _remoteOutStream);
+            arr = _remoteOutStream.toByteArray();
+          }
+          remoteChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
+        }
+      }
+    } catch (Exception e) {
+      logger.error(LOG_MSG + ctx.channel() + " Send data to remoteServer error: ", e);
+    } finally {
+      ReferenceCountUtil.release(msg);
+    }
+  }
 
-					if (isProxy) {
-						crypt.encrypt(arr, arr.length, _remoteOutStream);
-						arr = _remoteOutStream.toByteArray();
-					}
-					remoteChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) {
+    Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
+    if (remoteChannel.isActive()) {
+      SocksServerUtils.closeOnFlush(remoteChannel);
+    }
+  }
 
-					logger.debug(LOG_MSG + ctx.channel() + " SendRemote message:isProxy = {},length = {}, channel = {}",
-						isProxy, arr.length, remoteChannel);
-				}
-			}
-		} catch (Exception e) {
-			logger.error(LOG_MSG + ctx.channel() + " Send data to remoteServer error: ", e);
-		} finally {
-			ReferenceCountUtil.release(msg);
-		}
-	}
-
-	@Override
-	public void channelInactive(ChannelHandlerContext ctx) {
-		Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
-		if (remoteChannel.isActive()) {
-			SocksServerUtils.closeOnFlush(remoteChannel);
-		}
-		logger.info(LOG_MSG + ctx.channel() + " OutRelay channelInactive close");
-	}
-
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		logger.error(LOG_MSG + ctx.channel(), cause);
-		ctx.close();
-	}
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    logger.error(LOG_MSG + ctx.channel(), cause);
+    ctx.close();
+  }
 
 }

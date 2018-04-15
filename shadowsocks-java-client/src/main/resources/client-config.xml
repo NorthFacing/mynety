@@ -5,7 +5,7 @@
   <!--监听端口，默认 1086 -->
   <localport>1081</localport>
   <!-- 代理策略：全局 0；优先使用代理：1；优先直连：2。  默认开启全局代理 -->
-  <proxyStrategy>2</proxyStrategy>
+  <proxyStrategy>0</proxyStrategy>
   <servers>
     <server>
       <host>127.0.0.1</host>

@@ -24,6 +24,9 @@ public class ServerConfig {
 
   private static final Logger logger = LoggerFactory.getLogger(ServerConfig.class);
 
+  /**
+   * 是否开放本机代理给其他设备使用
+   */
   public static boolean PUBLIC = true;
 
   public static int LOCAL_PORT = 1086;
