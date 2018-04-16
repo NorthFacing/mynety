@@ -20,6 +20,8 @@ public class PacConfig {
   public static List<String> denyDomains = new ArrayList<>();
 
   // 缓存的配置策略
-  public static final Map<String, Boolean> cachedStrategy = new HashMap<>();
+  public static final Map<String, Boolean> cachedProxyStrategy = new HashMap<>();
+  // 缓存的拒绝连接地址
+  public static final Map<String, Boolean> cachedDenyDomains = new HashMap<>();
 
 }
