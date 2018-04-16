@@ -2,6 +2,7 @@ package com.shadowsocks.client.utils;
 
 import com.shadowsocks.client.config.PacConfig;
 import com.shadowsocks.client.config.ServerConfig;
+import com.shadowsocks.common.utils.LocalCache;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +24,12 @@ public class PacFilter {
    */
   public static boolean isDeny(String domain) {
     // 先看缓存中是否存在
-    if (PacConfig.cachedDenyDomains.containsKey(domain)) {
-      Boolean bl = PacConfig.cachedDenyDomains.get(domain);
-      return bl;
+    String denyDomain = LocalCache.get("deny-" + domain);
+    if (StringUtils.isNotEmpty(denyDomain)) {
+      return Boolean.valueOf(denyDomain);
     }
     boolean bl = regCheck(PacConfig.denyDomains, domain);
-    PacConfig.cachedDenyDomains.put(domain, bl);
+    LocalCache.set("deny-" + domain, Boolean.toString(bl), 300);
     return bl;
   }
 
@@ -40,11 +41,10 @@ public class PacFilter {
    */
   public static boolean isProxy(String domain) {
     // 先看缓存中是否存在
-    if (PacConfig.cachedProxyStrategy.containsKey(domain)) {
-      Boolean bl = PacConfig.cachedProxyStrategy.get(domain);
-      return bl;
+    String proxyDomain = LocalCache.get("proxy-" + domain);
+    if (StringUtils.isNotEmpty(proxyDomain)) {
+      return Boolean.valueOf(proxyDomain);
     }
-
     boolean bl = true;
     int strategy = ServerConfig.PROXY_STRATEGY;
     switch (strategy) {
@@ -59,7 +59,7 @@ public class PacFilter {
       default: // 默认开启全局
         break;
     }
-    PacConfig.cachedProxyStrategy.put(domain, bl);
+    LocalCache.set("proxy-" + domain, Boolean.toString(bl));
     return bl;
   }
 
@@ -72,14 +72,13 @@ public class PacFilter {
    */
   public static boolean regCheck(List<String> confList, String domain) {
     try {
-      logger.info("{} 域名校验开始：{}", LOG_MSG, domain);
       long start = System.currentTimeMillis();
       String result = confList.parallelStream()
           .filter(conf -> Pattern.matches("([a-z0-9]+[.])*" + conf, domain))
           .findAny()
           .orElse(null);
       long end = System.currentTimeMillis();
-      logger.info("{} 域名校验：{} => {}毫秒", LOG_MSG, domain, (end - start));
+      logger.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
       return StringUtils.isNotEmpty(result) ? true : false;
     } catch (Exception e) {
       logger.error("域名验证出错：{}", e);

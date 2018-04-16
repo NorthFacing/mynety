@@ -2,6 +2,7 @@ package com.shadowsocks.client.config;
 
 import com.shadowsocks.client.utils.NetUtils;
 import com.shadowsocks.common.encryption.ICrypt;
+import com.shadowsocks.common.utils.LocalCache;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
@@ -94,6 +95,15 @@ public class ServerConfig {
             300,
             TimeUnit.SECONDS
         );
+    // 检测服务器domain有效性，节省空间
+    Executors.newScheduledThreadPool(1)
+        .scheduleWithFixedDelay(
+            () -> LocalCache.validateForGC(10000),
+            0,
+            300,
+            TimeUnit.SECONDS
+        );
+
   }
 
 }
