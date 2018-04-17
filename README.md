@@ -16,7 +16,6 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 
 # TODO list
 
-* looks like has a performance problem
 * Traffic statistics
 * HTTP protocal
 * UDP protocal

@@ -1,8 +1,10 @@
 
+## Version 
+```
+mvn versions:set -DnewVersion=0.0.4-SNAPSHOT
+```
 
 ## Run in the background
-
-
 
 * unix & linux    
 

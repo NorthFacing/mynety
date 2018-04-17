@@ -4,6 +4,7 @@ import com.shadowsocks.client.config.ConfigLoader;
 import com.shadowsocks.client.config.ServerConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -13,6 +14,8 @@ import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import org.apache.commons.lang3.SystemUtils;
 
 import static com.shadowsocks.common.constants.Constants.bossGroup;
@@ -50,12 +53,14 @@ public final class ClientMain {
       ServerBootstrap serverBoot = new ServerBootstrap();
       serverBoot.group(bossGroup, workerGroup)
           .channel(serverChannelClass)
+          .option(ChannelOption.TCP_NODELAY, true)
+          .handler(new LoggingHandler(LogLevel.DEBUG))
           .childHandler(new Initializer());
 
       String localHost = ServerConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
 
-      ChannelFuture future = serverBoot.bind(localHost, ServerConfig.LOCAL_PORT).sync(); //《Netty in Action》: 异步地绑定服务器; 调用sync()方法阻塞等待直到绑定完成
-      future.channel().closeFuture().sync();   //《Netty in Action》: 获取 Channel 的 CloseFuture，并且阻塞当前线程直到它完成
+      ChannelFuture future = serverBoot.bind(localHost, ServerConfig.LOCAL_PORT).sync();
+      future.channel().closeFuture().sync();
     } finally {
       bossGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();

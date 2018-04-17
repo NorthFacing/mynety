@@ -4,6 +4,7 @@ import com.shadowsocks.server.Config.Config;
 import com.shadowsocks.server.Config.ConfigLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -54,6 +55,7 @@ public class ServerMain {
       ServerBootstrap serverBoot = new ServerBootstrap();
       serverBoot.group(bossGroup, workerGroup)
           .channel(serverChannelClass)
+          .option(ChannelOption.TCP_NODELAY, true)
           .handler(new LoggingHandler(LogLevel.DEBUG))
           .childHandler(new Initializer());
       ChannelFuture future = serverBoot.bind(Config.LOCAL_PORT).sync();
