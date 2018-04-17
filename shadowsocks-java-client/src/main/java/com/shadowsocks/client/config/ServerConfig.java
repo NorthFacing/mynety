@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client.config;
 
 import com.shadowsocks.client.utils.NetUtils;
@@ -5,8 +28,7 @@ import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.LocalCache;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,11 +41,11 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * servers config
  *
+ * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
+@Slf4j
 public class ServerConfig {
-
-  private static final Logger logger = LoggerFactory.getLogger(ServerConfig.class);
 
   /**
    * 是否开放本机代理给其他设备使用
@@ -77,6 +99,8 @@ public class ServerConfig {
    * 检测服务器列表中服务器可用性
    * <p>
    * check availability of a server of the servers list
+   *
+   * @since v0.0.2
    */
   public static void checkServers() {
     // 验证服务器是否可用，30 秒执行一次

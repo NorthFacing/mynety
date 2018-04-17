@@ -38,116 +38,116 @@ import io.netty.util.concurrent.Promise;
 @ChannelHandler.Sharable
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
-	private final Bootstrap b = new Bootstrap();
+  private final Bootstrap b = new Bootstrap();
 
-	@Override
-	public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) throws Exception {
-		if (message instanceof Socks4CommandRequest) {
-			final Socks4CommandRequest request = (Socks4CommandRequest) message;
-			Promise<Channel> promise = ctx.executor().newPromise();
-			promise.addListener(
-				new FutureListener<Channel>() {
-					@Override
-					public void operationComplete(final Future<Channel> future) throws Exception {
-						final Channel outboundChannel = future.getNow();
-						if (future.isSuccess()) {
-							ChannelFuture responseFuture = ctx.channel().writeAndFlush(
-								new DefaultSocks4CommandResponse(Socks4CommandStatus.SUCCESS));
+  @Override
+  public void channelRead0(final ChannelHandlerContext ctx, final SocksMessage message) throws Exception {
+    if (message instanceof Socks4CommandRequest) {
+      final Socks4CommandRequest request = (Socks4CommandRequest) message;
+      Promise<Channel> promise = ctx.executor().newPromise();
+      promise.addListener(
+          new FutureListener<Channel>() {
+            @Override
+            public void operationComplete(final Future<Channel> future) throws Exception {
+              final Channel outboundChannel = future.getNow();
+              if (future.isSuccess()) {
+                ChannelFuture responseFuture = ctx.channel().writeAndFlush(
+                    new DefaultSocks4CommandResponse(Socks4CommandStatus.SUCCESS));
 
-							responseFuture.addListener(new ChannelFutureListener() {
-								@Override
-								public void operationComplete(ChannelFuture channelFuture) {
-									ctx.pipeline().remove(SocksServerConnectHandler.this);
-									outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
-									ctx.pipeline().addLast(new RelayHandler(outboundChannel));
-								}
-							});
-						} else {
-							ctx.channel().writeAndFlush(
-								new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED));
-							SocksServerUtils.closeOnFlush(ctx.channel());
-						}
-					}
-				});
+                responseFuture.addListener(new ChannelFutureListener() {
+                  @Override
+                  public void operationComplete(ChannelFuture channelFuture) {
+                    ctx.pipeline().remove(SocksServerConnectHandler.this);
+                    outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
+                    ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                  }
+                });
+              } else {
+                ctx.channel().writeAndFlush(
+                    new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED));
+                SocksServerUtils.closeOnFlush(ctx.channel());
+              }
+            }
+          });
 
-			final Channel inboundChannel = ctx.channel();
-			b.group(inboundChannel.eventLoop())
-				.channel(NioSocketChannel.class)
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-				.handler(new DirectClientHandler(promise));
+      final Channel inboundChannel = ctx.channel();
+      b.group(inboundChannel.eventLoop())
+          .channel(NioSocketChannel.class)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+          .handler(new DirectClientHandler(promise));
 
-			b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
-				@Override
-				public void operationComplete(ChannelFuture future) throws Exception {
-					if (future.isSuccess()) {
-						// Connection established use handler provided results
-					} else {
+      b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
+        @Override
+        public void operationComplete(ChannelFuture future) throws Exception {
+          if (future.isSuccess()) {
+            // Connection established use handler provided results
+          } else {
 
-						ctx.channel().writeAndFlush(
-							new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED)
-						);
-						SocksServerUtils.closeOnFlush(ctx.channel());
-					}
-				}
-			});
-		} else if (message instanceof Socks5CommandRequest) {
-			final Socks5CommandRequest request = (Socks5CommandRequest) message;
-			Promise<Channel> promise = ctx.executor().newPromise();
-			promise.addListener(
-				new FutureListener<Channel>() {
-					@Override
-					public void operationComplete(final Future<Channel> future) throws Exception {
-						final Channel outboundChannel = future.getNow();
-						if (future.isSuccess()) {
-							ChannelFuture responseFuture =
-								ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
-									Socks5CommandStatus.SUCCESS,
-									request.dstAddrType(),
-									request.dstAddr(),
-									request.dstPort()));
+            ctx.channel().writeAndFlush(
+                new DefaultSocks4CommandResponse(Socks4CommandStatus.REJECTED_OR_FAILED)
+            );
+            SocksServerUtils.closeOnFlush(ctx.channel());
+          }
+        }
+      });
+    } else if (message instanceof Socks5CommandRequest) {
+      final Socks5CommandRequest request = (Socks5CommandRequest) message;
+      Promise<Channel> promise = ctx.executor().newPromise();
+      promise.addListener(
+          new FutureListener<Channel>() {
+            @Override
+            public void operationComplete(final Future<Channel> future) throws Exception {
+              final Channel outboundChannel = future.getNow();
+              if (future.isSuccess()) {
+                ChannelFuture responseFuture =
+                    ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
+                        Socks5CommandStatus.SUCCESS,
+                        request.dstAddrType(),
+                        request.dstAddr(),
+                        request.dstPort()));
 
-							responseFuture.addListener(new ChannelFutureListener() {
-								@Override
-								public void operationComplete(ChannelFuture channelFuture) {
-									ctx.pipeline().remove(SocksServerConnectHandler.this);
-									outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
-									ctx.pipeline().addLast(new RelayHandler(outboundChannel));
-								}
-							});
-						} else {
-							ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
-								Socks5CommandStatus.FAILURE, request.dstAddrType()));
-							SocksServerUtils.closeOnFlush(ctx.channel());
-						}
-					}
-				});
+                responseFuture.addListener(new ChannelFutureListener() {
+                  @Override
+                  public void operationComplete(ChannelFuture channelFuture) {
+                    ctx.pipeline().remove(SocksServerConnectHandler.this);
+                    outboundChannel.pipeline().addLast(new RelayHandler(ctx.channel()));
+                    ctx.pipeline().addLast(new RelayHandler(outboundChannel));
+                  }
+                });
+              } else {
+                ctx.channel().writeAndFlush(new DefaultSocks5CommandResponse(
+                    Socks5CommandStatus.FAILURE, request.dstAddrType()));
+                SocksServerUtils.closeOnFlush(ctx.channel());
+              }
+            }
+          });
 
-			final Channel inboundChannel = ctx.channel();
-			b.group(inboundChannel.eventLoop())
-				.channel(NioSocketChannel.class)
-				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-				.handler(new DirectClientHandler(promise));
+      final Channel inboundChannel = ctx.channel();
+      b.group(inboundChannel.eventLoop())
+          .channel(NioSocketChannel.class)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+          .handler(new DirectClientHandler(promise));
 
-			b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
-				@Override
-				public void operationComplete(ChannelFuture future) throws Exception {
-					if (future.isSuccess()) {
-						// Connection established use handler provided results
-					} else {
+      b.connect(request.dstAddr(), request.dstPort()).addListener(new ChannelFutureListener() {
+        @Override
+        public void operationComplete(ChannelFuture future) throws Exception {
+          if (future.isSuccess()) {
+            // Connection established use handler provided results
+          } else {
 
-						ctx.channel().writeAndFlush(
-							new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
-						SocksServerUtils.closeOnFlush(ctx.channel());
-					}
-				}
-			});
-		} else {
-			ctx.close();
-		}
-	}
+            ctx.channel().writeAndFlush(
+                new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
+            SocksServerUtils.closeOnFlush(ctx.channel());
+          }
+        }
+      });
+    } else {
+      ctx.close();
+    }
+  }
 
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		SocksServerUtils.closeOnFlush(ctx.channel());
-	}
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    SocksServerUtils.closeOnFlush(ctx.channel());
+  }
 }

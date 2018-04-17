@@ -1,20 +1,47 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client.utils;
 
 import com.shadowsocks.client.config.PacConfig;
 import com.shadowsocks.client.config.ServerConfig;
 import com.shadowsocks.common.utils.LocalCache;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
+/**
+ * 域名判断工具类
+ *
+ * @author 0haizhu0@gmail.com
+ * @since v0.0.2
+ */
+@Slf4j
 public class PacFilter {
-
-  private static final Logger logger = LoggerFactory.getLogger(PacFilter.class);
 
   /**
    * 判断是否拒绝连接
@@ -78,10 +105,10 @@ public class PacFilter {
           .findAny()
           .orElse(null);
       long end = System.currentTimeMillis();
-      logger.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
+      log.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
       return StringUtils.isNotEmpty(result) ? true : false;
     } catch (Exception e) {
-      logger.error("域名验证出错：{}", e);
+      log.error("域名验证出错：{}", e);
       return false;
     }
   }

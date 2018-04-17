@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.server;
 
 import com.shadowsocks.common.constants.Constants;
@@ -15,15 +38,20 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * 连接处理器
+ *
+ * @author 0haizhu0@gmail.com
+ * @since v0.0.1
+ */
+@Slf4j
 public class ConnectionHandler extends SimpleChannelInboundHandler {
 
-  private static Logger logger = LoggerFactory.getLogger(ConnectionHandler.class);
   private AtomicReference<Channel> remoteChannel = new AtomicReference<>();
   private ByteBuf clientCache;
 
@@ -51,17 +79,17 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
       ChannelFuture channelFuture = bootstrap.connect(inetAddress, port);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          logger.debug("connect success host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
+          log.debug("connect success host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
           remoteChannel.set(future.channel());
         } else {
-          logger.debug("connect fail host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
+          log.debug("connect fail host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
           future.cancel(true);
           channelClose();
         }
       });
 
     } catch (Exception e) {
-      logger.error("connect intenet error", e);
+      log.error("connect intenet error", e);
       channelClose();
     }
 
@@ -86,7 +114,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
-    logger.info("ConnectionHandler channelInactive close");
+    log.info("ConnectionHandler channelInactive close");
     channelClose();
   }
 
@@ -94,7 +122,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
     channelClose();
-    logger.error("ConnectionHandler error", cause);
+    log.error("ConnectionHandler error", cause);
   }
 
   private void channelClose() {
@@ -108,7 +136,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
         clientCache = null;
       }
     } catch (Exception e) {
-      logger.error("close channel error", e);
+      log.error("close channel error", e);
     }
   }
 }

@@ -9,12 +9,12 @@ import java.io.ByteArrayOutputStream;
  */
 public interface ICrypt {
 
-	void encrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
+  void encrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
 
-	void encrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
+  void encrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
 
-	void decrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
+  void decrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
 
-	void decrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
+  void decrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
 
 }

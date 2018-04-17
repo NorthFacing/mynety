@@ -1,9 +1,31 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client.config;
 
 import com.shadowsocks.common.encryption.CryptFactory;
 import com.shadowsocks.common.encryption.ICrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -19,11 +41,11 @@ import java.util.List;
  * <p>
  * load config info
  *
+ * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
+@Slf4j
 public class ConfigLoader {
-
-  private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
   /**
    * 分别加载 pac 和 client 和 server 配置信息
@@ -101,7 +123,7 @@ public class ConfigLoader {
         }
       }
     }
-    logger.debug("读取{}代理配置完毕：{}个", strategy, domainList.size());
+    log.debug("读取{}代理配置完毕：{}个", strategy, domainList.size());
   }
 
 
@@ -138,14 +160,14 @@ public class ConfigLoader {
             try {
               ServerConfig.LOCAL_PORT = Integer.valueOf(value);
             } catch (Exception e) {
-              logger.error("本地端口配置 localport 参数不合法，将使用全局代理模式！");
+              log.error("本地端口配置 localport 参数不合法，将使用全局代理模式！");
             }
             break;
           case "proxyStrategy":
             try {
               ServerConfig.PROXY_STRATEGY = Integer.valueOf(value);
             } catch (Exception e) {
-              logger.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
+              log.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
             }
             break;
           case "servers":
@@ -205,9 +227,9 @@ public class ConfigLoader {
         }
       }
       ConfigLoader.getEncrypt(bean);
-      logger.debug("加载服务器：{}", bean);
+      log.debug("加载服务器：{}", bean);
     }
-    logger.debug("配置加载完毕!");
+    log.debug("配置加载完毕!");
   }
 
   // 根据用户名和密码获取加密参数

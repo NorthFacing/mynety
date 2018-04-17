@@ -60,6 +60,13 @@
         <artifactId>bcprov-jdk15on</artifactId>
         <version>1.52</version>
       </dependency>
+      <!--lombok-->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.16.20</version>
+        <scope>provided</scope>
+      </dependency>
       <!-- utils -->
       <dependency>
         <groupId>org.apache.commons</groupId>

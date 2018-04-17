@@ -10,7 +10,7 @@ public class NetUtilsTest {
   private static Server server = new Server();
 
   @Before
-  public void newServer(){
+  public void newServer() {
     server.setHost("127.0.0.1");
     server.setPort(1081);
   }

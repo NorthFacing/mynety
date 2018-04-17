@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client;
 
 import com.shadowsocks.client.config.Server;
@@ -25,17 +48,21 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.Promise;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
+/**
+ * 连接处理器
+ *
+ * @author 0haizhu0@gmail.com
+ * @since v0.0.1
+ */
+@Slf4j
 public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
-
-  private static final Logger logger = LoggerFactory.getLogger(ConnectHandler.class);
 
   private final Bootstrap b = new Bootstrap();
   private boolean isProxy;
@@ -73,7 +100,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
 
       boolean isDeny = PacFilter.isDeny(dstAddr);
       if (isDeny) {
-        logger.error(LOG_MSG + " 此地址拒绝连接：{}", dstAddr);
+        log.error(LOG_MSG + " 此地址拒绝连接：{}", dstAddr);
         ctx.close();
       }
 
@@ -134,20 +161,20 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
           .addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
             } else {
-              logger.error(LOG_MSG + " Remote connection failed => clientChannel={}", clientChannel);
+              log.error(LOG_MSG + " Remote connection failed => clientChannel={}", clientChannel);
               clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(Socks5CommandStatus.FAILURE, request.dstAddrType()));
               SocksServerUtils.closeOnFlush(clientChannel); // 失败的话就关闭客户端和用户的连接
             }
           });
     } else {
-      logger.error("socks protocol is not socks5");
+      log.error("socks protocol is not socks5");
       ctx.close();
     }
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    logger.error(LOG_MSG + ctx.channel(), cause);
+    log.error(LOG_MSG + ctx.channel(), cause);
     SocksServerUtils.closeOnFlush(ctx.channel());
   }
 
@@ -186,7 +213,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<SocksMessa
       }
       buf.writeShort(request.dstPort()); // DST.PORT
     } else {
-      logger.error(LOG_MSG + "Connect type error, requst={}, get={}", Socks5CommandType.CONNECT, request.type());
+      log.error(LOG_MSG + "Connect type error, requst={}, get={}", Socks5CommandType.CONNECT, request.type());
     }
 
     byte[] data = ByteBufUtil.getBytes(buf);

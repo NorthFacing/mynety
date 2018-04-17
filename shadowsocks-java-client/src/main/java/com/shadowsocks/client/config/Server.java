@@ -1,14 +1,42 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client.config;
 
 import com.shadowsocks.common.encryption.ICrypt;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 服务器信息
  * <p>
  * server info domain
  *
+ * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
+@Slf4j
+@Data
 public class Server {
 
   private String remarks; // 服务器备注名称
@@ -20,70 +48,6 @@ public class Server {
   private boolean available = true; // 是否可用
   private Double pingTime = 0d;
 
-  public String getRemarks() {
-    return remarks;
-  }
-
-  public void setRemarks(String remarks) {
-    this.remarks = remarks;
-  }
-
-  public String getHost() {
-    return host;
-  }
-
-  public void setHost(String host) {
-    this.host = host;
-  }
-
-  public int getPort() {
-    return port;
-  }
-
-  public void setPort(int port) {
-    this.port = port;
-  }
-
-  public String getMethod() {
-    return method;
-  }
-
-  public void setMethod(String method) {
-    this.method = method;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public ICrypt getCrypt() {
-    return crypt;
-  }
-
-  public void setCrypt(ICrypt crypt) {
-    this.crypt = crypt;
-  }
-
-  public boolean isAvailable() {
-    return available;
-  }
-
-  public void setAvailable(boolean available) {
-    this.available = available;
-  }
-
-  public Double getPingTime() {
-    return pingTime;
-  }
-
-  public void setPingTime(Double pingTime) {
-    this.pingTime = pingTime;
-  }
-
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
@@ -92,4 +56,5 @@ public class Server {
         .append(" => ").append(this.available);
     return sb.toString();
   }
+
 }

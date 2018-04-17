@@ -7,7 +7,7 @@ import org.junit.Test;
 public class LocalCacheTest {
 
   @Before
-  public void before(){
+  public void before() {
     LocalCache.clear();
   }
 
@@ -46,12 +46,12 @@ public class LocalCacheTest {
     for (int i = 0; i < 50; i++) {
       LocalCache.set("key2-" + i, "value2-" + i, 30 * 1000);
     }
-    Assert.assertEquals(LocalCache.size(),100);
+    Assert.assertEquals(LocalCache.size(), 100);
     LocalCache.validateForGC(10);
-    Assert.assertEquals(LocalCache.size(),100);
+    Assert.assertEquals(LocalCache.size(), 100);
     Thread.sleep(10 * 1000);
     LocalCache.validateForGC(10);
-    Assert.assertEquals(LocalCache.size(),50);
+    Assert.assertEquals(LocalCache.size(), 50);
   }
 
 }

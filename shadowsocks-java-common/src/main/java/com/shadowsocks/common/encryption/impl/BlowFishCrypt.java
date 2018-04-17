@@ -17,62 +17,62 @@ import java.util.Map;
  */
 public class BlowFishCrypt extends CryptBase {
 
-	public final static String CIPHER_BLOWFISH_CFB = "bf-cfb";
+  public final static String CIPHER_BLOWFISH_CFB = "bf-cfb";
 
-	public static Map<String, String> getCiphers() {
-		Map<String, String> ciphers = new HashMap<>();
-		ciphers.put(CIPHER_BLOWFISH_CFB, BlowFishCrypt.class.getName());
-		return ciphers;
-	}
+  public static Map<String, String> getCiphers() {
+    Map<String, String> ciphers = new HashMap<>();
+    ciphers.put(CIPHER_BLOWFISH_CFB, BlowFishCrypt.class.getName());
+    return ciphers;
+  }
 
-	public BlowFishCrypt(String name, String password) {
-		super(name, password);
-	}
+  public BlowFishCrypt(String name, String password) {
+    super(name, password);
+  }
 
-	@Override
-	public int getKeyLength() {
-		return 16;
-	}
+  @Override
+  public int getKeyLength() {
+    return 16;
+  }
 
-	@Override
-	protected StreamBlockCipher getCipher(boolean isEncrypted) throws InvalidAlgorithmParameterException {
-		BlowfishEngine engine = new BlowfishEngine();
-		StreamBlockCipher cipher;
+  @Override
+  protected StreamBlockCipher getCipher(boolean isEncrypted) throws InvalidAlgorithmParameterException {
+    BlowfishEngine engine = new BlowfishEngine();
+    StreamBlockCipher cipher;
 
-		if (_name.equals(CIPHER_BLOWFISH_CFB)) {
-			cipher = new CFBBlockCipher(engine, getIVLength() * 8);
-		} else {
-			throw new InvalidAlgorithmParameterException(_name);
-		}
+    if (_name.equals(CIPHER_BLOWFISH_CFB)) {
+      cipher = new CFBBlockCipher(engine, getIVLength() * 8);
+    } else {
+      throw new InvalidAlgorithmParameterException(_name);
+    }
 
-		return cipher;
-	}
+    return cipher;
+  }
 
-	@Override
-	public int getIVLength() {
-		return 8;
-	}
+  @Override
+  public int getIVLength() {
+    return 8;
+  }
 
-	@Override
-	protected SecretKey getKey() {
-		return new SecretKeySpec(_ssKey.getEncoded(), "AES");
-	}
+  @Override
+  protected SecretKey getKey() {
+    return new SecretKeySpec(_ssKey.getEncoded(), "AES");
+  }
 
-	@Override
-	protected void _encrypt(byte[] data, ByteArrayOutputStream stream) {
-		int noBytesProcessed;
-		byte[] buffer = new byte[data.length];
+  @Override
+  protected void _encrypt(byte[] data, ByteArrayOutputStream stream) {
+    int noBytesProcessed;
+    byte[] buffer = new byte[data.length];
 
-		noBytesProcessed = encCipher.processBytes(data, 0, data.length, buffer, 0);
-		stream.write(buffer, 0, noBytesProcessed);
-	}
+    noBytesProcessed = encCipher.processBytes(data, 0, data.length, buffer, 0);
+    stream.write(buffer, 0, noBytesProcessed);
+  }
 
-	@Override
-	protected void _decrypt(byte[] data, ByteArrayOutputStream stream) {
-		int noBytesProcessed;
-		byte[] buffer = new byte[data.length];
+  @Override
+  protected void _decrypt(byte[] data, ByteArrayOutputStream stream) {
+    int noBytesProcessed;
+    byte[] buffer = new byte[data.length];
 
-		noBytesProcessed = decCipher.processBytes(data, 0, data.length, buffer, 0);
-		stream.write(buffer, 0, noBytesProcessed);
-	}
+    noBytesProcessed = decCipher.processBytes(data, 0, data.length, buffer, 0);
+    stream.write(buffer, 0, noBytesProcessed);
+  }
 }
