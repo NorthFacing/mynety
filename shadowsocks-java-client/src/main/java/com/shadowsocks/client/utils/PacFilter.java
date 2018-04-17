@@ -29,7 +29,7 @@ public class PacFilter {
       return Boolean.valueOf(denyDomain);
     }
     boolean bl = regCheck(PacConfig.denyDomains, domain);
-    LocalCache.set("deny-" + domain, Boolean.toString(bl), 300);
+    LocalCache.set("deny-" + domain, Boolean.toString(bl), 60 * 60 * 1000);
     return bl;
   }
 
@@ -59,7 +59,7 @@ public class PacFilter {
       default: // 默认开启全局
         break;
     }
-    LocalCache.set("proxy-" + domain, Boolean.toString(bl));
+    LocalCache.set("proxy-" + domain, Boolean.toString(bl), 60 * 60 * 1000);
     return bl;
   }
 

@@ -27,6 +27,8 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 * [Netty Socks代理服务器源码分析](https://alwayswithme.github.io/jekyll/update/2015/07/25/netty-socksproxy-detail.html)
 * [wiki - SOCKS](https://en.wikipedia.org/wiki/SOCKS)
 * [Netty - Native transports](https://github.com/netty/netty/wiki/Native-transports)
+* [Netty之有效规避内存泄漏](http://m635674608.iteye.com/blog/2236834)
+* [netty5 HTTP协议栈浅析与实践](http://www.cnblogs.com/cyfonly/p/5616493.html)
 
 
 

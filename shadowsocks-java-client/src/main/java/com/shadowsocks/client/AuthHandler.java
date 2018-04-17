@@ -52,7 +52,7 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
 //					ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
 //					ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
 				} else if (socksRequest instanceof Socks5CommandRequest) {
-					logger.info(LOG_MSG + ctx.channel() + " SOCKS5 command request, return Socks5AuthMethod.NO_AUTH");
+					logger.info(LOG_MSG + ctx.channel() + " SOCKS5 command request...");
 					Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
 					if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
 						ctx.pipeline().addLast(new ConnectHandler());

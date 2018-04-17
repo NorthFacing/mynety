@@ -23,7 +23,7 @@ public class SocksClientMainTest {
 			b.group(group)
 				.channel(NioSocketChannel.class)
 				.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-				.option(ChannelOption.SO_KEEPALIVE, true)
+				.option(ChannelOption.TCP_NODELAY, true)
 				.handler(new SocksTestInitializer());
 
 			ChannelFuture f = b.connect(HOST, PORT)
