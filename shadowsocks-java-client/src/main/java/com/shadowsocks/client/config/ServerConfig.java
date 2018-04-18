@@ -91,7 +91,7 @@ public class ServerConfig {
     Server server = servers.parallelStream()
         .filter(Server::isAvailable)
         .min(Comparator.comparingDouble(Server::getPingTime))
-        .get();
+        .orElse(servers.get(0)); // 不为空返回速度最快的一个服务器；为空随便返回一个，反正都不能用
     return server;
   }
 
@@ -119,12 +119,12 @@ public class ServerConfig {
             300,
             TimeUnit.SECONDS
         );
-    // 检测服务器domain有效性，节省空间
+    // 检测域名domain缓存时间，剔除最近不再使用的数据节省本地缓存空间
     Executors.newScheduledThreadPool(1)
         .scheduleWithFixedDelay(
             () -> LocalCache.validateForGC(10000),
             0,
-            300,
+            600,
             TimeUnit.SECONDS
         );
 

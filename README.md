@@ -1,12 +1,19 @@
 
 # Features
 
+* Socks5 protocol
 * popular encryption methods supports
 * IP4, IP6 and domain supports
-* auto proxy by pac config
-* auto change to the available server
+* auto proxy by pac config：proxy，direct or deny
+* auto select the fastest one of available servers
 
 ## Package & run
+
+Requres:
+* Jdk8 or higher
+* Maven
+
+Shell commond:
 
 ```
 mvn clean package
