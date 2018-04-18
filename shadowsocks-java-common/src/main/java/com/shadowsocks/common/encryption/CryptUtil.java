@@ -1,15 +1,13 @@
 package com.shadowsocks.common.encryption;
 
 import io.netty.buffer.ByteBuf;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+@Slf4j
 public class CryptUtil {
-
-  private static final Logger logger = LoggerFactory.getLogger(CryptUtil.class);
 
   public static byte[] encrypt(ICrypt crypt, Object msg) {
     byte[] data = null;
@@ -25,7 +23,7 @@ public class CryptUtil {
         data = _remoteOutStream.toByteArray();
       }
     } catch (Exception e) {
-      logger.error("encrypt error", e);
+      log.error("encrypt error", e);
     } finally {
       if (_remoteOutStream != null) {
         try {
@@ -51,7 +49,7 @@ public class CryptUtil {
         data = _localOutStream.toByteArray();
       }
     } catch (Exception e) {
-      logger.error("encrypt error", e);
+      log.error("encrypt error", e);
     } finally {
       if (_localOutStream != null) {
         try {
