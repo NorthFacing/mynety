@@ -1,19 +1,18 @@
-import com.shadowsocks.client.RemoteHandler;
+package com.shadowsocks.client.socks;
+
 import com.shadowsocks.common.constants.Constants;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 【握手】处理器：权限验证相关请求
  */
+@Slf4j
 public class Socks01InitHandler extends SimpleChannelInboundHandler {
-
-  private static final Logger logger = LoggerFactory.getLogger(RemoteHandler.class);
 
   private final ByteBuf buf;
 
@@ -34,7 +33,7 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器激活，发送初次访问请求：" + ByteBufUtil.hexDump(buf));
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器激活，发送初次访问请求：" + ByteBufUtil.hexDump(buf));
     ctx.channel().writeAndFlush(buf);
   }
 
@@ -55,27 +54,27 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
     ByteBuf buf = (ByteBuf) msg;
     byte ver = buf.readByte();
     byte method = buf.readByte();
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到消息：ver={},method={}", ver, method);
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到消息：ver={},method={}", ver, method);
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().remove(this);
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，移除此处理器完毕");
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，移除此处理器完毕");
     ctx.pipeline().addLast(new Socks03ConnectHandler());
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加连接处理器");
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加连接处理器");
     ctx.pipeline().fireChannelActive();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    logger.error(Constants.LOG_MSG + ctx.channel() + "【握手】处理器异常：", throwable);
+    log.error(Constants.LOG_MSG + ctx.channel() + "【握手】处理器异常：", throwable);
     ctx.channel().close();
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器连接断开：" + ctx.channel());
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器连接断开：" + ctx.channel());
     super.channelInactive(ctx);
   }
 
