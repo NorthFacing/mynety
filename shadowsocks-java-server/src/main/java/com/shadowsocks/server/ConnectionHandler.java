@@ -79,10 +79,10 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
       ChannelFuture channelFuture = bootstrap.connect(inetAddress, port);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          log.debug("connect success host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
+          log.debug("connect success host = " + host + ", port = " + port + ", inetAddress = " + inetAddress);
           remoteChannel.set(future.channel());
         } else {
-          log.debug("connect fail host = " + host + ",port = " + port + ",inetAddress = " + inetAddress);
+          log.debug("connect fail host = " + host + ", port = " + port + ", inetAddress = " + inetAddress);
           future.cancel(true);
           channelClose();
         }

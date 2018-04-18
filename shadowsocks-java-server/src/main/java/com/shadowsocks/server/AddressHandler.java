@@ -109,7 +109,7 @@ public class AddressHandler extends SimpleChannelInboundHandler {
     } else {
       throw new IllegalStateException("unknown address type: " + addressType);
     }
-    log.debug("addressType = " + addressType + ",host = " + host + ",port = " + port);
+    log.debug("addressType = " + addressType + ", host = " + host + ", port = " + port);
     ctx.channel().attr(Config.HOST).set(host);
     ctx.channel().attr(Config.PORT).set(port);
     ctx.channel().attr(Config.BUF).set(dataBuff);
