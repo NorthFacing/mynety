@@ -26,6 +26,8 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 * Traffic statistics
 * HTTP protocal
 * UDP protocal
+* DNS config (such as localhost,127.0.0.1 and so on)
+
 
 # References
 
