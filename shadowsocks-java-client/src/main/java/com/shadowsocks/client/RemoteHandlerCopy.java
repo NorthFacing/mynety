@@ -21,19 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.socks;
+package com.shadowsocks.client;
 
-import com.shadowsocks.common.constants.Constants;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.concurrent.Promise;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+
+/**
+ * 远程连接处理器，连接代理服务器服务端。
+ * 从 v0.0.4 开始，废弃使用
+ *
+ * @author 0haizhu0@gmail.com
+ * @since v0.0.1
+ */
+@Deprecated
 @Slf4j
-public class SocksTestInitializer extends ChannelInitializer<SocketChannel> {
+public final class RemoteHandlerCopy extends ChannelInboundHandlerAdapter {
+
+  private final Promise<Channel> promise;
+
+  public RemoteHandlerCopy(Promise<Channel> promise) {
+    this.promise = promise;
+  }
 
   @Override
-  public void initChannel(SocketChannel ch) throws Exception {
-    log.info(Constants.LOG_MSG + ch);
-    ch.pipeline().addLast(new Socks01InitHandler());
+  public void channelActive(ChannelHandlerContext ctx) {
+    ctx.pipeline().remove(this);
+    promise.setSuccess(ctx.channel()); // 连接到指定地址成功后，setSuccess 让 Promise 的回调函数执行；在这个 Promise 中放有一个连接远程的 Channel
+  }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
+    log.error(LOG_MSG + " inboundChannel=" + ctx.channel() + " 和 outboundChannel=" + promise.getNow() + " 关联出错：", throwable);
+    promise.setFailure(throwable);
   }
 }

@@ -21,34 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client;
+package com.shadowsocks.client.httpAdapter;
 
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.socksx.SocksPortUnificationServerHandler;
+import com.shadowsocks.common.constants.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.protocol.HttpContext;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Socket;
 
 /**
- * 初始化处理器集
- *
  * @author 0haizhu0@gmail.com
- * @since v0.0.1
+ * @since v0.0.4
  */
 @Slf4j
-public final class Initializer extends ChannelInitializer<SocketChannel> {
+public class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
+
+  public MyConnectionSocketFactory(final SSLContext sslContext) {
+    super(sslContext);
+  }
 
   @Override
-  public void initChannel(SocketChannel ch) throws Exception {
-    log.info(LOG_MSG + " Init netty handler..." + ch);
-    ch.pipeline().addLast(new SocksPortUnificationServerHandler()); // 检测socks版本并初始化对应版本的实例
-    ch.pipeline().addLast(AuthHandler.INSTANCE);             // 消息具体处理类
+  public Socket createSocket(final HttpContext context) throws IOException {
+    InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute(Constants.SOCKS_ADDR_FOR_HTTP);
+    Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
+    return new Socket(proxy);
   }
-}
 
-/**
- * Note：
- * SocksPortUnificationServerHandler 中的decode方法中，对于socks5，添加的 Socks5InitialRequestDecoder 实现了 ReplayingDecoder，
- * 可以用一种状态机式的方式解码二进制的请求。状态变为 SUCCESS 以后，就不再解码任何数据。
- */
+}

@@ -26,7 +26,6 @@ package com.shadowsocks.server;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
-import com.shadowsocks.server.Config.Config;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -40,8 +39,9 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.InetAddress;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
  * 连接处理器
@@ -56,48 +56,49 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   private ByteBuf clientCache;
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+  public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
 
-    String host = ctx.channel().attr(Config.HOST).get();
-    Integer port = ctx.channel().attr(Config.PORT).get();
-    ICrypt crypt = ctx.channel().attr(Config.CRYPT_KEY).get();
-    clientCache = ctx.channel().attr(Config.BUF).get();
+    Channel clientChannel = clientCtx.channel();
 
-    Bootstrap bootstrap = new Bootstrap();
-    bootstrap.group(ctx.channel().eventLoop())
+    String dstAddr = clientChannel.attr(Constants.ATTR_HOST).get();
+    Integer dstPort = clientChannel.attr(Constants.ATTR_PORT).get();
+    ICrypt crypt = clientChannel.attr(Constants.ATTR_CRYPT_KEY).get();
+    clientCache = clientChannel.attr(Constants.ATTR_BUF).get();
+
+    Bootstrap remoteBootStrap = new Bootstrap();
+    remoteBootStrap.group(clientChannel.eventLoop())
         .channel(Constants.channelClass)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
         .handler(new ChannelInitializer<SocketChannel>() {
           @Override
           protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new RemoteHandler(ctx, crypt, clientCache));
+            ch.pipeline().addLast(new RemoteHandler(clientCtx, crypt, clientCache));
           }
         });
 
     try {
-      final InetAddress inetAddress = InetAddress.getByName(host);
-      ChannelFuture channelFuture = bootstrap.connect(inetAddress, port);
+      ChannelFuture channelFuture = remoteBootStrap.connect(dstAddr, dstPort);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          log.debug("connect success host = " + host + ", port = " + port + ", inetAddress = " + inetAddress);
           remoteChannel.set(future.channel());
+          log.debug("{} {} connect success dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
         } else {
-          log.debug("connect fail host = " + host + ", port = " + port + ", inetAddress = " + inetAddress);
+          log.debug("{} {} connect fail dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
           future.cancel(true);
           channelClose();
         }
       });
 
     } catch (Exception e) {
-      log.error("connect intenet error", e);
+      log.error(LOG_MSG + "connect intenet error", e);
       channelClose();
     }
 
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-    ICrypt crypt = ctx.channel().attr(Config.CRYPT_KEY).get();
+  protected void channelRead0(ChannelHandlerContext clientCtx, Object msg) throws Exception {
+    ICrypt crypt = clientCtx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
 
     ByteBuf buff = (ByteBuf) msg;
     if (buff.readableBytes() <= 0) {
@@ -122,9 +123,10 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
     channelClose();
-    log.error("ConnectionHandler error", cause);
+    log.error(LOG_MSG + "ConnectionHandler error", cause);
   }
 
+  @SuppressWarnings("Duplicates")
   private void channelClose() {
     try {
       if (remoteChannel.get() != null) {
@@ -136,7 +138,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
         clientCache = null;
       }
     } catch (Exception e) {
-      log.error("close channel error", e);
+      log.error(LOG_MSG + "close channel error", e);
     }
   }
 }

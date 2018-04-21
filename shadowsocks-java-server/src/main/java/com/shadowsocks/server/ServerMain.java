@@ -28,6 +28,7 @@ import com.shadowsocks.server.Config.ConfigLoader;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -42,10 +43,10 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
-import static com.shadowsocks.common.constants.Constants.bossGroup;
+import static com.shadowsocks.common.constants.Constants.bossGroupClass;
 import static com.shadowsocks.common.constants.Constants.channelClass;
 import static com.shadowsocks.common.constants.Constants.serverChannelClass;
-import static com.shadowsocks.common.constants.Constants.workerGroup;
+import static com.shadowsocks.common.constants.Constants.workerGroupClass;
 
 /**
  * 服务端启动入口
@@ -62,24 +63,28 @@ public class ServerMain {
     ConfigLoader.loadConfig();
 
     if (SystemUtils.IS_OS_MAC) { // And BSD system?
-      bossGroup = new KQueueEventLoopGroup(1);
-      workerGroup = new KQueueEventLoopGroup();
+      bossGroupClass = KQueueEventLoopGroup.class;
+      workerGroupClass = KQueueEventLoopGroup.class;
       serverChannelClass = KQueueServerSocketChannel.class;
       channelClass = KQueueSocketChannel.class;
     } else if (SystemUtils.IS_OS_LINUX) { // For linux system
-      bossGroup = new EpollEventLoopGroup(1);
-      workerGroup = new EpollEventLoopGroup();
+      bossGroupClass = EpollEventLoopGroup.class;
+      workerGroupClass = EpollEventLoopGroup.class;
       serverChannelClass = EpollServerSocketChannel.class;
       channelClass = EpollSocketChannel.class;
     } else {
-      bossGroup = new NioEventLoopGroup(1);
-      workerGroup = new NioEventLoopGroup();
+      bossGroupClass = NioEventLoopGroup.class;
+      workerGroupClass = NioEventLoopGroup.class;
       serverChannelClass = NioServerSocketChannel.class;
       channelClass = NioSocketChannel.class;
     }
 
+    EventLoopGroup bossGroup = null;
+    EventLoopGroup workerGroup = null;
     try {
       ServerBootstrap serverBoot = new ServerBootstrap();
+      bossGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor(int.class).newInstance(1);
+      workerGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor().newInstance();
       serverBoot.group(bossGroup, workerGroup)
           .channel(serverChannelClass)
           .option(ChannelOption.TCP_NODELAY, true)

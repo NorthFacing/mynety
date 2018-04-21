@@ -62,7 +62,7 @@ public class ConfigLoader {
     // 服务器资源配置
     String configFile = "client-config.xml";
     loadClientConf("dev-" + configFile); // 先加载测试环境配置，如果为空再去找正式环境配置（为了调试开发方便）
-    if (ServerConfig.getAvailableServer() == null) {
+    if (ClientConfig.getAvailableServer() == null) {
       loadClientConf(configFile);
     }
 
@@ -154,18 +154,25 @@ public class ConfigLoader {
         String value = node.getFirstChild().getNodeValue();
         switch (nodeName) {
           case "public":
-            ServerConfig.PUBLIC = Boolean.valueOf(value);
+            ClientConfig.PUBLIC = Boolean.valueOf(value);
             break;
-          case "localport":
+          case "socksLocalPort":
             try {
-              ServerConfig.LOCAL_PORT = Integer.valueOf(value);
+              ClientConfig.SOCKS_LOCAL_PORT = Integer.valueOf(value);
             } catch (Exception e) {
-              log.error("本地端口配置 localport 参数不合法，将使用全局代理模式！");
+              log.error("本地端口配置 socksLocalPort 参数不合法，将使用默认端口1086！");
+            }
+            break;
+          case "httpLocalPort":
+            try {
+              ClientConfig.HTTP_LOCAL_PORT = Integer.valueOf(value);
+            } catch (Exception e) {
+              log.error("本地端口配置 httpLocalPort 参数不合法，将使用默认端口1087！");
             }
             break;
           case "proxyStrategy":
             try {
-              ServerConfig.PROXY_STRATEGY = Integer.valueOf(value);
+              ClientConfig.PROXY_STRATEGY = Integer.valueOf(value);
             } catch (Exception e) {
               log.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
             }
@@ -196,7 +203,7 @@ public class ConfigLoader {
       NodeList serverChildNodes = serverWrapperNode.getChildNodes();
 
       Server bean = new Server();
-      ServerConfig.addServer(bean);
+      ClientConfig.addServer(bean);
 
       for (int k = 0; k < serverChildNodes.getLength(); k++) {
         Node serverChild = serverChildNodes.item(k);

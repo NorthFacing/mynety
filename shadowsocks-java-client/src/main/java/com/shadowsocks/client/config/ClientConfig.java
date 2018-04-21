@@ -37,22 +37,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 服务器配置
+ * 客户端使用的服务器配置
  * <p>
- * servers config
+ * server configs for proxy client
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
-public class ServerConfig {
+public class ClientConfig {
 
+  public static final String LOCAL_ADDRESS = "127.0.0.1";
   /**
    * 是否开放本机代理给其他设备使用
    */
   public static boolean PUBLIC = true;
 
-  public static int LOCAL_PORT = 1086;
+  public static int SOCKS_LOCAL_PORT = 1086;
+  public static int HTTP_LOCAL_PORT = 1087;
 
   /**
    * 代理模式可选项：

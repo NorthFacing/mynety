@@ -23,7 +23,16 @@
  */
 package com.shadowsocks.common.constants;
 
-import io.netty.channel.EventLoopGroup;
+import com.shadowsocks.common.encryption.ICrypt;
+import io.netty.buffer.ByteBuf;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
+import io.netty.util.AttributeKey;
+
+import java.util.regex.Pattern;
 
 /**
  * 常量
@@ -35,10 +44,25 @@ public class Constants {
 
   public static final String LOG_MSG = "-----------> ";
 
+  public static final String SOCKS_ADDR_FOR_HTTP = "socks.address.for.http";
+
+  public static final int MAX_CONTENT_LENGTH = 1024 * 1024;
+
+  public static final Pattern PATH_PATTERN = Pattern.compile("(https?)://([a-zA-Z0-9\\.\\-]+)(:(\\d+))?(/.*)");
+  public static final Pattern TUNNEL_ADDR_PATTERN = Pattern.compile("^([a-zA-Z0-9\\.\\-_]+):(\\d+)");
+  public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
+
   public static Class channelClass;
   public static Class serverChannelClass;
-  public static EventLoopGroup bossGroup;
-  public static EventLoopGroup workerGroup;
+  public static Class bossGroupClass;
+  public static Class workerGroupClass;
 
+  public static final AttributeKey<ICrypt> ATTR_CRYPT_KEY = AttributeKey.valueOf("crypt");
+  public static final AttributeKey<String> ATTR_HOST = AttributeKey.valueOf("host");
+  public static final AttributeKey<Integer> ATTR_PORT = AttributeKey.valueOf("port");
+  public static final AttributeKey<ByteBuf> ATTR_BUF = AttributeKey.valueOf("buf");
+
+  public static final AttributeKey<Socks5CommandRequest> SOCKS5_REQUEST = AttributeKey.valueOf("socks5.request");
+  public static final AttributeKey<HttpRequest> HTTP_REQUEST = AttributeKey.valueOf("http.request");
 
 }

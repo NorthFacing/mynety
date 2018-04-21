@@ -1,3 +1,26 @@
+/**
+ * MIT License
+ * <p>
+ * Copyright (c) 2018 0haizhu0@gmail.com
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.shadowsocks.client.socks;
 
 import com.shadowsocks.common.constants.Constants;
@@ -54,15 +77,14 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
     ByteBuf buf = (ByteBuf) msg;
     byte ver = buf.readByte();
     byte method = buf.readByte();
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到消息：ver={},method={}", ver, method);
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到响应消息：ver={},method={}", ver, method);
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().remove(this);
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，移除此处理器完毕");
     ctx.pipeline().addLast(new Socks03ConnectHandler());
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加连接处理器");
+    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加【连接】处理器");
     ctx.pipeline().fireChannelActive();
   }
 

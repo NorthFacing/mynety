@@ -23,38 +23,76 @@
  */
 package com.shadowsocks.client;
 
-import io.netty.channel.Channel;
+import com.shadowsocks.common.encryption.ICrypt;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.concurrent.Promise;
+import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+
+import java.io.ByteArrayOutputStream;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
- * 远程连接处理器，连接代理服务器服务端
+ * 远程处理器，连接真正的目标地址
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
-public final class RemoteHandler extends ChannelInboundHandlerAdapter {
+public final class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
-  private final Promise<Channel> promise;
+  private final ChannelHandlerContext clientChannel;
+  private final boolean isProxy;
+  private final ICrypt _crypt;
 
-  public RemoteHandler(Promise<Channel> promise) {
-    this.promise = promise;
+  public RemoteHandler(ChannelHandlerContext clientProxyChannel, boolean isProxy, ICrypt _crypt) {
+    this.clientChannel = clientProxyChannel;
+    this.isProxy = isProxy;
+    this._crypt = _crypt;
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    ctx.pipeline().remove(this);
-    promise.setSuccess(ctx.channel()); // 连接到指定地址成功后，setSuccess 让 Promise 的回调函数执行；在这个 Promise 中放有一个连接远程的 Channel
+  @SuppressWarnings("Duplicates")
+  protected void channelRead0(ChannelHandlerContext remoteCtx, ByteBuf msg) throws Exception {
+    try (ByteArrayOutputStream _localOutStream = new ByteArrayOutputStream()) {
+      if (!msg.hasArray()) {
+        int len = msg.readableBytes();
+        byte[] arr = new byte[len];
+        msg.getBytes(0, arr);
+        if (isProxy) {
+          _crypt.decrypt(arr, arr.length, _localOutStream);
+          arr = _localOutStream.toByteArray();
+        }
+        clientChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
+      }
+    } catch (Exception e) {
+      log.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
+    }
+  }
+
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    ctx.close();
+    channelClose();
+    log.info("RemoteHandler channelInactive close");
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(LOG_MSG + " inboundChannel=" + ctx.channel() + " 和 outboundChannel=" + promise.getNow() + " 关联出错：", throwable);
-    promise.setFailure(throwable);
+    ctx.close();
+    channelClose();
+    log.error("RemoteHandler error", throwable);
   }
+
+  @SuppressWarnings("Duplicates")
+  private void channelClose() {
+    try {
+      clientChannel.close();
+    } catch (Exception e) {
+      log.error("close channel error", e);
+    }
+  }
+
 }

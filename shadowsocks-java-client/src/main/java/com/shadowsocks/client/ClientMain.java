@@ -23,11 +23,13 @@
  */
 package com.shadowsocks.client;
 
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.config.ConfigLoader;
-import com.shadowsocks.client.config.ServerConfig;
+import com.shadowsocks.client.httpAdapter.HttpPipelineInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.epoll.EpollSocketChannel;
@@ -42,10 +44,10 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
-import static com.shadowsocks.common.constants.Constants.bossGroup;
+import static com.shadowsocks.common.constants.Constants.bossGroupClass;
 import static com.shadowsocks.common.constants.Constants.channelClass;
 import static com.shadowsocks.common.constants.Constants.serverChannelClass;
-import static com.shadowsocks.common.constants.Constants.workerGroup;
+import static com.shadowsocks.common.constants.Constants.workerGroupClass;
 
 /**
  * 客户端启动入口
@@ -60,41 +62,70 @@ public final class ClientMain {
   public static void main(String[] args) throws Exception {
 
     ConfigLoader.loadConfig();
-    ServerConfig.checkServers();
+    ClientConfig.checkServers();
 
     if (SystemUtils.IS_OS_MAC) { // And BSD system?
-      bossGroup = new KQueueEventLoopGroup(1);
-      workerGroup = new KQueueEventLoopGroup();
+      bossGroupClass = KQueueEventLoopGroup.class;
+      workerGroupClass = KQueueEventLoopGroup.class;
       serverChannelClass = KQueueServerSocketChannel.class;
       channelClass = KQueueSocketChannel.class;
     } else if (SystemUtils.IS_OS_LINUX) { // For linux system
-      bossGroup = new EpollEventLoopGroup(1);
-      workerGroup = new EpollEventLoopGroup();
+      bossGroupClass = EpollEventLoopGroup.class;
+      workerGroupClass = EpollEventLoopGroup.class;
       serverChannelClass = EpollServerSocketChannel.class;
       channelClass = EpollSocketChannel.class;
     } else {
-      bossGroup = new NioEventLoopGroup(1);
-      workerGroup = new NioEventLoopGroup();
+      bossGroupClass = NioEventLoopGroup.class;
+      workerGroupClass = NioEventLoopGroup.class;
       serverChannelClass = NioServerSocketChannel.class;
       channelClass = NioSocketChannel.class;
     }
 
-    try {
-      ServerBootstrap serverBoot = new ServerBootstrap();
-      serverBoot.group(bossGroup, workerGroup)
-          .channel(serverChannelClass)
-          .option(ChannelOption.TCP_NODELAY, true)
-          .handler(new LoggingHandler(LogLevel.DEBUG))
-          .childHandler(new Initializer());
+    new Thread(() -> {
+      EventLoopGroup sBossGroup = null;
+      EventLoopGroup sWorkerGroup = null;
+      try {
+        sBossGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor(int.class).newInstance(1);
+        sWorkerGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor().newInstance();
+        ServerBootstrap sServerBoot = new ServerBootstrap();
+        sServerBoot.group(sBossGroup, sWorkerGroup)
+            .channel(serverChannelClass)
+            .option(ChannelOption.TCP_NODELAY, true)
+            .handler(new LoggingHandler(LogLevel.DEBUG))
+            .childHandler(new PipelineInitializer());
+        String sLocalHost = ClientConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
+        ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_LOCAL_PORT).sync();
+        sFuture.channel().closeFuture().sync();
+      } catch (Exception e) {
+        log.error("", e);
+      } finally {
+        sBossGroup.shutdownGracefully();
+        sWorkerGroup.shutdownGracefully();
+      }
+    }, "socks-proxy-thread").start();
 
-      String localHost = ServerConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
-
-      ChannelFuture future = serverBoot.bind(localHost, ServerConfig.LOCAL_PORT).sync();
-      future.channel().closeFuture().sync();
-    } finally {
-      bossGroup.shutdownGracefully();
-      workerGroup.shutdownGracefully();
-    }
+    new Thread(() -> {
+      EventLoopGroup hBossGroup = null;
+      EventLoopGroup hWorkerGroup = null;
+      try {
+        hBossGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor(int.class).newInstance(1);
+        hWorkerGroup = (EventLoopGroup) bossGroupClass.getDeclaredConstructor().newInstance();
+        ServerBootstrap hServerBoot = new ServerBootstrap();
+        hServerBoot.group(hBossGroup, hWorkerGroup)
+            .channel(serverChannelClass)
+            .option(ChannelOption.TCP_NODELAY, true)
+            .handler(new LoggingHandler(LogLevel.DEBUG))
+            .childHandler(new HttpPipelineInitializer());
+        String hLocalHost = ClientConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
+        ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_LOCAL_PORT).sync();
+        hFuture.channel().closeFuture().sync();
+      } catch (Exception e) {
+        log.error("", e);
+      } finally {
+        hBossGroup.shutdownGracefully();
+        hWorkerGroup.shutdownGracefully();
+      }
+    }, "http/https-proxy-thread").start();
 
   }
 }

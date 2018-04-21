@@ -23,7 +23,7 @@
  */
 package com.shadowsocks.client;
 
-import com.shadowsocks.client.config.ServerConfig;
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
@@ -39,33 +39,33 @@ import java.io.ByteArrayOutputStream;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
- * 接受remoteServer的数据，发送给客户端
+ * 接受remoteServer的数据，发送给客户端。
+ * 从 v0.0.4 开始，废弃使用
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
+@Deprecated
 @Slf4j
 public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
+  public void channelActive(ChannelHandlerContext remoteCtx) {
+    remoteCtx.writeAndFlush(Unpooled.EMPTY_BUFFER);
   }
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    Channel clientChannel = ctx.channel().attr(ServerConfig.CLIENT_CHANNEL).get();
-    Boolean isProxy = ctx.channel().attr(ServerConfig.IS_PROXY).get();
-    ICrypt crypt = ctx.channel().attr(ServerConfig.CRYPT_KEY).get();
+  public void channelRead(ChannelHandlerContext remoteCtx, Object msg) {
+    Channel clientChannel = remoteCtx.channel().attr(ClientConfig.CLIENT_CHANNEL).get();
+    Boolean isProxy = remoteCtx.channel().attr(ClientConfig.IS_PROXY).get();
+    ICrypt crypt = remoteCtx.channel().attr(ClientConfig.CRYPT_KEY).get();
 
     ByteBuf byteBuf = (ByteBuf) msg;
     try (ByteArrayOutputStream _localOutStream = new ByteArrayOutputStream()) {
 
       if (clientChannel.isActive()) {
         if (!byteBuf.hasArray()) {
-          int len = byteBuf.readableBytes();
-          byte[] arr = new byte[len];
-          byteBuf.getBytes(0, arr);
+          byte[] arr = byteBuf.array();
           if (isProxy) {
             crypt.decrypt(arr, arr.length, _localOutStream);
             arr = _localOutStream.toByteArray();
@@ -74,7 +74,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
         }
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + ctx.channel() + " Receive remoteServer data error: ", e);
+      log.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
     } finally {
       ReferenceCountUtil.release(msg);
     }
@@ -82,7 +82,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) {
-    Channel clientChannel = ctx.channel().attr(ServerConfig.CLIENT_CHANNEL).get();
+    Channel clientChannel = ctx.channel().attr(ClientConfig.CLIENT_CHANNEL).get();
     if (clientChannel.isActive()) {
       SocksServerUtils.closeOnFlush(clientChannel);
       SocksServerUtils.closeOnFlush(ctx.channel());

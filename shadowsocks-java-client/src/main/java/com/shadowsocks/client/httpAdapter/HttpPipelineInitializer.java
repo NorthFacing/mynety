@@ -21,19 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.socks;
+package com.shadowsocks.client.httpAdapter;
 
-import com.shadowsocks.common.constants.Constants;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.MAX_CONTENT_LENGTH;
+
+/**
+ * @author 0haizhu0@gmail.com
+ * @since v0.0.4
+ */
 @Slf4j
-public class SocksTestInitializer extends ChannelInitializer<SocketChannel> {
+public class HttpPipelineInitializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    log.info(Constants.LOG_MSG + ch);
-    ch.pipeline().addLast(new Socks01InitHandler());
+    log.info(LOG_MSG + " Init http handler..." + ch);
+
+    HttpServerCodec serverCodec = new HttpServerCodec();
+    HttpObjectAggregator aggregator = new HttpObjectAggregator(MAX_CONTENT_LENGTH);
+
+    // HttpServerCodec 相当于 HttpRequestDecoder && HttpResponseEncoder 一起的作用，
+    ch.pipeline().addLast(serverCodec);
+    log.debug("{} {} add handler: serverCodec", LOG_MSG, ch);
+//    ch.pipeline().addLast(new HttpRequestDecoder());
+//    ch.pipeline().addLast(new HttpResponseEncoder());
+    // 自动聚合 HTTP 的消息片段，将最大的消息大小为 1024 KB 的 HttpObjectAggregator 添加 到 ChannelPipeline
+    ch.pipeline().addLast(aggregator);
+    log.debug("{} {} add handler: aggregator", LOG_MSG, ch);
+    // 请求解析为HttpRequest之后的数据处理
+    ch.pipeline().addLast(HttpProxyHandler.INSTANCE);
+    log.debug("{} {} add handler: HttpProxyHandler", LOG_MSG, ch);
   }
 }

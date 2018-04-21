@@ -24,7 +24,7 @@
 package com.shadowsocks.client.utils;
 
 import com.shadowsocks.client.config.PacConfig;
-import com.shadowsocks.client.config.ServerConfig;
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.common.utils.LocalCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -73,7 +73,7 @@ public class PacFilter {
       return Boolean.valueOf(proxyDomain);
     }
     boolean bl = true;
-    int strategy = ServerConfig.PROXY_STRATEGY;
+    int strategy = ClientConfig.PROXY_STRATEGY;
     switch (strategy) {
       case 0: // 全局，则使用代理
         break;

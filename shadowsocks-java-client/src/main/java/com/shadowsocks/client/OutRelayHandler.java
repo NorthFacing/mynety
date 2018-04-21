@@ -23,7 +23,7 @@
  */
 package com.shadowsocks.client;
 
-import com.shadowsocks.client.config.ServerConfig;
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
@@ -39,29 +39,30 @@ import java.io.ByteArrayOutputStream;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
- * localServer接受到数据发送数据给remoteServer
+ * localServer接受到数据发送数据给remoteServer。
+ * 从 v0.0.4 开始，废弃使用
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.1
  */
+@Deprecated
 @Slf4j
 public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
+  public void channelActive(ChannelHandlerContext clientCtx) {
+    clientCtx.writeAndFlush(Unpooled.EMPTY_BUFFER);
   }
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
-    Boolean isProxy = ctx.channel().attr(ServerConfig.IS_PROXY).get();
-    ICrypt crypt = ctx.channel().attr(ServerConfig.CRYPT_KEY).get();
+  public void channelRead(ChannelHandlerContext clientCtx, Object msg) {
+    Channel remoteChannel = clientCtx.channel().attr(ClientConfig.REMOTE_CHANNEL).get();
+    Boolean isProxy = clientCtx.channel().attr(ClientConfig.IS_PROXY).get();
+    ICrypt crypt = clientCtx.channel().attr(ClientConfig.CRYPT_KEY).get();
 
     ByteBuf byteBuf = (ByteBuf) msg;
     try (ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream()) {
       if (remoteChannel.isActive()) {
-
         if (!byteBuf.hasArray()) {
           int len = byteBuf.readableBytes();
           byte[] arr = new byte[len];
@@ -75,7 +76,7 @@ public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
         }
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + ctx.channel() + " Send data to remoteServer error: ", e);
+      log.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
     } finally {
       ReferenceCountUtil.release(msg);
     }
@@ -83,7 +84,7 @@ public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) {
-    Channel remoteChannel = ctx.channel().attr(ServerConfig.REMOTE_CHANNEL).get();
+    Channel remoteChannel = ctx.channel().attr(ClientConfig.REMOTE_CHANNEL).get();
     if (remoteChannel.isActive()) {
       SocksServerUtils.closeOnFlush(remoteChannel);
     }

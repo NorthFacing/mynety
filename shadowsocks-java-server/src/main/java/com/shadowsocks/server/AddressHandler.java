@@ -37,6 +37,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 
+import static com.shadowsocks.common.constants.Constants.ATTR_BUF;
+import static com.shadowsocks.common.constants.Constants.ATTR_CRYPT_KEY;
+import static com.shadowsocks.common.constants.Constants.ATTR_HOST;
+import static com.shadowsocks.common.constants.Constants.ATTR_PORT;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+
 /**
  * 地址解析处理器
  *
@@ -54,7 +60,7 @@ public class AddressHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    ctx.channel().attr(Config.CRYPT_KEY).setIfAbsent(CryptFactory.get(Config.METHOD, Config.PASSWORD));
+    ctx.channel().attr(ATTR_CRYPT_KEY).setIfAbsent(CryptFactory.get(Config.METHOD, Config.PASSWORD));
   }
 
   @Override
@@ -71,7 +77,7 @@ public class AddressHandler extends SimpleChannelInboundHandler {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-    ICrypt crypt = ctx.channel().attr(Config.CRYPT_KEY).get();
+    ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
 
     ByteBuf buff = (ByteBuf) msg;
 
@@ -79,7 +85,7 @@ public class AddressHandler extends SimpleChannelInboundHandler {
       return;
     }
     ByteBuf dataBuff = Unpooled.buffer();
-    dataBuff.writeBytes(CryptUtil.decrypt(crypt, msg));
+    dataBuff.writeBytes(CryptUtil.decrypt(crypt, buff));
     if (dataBuff.readableBytes() < 2) {
       return;
     }
@@ -109,10 +115,10 @@ public class AddressHandler extends SimpleChannelInboundHandler {
     } else {
       throw new IllegalStateException("unknown address type: " + addressType);
     }
-    log.debug("addressType = " + addressType + ", host = " + host + ", port = " + port);
-    ctx.channel().attr(Config.HOST).set(host);
-    ctx.channel().attr(Config.PORT).set(port);
-    ctx.channel().attr(Config.BUF).set(dataBuff);
+    log.debug(LOG_MSG + ctx + "addressType = " + addressType + ", host = " + host + ", port = " + port);
+    ctx.channel().attr(ATTR_HOST).set(host);
+    ctx.channel().attr(ATTR_PORT).set(port);
+    ctx.channel().attr(ATTR_BUF).set(dataBuff);
 
     ctx.channel().pipeline().remove(this);
     ctx.channel().pipeline().addLast(new ConnectionHandler());

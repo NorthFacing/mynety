@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.SOCKS5_REQUEST;
 
 /**
  * 权限验证处理器
@@ -60,6 +61,7 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
   public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) throws Exception {
     switch (socksRequest.version()) {
       case SOCKS5: // Socks5代理则可以支持TCP和UDP两种应用
+
         if (socksRequest instanceof Socks5InitialRequest) {
           log.info(LOG_MSG + ctx.channel() + " SOCKS5 auth first request, return Socks5AuthMethod.NO_AUTH");
           // 不需要auth验证的代码范例
@@ -82,9 +84,10 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
           log.info(LOG_MSG + ctx.channel() + " SOCKS5 command request...");
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
           if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
-            ctx.pipeline().addLast(new ConnectHandler());
+            ctx.channel().attr(SOCKS5_REQUEST).set(socks5CmdRequest);
             ctx.pipeline().remove(this); // 完成任务，从 pipeline 中移除
-            ctx.fireChannelRead(socksRequest); // 通知执行下一个InboundHandler
+            ctx.pipeline().addLast(new ConnectHandler());
+            ctx.pipeline().fireChannelActive(); // 通知执行下一个InboundHandler，也就是ConnectHandler
           } else {
             ctx.close();
           }
