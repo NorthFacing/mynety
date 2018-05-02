@@ -33,7 +33,7 @@ public class CryptFactory {
       Constructor<?> constructor = clazz.getConstructor(String.class, String.class);
       return (ICrypt) constructor.newInstance(name, password);
     } catch (Exception e) {
-      log.error("get crypt error", e);
+      logger.error("get crypt error", e);
     }
 
     return null;

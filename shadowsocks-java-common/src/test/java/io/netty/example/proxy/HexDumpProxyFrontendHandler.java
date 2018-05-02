@@ -57,7 +57,7 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
           // connection complete start to read first data
           inboundChannel.read();
         } else {
-
+          // Close the connection if the connection attempt has failed.
           inboundChannel.close();
         }
       }

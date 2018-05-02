@@ -123,7 +123,7 @@ public class ConfigLoader {
         }
       }
     }
-    log.debug("读取{}代理配置完毕：{}个", strategy, domainList.size());
+    logger.debug("读取{}代理配置完毕：{}个", strategy, domainList.size());
   }
 
 
@@ -160,21 +160,21 @@ public class ConfigLoader {
             try {
               ClientConfig.SOCKS_LOCAL_PORT = Integer.valueOf(value);
             } catch (Exception e) {
-              log.error("本地端口配置 socksLocalPort 参数不合法，将使用默认端口1086！");
+              logger.error("本地端口配置 socksLocalPort 参数不合法，将使用默认端口1086！");
             }
             break;
           case "httpLocalPort":
             try {
               ClientConfig.HTTP_LOCAL_PORT = Integer.valueOf(value);
             } catch (Exception e) {
-              log.error("本地端口配置 httpLocalPort 参数不合法，将使用默认端口1087！");
+              logger.error("本地端口配置 httpLocalPort 参数不合法，将使用默认端口1087！");
             }
             break;
           case "proxyStrategy":
             try {
               ClientConfig.PROXY_STRATEGY = Integer.valueOf(value);
             } catch (Exception e) {
-              log.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
+              logger.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
             }
             break;
           case "servers":
@@ -234,9 +234,9 @@ public class ConfigLoader {
         }
       }
       ConfigLoader.getEncrypt(bean);
-      log.debug("加载服务器：{}", bean);
+      logger.debug("加载服务器：{}", bean);
     }
-    log.debug("配置加载完毕!");
+    logger.debug("配置加载完毕!");
   }
 
   // 根据用户名和密码获取加密参数

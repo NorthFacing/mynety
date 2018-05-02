@@ -93,7 +93,7 @@ public class ServerMain {
       ChannelFuture future = serverBoot.bind(Config.LOCAL_PORT).sync();
       future.channel().closeFuture().sync();
     } catch (Exception e) {
-      log.error("ss服务端启动出错：：", e);
+      logger.error("ss服务端启动出错：：", e);
     } finally {
       bossGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();

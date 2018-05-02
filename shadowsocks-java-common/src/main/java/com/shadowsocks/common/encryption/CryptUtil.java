@@ -23,7 +23,7 @@ public class CryptUtil {
         data = _remoteOutStream.toByteArray();
       }
     } catch (Exception e) {
-      log.error("encrypt error", e);
+      logger.error("encrypt error", e);
     } finally {
       if (_remoteOutStream != null) {
         try {
@@ -49,7 +49,7 @@ public class CryptUtil {
         data = _localOutStream.toByteArray();
       }
     } catch (Exception e) {
-      log.error("encrypt error", e);
+      logger.error("encrypt error", e);
     } finally {
       if (_localOutStream != null) {
         try {

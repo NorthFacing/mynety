@@ -76,7 +76,7 @@ public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
         }
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
+      logger.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
     } finally {
       ReferenceCountUtil.release(msg);
     }
@@ -92,7 +92,7 @@ public final class OutRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-    log.error(LOG_MSG + ctx.channel(), cause);
+    logger.error(LOG_MSG + ctx.channel(), cause);
     ctx.close();
   }
 

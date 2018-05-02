@@ -79,7 +79,7 @@ public class ConfigLoader {
         }
       }
     }
-    log.debug("配置加载完毕：Port={}, method={}, password={}", Config.LOCAL_PORT, Config.METHOD, Config.PASSWORD);
+    logger.debug("配置加载完毕：Port={}, method={}, password={}", Config.LOCAL_PORT, Config.METHOD, Config.PASSWORD);
   }
 
 }

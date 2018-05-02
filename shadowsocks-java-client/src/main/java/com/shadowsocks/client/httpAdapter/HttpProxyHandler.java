@@ -63,23 +63,23 @@ public class HttpProxyHandler extends SimpleChannelInboundHandler<DefaultHttpReq
         ctx.pipeline().addLast(new Http_1_1_Handler());
       }
     } else {
-      log.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
+      logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
       ctx.close();
     }
     ctx.pipeline().remove(this);
-    log.debug("{} {} remove handler: HttpProxyHandler", LOG_MSG, ctx.channel());
+    logger.debug("{} {} remove handler: HttpProxyHandler", LOG_MSG, ctx.channel());
     ctx.pipeline().fireChannelActive();
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) {
-    log.info("{} HttpProxyHandler channelReadComplete: {}", LOG_MSG, ctx.channel());
+    logger.info("{} HttpProxyHandler channelReadComplete: {}", LOG_MSG, ctx.channel());
     ctx.flush();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(LOG_MSG + " HttpProxyHandler error: " + ctx.channel(), throwable);
+    logger.error(LOG_MSG + " HttpProxyHandler error: " + ctx.channel(), throwable);
     SocksServerUtils.closeOnFlush(ctx.channel());
   }
 

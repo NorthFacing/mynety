@@ -56,7 +56,7 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器激活，发送初次访问请求：" + ByteBufUtil.hexDump(buf));
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器激活，发送初次访问请求：" + ByteBufUtil.hexDump(buf));
     ctx.channel().writeAndFlush(buf);
   }
 
@@ -77,26 +77,26 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
     ByteBuf buf = (ByteBuf) msg;
     byte ver = buf.readByte();
     byte method = buf.readByte();
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到响应消息：ver={},method={}", ver, method);
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器收到响应消息：ver={},method={}", ver, method);
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().remove(this);
     ctx.pipeline().addLast(new Socks03ConnectHandler());
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加【连接】处理器");
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器任务完成，添加【连接】处理器");
     ctx.pipeline().fireChannelActive();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(Constants.LOG_MSG + ctx.channel() + "【握手】处理器异常：", throwable);
+    logger.error(Constants.LOG_MSG + ctx.channel() + "【握手】处理器异常：", throwable);
     ctx.channel().close();
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器连接断开：" + ctx.channel());
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器连接断开：" + ctx.channel());
     super.channelInactive(ctx);
   }
 

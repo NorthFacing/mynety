@@ -98,16 +98,16 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<HttpObject> {
         if (future.isSuccess()) {
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);
-          log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, fullPath.host, fullPath.port);
+          logger.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, fullPath.host, fullPath.port);
           remoteChannel.writeAndFlush(httpRequest);
           synchronized (requestTempLists) {
             requestTempLists.forEach(msg -> {
               remoteChannel.writeAndFlush(msg);
-              log.debug("{} {} send http request msg after bind: {}", LOG_MSG, remoteChannel, msg);
+              logger.debug("{} {} send http request msg after bind: {}", LOG_MSG, remoteChannel, msg);
             });
           }
         } else {
-          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, fullPath.host, fullPath.port);
+          logger.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, fullPath.host, fullPath.port);
           ReferenceCountUtil.release(httpRequest);
           synchronized (requestTempLists) {
             requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
@@ -117,7 +117,7 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<HttpObject> {
         }
       });
     } catch (Exception e) {
-      log.error("connect intenet error", e);
+      logger.error("connect intenet error", e);
       channelClose();
     }
 
@@ -129,10 +129,10 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<HttpObject> {
     synchronized (requestTempLists) {
       if (remoteChannel == null) {
         requestTempLists.add(msg);
-        log.debug("{} add transfer http request to temp list: {}", LOG_MSG, fullPath);
+        logger.debug("{} add transfer http request to temp list: {}", LOG_MSG, fullPath);
       } else {
         remoteChannel.writeAndFlush(msg);
-        log.debug("{} transfer http request to dst host: {}", LOG_MSG, fullPath);
+        logger.debug("{} transfer http request to dst host: {}", LOG_MSG, fullPath);
       }
     }
   }
@@ -145,7 +145,7 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<HttpObject> {
         remoteChannelRef = null;
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + "close channel error", e);
+      logger.error(LOG_MSG + "close channel error", e);
     }
   }
 

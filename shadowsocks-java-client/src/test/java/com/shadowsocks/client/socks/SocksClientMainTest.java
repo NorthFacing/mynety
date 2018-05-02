@@ -56,16 +56,16 @@ public class SocksClientMainTest {
       ChannelFuture f = b.connect(HOST, PORT)
           .addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-              log.info(Constants.LOG_MSG + " Socks5 connection success......");
+              logger.info(Constants.LOG_MSG + " Socks5 connection success......");
             } else {
-              log.error(Constants.LOG_MSG + "Socks5 connection failed......");
+              logger.error(Constants.LOG_MSG + "Socks5 connection failed......");
             }
           }).sync();
 
       // Wait until the connection is closed.
       f.channel().closeFuture().sync();
     } catch (Exception e) {
-      log.error("", e);
+      logger.error("", e);
     } finally {
       // Shut down the event loop to terminate all threads.
       group.shutdownGracefully();

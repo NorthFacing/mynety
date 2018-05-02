@@ -105,10 +105,10 @@ public class PacFilter {
           .findAny()
           .orElse(null);
       long end = System.currentTimeMillis();
-      log.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
+      logger.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
       return StringUtils.isNotEmpty(result) ? true : false;
     } catch (Exception e) {
-      log.error("域名验证出错：{}", e);
+      logger.error("域名验证出错：{}", e);
       return false;
     }
   }

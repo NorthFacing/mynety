@@ -74,7 +74,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
         }
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
+      logger.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
     } finally {
       ReferenceCountUtil.release(msg);
     }
@@ -91,7 +91,7 @@ public final class InRelayHandler extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-    log.error(LOG_MSG + ctx.channel(), cause);
+    logger.error(LOG_MSG + ctx.channel(), cause);
     ctx.close();
   }
 }

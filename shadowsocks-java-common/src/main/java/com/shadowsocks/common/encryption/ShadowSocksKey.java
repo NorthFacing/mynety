@@ -40,9 +40,9 @@ public class ShadowSocksKey implements SecretKey {
       md = MessageDigest.getInstance("MD5");
       passwordBytes = password.getBytes("UTF-8");
     } catch (UnsupportedEncodingException e) {
-      log.error("ShadowSocksKey: Unsupported string encoding", e);
+      logger.error("ShadowSocksKey: Unsupported string encoding", e);
     } catch (Exception e) {
-      log.error("init error", e);
+      logger.error("init error", e);
       return null;
     }
 

@@ -54,14 +54,14 @@ public class HttpTunnelRemoteHandler extends SimpleChannelInboundHandler<ByteBuf
     } catch (Exception e) {
       ctx.close();
       channelClose();
-      log.error("read intenet message error", e);
+      logger.error("read intenet message error", e);
     }
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
-    log.info("RemoteHandler channelInactive close");
+    logger.info("RemoteHandler channelInactive close");
     channelClose();
   }
 
@@ -69,14 +69,14 @@ public class HttpTunnelRemoteHandler extends SimpleChannelInboundHandler<ByteBuf
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
     channelClose();
-    log.error("RemoteHandler error", cause);
+    logger.error("RemoteHandler error", cause);
   }
 
   private void channelClose() {
     try {
       clientProxyChannel.close();
     } catch (Exception e) {
-      log.error("close channel error", e);
+      logger.error("close channel error", e);
     }
   }
 }

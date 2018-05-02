@@ -63,7 +63,7 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
       case SOCKS5: // Socks5代理则可以支持TCP和UDP两种应用
 
         if (socksRequest instanceof Socks5InitialRequest) {
-          log.info(LOG_MSG + ctx.channel() + " SOCKS5 auth first request, return Socks5AuthMethod.NO_AUTH");
+          logger.info(LOG_MSG + ctx.channel() + " SOCKS5 auth first request, return Socks5AuthMethod.NO_AUTH");
           // 不需要auth验证的代码范例
           List<Socks5AuthMethod> methods = ((Socks5InitialRequest) socksRequest).authMethods();
           if (methods.contains(Socks5AuthMethod.NO_AUTH)) {
@@ -76,12 +76,12 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
 //					ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
 //					ctx.write(new DefaultSocks5AuthMethodResponse(Socks5AuthMethod.PASSWORD));
         } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
-          log.error(LOG_MSG + ctx.channel() + " SOCKS5 auth request, 本客户端不需要密码连接！");
+          logger.error(LOG_MSG + ctx.channel() + " SOCKS5 auth request, 本客户端不需要密码连接！");
           ctx.close();
 //					ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
 //					ctx.write(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
         } else if (socksRequest instanceof Socks5CommandRequest) {
-          log.info(LOG_MSG + ctx.channel() + " SOCKS5 command request...");
+          logger.info(LOG_MSG + ctx.channel() + " SOCKS5 command request...");
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
           if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
             ctx.channel().attr(SOCKS5_REQUEST).set(socks5CmdRequest);
@@ -103,13 +103,13 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) {
-    log.info(LOG_MSG + ctx.channel());
+    logger.info(LOG_MSG + ctx.channel());
     ctx.flush();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(LOG_MSG + ctx.channel(), throwable);
+    logger.error(LOG_MSG + ctx.channel(), throwable);
     SocksServerUtils.closeOnFlush(ctx.channel());
   }
 }

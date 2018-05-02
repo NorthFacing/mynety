@@ -49,7 +49,7 @@ public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObje
 
   @Override
   public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
-    log.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
+    logger.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
     if (!clientChannel.isOpen()) {
       ctx.close();
       channelClose();
@@ -61,14 +61,14 @@ public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObje
     } catch (Exception e) {
       ctx.close();
       channelClose();
-      log.error("read intenet message error", e);
+      logger.error("read intenet message error", e);
     }
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
-    log.info("RemoteHandler channelInactive close");
+    logger.info("RemoteHandler channelInactive close");
     channelClose();
   }
 
@@ -76,14 +76,14 @@ public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObje
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
     channelClose();
-    log.error("RemoteHandler error", cause);
+    logger.error("RemoteHandler error", cause);
   }
 
   private void channelClose() {
     try {
       clientChannel.close();
     } catch (Exception e) {
-      log.error("close channel error", e);
+      logger.error("close channel error", e);
     }
   }
 }

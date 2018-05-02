@@ -68,7 +68,7 @@ public final class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
         clientChannel.writeAndFlush(Unpooled.wrappedBuffer(arr));
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
+      logger.error(LOG_MSG + remoteCtx.channel() + " Receive remoteServer data error: ", e);
     }
   }
 
@@ -76,14 +76,14 @@ public final class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
     channelClose();
-    log.info("RemoteHandler channelInactive close");
+    logger.info("RemoteHandler channelInactive close");
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
     ctx.close();
     channelClose();
-    log.error("RemoteHandler error", throwable);
+    logger.error("RemoteHandler error", throwable);
   }
 
   @SuppressWarnings("Duplicates")
@@ -91,7 +91,7 @@ public final class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
     try {
       clientChannel.close();
     } catch (Exception e) {
-      log.error("close channel error", e);
+      logger.error("close channel error", e);
     }
   }
 

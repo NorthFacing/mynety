@@ -56,7 +56,7 @@ public final class RemoteHandlerCopy extends ChannelInboundHandlerAdapter {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(LOG_MSG + " inboundChannel=" + ctx.channel() + " 和 outboundChannel=" + promise.getNow() + " 关联出错：", throwable);
+    logger.error(LOG_MSG + " inboundChannel=" + ctx.channel() + " 和 outboundChannel=" + promise.getNow() + " 关联出错：", throwable);
     promise.setFailure(throwable);
   }
 }

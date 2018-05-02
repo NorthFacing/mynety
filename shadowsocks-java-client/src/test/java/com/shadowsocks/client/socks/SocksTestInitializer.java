@@ -33,7 +33,7 @@ public class SocksTestInitializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    log.info(Constants.LOG_MSG + ch);
+    logger.info(Constants.LOG_MSG + ch);
     ch.pipeline().addLast(new Socks01InitHandler());
   }
 }

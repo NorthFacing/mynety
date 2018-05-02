@@ -97,7 +97,7 @@ public final class ClientMain {
         ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_LOCAL_PORT).sync();
         sFuture.channel().closeFuture().sync();
       } catch (Exception e) {
-        log.error("", e);
+        logger.error("", e);
       } finally {
         sBossGroup.shutdownGracefully();
         sWorkerGroup.shutdownGracefully();
@@ -120,7 +120,7 @@ public final class ClientMain {
         ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_LOCAL_PORT).sync();
         hFuture.channel().closeFuture().sync();
       } catch (Exception e) {
-        log.error("", e);
+        logger.error("", e);
       } finally {
         hBossGroup.shutdownGracefully();
         hWorkerGroup.shutdownGracefully();

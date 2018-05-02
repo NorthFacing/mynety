@@ -40,30 +40,30 @@ public class Socks04DataHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器激活，发送真实请求...");
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器激活，发送真实请求...");
     ctx.channel().writeAndFlush(Unpooled.wrappedBuffer(getHttpRequest().getBytes("UTF-8")));
   }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器收到响应消息：{}", msg);
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器收到响应消息：{}", msg);
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器数据处理完毕，发送新的网页请求");
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器数据处理完毕，发送新的网页请求");
     ctx.channel().writeAndFlush(getHttpRequest());
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    log.error(Constants.LOG_MSG + ctx.channel() + "【数据】处理器异常：", throwable);
+    logger.error(Constants.LOG_MSG + ctx.channel() + "【数据】处理器异常：", throwable);
     ctx.channel().close();
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    log.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器连接断开：" + ctx.channel());
+    logger.info(Constants.LOG_MSG + ctx.channel() + "【数据】处理器连接断开：" + ctx.channel());
     super.channelInactive(ctx);
   }
 

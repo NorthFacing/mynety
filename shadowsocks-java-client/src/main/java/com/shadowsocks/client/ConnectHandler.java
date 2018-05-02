@@ -86,7 +86,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
     Integer dstPort = socks5CmdRequest.dstPort();
     boolean isDeny = PacFilter.isDeny(dstAddr);
     if (isDeny) {
-      log.error(LOG_MSG + " 此地址拒绝连接：{}", dstAddr);
+      logger.error(LOG_MSG + " 此地址拒绝连接：{}", dstAddr);
       clientCtx.close();
     }
     // TODO：使用此 crypt 避免每次都重新生成？
@@ -126,16 +126,16 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
           }
           clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(
               Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort()));  // 告诉客户端连接成功
-          log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
+          logger.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
+          logger.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
           future.cancel(true);
           channelClose();
         }
       });
 
     } catch (Exception e) {
-      log.error("connect intenet error", e);
+      logger.error("connect intenet error", e);
       channelClose();
     }
   }
@@ -167,14 +167,14 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
         remoteChannelRef.get().writeAndFlush(Unpooled.wrappedBuffer(arr));
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
+      logger.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
     }
 
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    log.error(LOG_MSG + ctx.channel(), cause);
+    logger.error(LOG_MSG + ctx.channel(), cause);
     SocksServerUtils.closeOnFlush(ctx.channel());
   }
 
@@ -223,7 +223,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
     crypt.encrypt(data, data.length, _remoteOutStream);
     data = _remoteOutStream.toByteArray();
 
-    log.debug("{} addrType:{}, addr:{}, port:{}", LOG_MSG, dstAddrType, dstAddr, dstPort);
+    logger.debug("{} addrType:{}, addr:{}, port:{}", LOG_MSG, dstAddrType, dstAddr, dstPort);
     remoteChannel.writeAndFlush(Unpooled.wrappedBuffer(data)); // 发送数据
   }
 
@@ -235,7 +235,7 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
         remoteChannelRef = null;
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + "close channel error", e);
+      logger.error(LOG_MSG + "close channel error", e);
     }
   }
 

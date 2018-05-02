@@ -41,7 +41,7 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    log.info(LOG_MSG + " Init http handler..." + ch);
+    logger.info(LOG_MSG + " Init http handler..." + ch);
     // HttpServerCodec 相当于 HttpRequestDecoder && HttpResponseEncoder 一起的作用，
     ch.pipeline().addLast(new HttpServerCodec());
     ch.pipeline().addLast(HttpProxyHandler.INSTANCE);

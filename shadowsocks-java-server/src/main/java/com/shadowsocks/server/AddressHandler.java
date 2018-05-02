@@ -66,13 +66,13 @@ public class AddressHandler extends SimpleChannelInboundHandler {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
-    log.error("AddressHandler error", cause);
+    logger.error("AddressHandler error", cause);
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
-    log.info("AddressHandler channelInactive close");
+    logger.info("AddressHandler channelInactive close");
   }
 
   @Override
@@ -115,7 +115,7 @@ public class AddressHandler extends SimpleChannelInboundHandler {
     } else {
       throw new IllegalStateException("unknown address type: " + addressType);
     }
-    log.debug(LOG_MSG + ctx + "addressType = " + addressType + ", host = " + host + ", port = " + port);
+    logger.debug(LOG_MSG + ctx + "addressType = " + addressType + ", host = " + host + ", port = " + port);
     ctx.channel().attr(ATTR_HOST).set(host);
     ctx.channel().attr(ATTR_PORT).set(port);
     ctx.channel().attr(ATTR_BUF).set(dataBuff);

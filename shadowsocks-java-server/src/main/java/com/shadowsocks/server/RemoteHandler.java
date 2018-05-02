@@ -63,7 +63,7 @@ public class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
     } catch (Exception e) {
       ctx.close();
       channelClose();
-      log.error("read intenet message error", e);
+      logger.error("read intenet message error", e);
     }
   }
 
@@ -71,14 +71,14 @@ public class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
     channelClose();
-    log.info("RemoteHandler channelInactive close");
+    logger.info("RemoteHandler channelInactive close");
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) throws Exception {
     ctx.close();
     channelClose();
-    log.error("RemoteHandler error", throwable);
+    logger.error("RemoteHandler error", throwable);
   }
 
   private void channelClose() {
@@ -89,7 +89,7 @@ public class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
         cacheBuffer = null;
       }
     } catch (Exception e) {
-      log.error("close channel error", e);
+      logger.error("close channel error", e);
     }
   }
 }

@@ -81,16 +81,16 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
           remoteChannel.set(future.channel());
-          log.debug("{} {} connect success dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
+          logger.debug("{} {} connect success dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
         } else {
-          log.debug("{} {} connect fail dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
+          logger.debug("{} {} connect fail dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
           future.cancel(true);
           channelClose();
         }
       });
 
     } catch (Exception e) {
-      log.error(LOG_MSG + "connect intenet error", e);
+      logger.error(LOG_MSG + "connect intenet error", e);
       channelClose();
     }
 
@@ -115,7 +115,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     ctx.close();
-    log.info("ConnectionHandler channelInactive close");
+    logger.info("ConnectionHandler channelInactive close");
     channelClose();
   }
 
@@ -123,7 +123,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     ctx.close();
     channelClose();
-    log.error(LOG_MSG + "ConnectionHandler error", cause);
+    logger.error(LOG_MSG + "ConnectionHandler error", cause);
   }
 
   @SuppressWarnings("Duplicates")
@@ -138,7 +138,7 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
         clientCache = null;
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + "close channel error", e);
+      logger.error(LOG_MSG + "close channel error", e);
     }
   }
 }

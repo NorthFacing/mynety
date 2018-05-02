@@ -120,15 +120,15 @@ public class LocalCache {
   public static void validateForGC(int sizeLimit) {
     if (size() < sizeLimit)
       return;
-    log.debug("{} before resize keys: {}", LOG_MSG, size());
+    logger.debug("{} before resize keys: {}", LOG_MSG, size());
     localCache.forEach((k, v) -> {
       long currentTime = System.currentTimeMillis();
       if (v.getTimeout() != 0 && currentTime >= v.getTimeout()) {
         localCache.remove(k);
-        log.debug("{} remove key: {}", LOG_MSG, k);
+        logger.debug("{} remove key: {}", LOG_MSG, k);
       }
     });
-    log.debug("{} after resize keys: {}", LOG_MSG, size());
+    logger.debug("{} after resize keys: {}", LOG_MSG, size());
   }
 
   /**

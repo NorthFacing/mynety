@@ -82,7 +82,7 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler<ByteBuf> {
   @Override
   public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
     HttpRequest httpRequest = clientCtx.channel().attr(HTTP_REQUEST).get();
-    log.debug("{} {} HttpTunnelHandler channelActive:{}", LOG_MSG, clientCtx.channel(), httpRequest);
+    logger.debug("{} {} HttpTunnelHandler channelActive:{}", LOG_MSG, clientCtx.channel(), httpRequest);
     Address address = resolveTunnelAddr(httpRequest.uri());
 
     ReferenceCountUtil.release(httpRequest); // 手动消费，防止内存泄漏
@@ -114,15 +114,15 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler<ByteBuf> {
           // 处理此信息之后就不再需要codec处理器了，之后的数据全部使用隧道盲转
           clientCtx.pipeline().remove(HttpServerCodec.class);
 
-          log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, address.host, address.port);
+          logger.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, address.host, address.port);
         } else {
-          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, address.host, address.port);
+          logger.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, address.host, address.port);
           future.cancel(true);
           channelClose();
         }
       });
     } catch (Exception e) {
-      log.error("connect intenet error", e);
+      logger.error("connect intenet error", e);
       channelClose();
     }
 
@@ -142,7 +142,7 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler<ByteBuf> {
         remoteChannelRef = null;
       }
     } catch (Exception e) {
-      log.error(LOG_MSG + "close channel error", e);
+      logger.error(LOG_MSG + "close channel error", e);
     }
   }
 

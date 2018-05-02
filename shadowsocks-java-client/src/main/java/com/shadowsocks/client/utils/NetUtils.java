@@ -58,7 +58,7 @@ public class NetUtils {
       client.connect(server.getHost(), server.getPort());
       client.disconnect();
     } catch (Exception e) {
-      log.warn("remote server: " + server.toString() + " connected failed");
+      logger.warn("remote server: " + server.toString() + " connected failed");
       isAvailable = false;
     }
     server.setAvailable(isAvailable);
@@ -101,7 +101,7 @@ public class NetUtils {
       in.close();
       Thread.sleep(100);
     } catch (Exception e) {
-      log.warn("remote server: " + server.toString() + " telnet failed");
+      logger.warn("remote server: " + server.toString() + " telnet failed");
       return 999999.9;
     }
 
