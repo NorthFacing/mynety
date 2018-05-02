@@ -24,34 +24,33 @@
 package com.shadowsocks.client.httpAdapter.tunnel;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 远程处理器，连接真正的目标地址
+ * http tunnel 代理模式下 远程处理器，连接真正的目标地址
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class HttpTunnelRemoteHandler extends ChannelInboundHandlerAdapter {
+public class HttpTunnelRemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
-  private final ChannelHandlerContext clientProxyChannel;
+  private final Channel clientProxyChannel;
 
-  public HttpTunnelRemoteHandler(ChannelHandlerContext clientProxyChannel) {
+  public HttpTunnelRemoteHandler(Channel clientProxyChannel) {
     this.clientProxyChannel = clientProxyChannel;
   }
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    ByteBuf byteBuf = (ByteBuf) msg;
-    if (byteBuf.readableBytes() <= 0) {
+  public void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
+    if (msg.readableBytes() <= 0) {
       return;
     }
     try {
-      clientProxyChannel.writeAndFlush(Unpooled.wrappedBuffer(byteBuf));
+      clientProxyChannel.writeAndFlush(msg.retain());
     } catch (Exception e) {
       ctx.close();
       channelClose();

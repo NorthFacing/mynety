@@ -29,21 +29,22 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.PATH_PATTERN;
-import static io.netty.handler.codec.AsciiHeadersEncoder.NewlineType.CRLF;
 
 //import io.netty.handler.codec.http.HttpMethod;
 //import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
@@ -65,21 +66,22 @@ import static io.netty.handler.codec.AsciiHeadersEncoder.NewlineType.CRLF;
 //import static com.shadowsocks.common.constants.Constants.SOCKS_ADDR_FOR_HTTP;
 
 /**
- * http套上socks代理进行通信
+ * http 代理模式下 主处理器
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_Handler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class Http_1_1_Handler extends SimpleChannelInboundHandler<HttpObject> {
 
   private AtomicReference<Channel> remoteChannelRef = new AtomicReference<>();
-  FullHttpRequest httpRequest;
+  DefaultHttpRequest httpRequest;
   FullPath fullPath;
+  List<HttpObject> requestTempLists = new LinkedList();
 
   @Override
   public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
-    httpRequest = (FullHttpRequest) clientCtx.channel().attr(HTTP_REQUEST).get();
+    httpRequest = (DefaultHttpRequest) clientCtx.channel().attr(HTTP_REQUEST).get();
     fullPath = resolveHttpProxyPath(httpRequest.uri());
 
     Channel clientChannel = clientCtx.channel();
@@ -88,12 +90,7 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<FullHttpReques
     remoteBootStrap.group(clientChannel.eventLoop())
         .channel(Constants.channelClass)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
-        .handler(new ChannelInitializer<SocketChannel>() {
-          @Override
-          protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new Http_1_1_RemoteHandler(clientCtx));
-          }
-        });
+        .handler(new HttpOutboundInitializer(clientChannel));
 
     try {
       ChannelFuture channelFuture = remoteBootStrap.connect(fullPath.host, fullPath.port);
@@ -102,15 +99,19 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<FullHttpReques
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);
           log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, fullPath.host, fullPath.port);
-
-          FullHttpRequest newRequest = httpRequest.copy(); // 消费httpRequest，无需再手动调用 ReferenceCountUtil.release()
-          newRequest.headers().set(httpRequest.headers());
-          newRequest.setUri(fullPath.path);
-          remoteChannel.writeAndFlush(newRequest);
-          log.debug("{} {} send http request msg after bind: {}", LOG_MSG, remoteChannel, httpRequest);
-
+          remoteChannel.writeAndFlush(httpRequest);
+          synchronized (requestTempLists) {
+            requestTempLists.forEach(msg -> {
+              remoteChannel.writeAndFlush(msg);
+              log.debug("{} {} send http request msg after bind: {}", LOG_MSG, remoteChannel, msg);
+            });
+          }
         } else {
-          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, fullPath.host, fullPath.port);
+          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, fullPath.host, fullPath.port);
+          ReferenceCountUtil.release(httpRequest);
+          synchronized (requestTempLists) {
+            requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
+          }
           future.cancel(true);
           channelClose();
         }
@@ -123,12 +124,17 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<FullHttpReques
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext clientCtx, FullHttpRequest msg) throws Exception {
-    log.debug("{} transfer http request to dst host: {}", LOG_MSG, fullPath);
-    FullHttpRequest newRequest = msg.copy();
-    newRequest.headers().set(msg.headers());
-    newRequest.setUri(fullPath.path);
-    remoteChannelRef.get().writeAndFlush(newRequest);
+  protected void channelRead0(ChannelHandlerContext clientCtx, HttpObject msg) throws Exception {
+    Channel remoteChannel = remoteChannelRef.get();
+    synchronized (requestTempLists) {
+      if (remoteChannel == null) {
+        requestTempLists.add(msg);
+        log.debug("{} add transfer http request to temp list: {}", LOG_MSG, fullPath);
+      } else {
+        remoteChannel.writeAndFlush(msg);
+        log.debug("{} transfer http request to dst host: {}", LOG_MSG, fullPath);
+      }
+    }
   }
 
   @SuppressWarnings("Duplicates")
@@ -137,9 +143,6 @@ public class Http_1_1_Handler extends SimpleChannelInboundHandler<FullHttpReques
       if (remoteChannelRef.get() != null) {
         remoteChannelRef.get().close();
         remoteChannelRef = null;
-      }
-      if (httpRequest != null) {
-        httpRequest.release();
       }
     } catch (Exception e) {
       log.error(LOG_MSG + "close channel error", e);

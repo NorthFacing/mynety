@@ -25,10 +25,8 @@ package com.shadowsocks.common.constants;
 
 import com.shadowsocks.common.encryption.ICrypt;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.util.AttributeKey;
 

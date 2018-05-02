@@ -119,15 +119,16 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
       ChannelFuture channelFuture = remoteBootStrap.connect(connHost, connPort);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          remoteChannelRef.set(future.channel());// 远程连接实例化
+          Channel remoteChannel = future.channel();
+          remoteChannelRef.set(remoteChannel);// 远程连接实例化
           if (isProxy) { // 如果使用了代理，那么就要发送远程连接指令
             sendConnectRemoteMessage(clientChannel, remoteChannelRef.get(), crypt);
           }
           clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(
               Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort()));  // 告诉客户端连接成功
-          log.debug("connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", connHost, connPort);
+          log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          log.debug("connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", connHost, connPort);
+          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
           future.cancel(true);
           channelClose();
         }

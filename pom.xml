@@ -20,7 +20,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <netty.version>4.1.23.Final</netty.version>
+    <netty.version>4.1.24.Final</netty.version>
   </properties>
 
   <dependencyManagement>

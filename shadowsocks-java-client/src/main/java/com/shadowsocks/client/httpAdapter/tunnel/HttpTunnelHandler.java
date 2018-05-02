@@ -26,7 +26,6 @@ package com.shadowsocks.client.httpAdapter.tunnel;
 import com.shadowsocks.common.constants.Constants;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -36,7 +35,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
@@ -71,22 +69,22 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 //import static com.shadowsocks.common.constants.Constants.SOCKS_ADDR_FOR_HTTP;
 
 /**
- * http套上socks代理进行通信
+ * http tunnel 代理模式下 主处理器
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class HttpTunnelHandler extends SimpleChannelInboundHandler {
+public class HttpTunnelHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
   private AtomicReference<Channel> remoteChannelRef = new AtomicReference<>();
-  HttpRequest httpRequest;
-  Address address;
 
   @Override
   public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
-    httpRequest = clientCtx.channel().attr(HTTP_REQUEST).get();
-    address = resolveTunnelAddr(httpRequest.uri());
+    HttpRequest httpRequest = clientCtx.channel().attr(HTTP_REQUEST).get();
+    log.debug("{} {} HttpTunnelHandler channelActive:{}", LOG_MSG, clientCtx.channel(), httpRequest);
+    Address address = resolveTunnelAddr(httpRequest.uri());
+
     ReferenceCountUtil.release(httpRequest); // 手动消费，防止内存泄漏
 
     Channel clientChannel = clientCtx.channel();
@@ -98,7 +96,7 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler {
         .handler(new ChannelInitializer<SocketChannel>() {
           @Override
           protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new HttpTunnelRemoteHandler(clientCtx));
+            ch.pipeline().addLast(new HttpTunnelRemoteHandler(clientChannel));
           }
         });
 
@@ -106,21 +104,19 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler {
       ChannelFuture channelFuture = remoteBootStrap.connect(address.host, address.port);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          remoteChannelRef.set(future.channel());
+          Channel remoteChannel = future.channel();
+          remoteChannelRef.set(remoteChannel);
 
           // 告诉客户端建立隧道成功
           DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
           clientCtx.channel().writeAndFlush(response);
 
-          // 建立tunnel隧道成功之后，就不再需要以下处理器了，之后的数据全部使用隧道盲转
+          // 处理此信息之后就不再需要codec处理器了，之后的数据全部使用隧道盲转
           clientCtx.pipeline().remove(HttpServerCodec.class);
-          log.debug("{} {} remove handler: serverCodec", LOG_MSG, clientChannel);
-          clientCtx.pipeline().remove(HttpObjectAggregator.class);
-          log.debug("{} {} remove handler: aggregator", LOG_MSG, clientChannel);
 
-          log.debug("connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", address.host, address.port);
+          log.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, address.host, address.port);
         } else {
-          log.debug("connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", address.host, address.port);
+          log.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, address.host, address.port);
           future.cancel(true);
           channelClose();
         }
@@ -133,22 +129,9 @@ public class HttpTunnelHandler extends SimpleChannelInboundHandler {
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext clientCtx, Object msg) throws Exception {
-    ByteBuf byteBuf = (ByteBuf) msg;
-    if (byteBuf.readableBytes() <= 0) {
-      return;
-    }
-    try {
-      if (!byteBuf.hasArray()) {
-        int len = byteBuf.readableBytes();
-        byte[] arr = new byte[len];
-        byteBuf.getBytes(0, arr);
-        remoteChannelRef.get().writeAndFlush(Unpooled.wrappedBuffer(arr));
-      }
-    } catch (Exception e) {
-      log.error(LOG_MSG + clientCtx.channel() + " Send data to remoteServer error: ", e);
-    }
-
+  protected void channelRead0(ChannelHandlerContext clientCtx, ByteBuf msg) throws Exception {
+    // 建立tunnel隧道成功之后会收到一个 LastHttpContent
+    remoteChannelRef.get().writeAndFlush(msg.retain());
   }
 
   @SuppressWarnings("Duplicates")

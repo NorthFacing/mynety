@@ -25,7 +25,7 @@ package com.shadowsocks.client;
 
 import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.config.ConfigLoader;
-import com.shadowsocks.client.httpAdapter.HttpPipelineInitializer;
+import com.shadowsocks.client.httpAdapter.HttpInboundInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -115,7 +115,7 @@ public final class ClientMain {
             .channel(serverChannelClass)
             .option(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.DEBUG))
-            .childHandler(new HttpPipelineInitializer());
+            .childHandler(new HttpInboundInitializer());
         String hLocalHost = ClientConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
         ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_LOCAL_PORT).sync();
         hFuture.channel().closeFuture().sync();

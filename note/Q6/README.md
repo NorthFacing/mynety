@@ -1,0 +1,3 @@
+# NoSuchElementException
+
+在pipeline中移除handler的时候出现NoSuchElementException，但之前并没有移除？

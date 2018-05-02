@@ -29,8 +29,8 @@ import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -40,29 +40,27 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
- * 当前实现不加权限验证
+ * http 代理入口 请求分发，当前实现不加权限验证
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class HttpProxyHandler extends SimpleChannelInboundHandler<HttpRequest> {
+public class HttpProxyHandler extends SimpleChannelInboundHandler<DefaultHttpRequest> {
 
   public static final HttpProxyHandler INSTANCE = new HttpProxyHandler();
 
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, HttpRequest httpRequest) throws Exception {
+  protected void channelRead0(ChannelHandlerContext ctx, DefaultHttpRequest httpRequest) throws Exception {
     ReferenceCountUtil.retain(httpRequest); // 增加引用计数，在下个处理器的active方法中进行消费
     ctx.channel().attr(HTTP_REQUEST).set(httpRequest);
     HttpVersion httpVersion = httpRequest.protocolVersion();
     if (HTTP_1_1 == httpVersion) {
       if (HttpMethod.CONNECT == httpRequest.method()) {
         ctx.pipeline().addLast(new HttpTunnelHandler());
-        log.debug("{} {} add handler: HttpTunnelHandler", LOG_MSG, ctx.channel());
       } else { // 除了connection，其余数据一律转发
         ctx.pipeline().addLast(new Http_1_1_Handler());
-        log.debug("{} {} add handler: Http_1_1_Handler", LOG_MSG, ctx.channel());
       }
     } else {
       log.error("NOT SUPPORTED {} FOR NOW...", httpVersion);

@@ -18,10 +18,13 @@
 6.转发双方数据
 
 ### HTTP 连接通信过程
-1.client请求proxy
+1.client请求proxy，使用的编解码器：serverCodec
 2.proxy解析client请求的目标地址
-3.proxy建立绑定目标地址socket，并发送本次request请求到目标服务器
-4.转发双方数据
+3.proxy建立绑定目标地址socket，使用的编解码器：clientCodec（一定要使用编解码，才可以在channel中直接write HttpRequest或者HttpResponse）
+4.并发送本次建立连接的request请求到目标服务器
+5.之后的数据经过编解码相互转发
+
+
 
 # github program
 

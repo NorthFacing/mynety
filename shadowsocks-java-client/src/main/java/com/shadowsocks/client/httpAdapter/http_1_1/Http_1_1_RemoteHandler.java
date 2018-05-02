@@ -23,38 +23,41 @@
  */
 package com.shadowsocks.client.httpAdapter.http_1_1;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
- * 远程处理器，连接真正的目标地址
+ * http 代理模式下 远程处理器，连接真正的目标地址
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_RemoteHandler extends ChannelInboundHandlerAdapter {
+public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-  private final ChannelHandlerContext clientProxyChannel;
+  private final Channel clientChannel;
 
-  public Http_1_1_RemoteHandler(ChannelHandlerContext clientProxyChannel) {
-    this.clientProxyChannel = clientProxyChannel;
+  public Http_1_1_RemoteHandler(Channel clientProxyChannel) {
+    this.clientChannel = clientProxyChannel;
   }
 
   @Override
-  public void channelRead(ChannelHandlerContext ctx, Object msg) {
-    log.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientProxyChannel, msg);
-    ByteBuf byteBuf = (ByteBuf) msg;
-    if (byteBuf.readableBytes() <= 0) {
+  public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
+    log.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
+    if (!clientChannel.isOpen()) {
+      ctx.close();
+      channelClose();
       return;
     }
     try {
-      clientProxyChannel.writeAndFlush(Unpooled.wrappedBuffer(byteBuf));
+      ReferenceCountUtil.retain(msg);
+      clientChannel.writeAndFlush(msg);
     } catch (Exception e) {
       ctx.close();
       channelClose();
@@ -78,7 +81,7 @@ public class Http_1_1_RemoteHandler extends ChannelInboundHandlerAdapter {
 
   private void channelClose() {
     try {
-      clientProxyChannel.close();
+      clientChannel.close();
     } catch (Exception e) {
       log.error("close channel error", e);
     }
