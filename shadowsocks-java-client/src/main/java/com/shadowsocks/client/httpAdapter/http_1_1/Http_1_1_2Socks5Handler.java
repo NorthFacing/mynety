@@ -21,56 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter.tunnel;
+package com.shadowsocks.client.httpAdapter.http_1_1;
 
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.client.httpAdapter.SimpleHttpChannelInboundHandler;
 import com.shadowsocks.common.bean.FullPath;
 import com.shadowsocks.common.constants.Constants;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.HttpObject;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
-import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
 import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
+import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST_FULLPATH;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-import static com.shadowsocks.common.constants.Constants.TUNNEL_ADDR_PATTERN;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-
+import static com.shadowsocks.common.constants.Constants.PATH_PATTERN;
+import static com.shadowsocks.common.constants.Constants.SOCKS5_CONNECTED;
 
 /**
- * http tunnel 代理模式下 主处理器。基本上不再使用此处理器，而使用`HttpTunnel2Socks5Handler`，将http请求转发到socks5服务器。
+ * http 代理模式下 主处理器
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-@Deprecated
-@SuppressWarnings("Duplicates")
-public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> {
+public class Http_1_1_2Socks5Handler extends SimpleHttpChannelInboundHandler<HttpObject> {
 
   private AtomicReference<Channel> remoteChannelRef = new AtomicReference<>();
 
   @Override
   public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
-    HttpRequest httpRequest = clientCtx.channel().attr(HTTP_REQUEST).get();
-    FullPath fullPath = resolveTunnelAddr(httpRequest.uri());
-
-    ReferenceCountUtil.release(httpRequest); // 手动消费，防止内存泄漏
-
     Channel clientChannel = clientCtx.channel();
+
+    DefaultHttpRequest httpRequest = clientChannel.attr(HTTP_REQUEST).get();
+    FullPath fullPath = resolveHttpProxyPath(httpRequest.uri());
+    clientChannel.attr(HTTP_REQUEST_FULLPATH).set(fullPath);
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
@@ -79,46 +75,48 @@ public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> 
         .handler(new HttpOutboundInitializer(clientChannel, this));
 
     try {
-      String host = fullPath.getHost();
-      int port = fullPath.getPort();
-      ChannelFuture channelFuture = remoteBootStrap.connect(host, port);
+      String connHost;
+      int connPort;
+      if (ClientConfig.HTTP_2_SOCKS5) {
+        connHost = ClientConfig.LOCAL_ADDRESS;
+        connPort = ClientConfig.SOCKS_LOCAL_PORT;
+      } else {
+        connHost = fullPath.getHost();
+        connPort = fullPath.getPort();
+      }
+      ChannelFuture channelFuture = remoteBootStrap.connect(connHost, connPort);
       channelFuture.addListener((ChannelFutureListener) future -> {
+        requestTempLists.add(httpRequest);
         if (future.isSuccess()) {
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);
-
-          // 告诉客户端建立隧道成功
-          DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
-          clientCtx.channel().writeAndFlush(response);
-          super.consumeHttpObjectsTemp(remoteChannel);
-          // 处理此信息之后就不再需要codec处理器了，之后的数据全部使用隧道盲转
-          clientCtx.pipeline().remove(HttpServerCodec.class);
-
-          logger.debug("{} {} httpTunnel connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, host, port);
+          logger.debug("{} {} http1.1 connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          logger.debug("{} {} httpTunnel connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, host, port);
+          logger.debug("{} {} http1.1 connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
           super.releaseHttpObjectsTemp();
           future.cancel(true);
           channelClose();
         }
       });
     } catch (Exception e) {
-      logger.error("httpTunnel connect internet error", e);
+      logger.error("http1.1 connect internet error", e);
       channelClose();
     }
 
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext clientCtx, ByteBuf msg) throws Exception {
+  protected void channelRead0(ChannelHandlerContext clientCtx, HttpObject msg) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
-      if (remoteChannel == null) {
-        requestTempLists.add(msg.retain());
-        logger.debug("{} add transfer http tunnel request to temp list: {}", LOG_MSG, msg);
+      ReferenceCountUtil.retain(msg);
+      // 确保socks5连接成功再开始盲转数据
+      if (remoteChannel == null || remoteChannel.attr(SOCKS5_CONNECTED).get() == null || !remoteChannel.attr(SOCKS5_CONNECTED).get()) {
+        requestTempLists.add(msg);
+        logger.debug("{} add transfer http request to temp list: {}", LOG_MSG, msg);
       } else {
-        remoteChannel.writeAndFlush(msg.retain());
-        logger.debug("{} transfer http tunnel request to dst host: {}", LOG_MSG, msg);
+        remoteChannel.writeAndFlush(msg);
+        logger.debug("{} transfer http request to dst host: {}", LOG_MSG, msg);
       }
     }
   }
@@ -135,13 +133,24 @@ public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> 
     }
   }
 
-  private FullPath resolveTunnelAddr(String addr) {
-    Matcher matcher = TUNNEL_ADDR_PATTERN.matcher(addr);
+  private FullPath resolveHttpProxyPath(String fullPath) {
+    Matcher matcher = PATH_PATTERN.matcher(fullPath);
     if (matcher.find()) {
-      return new FullPath(matcher.group(1), Integer.parseInt(matcher.group(2)));
+      String scheme = matcher.group(1);
+      String host = matcher.group(2);
+      int port = resolvePort(scheme, matcher.group(4));
+      String path = matcher.group(5);
+      return new FullPath(scheme, host, port, path);
     } else {
-      throw new IllegalStateException("Illegal tunnel addr: " + addr);
+      throw new IllegalStateException("Illegal http proxy path: " + fullPath);
     }
+  }
+
+  private int resolvePort(String scheme, String port) {
+    if (StringUtils.isEmpty(port)) {
+      return "https".equals(scheme) ? 443 : 80;
+    }
+    return Integer.parseInt(port);
   }
 
 }

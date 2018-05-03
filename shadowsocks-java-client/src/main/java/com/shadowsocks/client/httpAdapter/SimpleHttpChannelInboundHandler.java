@@ -23,33 +23,51 @@
  */
 package com.shadowsocks.client.httpAdapter;
 
-import com.shadowsocks.common.constants.Constants;
+import io.netty.channel.Channel;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.protocol.HttpContext;
 
-import javax.net.ssl.SSLContext;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
+ * Http消息处理器
+ * 1. 增加 requestTempLists 用于缓存 HttpRequest, HttpContent, LastHttpContent 请求信息
+ * 2. 增加缓存消费和释放方法
+ *
+ * @param <I> 当前channel接收到的数据类型
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
+public abstract class SimpleHttpChannelInboundHandler<I> extends SimpleChannelInboundHandler<I> {
 
-  public MyConnectionSocketFactory(final SSLContext sslContext) {
-    super(sslContext);
+  protected List requestTempLists = new LinkedList();
+
+  /**
+   * 消费之前缓存的HTTP相关请求
+   *
+   * @param remoteChannel outboundChannel，连接远程服务器的channel
+   */
+  public void consumeHttpObjectsTemp(Channel remoteChannel) {
+    synchronized (requestTempLists) {
+      requestTempLists.forEach(msg -> {
+        remoteChannel.writeAndFlush(msg);
+        logger.debug("{} {} consume temp httpObjects: {}", LOG_MSG, remoteChannel, msg);
+      });
+    }
   }
 
-  @Override
-  public Socket createSocket(final HttpContext context) throws IOException {
-    InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute(Constants.SOCKS_ADDR_FOR_HTTP);
-    Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-    return new Socket(proxy);
+  /**
+   * 释放HTTP相关缓存
+   */
+  public void releaseHttpObjectsTemp() {
+    synchronized (requestTempLists) {
+      requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
+    }
   }
 
 }

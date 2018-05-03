@@ -177,6 +177,13 @@ public class ConfigLoader {
               logger.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
             }
             break;
+          case "http2socks5": // 此参数暂时未放置于xml配置文件
+            try {
+              ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(value);
+            } catch (Exception e) {
+              logger.error("代理模式配置 http2socks5 参数不合法，将使用socks5二次代理http请求！");
+            }
+            break;
           case "servers":
             getServers(node);
             break;

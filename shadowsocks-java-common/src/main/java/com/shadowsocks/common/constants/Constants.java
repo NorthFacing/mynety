@@ -23,13 +23,16 @@
  */
 package com.shadowsocks.common.constants;
 
+import com.shadowsocks.common.bean.FullPath;
 import com.shadowsocks.common.encryption.ICrypt;
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.HttpRequest;
+import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.util.AttributeKey;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -42,12 +45,12 @@ public class Constants {
 
   public static final String LOG_MSG = "-----------> ";
 
-  public static final String SOCKS_ADDR_FOR_HTTP = "socks.address.for.http";
-
-  public static final int MAX_CONTENT_LENGTH = 1024 * 1024;
-
   public static final Pattern PATH_PATTERN = Pattern.compile("(https?)://([a-zA-Z0-9\\.\\-]+)(:(\\d+))?(/.*)");
   public static final Pattern TUNNEL_ADDR_PATTERN = Pattern.compile("^([a-zA-Z0-9\\.\\-_]+):(\\d+)");
+
+  public static final Pattern IPV4_PATTERN = Pattern.compile("(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])");
+  public static final Pattern IPV6_PATTERN = Pattern.compile("([0-9a-f]{1,4}:){3}([0-9a-f]){1,4}");
+
   public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
 
   public static Class channelClass;
@@ -61,6 +64,9 @@ public class Constants {
   public static final AttributeKey<ByteBuf> ATTR_BUF = AttributeKey.valueOf("buf");
 
   public static final AttributeKey<Socks5CommandRequest> SOCKS5_REQUEST = AttributeKey.valueOf("socks5.request");
-  public static final AttributeKey<HttpRequest> HTTP_REQUEST = AttributeKey.valueOf("http.request");
+  public static final AttributeKey<DefaultHttpRequest> HTTP_REQUEST = AttributeKey.valueOf("http.request");
+  public static final AttributeKey<FullPath> HTTP_REQUEST_FULLPATH = AttributeKey.valueOf("http.request.fullPath");
+  public static final AttributeKey<Boolean> SOCKS5_CONNECTED = AttributeKey.valueOf("socks.connected");
+  public static final AttributeKey<List<ChannelHandler>> EXTRA_OUT_RELAY_HANDLER = AttributeKey.valueOf("extra.out.relay.handler");
 
 }

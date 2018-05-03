@@ -23,6 +23,7 @@
  */
 package com.shadowsocks.client.httpAdapter.tunnel;
 
+import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.client.httpAdapter.SimpleHttpChannelInboundHandler;
 import com.shadowsocks.common.bean.FullPath;
@@ -45,32 +46,32 @@ import java.util.regex.Matcher;
 
 import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
 import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
+import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST_FULLPATH;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.SOCKS5_CONNECTED;
 import static com.shadowsocks.common.constants.Constants.TUNNEL_ADDR_PATTERN;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-
 /**
- * http tunnel 代理模式下 主处理器。基本上不再使用此处理器，而使用`HttpTunnel2Socks5Handler`，将http请求转发到socks5服务器。
+ * http tunnel 代理模式下 嵌套socks5处理器
  *
  * @author 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-@Deprecated
-@SuppressWarnings("Duplicates")
-public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> {
+public class HttpTunnel2Socks5Handler extends SimpleHttpChannelInboundHandler<ByteBuf> {
 
   private AtomicReference<Channel> remoteChannelRef = new AtomicReference<>();
 
   @Override
   public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
+    Channel clientChannel = clientCtx.channel();
+
     HttpRequest httpRequest = clientCtx.channel().attr(HTTP_REQUEST).get();
     FullPath fullPath = resolveTunnelAddr(httpRequest.uri());
+    clientChannel.attr(HTTP_REQUEST_FULLPATH).set(fullPath);
 
     ReferenceCountUtil.release(httpRequest); // 手动消费，防止内存泄漏
-
-    Channel clientChannel = clientCtx.channel();
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
@@ -79,10 +80,18 @@ public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> 
         .handler(new HttpOutboundInitializer(clientChannel, this));
 
     try {
-      String host = fullPath.getHost();
-      int port = fullPath.getPort();
-      ChannelFuture channelFuture = remoteBootStrap.connect(host, port);
+      String connHost;
+      int connPort;
+      if (ClientConfig.HTTP_2_SOCKS5) {
+        connHost = ClientConfig.LOCAL_ADDRESS;
+        connPort = ClientConfig.SOCKS_LOCAL_PORT;
+      } else {
+        connHost = fullPath.getHost();
+        connPort = fullPath.getPort();
+      }
+      ChannelFuture channelFuture = remoteBootStrap.connect(connHost, connPort);
       channelFuture.addListener((ChannelFutureListener) future -> {
+        requestTempLists.add(httpRequest);
         if (future.isSuccess()) {
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);
@@ -94,9 +103,9 @@ public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> 
           // 处理此信息之后就不再需要codec处理器了，之后的数据全部使用隧道盲转
           clientCtx.pipeline().remove(HttpServerCodec.class);
 
-          logger.debug("{} {} httpTunnel connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, host, port);
+          logger.debug("{} {} httpTunnel connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          logger.debug("{} {} httpTunnel connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, host, port);
+          logger.debug("{} {} httpTunnel connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
           super.releaseHttpObjectsTemp();
           future.cancel(true);
           channelClose();
@@ -113,12 +122,12 @@ public class HttpTunnelHandler extends SimpleHttpChannelInboundHandler<ByteBuf> 
   protected void channelRead0(ChannelHandlerContext clientCtx, ByteBuf msg) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
-      if (remoteChannel == null) {
+      if (remoteChannel == null || remoteChannel.attr(SOCKS5_CONNECTED).get() == null || !remoteChannel.attr(SOCKS5_CONNECTED).get()) {
         requestTempLists.add(msg.retain());
-        logger.debug("{} add transfer http tunnel request to temp list: {}", LOG_MSG, msg);
+        logger.debug("{} add transfer http tunnel request over socks5 to temp list: {}", LOG_MSG, msg);
       } else {
         remoteChannel.writeAndFlush(msg.retain());
-        logger.debug("{} transfer http tunnel request to dst host: {}", LOG_MSG, msg);
+        logger.debug("{} transfer http tunnel request over socks5 to dst host: {}", LOG_MSG, msg);
       }
     }
   }

@@ -56,6 +56,9 @@ public class ClientConfig {
   public static int SOCKS_LOCAL_PORT = 1086;
   public static int HTTP_LOCAL_PORT = 1087;
 
+  // 默认为true，所有 HTTP 请求都进行socks5代理转发
+  public static boolean HTTP_2_SOCKS5 = true;
+
   /**
    * 代理模式可选项：
    * 0：全局      Globle

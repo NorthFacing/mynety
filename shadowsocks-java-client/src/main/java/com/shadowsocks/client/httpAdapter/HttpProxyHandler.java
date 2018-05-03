@@ -23,7 +23,9 @@
  */
 package com.shadowsocks.client.httpAdapter;
 
+import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_2Socks5Handler;
 import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_Handler;
+import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnelHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandler;
@@ -35,6 +37,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.client.config.ClientConfig.HTTP_2_SOCKS5;
 import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -58,9 +61,17 @@ public class HttpProxyHandler extends SimpleChannelInboundHandler<DefaultHttpReq
     HttpVersion httpVersion = httpRequest.protocolVersion();
     if (HTTP_1_1 == httpVersion) {
       if (HttpMethod.CONNECT == httpRequest.method()) {
-        ctx.pipeline().addLast(new HttpTunnelHandler());
+        if (HTTP_2_SOCKS5) {
+          ctx.pipeline().addLast(new HttpTunnel2Socks5Handler());
+        } else {
+          ctx.pipeline().addLast(new HttpTunnelHandler());
+        }
       } else { // 除了connection，其余数据一律转发
-        ctx.pipeline().addLast(new Http_1_1_Handler());
+        if (HTTP_2_SOCKS5) {
+          ctx.pipeline().addLast(new Http_1_1_2Socks5Handler());
+        } else {
+          ctx.pipeline().addLast(new Http_1_1_Handler());
+        }
       }
     } else {
       logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);

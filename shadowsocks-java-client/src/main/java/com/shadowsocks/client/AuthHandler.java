@@ -61,7 +61,6 @@ public final class AuthHandler extends SimpleChannelInboundHandler<SocksMessage>
   public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) throws Exception {
     switch (socksRequest.version()) {
       case SOCKS5: // Socks5代理则可以支持TCP和UDP两种应用
-
         if (socksRequest instanceof Socks5InitialRequest) {
           logger.info(LOG_MSG + ctx.channel() + " SOCKS5 auth first request, return Socks5AuthMethod.NO_AUTH");
           // 不需要auth验证的代码范例

@@ -126,16 +126,16 @@ public final class ConnectHandler extends SimpleChannelInboundHandler<ByteBuf> {
           }
           clientChannel.writeAndFlush(new DefaultSocks5CommandResponse(
               Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort()));  // 告诉客户端连接成功
-          logger.debug("{} {} connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
+          logger.debug("{} {} socks5 connect success proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          logger.debug("{} {} connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
+          logger.debug("{} {} socks5 connect fail proxyHost/dstAddr = {}, proxyPort/dstPort = {}", LOG_MSG, clientChannel, connHost, connPort);
           future.cancel(true);
           channelClose();
         }
       });
 
     } catch (Exception e) {
-      logger.error("connect intenet error", e);
+      logger.error("socks5 connect internet error", e);
       channelClose();
     }
   }

@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter.http_1_1;
+package com.shadowsocks.client.httpAdapter;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.HttpObject;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,17 +38,17 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class HttpRemoteHandler extends SimpleChannelInboundHandler {
 
   private final Channel clientChannel;
 
-  public Http_1_1_RemoteHandler(Channel clientProxyChannel) {
+  public HttpRemoteHandler(Channel clientProxyChannel) {
     this.clientChannel = clientProxyChannel;
   }
 
   @Override
-  public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
-    logger.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
+  public void channelRead0(ChannelHandlerContext ctx, Object msg) {
+    logger.debug("{} {} HttpRemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
     if (!clientChannel.isOpen()) {
       ctx.close();
       channelClose();
@@ -87,3 +86,4 @@ public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObje
     }
   }
 }
+
