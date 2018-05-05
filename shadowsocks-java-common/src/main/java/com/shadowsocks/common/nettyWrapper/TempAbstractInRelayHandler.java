@@ -42,7 +42,7 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
  * @since v0.0.4
  */
 @Slf4j
-public abstract class TempSimpleChannelInboundHandler<I> extends AbstractInRelayHandler<I> {
+public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandler<I> {
 
   /**
    * 缓存请求：

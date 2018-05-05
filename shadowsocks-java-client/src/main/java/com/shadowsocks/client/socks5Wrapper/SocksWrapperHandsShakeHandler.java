@@ -62,7 +62,7 @@ public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info("{}{}【socksWrapper】【握手】处理器激活，发送初次访问请求：0x050100", Constants.LOG_MSG_OUT, ctx.channel());
+    logger.info("[ {}{}{} ]【socksWrapper】【握手】处理器激活，发送初次访问请求：0x050100", clientChannel, Constants.LOG_MSG_OUT, ctx.channel());
     ctx.writeAndFlush(buf);
   }
 
@@ -83,10 +83,10 @@ public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf
     byte ver = msg.readByte();
     byte method = msg.readByte();
     if (ver != 0X05 || method != 0x00) {
-      logger.info("{}{}【socksWrapper】【握手】处理器收到响应消息内容错误：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
+      logger.info("[ {}{}{} ]【socksWrapper】【握手】处理器收到响应消息内容错误：ver={},method={}", clientChannel, Constants.LOG_MSG, ctx.channel(), ver, method);
       ctx.close();
     } else {
-      logger.info("{}{}【socksWrapper】【握手】处理器收到响应消息：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
+      logger.info("[ {}{}{} ]【socksWrapper】【握手】处理器收到响应消息：ver={},method={}", clientChannel, Constants.LOG_MSG, ctx.channel(), ver, method);
     }
   }
 

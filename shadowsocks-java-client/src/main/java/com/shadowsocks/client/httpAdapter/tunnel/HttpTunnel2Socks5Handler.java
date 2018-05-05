@@ -27,7 +27,7 @@ import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
-import com.shadowsocks.common.nettyWrapper.TempSimpleChannelInboundHandler;
+import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -69,7 +69,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.4
  */
 @Slf4j
-public class HttpTunnel2Socks5Handler extends TempSimpleChannelInboundHandler<HttpObject> {
+public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObject> {
 
   private boolean firstRequest = true; // 是否是第一次请求
 
@@ -148,12 +148,13 @@ public class HttpTunnel2Socks5Handler extends TempSimpleChannelInboundHandler<Ht
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
-    // 先消费完当前缓存的数据，然后将后续的消息直接透传即可
-    // ———— 1. 消费当前缓存消息（基本上应该是建立CONNECT连接所需要的消息）
-    super.consumeHttpObjectsTemp(remoteChannel);
-    logger.debug("[ {}{}{} ] consume temp http tunnel request over socks5 to dst host, msg num: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, requestTempLists.size());
-    if (firstRequest && remoteChannel != null
-        && Boolean.valueOf(remoteChannel.attr(SOCKS5_CONNECTED).get())) {
+    if (remoteChannel != null && Boolean.valueOf(remoteChannel.attr(SOCKS5_CONNECTED).get())) {
+      // 先消费完当前缓存的数据，然后将后续的消息直接透传即可
+      // ———— 1. 消费当前缓存消息（基本上应该是建立CONNECT连接所需要的消息）
+      super.consumeHttpObjectsTemp(remoteChannel);
+      logger.debug("[ {}{}{} ] consume temp http tunnel request over socks5 to dst host, msg num: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, requestTempLists.size());
+    }
+    if (firstRequest) {
       // ———— 2. 告诉客户端建立隧道成功
       DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
       ctx.writeAndFlush(response);

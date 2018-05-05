@@ -90,7 +90,7 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info("{}{}【socksWrapper】【连接】处理器激活，发送连接请求：{}", Constants.LOG_MSG_OUT, ctx.channel(), ByteBufUtil.hexDump(buf));
+    logger.info("[ {}{}{} ]【socksWrapper】【连接】处理器激活，发送连接请求：{}", clientChannel, Constants.LOG_MSG_OUT, ctx.channel(), ByteBufUtil.hexDump(buf));
     ctx.writeAndFlush(buf);
   }
 
@@ -118,14 +118,14 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
     short port = msg.readShort();
 
     if (ver != 0X05 || cmd != 0x00) {
-      logger.info("{}{}【socksWrapper】【连接】处理器收到响应消息内容错误：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
-          Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
+      logger.info("[ {}{}{} ]【socksWrapper】【连接】处理器收到响应消息内容错误：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
+          clientChannel, Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
       channelClose(ctx);
     } else {
       // socks5 连接并初始化成功，从现在开始可以使用此socks通道进行数据传输了
       ctx.channel().attr(SOCKS5_CONNECTED).set(true);
-      logger.info("{}{}【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
-          Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
+      logger.info("[ {}{}{} ]【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
+          clientChannel, Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
     }
 
   }
@@ -146,6 +146,7 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
     // socks5 连接建立成功，将消息放回pipeline进行盲转
     DefaultHttpRequest httpRequest = clientChannel.attr(HTTP_REQUEST).get();
     ReferenceCountUtil.retain(httpRequest);
+
     clientChannel.pipeline().fireChannelRead(httpRequest);
   }
 

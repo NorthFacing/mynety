@@ -46,15 +46,15 @@ public class ChannelUtils {
    * @param channel
    */
   public static void loggerHandlers(Channel channel, Object msg) {
-    logger.debug("===================================================================================================");
-    logger.debug("msg type: {}", msg.getClass().getTypeName());
+    logger.debug("=============================================start====================================================");
+    logger.debug("msg type: {}", msg != null ? msg.getClass().getTypeName() : null);
     Iterator<Map.Entry<String, ChannelHandler>> iterator = channel.pipeline().iterator();
     iterator.forEachRemaining(handler -> {
       String key = handler.getKey();
       ChannelHandler value = handler.getValue();
       logger.debug(key + " => " + value);
     });
-    logger.debug("===================================================================================================");
+    logger.debug("===============================================end====================================================");
 
   }
 

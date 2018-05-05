@@ -27,7 +27,7 @@ import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
-import com.shadowsocks.common.nettyWrapper.TempSimpleChannelInboundHandler;
+import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -62,7 +62,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_2Socks5Handler extends TempSimpleChannelInboundHandler<HttpObject> {
+public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObject> {
 
   private boolean firstRequest = true; // 是否是第一次请求
 
@@ -136,12 +136,14 @@ public class Http_1_1_2Socks5Handler extends TempSimpleChannelInboundHandler<Htt
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
-    // 先消费完当前缓存的数据，然后将后续的消息直接透传即可
-    // ———— 1. 消费当前缓存消息（基本上应该是建立CONNECT连接所需要的消息）
-    logger.debug("[ {}{}{} ] consume temp http1.1 request over socks5 to dst host, msg num: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, requestTempLists.size());
-    super.consumeHttpObjectsTemp(remoteChannel);
     if (firstRequest && remoteChannel != null
         && Boolean.valueOf(remoteChannel.attr(SOCKS5_CONNECTED).get())) {
+      // 先消费完当前缓存的数据，然后将后续的消息直接透传即可
+      // ———— 1. 消费当前缓存消息（基本上应该是建立CONNECT连接所需要的消息）
+      logger.debug("[ {}{}{} ] consume temp http1.1 request over socks5 to dst host, msg num: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, requestTempLists.size());
+      super.consumeHttpObjectsTemp(remoteChannel);
+    }
+    if (firstRequest) {
       // ———— 2. 一般HTTP代理无需建立成功的时候返回200，只需要将最后的结果返回透传即可
       // ———— 3. 移除 inbound 和 outbound 双方的编解码（移除可以提效，不移除可以编辑请求头信息）
 //      ctx.channel().pipeline().remove(HttpServerCodec.class);
