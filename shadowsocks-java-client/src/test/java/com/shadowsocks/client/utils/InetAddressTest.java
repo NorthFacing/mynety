@@ -12,10 +12,10 @@ import static com.shadowsocks.common.constants.Constants.IPV6_PATTERN;
 public class InetAddressTest {
 
   @Test
-  public void test() throws Exception  {
+  public void test() throws Exception {
     Matcher matcher = IPV4_PATTERN.matcher("192.168.0.1");
     Assert.assertTrue(matcher.find());
-    matcher=IPV6_PATTERN.matcher("2001:db8:0:1");
+    matcher = IPV6_PATTERN.matcher("2001:db8:0:1");
     Assert.assertTrue(matcher.find());
 
 

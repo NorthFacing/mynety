@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,71 +25,49 @@ package com.shadowsocks.server;
 
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
+import com.shadowsocks.common.nettyWrapper.AbstractOutRelayHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG_IN;
 
 /**
  * 远程处理器，连接真正的目标地址
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
-public class RemoteHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class RemoteHandler extends AbstractOutRelayHandler<ByteBuf> {
 
-  private final ChannelHandlerContext clientProxyChannel;
   private final ICrypt _crypt;
-  private ByteBuf cacheBuffer;
 
-  public RemoteHandler(ChannelHandlerContext clientProxyChannel, ICrypt _crypt, ByteBuf cacheBuffer) {
-    this.clientProxyChannel = clientProxyChannel;
+  public RemoteHandler(Channel clientChannel, ICrypt _crypt) {
+    super(clientChannel);
     this._crypt = _crypt;
-    this.cacheBuffer = cacheBuffer;
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    ctx.writeAndFlush(cacheBuffer);
-  }
-
-  @Override
-  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
+  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+    logger.debug("[ {}{}{} ] socks server remote channelRead: {} bytes => {}", clientChannel, LOG_MSG_IN, ctx.channel(), msg.readableBytes(), msg);
+    if (!clientChannel.isOpen()) {
+      channelClose(ctx);
+      return;
+    }
     try {
+      logger.debug("[ {}{}{} ] msg need to encrypt...", clientChannel, LOG_MSG, ctx.channel());
       byte[] encrypt = CryptUtil.encrypt(_crypt, msg);
-      clientProxyChannel.writeAndFlush(Unpooled.wrappedBuffer(encrypt));
+      clientChannel.writeAndFlush(Unpooled.wrappedBuffer(encrypt));
+      logger.debug("[ {}{}{} ] write to socks client channel: {} bytes => {}", clientChannel, LOG_MSG_IN, ctx.channel(), msg.readableBytes(), msg);
     } catch (Exception e) {
-      ctx.close();
-      channelClose();
-      logger.error("read intenet message error", e);
+      logger.error("[ " + clientChannel + LOG_MSG_IN + ctx.channel() + " ] error", e);
+      channelClose(ctx);
     }
   }
 
-  @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    ctx.close();
-    channelClose();
-    logger.info("RemoteHandler channelInactive close");
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) throws Exception {
-    ctx.close();
-    channelClose();
-    logger.error("RemoteHandler error", throwable);
-  }
-
-  private void channelClose() {
-    try {
-      clientProxyChannel.close();
-      if (cacheBuffer != null) {
-        cacheBuffer.clear();
-        cacheBuffer = null;
-      }
-    } catch (Exception e) {
-      logger.error("close channel error", e);
-    }
-  }
 }

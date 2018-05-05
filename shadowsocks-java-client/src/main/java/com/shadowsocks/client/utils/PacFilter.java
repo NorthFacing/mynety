@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,8 +23,8 @@
  */
 package com.shadowsocks.client.utils;
 
-import com.shadowsocks.client.config.PacConfig;
 import com.shadowsocks.client.config.ClientConfig;
+import com.shadowsocks.client.config.PacConfig;
 import com.shadowsocks.common.utils.LocalCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,12 +32,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-
 /**
  * 域名判断工具类
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.2
  */
 @Slf4j
@@ -105,10 +104,10 @@ public class PacFilter {
           .findAny()
           .orElse(null);
       long end = System.currentTimeMillis();
-      logger.info("{} 域名校验 {} 毫秒：{}", LOG_MSG, (end - start), domain);
+      logger.info("time of validate domain: {}s <= {}", (end - start), domain);
       return StringUtils.isNotEmpty(result) ? true : false;
     } catch (Exception e) {
-      logger.error("域名验证出错：{}", e);
+      logger.error("error of validate domain: ", e);
       return false;
     }
   }

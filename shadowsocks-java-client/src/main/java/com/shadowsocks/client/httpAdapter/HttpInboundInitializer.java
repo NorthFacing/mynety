@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,8 @@
  */
 package com.shadowsocks.client.httpAdapter;
 
+import com.shadowsocks.common.utils.SocksServerUtils;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -33,7 +35,8 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 /**
  * http 代理入口 处理器列表
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
@@ -41,9 +44,17 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    logger.info(LOG_MSG + " Init http handler..." + ch);
-    // HttpServerCodec 相当于 HttpRequestDecoder && HttpResponseEncoder 一起的作用，
+    logger.info("[ {}{} ] Init http handler...", ch, LOG_MSG);
     ch.pipeline().addLast(new HttpServerCodec());
-    ch.pipeline().addLast(HttpProxyHandler.INSTANCE);
+    logger.info("[ {}{} ] add handlers: HttpServerCodec", ch, LOG_MSG);
+    ch.pipeline().addLast(new HttpProxyHandler());
+    logger.info("[ {}{} ] add handlers: HttpProxyHandler", ch, LOG_MSG);
   }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    logger.error("[ " + ctx.channel() + LOG_MSG + "] HttpInboundInitializer error: ", cause);
+    SocksServerUtils.flushOnClose(ctx.channel());
+  }
+
 }

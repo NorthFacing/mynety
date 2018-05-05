@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,42 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client;
+package com.shadowsocks.common.utils;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.concurrent.Promise;
+import io.netty.channel.ChannelHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
- * 远程连接处理器，连接代理服务器服务端。
- * 从 v0.0.4 开始，废弃使用
+ * channel 工具类
  *
- * @author 0haizhu0@gmail.com
- * @since v0.0.1
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
+ * @since v0.0.4
  */
-@Deprecated
 @Slf4j
-public final class RemoteHandlerCopy extends ChannelInboundHandlerAdapter {
+public class ChannelUtils {
 
-  private final Promise<Channel> promise;
+  /**
+   * 调试工具，打印当前 channel pipeline 中的所有 handler，以及当前msg的数据类型
+   *
+   * @param channel
+   */
+  public static void loggerHandlers(Channel channel, Object msg) {
+    logger.debug("===================================================================================================");
+    logger.debug("msg type: {}", msg.getClass().getTypeName());
+    Iterator<Map.Entry<String, ChannelHandler>> iterator = channel.pipeline().iterator();
+    iterator.forEachRemaining(handler -> {
+      String key = handler.getKey();
+      ChannelHandler value = handler.getValue();
+      logger.debug(key + " => " + value);
+    });
+    logger.debug("===================================================================================================");
 
-  public RemoteHandlerCopy(Promise<Channel> promise) {
-    this.promise = promise;
   }
 
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    ctx.pipeline().remove(this);
-    promise.setSuccess(ctx.channel()); // 连接到指定地址成功后，setSuccess 让 Promise 的回调函数执行；在这个 Promise 中放有一个连接远程的 Channel
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    logger.error(LOG_MSG + " inboundChannel=" + ctx.channel() + " 和 outboundChannel=" + promise.getNow() + " 关联出错：", throwable);
-    promise.setFailure(throwable);
-  }
 }

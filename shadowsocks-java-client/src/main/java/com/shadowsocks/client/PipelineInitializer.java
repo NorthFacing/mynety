@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,8 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 /**
  * 初始化处理器集
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
@@ -41,9 +42,11 @@ public final class PipelineInitializer extends ChannelInitializer<SocketChannel>
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    logger.info(LOG_MSG + " Init netty handler..." + ch);
+    logger.info(" [{}{} ] Init netty handler...", ch, LOG_MSG);
     ch.pipeline().addLast(new SocksPortUnificationServerHandler()); // 检测socks版本并初始化对应版本的实例
+    logger.info("[ {}{} ] add handlers: SocksPortUnificationServerHandler", ch, LOG_MSG);
     ch.pipeline().addLast(AuthHandler.INSTANCE);             // 消息具体处理类
+    logger.info("[ {}{} ] add handlers: AuthHandler", ch, LOG_MSG);
   }
 }
 

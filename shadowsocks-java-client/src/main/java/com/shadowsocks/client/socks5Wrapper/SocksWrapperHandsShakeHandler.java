@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,19 +24,22 @@
 package com.shadowsocks.client.socks5Wrapper;
 
 import com.shadowsocks.common.constants.Constants;
+import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+
 /**
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class SocksWrapperHandsShakeHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
 
   private final ByteBuf buf;
   private Channel clientChannel;
@@ -59,8 +62,8 @@ public class SocksWrapperHandsShakeHandler extends SimpleChannelInboundHandler<B
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info("{} {}【socksWrapper】【握手】处理器激活，发送初次访问请求：0x050100", Constants.LOG_MSG, ctx.channel());
-    ctx.channel().writeAndFlush(buf);
+    logger.info("{}{}【socksWrapper】【握手】处理器激活，发送初次访问请求：0x050100", Constants.LOG_MSG_OUT, ctx.channel());
+    ctx.writeAndFlush(buf);
   }
 
   /**
@@ -80,31 +83,20 @@ public class SocksWrapperHandsShakeHandler extends SimpleChannelInboundHandler<B
     byte ver = msg.readByte();
     byte method = msg.readByte();
     if (ver != 0X05 || method != 0x00) {
-      logger.info("{} {}【socksWrapper】【握手】处理器收到响应消息内容错误：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
+      logger.info("{}{}【socksWrapper】【握手】处理器收到响应消息内容错误：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
       ctx.close();
     } else {
-      logger.info("{} {}【socksWrapper】【握手】处理器收到响应消息：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
+      logger.info("{}{}【socksWrapper】【握手】处理器收到响应消息：ver={},method={}", Constants.LOG_MSG, ctx.channel(), ver, method);
     }
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().addAfter(ctx.name(), null, new SocksWrapperConnectHandler(clientChannel));
+    logger.info("[ {}{}{} ] add handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
     ctx.pipeline().remove(this);
-    logger.info("{} {}【socksWrapper】【握手】处理器任务完成，添加【连接】处理器", Constants.LOG_MSG, ctx.channel());
+    logger.info("[ {}{}{} ] remove handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ctx.channel());
     ctx.pipeline().fireChannelActive();
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    logger.error(Constants.LOG_MSG + ctx.channel() + "【socksWrapper】【握手】处理器异常：", throwable);
-    ctx.channel().close();
-  }
-
-  @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("{} {}【socksWrapper】【握手】处理器连接断开：{}", Constants.LOG_MSG, ctx.channel(), ctx.channel());
-    super.channelInactive(ctx);
   }
 
 }

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,69 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter.http_1_1;
+package com.shadowsocks.common.nettyWrapper;
 
-import io.netty.channel.Channel;
+import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * http 代理模式下 远程处理器，连接真正的目标地址
+ * 主要是覆写增加了LOG日志和channel关闭方法
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_RemoteHandler extends SimpleChannelInboundHandler<HttpObject> {
+public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandler<I> {
 
-  private final Channel clientChannel;
-
-  public Http_1_1_RemoteHandler(Channel clientProxyChannel) {
-    this.clientChannel = clientProxyChannel;
-  }
 
   @Override
-  public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) {
-    logger.debug("{} {} Http_1_1_RemoteHandler channelRead:{}", LOG_MSG, clientChannel, msg);
-    if (!clientChannel.isOpen()) {
-      ctx.close();
-      channelClose();
-      return;
-    }
-    try {
-      ReferenceCountUtil.retain(msg);
-      clientChannel.writeAndFlush(msg);
-    } catch (Exception e) {
-      ctx.close();
-      channelClose();
-      logger.error("read internet message error", e);
-    }
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    logger.info("[ {}{} ] {} channel active...", ctx.channel(), LOG_MSG, getSimpleName(this));
+    super.channelActive(ctx);
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    ctx.close();
-    logger.info("RemoteHandler channelInactive close");
-    channelClose();
+    channelClose(ctx);
+    logger.info("[ {}{} ] {} channel inactive, channel closed...", ctx.channel(), LOG_MSG, getSimpleName(this));
+  }
+
+  @Override
+  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    logger.debug("[ {}{} ] {} channelReadComplete...", ctx.channel(), LOG_MSG, getSimpleName(this));
+    super.channelReadComplete(ctx);
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    ctx.close();
-    channelClose();
-    logger.error("RemoteHandler error", cause);
+    channelClose(ctx);
+    logger.error("[ " + ctx.channel() + LOG_MSG + " ] " + getSimpleName(this) + " error", cause);
   }
 
-  private void channelClose() {
-    try {
-      clientChannel.close();
-    } catch (Exception e) {
-      logger.error("close channel error", e);
-    }
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
   }
+
 }

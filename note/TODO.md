@@ -7,7 +7,7 @@
 * FTP，telnet可以通过隧道代理进行转发，那么服务端是怎么处理的？像处理隧道中的ssl请求一样进行处理
 * 以上代理完毕之后，加上socks5代理
     - 直接加上一层壳？
-    - 将HTTP转为socks5？
+    - 将HTTP转为socks5？采用了将HTTP转为socks5
 
 ### 建立隧道连接的过程
 1.client使用connect方法请求proxy
@@ -17,6 +17,15 @@
 5.移除解码器
 6.转发双方数据
 
+### 隧道嵌套socks5
+
+```
+CONNECT adolphor.disqus.com:443 HTTP/1.1
+Host: adolphor.disqus.com:443
+Proxy-Connection: keep-alive
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36
+```
+
 ### HTTP 连接通信过程
 1.client请求proxy，使用的编解码器：serverCodec
 2.proxy解析client请求的目标地址
@@ -24,7 +33,10 @@
 4.并发送本次建立连接的request请求到目标服务器
 5.之后的数据经过编解码相互转发
 
-
+```bash
+export http_proxy=http://0.0.0.0:1187;export https_proxy=http://0.0.0.0:1187;
+curl http://adolphor.com/js/main.js?version=20180129
+```
 
 # github program
 

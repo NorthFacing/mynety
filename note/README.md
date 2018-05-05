@@ -28,8 +28,7 @@ mvn versions:set -DnewVersion=0.0.4-SNAPSHOT
     :: 修改：JAVACMD
     if "%JAVACMD%"=="" set JAVACMD=..\lib\jre8\bin\java
     ```
-    
-    
+
 
 
 

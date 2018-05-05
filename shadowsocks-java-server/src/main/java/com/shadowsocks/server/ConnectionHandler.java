@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,11 @@
  */
 package com.shadowsocks.server;
 
+import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
+import com.shadowsocks.common.nettyWrapper.TempSimpleChannelInboundHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -35,35 +37,45 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.atomic.AtomicReference;
-
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
+import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
+import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * 连接处理器
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
-public class ConnectionHandler extends SimpleChannelInboundHandler {
+public class ConnectionHandler extends TempSimpleChannelInboundHandler<ByteBuf> {
 
-  private AtomicReference<Channel> remoteChannel = new AtomicReference<>();
-  private ByteBuf clientCache;
+  public ConnectionHandler(ByteBuf msg) {
+    if (msg.readableBytes() > 0) {
+      requestTempLists.add(msg);
+      logger.debug("[ {} ] add socks client request to temp list: {}", LOG_MSG, msg);
+    } else {
+      logger.debug("[ {} ] discard empty msg: {}", LOG_MSG, msg);
+    }
+  }
 
   @Override
-  public void channelActive(ChannelHandlerContext clientCtx) throws Exception {
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
 
-    Channel clientChannel = clientCtx.channel();
+    Channel clientChannel = ctx.channel();
+    clientChannel.attr(REQUEST_TEMP_LIST).set(requestTempLists);
 
-    String dstAddr = clientChannel.attr(Constants.ATTR_HOST).get();
-    Integer dstPort = clientChannel.attr(Constants.ATTR_PORT).get();
     ICrypt crypt = clientChannel.attr(Constants.ATTR_CRYPT_KEY).get();
-    clientCache = clientChannel.attr(Constants.ATTR_BUF).get();
+    Address address = clientChannel.attr(REQUEST_ADDRESS).get();
+    String dstAddr = address.getHost();
+    Integer dstPort = address.getPort();
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
@@ -72,7 +84,8 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
         .handler(new ChannelInitializer<SocketChannel>() {
           @Override
           protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new RemoteHandler(clientCtx, crypt, clientCache));
+            ch.pipeline().addLast(new RemoteHandler(ctx.channel(), crypt));
+            logger.info("[ {}{}{} ] out pipeline add handler: RemoteHandler", ctx.channel(), LOG_MSG, ch);
           }
         });
 
@@ -80,65 +93,43 @@ public class ConnectionHandler extends SimpleChannelInboundHandler {
       ChannelFuture channelFuture = remoteBootStrap.connect(dstAddr, dstPort);
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          remoteChannel.set(future.channel());
-          logger.debug("{} {} connect success dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
+          remoteChannelRef.set(future.channel());
+          logger.debug("{}{} connect to dst host success => {}:{}", LOG_MSG_OUT, clientChannel, dstAddr, dstPort);
         } else {
-          logger.debug("{} {} connect fail dstAddr = {}, dstPort = {}", LOG_MSG, clientChannel, dstAddr, dstPort);
+          logger.debug("{}{} connect to dst host failed => {}:{}", LOG_MSG, clientChannel, dstAddr, dstPort);
           future.cancel(true);
-          channelClose();
+          channelClose(ctx);
         }
       });
 
     } catch (Exception e) {
-      logger.error(LOG_MSG + "connect intenet error", e);
-      channelClose();
+      logger.error(LOG_MSG + "connect internet error", e);
+      channelClose(ctx);
     }
 
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext clientCtx, Object msg) throws Exception {
-    ICrypt crypt = clientCtx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
-
-    ByteBuf buff = (ByteBuf) msg;
-    if (buff.readableBytes() <= 0) {
-      return;
-    }
-    byte[] decrypt = CryptUtil.decrypt(crypt, msg);
-    if (remoteChannel.get() != null) {
-      remoteChannel.get().writeAndFlush(Unpooled.wrappedBuffer(decrypt));
-    } else {
-      clientCache.writeBytes(decrypt);
-    }
-  }
-
-  @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    ctx.close();
-    logger.info("ConnectionHandler channelInactive close");
-    channelClose();
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    ctx.close();
-    channelClose();
-    logger.error(LOG_MSG + "ConnectionHandler error", cause);
-  }
-
-  @SuppressWarnings("Duplicates")
-  private void channelClose() {
-    try {
-      if (remoteChannel.get() != null) {
-        remoteChannel.get().close();
-        remoteChannel = null;
+  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+    Channel remoteChannel = remoteChannelRef.get();
+    logger.debug("[ {}{}{} ] socks server connection handler channelRead: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, msg.readableBytes(), msg);
+    synchronized (requestTempLists) {
+      if (remoteChannel != null) {
+        ICrypt crypt = ctx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
+        logger.debug("[ {}{}{} ] msg need to decrypt...", ctx.channel(), LOG_MSG, remoteChannel);
+        byte[] temp = CryptUtil.decrypt(crypt, msg);
+        ByteBuf decryptBuf = Unpooled.wrappedBuffer(temp);
+        remoteChannel.writeAndFlush(decryptBuf);
+        logger.debug("[ {}{}{} ] socks server write to dst host channel: {} bytes => {}", ctx.channel(), LOG_MSG_OUT, remoteChannelRef.get(), decryptBuf.readableBytes(), decryptBuf);
+      } else {
+        if (msg.readableBytes() <= 0) {
+          return;
+        }
+        requestTempLists.add(msg.retain());
+        logger.debug("[ {}{}{} ] add socks client request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
       }
-      if (clientCache != null) {
-        clientCache.clear();
-        clientCache = null;
-      }
-    } catch (Exception e) {
-      logger.error(LOG_MSG + "close channel error", e);
     }
+
   }
+
 }

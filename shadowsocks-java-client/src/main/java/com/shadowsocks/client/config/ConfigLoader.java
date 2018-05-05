@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,7 +41,8 @@ import java.util.List;
  * <p>
  * load config info
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
@@ -65,29 +66,21 @@ public class ConfigLoader {
     if (ClientConfig.getAvailableServer() == null) {
       loadClientConf(configFile);
     }
-
   }
 
-
   private static void loadPac(String pacFile) throws Exception {
-
     DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
     DocumentBuilder domBuilder = domfac.newDocumentBuilder();
-
     try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(pacFile)) {
       if (is == null) {
         return;
       }
-
       Document doc = domBuilder.parse(is);
       Element root = doc.getDocumentElement();
-
       addDomains(root, "proxy", PacConfig.proxyDomains);
       addDomains(root, "direct", PacConfig.directDomains);
       addDomains(root, "deny", PacConfig.denyDomains);
-
     }
-
   }
 
 

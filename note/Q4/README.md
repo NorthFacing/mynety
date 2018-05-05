@@ -15,3 +15,5 @@ http 的 tunnel 代理直接连接，去掉所有编解码器之后就可以进�
 * HttpContent（可能有 0~N 个 content）
 * LastHttpContent（1个）
 
+## 信息发送之后没反应
+首先考虑编解码问题，怎么可以快速查看当前channel的所有handler？

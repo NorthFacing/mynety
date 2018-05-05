@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,31 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter;
+package com.shadowsocks.common.nettyWrapper;
 
 import io.netty.channel.Channel;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 
 /**
- * Http消息处理器
- * 1. 增加 requestTempLists 用于缓存 HttpRequest, HttpContent, LastHttpContent 请求信息
+ * 请求缓存处理器
+ * 1. 增加 requestTempLists 用于缓存远程连接未成功之前客户端发送的请求信息
  * 2. 增加缓存消费和释放方法
  *
- * @param <I> 当前channel接收到的数据类型
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public abstract class SimpleHttpChannelInboundHandler<I> extends SimpleChannelInboundHandler<I> {
+public abstract class TempSimpleChannelInboundHandler<I> extends AbstractInRelayHandler<I> {
 
-  protected List requestTempLists = new LinkedList();
+  /**
+   * 缓存请求：
+   * 1.HTTP请求下，HttpRequest,HttpContent,LastHttpContent 分开请求的情况
+   * 2.HTTP请求下，并发请求的情况
+   * 3.socks请求下，黏包的问题
+   */
+  protected final List<Object> requestTempLists = new LinkedList();
 
   /**
    * 消费之前缓存的HTTP相关请求
@@ -56,8 +61,9 @@ public abstract class SimpleHttpChannelInboundHandler<I> extends SimpleChannelIn
     synchronized (requestTempLists) {
       requestTempLists.forEach(msg -> {
         remoteChannel.writeAndFlush(msg);
-        logger.debug("{} {} consume temp httpObjects: {}", LOG_MSG, remoteChannel, msg);
+        logger.debug("[ {}{} ] consume temp httpObjects: {}", LOG_MSG_OUT, remoteChannel, msg);
       });
+      requestTempLists.clear();
     }
   }
 
@@ -67,6 +73,7 @@ public abstract class SimpleHttpChannelInboundHandler<I> extends SimpleChannelIn
   public void releaseHttpObjectsTemp() {
     synchronized (requestTempLists) {
       requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
+      requestTempLists.clear();
     }
   }
 

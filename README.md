@@ -16,7 +16,7 @@ Requres:
 Shell commond:
 
 ```
-mvn clean package
+mvn clean package -D maven.test.skip=true
 sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
 sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 ```

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,38 @@
  */
 package com.shadowsocks.client.socks5Wrapper;
 
-import com.shadowsocks.common.bean.FullPath;
+import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
+import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.socks.SocksAddressType;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
 import static com.shadowsocks.common.constants.Constants.EXTRA_OUT_RELAY_HANDLER;
 import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
-import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST_FULLPATH;
 import static com.shadowsocks.common.constants.Constants.IPV4_PATTERN;
 import static com.shadowsocks.common.constants.Constants.IPV6_PATTERN;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.SOCKS5_CONNECTED;
 
+
 /**
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class SocksWrapperConnectHandler extends SimpleChannelInboundHandler {
+public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
 
   private final ByteBuf buf;
   private Channel clientChannel;
@@ -64,7 +69,7 @@ public class SocksWrapperConnectHandler extends SimpleChannelInboundHandler {
    */
   public SocksWrapperConnectHandler(Channel clientChannel) {
     this.clientChannel = clientChannel;
-    FullPath fullPath = clientChannel.attr(HTTP_REQUEST_FULLPATH).get();
+    Address fullPath = clientChannel.attr(REQUEST_ADDRESS).get();
     buf = Unpooled.buffer();
     buf.writeByte(0x05);
     buf.writeByte(0x01);
@@ -85,8 +90,8 @@ public class SocksWrapperConnectHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info("{} {}【socksWrapper】【连接】处理器激活，发送连接请求：{}", Constants.LOG_MSG, ctx.channel(), ByteBufUtil.hexDump(buf));
-    ctx.channel().writeAndFlush(buf);
+    logger.info("{}{}【socksWrapper】【连接】处理器激活，发送连接请求：{}", Constants.LOG_MSG_OUT, ctx.channel(), ByteBufUtil.hexDump(buf));
+    ctx.writeAndFlush(buf);
   }
 
   /**
@@ -101,26 +106,25 @@ public class SocksWrapperConnectHandler extends SimpleChannelInboundHandler {
    * @throws Exception
    */
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-    ByteBuf result = (ByteBuf) msg;
-    byte ver = result.readByte();
-    byte cmd = result.readByte();
-    byte psv = result.readByte();
-    byte atyp = result.readByte();
+  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+    byte ver = msg.readByte();
+    byte cmd = msg.readByte();
+    byte psv = msg.readByte();
+    byte atyp = msg.readByte();
 
-    byte dstLen = result.readByte();
-    ByteBuf addrBuf = result.readBytes(dstLen);
+    byte dstLen = msg.readByte();
+    ByteBuf addrBuf = msg.readBytes(dstLen);
     String addr = ByteBufUtil.hexDump(addrBuf);
-    short port = result.readShort();
+    short port = msg.readShort();
 
     if (ver != 0X05 || cmd != 0x00) {
-      logger.info("{} {}【socksWrapper】【连接】处理器收到响应消息内容错误：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
+      logger.info("{}{}【socksWrapper】【连接】处理器收到响应消息内容错误：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
           Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
-      ctx.close();
+      channelClose(ctx);
     } else {
       // socks5 连接并初始化成功，从现在开始可以使用此socks通道进行数据传输了
       ctx.channel().attr(SOCKS5_CONNECTED).set(true);
-      logger.info("{} {}【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
+      logger.info("{}{}【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
           Constants.LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
     }
 
@@ -130,25 +134,19 @@ public class SocksWrapperConnectHandler extends SimpleChannelInboundHandler {
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     // 连接成功之后，配置盲转时需要的处理器
     List<ChannelHandler> handlers = clientChannel.attr(EXTRA_OUT_RELAY_HANDLER).get();
-    handlers.forEach(handler -> ctx.pipeline().addAfter(ctx.name(), null, handler));
+    if (handlers != null) {
+      handlers.forEach(handler -> {
+        ctx.pipeline().addAfter(ctx.name(), null, handler);
+        logger.info("[ {}{}{} ] add handlers: {}", clientChannel, LOG_MSG, ctx.channel(), handler.getClass().getSimpleName());
+      });
+    }
     // 移除socks5连接相关处理器
     ctx.pipeline().remove(this);
-    logger.info("{} {}【socksWrapper】【连接】处理器任务完成，移除此处理器", Constants.LOG_MSG, ctx.channel());
+    logger.info("[ {}{}{} ] remove handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
     // socks5 连接建立成功，将消息放回pipeline进行盲转
-    clientChannel.pipeline().fireChannelRead(clientChannel.attr(HTTP_REQUEST).get());
+    DefaultHttpRequest httpRequest = clientChannel.attr(HTTP_REQUEST).get();
+    ReferenceCountUtil.retain(httpRequest);
+    clientChannel.pipeline().fireChannelRead(httpRequest);
   }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    logger.error(Constants.LOG_MSG + ctx.channel() + "【socksWrapper】【连接】处理器异常：", throwable);
-    ctx.channel().close();
-  }
-
-  @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("{} {}【socksWrapper】【连接】处理器连接断开：{}", Constants.LOG_MSG, ctx.channel(), ctx.channel());
-    super.channelInactive(ctx);
-  }
-
 
 }

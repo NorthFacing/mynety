@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,7 @@
 package com.shadowsocks.client.config;
 
 import com.shadowsocks.client.utils.NetUtils;
-import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.utils.LocalCache;
-import io.netty.channel.Channel;
-import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -41,7 +38,8 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * server configs for proxy client
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
@@ -68,12 +66,6 @@ public class ClientConfig {
   public static int PROXY_STRATEGY = 0;
 
   public static final List<Server> servers = new ArrayList<>();
-
-  public static final AttributeKey<ICrypt> CRYPT_KEY = AttributeKey.valueOf("crypt");
-  public static final AttributeKey<Boolean> IS_PROXY = AttributeKey.valueOf("isProxy");
-  public static final AttributeKey<String> DST_ADDR = AttributeKey.valueOf("dstAddr");
-  public static final AttributeKey<Channel> CLIENT_CHANNEL = AttributeKey.valueOf("clientChannel");
-  public static final AttributeKey<Channel> REMOTE_CHANNEL = AttributeKey.valueOf("remoteChannel");
 
   public static void addServer(Server server) {
     servers.add(server);

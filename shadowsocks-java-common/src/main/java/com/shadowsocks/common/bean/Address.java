@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,20 +25,26 @@ package com.shadowsocks.common.bean;
 
 import lombok.Data;
 
+/**
+ * 请求路径解析
+ *
+ * @Email 0haizhu0@gmail.com
+ * @since v0.0.1
+ */
 @Data
-public class FullPath {
+public class Address {
 
   private String scheme;
   private String host;
   private int port;
   private String path;
 
-  public FullPath(String host, int port){
+  public Address(String host, int port) {
     this.host = host;
     this.port = port;
   }
 
-  public FullPath(String scheme, String host, int port, String path) {
+  public Address(String scheme, String host, int port, String path) {
     this.scheme = scheme;
     this.host = host;
     this.port = port;

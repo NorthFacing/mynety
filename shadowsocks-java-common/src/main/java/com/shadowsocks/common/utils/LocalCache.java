@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 
 /**
  * 本地缓存工具
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.3
  */
 @Slf4j
@@ -120,15 +121,15 @@ public class LocalCache {
   public static void validateForGC(int sizeLimit) {
     if (size() < sizeLimit)
       return;
-    logger.debug("{} before resize keys: {}", LOG_MSG, size());
+    logger.debug("{} before resize keys: {}", LOG_MSG_OUT, size());
     localCache.forEach((k, v) -> {
       long currentTime = System.currentTimeMillis();
       if (v.getTimeout() != 0 && currentTime >= v.getTimeout()) {
         localCache.remove(k);
-        logger.debug("{} remove key: {}", LOG_MSG, k);
+        logger.debug("{} remove key: {}", LOG_MSG_OUT, k);
       }
     });
-    logger.debug("{} after resize keys: {}", LOG_MSG, size());
+    logger.debug("{} after resize keys: {}", LOG_MSG_OUT, size());
   }
 
   /**

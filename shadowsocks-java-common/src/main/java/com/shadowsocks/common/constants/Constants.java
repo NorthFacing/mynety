@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,8 @@
  */
 package com.shadowsocks.common.constants;
 
-import com.shadowsocks.common.bean.FullPath;
+import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.encryption.ICrypt;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -38,12 +37,20 @@ import java.util.regex.Pattern;
 /**
  * 常量
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 public class Constants {
 
-  public static final String LOG_MSG = "-----------> ";
+  public static final String LOG_MSG = " <==> ";
+  public static final String LOG_MSG_OUT = " >>> ";
+  public static final String LOG_MSG_IN = " <<< ";
+
+  public static Class channelClass;
+  public static Class serverChannelClass;
+  public static Class bossGroupClass;
+  public static Class workerGroupClass;
 
   public static final Pattern PATH_PATTERN = Pattern.compile("(https?)://([a-zA-Z0-9\\.\\-]+)(:(\\d+))?(/.*)");
   public static final Pattern TUNNEL_ADDR_PATTERN = Pattern.compile("^([a-zA-Z0-9\\.\\-_]+):(\\d+)");
@@ -53,20 +60,16 @@ public class Constants {
 
   public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
 
-  public static Class channelClass;
-  public static Class serverChannelClass;
-  public static Class bossGroupClass;
-  public static Class workerGroupClass;
-
   public static final AttributeKey<ICrypt> ATTR_CRYPT_KEY = AttributeKey.valueOf("crypt");
-  public static final AttributeKey<String> ATTR_HOST = AttributeKey.valueOf("host");
-  public static final AttributeKey<Integer> ATTR_PORT = AttributeKey.valueOf("port");
-  public static final AttributeKey<ByteBuf> ATTR_BUF = AttributeKey.valueOf("buf");
 
   public static final AttributeKey<Socks5CommandRequest> SOCKS5_REQUEST = AttributeKey.valueOf("socks5.request");
+  public static final AttributeKey<Boolean> SOCKS5_CONNECTED = AttributeKey.valueOf("is.socks.connected");
+
   public static final AttributeKey<DefaultHttpRequest> HTTP_REQUEST = AttributeKey.valueOf("http.request");
-  public static final AttributeKey<FullPath> HTTP_REQUEST_FULLPATH = AttributeKey.valueOf("http.request.fullPath");
-  public static final AttributeKey<Boolean> SOCKS5_CONNECTED = AttributeKey.valueOf("socks.connected");
+
+  public static final AttributeKey<Address> REQUEST_ADDRESS = AttributeKey.valueOf("http.request.address");
+  public static final AttributeKey<List> REQUEST_TEMP_LIST = AttributeKey.valueOf("request.temp.list");
+
   public static final AttributeKey<List<ChannelHandler>> EXTRA_OUT_RELAY_HANDLER = AttributeKey.valueOf("extra.out.relay.handler");
 
 }

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,8 +60,8 @@ public class Socks03ConnectHandler extends SimpleChannelInboundHandler {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) {
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【连接】处理器激活，发送网页请求：" + ByteBufUtil.hexDump(buf));
-    ctx.channel().writeAndFlush(buf);
+    logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器激活，发送连接请求：" + ByteBufUtil.hexDump(buf));
+    ctx.writeAndFlush(buf);
   }
 
   /**
@@ -87,7 +87,7 @@ public class Socks03ConnectHandler extends SimpleChannelInboundHandler {
     ByteBuf addrBuf = result.readBytes(dstLen);
     String addr = ByteBufUtil.hexDump(addrBuf);
     short port = result.readShort();
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
+    logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
         ver, cmd, psv, atyp, dstLen, addr, port);
   }
 
@@ -95,19 +95,19 @@ public class Socks03ConnectHandler extends SimpleChannelInboundHandler {
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().remove(this);
     ctx.pipeline().addLast(new Socks04DataHandler());
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【连接】处理器任务完成，添加【数据】处理器");
+    logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器任务完成，添加【数据】处理器");
     ctx.pipeline().fireChannelActive();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable throwable) {
-    logger.error(Constants.LOG_MSG + ctx.channel() + "【连接】处理器异常：", throwable);
+    logger.error(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器异常：", throwable);
     ctx.channel().close();
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    logger.info(Constants.LOG_MSG + ctx.channel() + "【连接】处理器连接断开：" + ctx.channel());
+    logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器连接断开：" + ctx.channel());
     super.channelInactive(ctx);
   }
 

@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SocksClientMainTest {
 
   public static final String HOST = System.getProperty("host", "127.0.0.1");
-  public static final int PORT = Integer.parseInt(System.getProperty("port", "1086"));
+  public static final int PORT = Integer.parseInt(System.getProperty("port", "1186"));
 
   public static final String DST_PROTOCOL = System.getProperty("dstProtocol", "https");
   public static final String DST_HOST = System.getProperty("dstHost", "www.baidu.com");
@@ -56,9 +56,9 @@ public class SocksClientMainTest {
       ChannelFuture f = b.connect(HOST, PORT)
           .addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-              logger.info(Constants.LOG_MSG + " Socks5 connection success......");
+              logger.info(Constants.LOG_MSG_OUT + " Socks5 connection success......");
             } else {
-              logger.error(Constants.LOG_MSG + "Socks5 connection failed......");
+              logger.error(Constants.LOG_MSG_OUT + "Socks5 connection failed......");
             }
           }).sync();
 

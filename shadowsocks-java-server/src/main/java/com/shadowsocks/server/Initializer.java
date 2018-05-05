@@ -1,7 +1,7 @@
 /**
  * MIT License
  * <p>
- * Copyright (c) 2018 0haizhu0@gmail.com
+ * Copyright (c) Bob.Zhu
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,10 +28,13 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.common.constants.Constants.LOG_MSG;
+
 /**
  * 初始化处理器集
  *
- * @author 0haizhu0@gmail.com
+ * @author Bob.Zhu
+ * @Email 0haizhu0@gmail.com
  * @since v0.0.1
  */
 @Slf4j
@@ -39,7 +42,8 @@ public class Initializer extends ChannelInitializer<SocketChannel> {
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    logger.info(Constants.LOG_MSG + ch + " Init channels...");
+    logger.info("[ {}{} ] Init channels...", ch, Constants.LOG_MSG);
     ch.pipeline().addLast(AddressHandler.INSTANCE);
+    logger.info("[ {}{} ] add handler: AddressHandler", ch, LOG_MSG);
   }
 }
