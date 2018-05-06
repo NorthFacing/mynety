@@ -44,7 +44,6 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * 连接处理器
@@ -59,15 +58,15 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
   public ConnectionHandler(ByteBuf msg) {
     if (msg.readableBytes() > 0) {
       requestTempLists.add(msg);
-      logger.debug("[ {} ] add socks client request to temp list: {}", LOG_MSG, msg);
+      logger.debug("[ {} ] [ConnectionHandler-constructor] add socks client request to temp list: {}", LOG_MSG, msg);
     } else {
-      logger.debug("[ {} ] discard empty msg: {}", LOG_MSG, msg);
+      logger.debug("[ {} ] [ConnectionHandler-constructor] discard empty msg: {}", LOG_MSG, msg);
     }
   }
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
+    logger.info("[ {}{}{} ] [ConnectionHandler-channelActive] channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get());
 
     Channel clientChannel = ctx.channel();
     clientChannel.attr(REQUEST_TEMP_LIST).set(requestTempLists);
@@ -85,7 +84,7 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
           @Override
           protected void initChannel(SocketChannel ch) throws Exception {
             ch.pipeline().addLast(new RemoteHandler(ctx.channel(), crypt));
-            logger.info("[ {}{}{} ] out pipeline add handler: RemoteHandler", ctx.channel(), LOG_MSG, ch);
+            logger.info("[ {}{}{} ] [ConnectionHandler-channelActive] out pipeline add handler: RemoteHandler", ctx.channel(), LOG_MSG, ch);
           }
         });
 
@@ -94,9 +93,9 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
       channelFuture.addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
           remoteChannelRef.set(future.channel());
-          logger.debug("{}{} connect to dst host success => {}:{}", LOG_MSG_OUT, clientChannel, dstAddr, dstPort);
+          logger.debug("{}{} [ConnectionHandler-channelActive] connect to dst host success => {}:{}", LOG_MSG_OUT, clientChannel, dstAddr, dstPort);
         } else {
-          logger.debug("{}{} connect to dst host failed => {}:{}", LOG_MSG, clientChannel, dstAddr, dstPort);
+          logger.debug("{}{} [ConnectionHandler-channelActive] connect to dst host failed => {}:{}", LOG_MSG, clientChannel, dstAddr, dstPort);
           future.cancel(true);
           channelClose(ctx);
         }
@@ -112,24 +111,24 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
-    logger.debug("[ {}{}{} ] socks server connection handler channelRead: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, msg.readableBytes(), msg);
+    logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] received msg: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, msg.readableBytes(), msg);
+    ICrypt crypt = ctx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
+    byte[] temp = CryptUtil.decrypt(crypt, msg);
+    ByteBuf decryptBuf = Unpooled.wrappedBuffer(temp);
+    logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] msg after decrypt: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, decryptBuf.readableBytes(), decryptBuf);
     synchronized (requestTempLists) {
       if (remoteChannel != null) {
-        ICrypt crypt = ctx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
-        logger.debug("[ {}{}{} ] msg need to decrypt...", ctx.channel(), LOG_MSG, remoteChannel);
-        byte[] temp = CryptUtil.decrypt(crypt, msg);
-        ByteBuf decryptBuf = Unpooled.wrappedBuffer(temp);
         remoteChannel.writeAndFlush(decryptBuf);
-        logger.debug("[ {}{}{} ] socks server write to dst host channel: {} bytes => {}", ctx.channel(), LOG_MSG_OUT, remoteChannelRef.get(), decryptBuf.readableBytes(), decryptBuf);
+        logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] write msg to dst host channel: {} bytes => {}", ctx.channel(), LOG_MSG_OUT, remoteChannelRef.get(), decryptBuf.readableBytes(), decryptBuf);
       } else {
-        if (msg.readableBytes() <= 0) {
-          return;
-        }
-        requestTempLists.add(msg.retain());
-        logger.debug("[ {}{}{} ] add socks client request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+        requestTempLists.add(decryptBuf);
+        logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] add msg to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
       }
     }
-
   }
 
+  @Override
+  public void afterConn(Channel clientChannel) {
+    super.afterConn(clientChannel);
+  }
 }

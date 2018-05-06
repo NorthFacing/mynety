@@ -66,7 +66,7 @@ public class ConfigLoader {
         String value = server.getFirstChild().getNodeValue();
         switch (name) {
           case "localPort":
-            Config.LOCAL_PORT = Integer.valueOf(value);
+            Config.PROXY_PORT = Integer.valueOf(value);
             break;
           case "method":
             Config.METHOD = value;
@@ -80,7 +80,7 @@ public class ConfigLoader {
         }
       }
     }
-    logger.debug("配置加载完毕：Port={}, method={}, password={}", Config.LOCAL_PORT, Config.METHOD, Config.PASSWORD);
+    logger.debug("配置加载完毕：Port={}, method={}, password={}", Config.PROXY_PORT, Config.METHOD, Config.PASSWORD);
   }
 
 }

@@ -91,7 +91,7 @@ public class ServerMain {
           .option(ChannelOption.TCP_NODELAY, true)
           .handler(new LoggingHandler(LogLevel.DEBUG))
           .childHandler(new Initializer());
-      ChannelFuture future = serverBoot.bind(Config.LOCAL_PORT).sync();
+      ChannelFuture future = serverBoot.bind(Config.PROXY_PORT).sync();
       future.channel().closeFuture().sync();
     } catch (Exception e) {
       logger.error("ss服务端启动出错：：", e);

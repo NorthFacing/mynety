@@ -147,18 +147,18 @@ public class ConfigLoader {
         String value = node.getFirstChild().getNodeValue();
         switch (nodeName) {
           case "public":
-            ClientConfig.PUBLIC = Boolean.valueOf(value);
+            ClientConfig.IS_PUBLIC = Boolean.valueOf(value);
             break;
           case "socksLocalPort":
             try {
-              ClientConfig.SOCKS_LOCAL_PORT = Integer.valueOf(value);
+              ClientConfig.SOCKS_PROXY_PORT = Integer.valueOf(value);
             } catch (Exception e) {
               logger.error("本地端口配置 socksLocalPort 参数不合法，将使用默认端口1086！");
             }
             break;
           case "httpLocalPort":
             try {
-              ClientConfig.HTTP_LOCAL_PORT = Integer.valueOf(value);
+              ClientConfig.HTTP_PROXY_PORT = Integer.valueOf(value);
             } catch (Exception e) {
               logger.error("本地端口配置 httpLocalPort 参数不合法，将使用默认端口1087！");
             }

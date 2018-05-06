@@ -23,8 +23,6 @@
  */
 package com.shadowsocks.client.socks5Wrapper;
 
-import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_2Socks5Handler;
-import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
@@ -34,19 +32,13 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.socks.SocksAddressType;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
 import static com.shadowsocks.common.constants.Constants.IPV4_PATTERN;
 import static com.shadowsocks.common.constants.Constants.IPV6_PATTERN;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-import static com.shadowsocks.common.constants.Constants.LOG_MSG_IN;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 
 /**
@@ -126,37 +118,13 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
           clientChannel, LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
       channelClose(ctx);
     } else {
-
-      // 连接完成第一步，就是 消费缓存请求信息
-      // TODO 放在这里处理嵌套太多，需要优化（弄个after connection 类来处理？状态机？）
-      inRelayHandler.consumeHttpObjectsTemp();
-      // 连接完成第二步，配置处理器，以及是否需要回复user-agent相关信息
-      if (inRelayHandler instanceof Http_1_1_2Socks5Handler) {
-        // ———— 3. 移除 inbound 和 outbound 双方的编解码（移除可以提效，不移除可以编辑请求头信息）
-        clientChannel.pipeline().remove(HttpServerCodec.class);
-        logger.debug("[ {}{}{} ] http1.1 clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, ctx.channel());
-        ctx.channel().pipeline().remove(HttpClientCodec.class);
-        logger.debug("[ {}{}{} ] http1.1 remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, ctx.channel());
-      } else if (inRelayHandler instanceof HttpTunnel2Socks5Handler) {
-        // ———— 2. 告诉客户端建立隧道成功
-        DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
-        clientChannel.writeAndFlush(response);
-        logger.debug("[ {}{}{} ] httpTunnel connect socks success", clientChannel, LOG_MSG_IN, ctx.channel());
-        // ———— 3. 移除 inbound 和 outbound 双方的编解码(tunnel代理如果没有增加ssl解析，那么就必须移除HTTP编解码器)
-        clientChannel.pipeline().remove(HttpServerCodec.class);
-        logger.debug("[ {}{}{} ] clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, ctx.channel());
-        ctx.channel().pipeline().remove(HttpClientCodec.class);
-        logger.debug("[ {}{}{} ] remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, ctx.channel());
-      }
-
       // socks5 连接并初始化成功，从现在开始可以使用此socks通道进行数据传输了
-      inRelayHandler.setConnected(true);
       logger.info("[ {}{}{} ]【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
           clientChannel, LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
+      // 连接成功第一步，消费缓存数据
+      inRelayHandler.afterConn(clientChannel);
       // 移除socks5连接相关处理器
       ctx.pipeline().remove(this);
-      // 激活下个handler的active方法，一般请情况下就是 remoteHandler 了
-      ctx.fireChannelActive();
     }
   }
 

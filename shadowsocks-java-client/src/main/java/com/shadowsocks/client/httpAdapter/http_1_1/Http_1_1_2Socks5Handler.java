@@ -23,7 +23,6 @@
  */
 package com.shadowsocks.client.httpAdapter.http_1_1;
 
-import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
@@ -35,15 +34,20 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 
+import static com.shadowsocks.client.config.ClientConfig.HTTP_2_SOCKS5;
+import static com.shadowsocks.client.config.ClientConfig.SOCKS_PROXY_PORT;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
+import static com.shadowsocks.common.constants.Constants.LOOPBACK_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.PATH_PATTERN;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
@@ -65,7 +69,8 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
   private DefaultHttpRequest httpRequest;
 
   public Http_1_1_2Socks5Handler(DefaultHttpRequest httpRequest) {
-    this.httpRequest = httpRequest;
+    this.httpRequest = httpRequest; // 解析出地址，建立socks连接
+    requestTempLists.add(httpRequest); // 连接建立之后，转发到目标地址
   }
 
   @Override
@@ -85,9 +90,9 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
 
     String connHost;
     int connPort;
-    if (ClientConfig.HTTP_2_SOCKS5) {
-      connHost = ClientConfig.LOCAL_ADDRESS;
-      connPort = ClientConfig.SOCKS_LOCAL_PORT;
+    if (HTTP_2_SOCKS5) {
+      connHost = LOOPBACK_ADDRESS;
+      connPort = SOCKS_PROXY_PORT;
     } else {
       connHost = address.getHost();
       connPort = address.getPort();
@@ -132,6 +137,20 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
         }
       }
     }
+  }
+
+  @Override
+  public void afterConn(Channel clientChannel) {
+    // 连接成功标记
+    isConnected = true;
+    Channel remoteClient = remoteChannelRef.get();
+    // 消费缓存信息
+    super.afterConn(clientChannel);
+    // inbound 和 outbound 双方的编解码（移除可以提效，不移除可以编辑请求头信息）
+    clientChannel.pipeline().remove(HttpServerCodec.class);
+    logger.debug("[ {}{}{} ] http1.1 clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, remoteClient);
+    remoteClient.pipeline().remove(HttpClientCodec.class);
+    logger.debug("[ {}{}{} ] http1.1 remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, remoteClient);
   }
 
   private Address resolveHttpProxyPath(String address) {

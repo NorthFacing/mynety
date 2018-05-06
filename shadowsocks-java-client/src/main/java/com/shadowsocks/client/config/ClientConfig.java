@@ -45,14 +45,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class ClientConfig {
 
-  public static final String LOCAL_ADDRESS = "127.0.0.1";
   /**
    * 是否开放本机代理给其他设备使用
    */
-  public static boolean PUBLIC = true;
+  public static boolean IS_PUBLIC = true;
 
-  public static int SOCKS_LOCAL_PORT = 1086;
-  public static int HTTP_LOCAL_PORT = 1087;
+  public static int SOCKS_PROXY_PORT = 1086;
+  public static int HTTP_PROXY_PORT = 1087;
 
   // 默认为true，所有 HTTP 请求都进行socks5代理转发
   public static boolean HTTP_2_SOCKS5 = true;

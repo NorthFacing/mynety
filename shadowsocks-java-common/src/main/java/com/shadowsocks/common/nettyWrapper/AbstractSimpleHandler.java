@@ -44,19 +44,19 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{} ] {} channel active...", ctx.channel(), LOG_MSG, getSimpleName(this));
+    logger.info("[ {}{} ] [{}-channelActive] channel active...", ctx.channel(), LOG_MSG, getSimpleName(this));
     super.channelActive(ctx);
   }
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     channelClose(ctx);
-    logger.info("[ {}{} ] {} channel inactive, channel closed...", ctx.channel(), LOG_MSG, getSimpleName(this));
+    logger.info("[ {}{} ] [{}-channelInactive] channel inactive, channel closed...", ctx.channel(), LOG_MSG, getSimpleName(this));
   }
 
   @Override
   public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    logger.debug("[ {}{} ] {} channelReadComplete...", ctx.channel(), LOG_MSG, getSimpleName(this));
+    logger.debug("[ {}{} ] [{}-channelReadComplete] channelReadComplete...", ctx.channel(), LOG_MSG, getSimpleName(this));
     super.channelReadComplete(ctx);
   }
 

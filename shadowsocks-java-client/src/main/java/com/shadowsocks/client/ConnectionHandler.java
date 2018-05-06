@@ -29,7 +29,7 @@ import com.shadowsocks.client.utils.PacFilter;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.CryptFactory;
 import com.shadowsocks.common.encryption.ICrypt;
-import com.shadowsocks.common.nettyWrapper.AbstractInRelayHandler;
+import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -55,6 +55,7 @@ import static com.shadowsocks.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_IN;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
+import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
 import static com.shadowsocks.common.constants.Constants.SOCKS5_REQUEST;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
@@ -66,7 +67,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.1
  */
 @Slf4j
-public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
+public final class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
 
   private boolean isProxy;
 
@@ -75,6 +76,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
     logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
 
     Channel clientChannel = ctx.channel();
+    clientChannel.attr(REQUEST_TEMP_LIST).set(requestTempLists);
 
     final Server server = ClientConfig.getAvailableServer();
     if (server == null) {
@@ -132,7 +134,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
           logger.debug("[ {}{}{} ] socks client connect {} success: {}:{}", clientChannel, LOG_MSG, future.channel(), isProxy ? "socks server" : "dst host", connHost, connPort);
           DefaultSocks5CommandResponse socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
           clientChannel.writeAndFlush(socks5cmdResponse);  // 告诉客户端连接成功
-          logger.debug("[ {}{}{} ] socks client connection success response to user-agent", clientChannel, LOG_MSG_IN, future.channel());
+          logger.debug("[ {}{}{} ] socks client connection success response to user-agent: {}", clientChannel, LOG_MSG_IN, future.channel(), socks5cmdResponse);
         } else {
           logger.debug("[ {}{}{} ] socks client connect {} failed: {}:{}", clientChannel, LOG_MSG, future.channel(), isProxy ? "socks server" : "dst host", connHost, connPort);
           future.cancel(true);
@@ -157,33 +159,40 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
   @Override
   public void channelRead0(final ChannelHandlerContext ctx, final ByteBuf msg) throws Exception {
     Channel remoteChannel = remoteChannelRef.get();
-    logger.debug("[ {}{}{} ] socks client connection handler channelRead: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, msg.readableBytes(), msg);
+    logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] socks client connection handler channelRead: {} bytes => {}", ctx.channel(), LOG_MSG, remoteChannel, msg.readableBytes(), msg);
     if (msg.readableBytes() <= 0) {
       return;
     }
+
     try (ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream()) {
       if (!msg.hasArray()) {
         int len = msg.readableBytes();
         byte[] temp = new byte[len];
         msg.getBytes(0, temp);
-
         if (isProxy) {
-          logger.debug("[ {}{}{} ] msg need to encrypt...", ctx.channel(), LOG_MSG, remoteChannel);
+          logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] msg need to encrypt...", ctx.channel(), LOG_MSG, remoteChannel);
           ICrypt crypt = ctx.channel().attr(Constants.ATTR_CRYPT_KEY).get();
           crypt.encrypt(temp, temp.length, _remoteOutStream);
           temp = _remoteOutStream.toByteArray();
         }
         ByteBuf encryptedBuf = Unpooled.wrappedBuffer(temp);
-        remoteChannel.writeAndFlush(encryptedBuf);
-        logger.debug("[ {}{}{} ] socks client write to {} channel: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, isProxy ? "socks server" : "dst host", encryptedBuf);
+        synchronized (requestTempLists) {
+          if (remoteChannel != null) {
+            remoteChannel.writeAndFlush(encryptedBuf);
+            logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] write msg to {} channel: {} bytes => {}",
+                ctx.channel(), LOG_MSG_OUT, remoteChannelRef.get(), isProxy ? "socks server" : "dst host", msg.readableBytes(), msg);
+          } else {
+            requestTempLists.add(encryptedBuf);
+            logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] add msg to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+          }
+        }
       } else {
-        logger.warn("[ {}{}{} ] socks client unhandled msg: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+        logger.warn("[ {}{}{} ] [ConnectionHandler-channelRead0] socks client unhandled msg: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
       }
     } catch (Exception e) {
       logger.error(ctx.channel() + LOG_MSG_OUT + remoteChannel + " Send data to remoteServer error: ", e);
       channelClose(ctx);
     }
-
   }
 
   /**

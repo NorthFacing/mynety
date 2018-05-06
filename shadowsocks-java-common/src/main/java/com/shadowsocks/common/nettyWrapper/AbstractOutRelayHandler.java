@@ -28,16 +28,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
-import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
+ * 远程连接处理器：
  * 1.覆写增加了LOG日志和channel关闭方法
- * 2.缓存请求的处理
  *
  * @author Bob.Zhu
  * @Email 0haizhu0@gmail.com
@@ -47,32 +43,15 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 public abstract class AbstractOutRelayHandler<I> extends AbstractSimpleHandler<I> {
 
   protected final Channel clientChannel;
-  protected final List requestTempList;
 
   public AbstractOutRelayHandler(Channel clientChannel) {
     this.clientChannel = clientChannel;
-    this.requestTempList = clientChannel.attr(REQUEST_TEMP_LIST).get();
   }
-
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{}{} ] {} channel active...", clientChannel, LOG_MSG, ctx.channel(), getSimpleName(this));
-    if (requestTempList != null) {
-      requestTempList.forEach(msg -> {
-        ctx.channel().writeAndFlush(msg);
-        logger.debug("[ {}{}{} ] write temp msg to des host: {}", clientChannel, LOG_MSG_OUT, ctx.channel(), msg);
-      });
-      requestTempList.clear();
-    } else {
-      logger.info("[ {}{}{} ] temp msg list is null...", clientChannel, LOG_MSG_OUT, ctx.channel());
-    }
-  }
-
 
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     channelClose(ctx);
-    logger.info("[ {}{}{} ] {} channel inactive, channel closed...", clientChannel, LOG_MSG, ctx.channel(), getSimpleName(this));
+    logger.info("[ {}{}{} ] [{}-channelInactive] channel inactive, channel closed...", clientChannel, LOG_MSG, ctx.channel(), getSimpleName(this));
   }
 
   @Override

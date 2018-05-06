@@ -36,16 +36,23 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.DefaultHttpRequest;
+import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Matcher;
 
+import static com.shadowsocks.client.config.ClientConfig.SOCKS_PROXY_PORT;
+import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
+import static com.shadowsocks.common.constants.Constants.LOOPBACK_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.TUNNEL_ADDR_PATTERN;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -66,7 +73,8 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
   private DefaultHttpRequest httpRequest;
 
   public HttpTunnel2Socks5Handler(DefaultHttpRequest httpRequest) {
-    this.httpRequest = httpRequest;
+    this.httpRequest = httpRequest; // 解析出地址，建立socks连接
+    requestTempLists.add(httpRequest); // 连接建立之后，转发到目标地址
   }
 
   @Override
@@ -87,8 +95,8 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
     String connHost;
     int connPort;
     if (ClientConfig.HTTP_2_SOCKS5) {
-      connHost = ClientConfig.LOCAL_ADDRESS;
-      connPort = ClientConfig.SOCKS_LOCAL_PORT;
+      connHost = LOOPBACK_ADDRESS;
+      connPort = SOCKS_PROXY_PORT;
     } else {
       connHost = address.getHost();
       connPort = address.getPort();
@@ -137,6 +145,25 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
         }
       }
     }
+  }
+
+  @Override
+  public void afterConn(Channel clientChannel) {
+    // 连接成功
+    isConnected = true;
+    Channel remoteClient = remoteChannelRef.get();
+    // 消费缓存信息
+    super.afterConn(clientChannel);
+    // 告诉客户端建立隧道成功（直接将后续数据进行转发）
+    DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
+    clientChannel.writeAndFlush(response);
+    logger.debug("[ {}{}{} ] httpTunnel connect socks success, write response to user-agent: {}", clientChannel, LOG_MSG, remoteClient, response);
+
+    // ———— 3. 移除 inbound 和 outbound 双方的编解码(tunnel代理如果没有增加ssl解析，那么就必须移除HTTP编解码器)
+    clientChannel.pipeline().remove(HttpServerCodec.class);
+    logger.debug("[ {}{}{} ] clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, remoteClient);
+    remoteClient.pipeline().remove(HttpClientCodec.class);
+    logger.debug("[ {}{}{} ] remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, remoteClient);
   }
 
   private Address resolveTunnelAddr(String addr) {

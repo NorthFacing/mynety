@@ -56,10 +56,10 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
       if (HTTP_1_1 == httpVersion) {
         if (HttpMethod.CONNECT == httpRequest.method()) {
           ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnel2Socks5Handler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by http msg protocol: HttpTunnel2Socks5Handler", ctx.channel(), LOG_MSG);
+          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnel2Socks5Handler", ctx.channel(), LOG_MSG);
         } else {
           ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_2Socks5Handler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by http msg protocol: Http_1_1_2Socks5Handler", ctx.channel(), LOG_MSG);
+          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_2Socks5Handler", ctx.channel(), LOG_MSG);
         }
       } else {
         logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);

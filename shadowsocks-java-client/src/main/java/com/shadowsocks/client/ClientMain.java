@@ -44,6 +44,10 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SystemUtils;
 
+import static com.shadowsocks.client.config.ClientConfig.IS_PUBLIC;
+import static com.shadowsocks.client.config.ClientConfig.SOCKS_PROXY_PORT;
+import static com.shadowsocks.common.constants.Constants.ALL_LOCAL_ADDRESS;
+import static com.shadowsocks.common.constants.Constants.LOOPBACK_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.bossGroupClass;
 import static com.shadowsocks.common.constants.Constants.channelClass;
 import static com.shadowsocks.common.constants.Constants.serverChannelClass;
@@ -94,8 +98,8 @@ public final class ClientMain {
             .option(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.DEBUG))
             .childHandler(new PipelineInitializer());
-        String sLocalHost = ClientConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
-        ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_LOCAL_PORT).sync();
+        String sLocalHost = IS_PUBLIC ? ALL_LOCAL_ADDRESS : LOOPBACK_ADDRESS;
+        ChannelFuture sFuture = sServerBoot.bind(sLocalHost, SOCKS_PROXY_PORT).sync();
         sFuture.channel().closeFuture().sync();
       } catch (Exception e) {
         logger.error("", e);
@@ -117,8 +121,8 @@ public final class ClientMain {
             .option(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.DEBUG))
             .childHandler(new HttpInboundInitializer());
-        String hLocalHost = ClientConfig.PUBLIC ? "0.0.0.0" : "127.0.0.1";
-        ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_LOCAL_PORT).sync();
+        String hLocalHost = IS_PUBLIC ? ALL_LOCAL_ADDRESS : LOOPBACK_ADDRESS;
+        ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_PROXY_PORT).sync();
         hFuture.channel().closeFuture().sync();
       } catch (Exception e) {
         logger.error("", e);

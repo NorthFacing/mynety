@@ -25,8 +25,6 @@ package com.shadowsocks.common.constants;
 
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.encryption.ICrypt;
-import io.netty.channel.ChannelHandler;
-import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.util.AttributeKey;
@@ -42,6 +40,10 @@ import java.util.regex.Pattern;
  * @since v0.0.1
  */
 public class Constants {
+
+  public static final String LOOPBACK_ADDRESS = "127.0.0.1";
+  public static final String ALL_LOCAL_ADDRESS = "0.0.0.0";
+
 
   public static final String LOG_MSG = " <==> ";
   public static final String LOG_MSG_OUT = " >>> ";

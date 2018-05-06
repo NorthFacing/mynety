@@ -41,7 +41,6 @@ import java.net.InetAddress;
 import static com.shadowsocks.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * 地址解析处理器
@@ -59,13 +58,13 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, ctx.channel(), getSimpleName(this));
+    logger.info("[ {}{}{} ] [AddressHandler-channelActive] channel active...", ctx.channel(), LOG_MSG, ctx.channel());
     ctx.channel().attr(ATTR_CRYPT_KEY).setIfAbsent(CryptFactory.get(Config.METHOD, Config.PASSWORD));
   }
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-    logger.debug("[ {}{} ] AddressHandler channelRead0 encrypted msg: {} readableBytes => {}", ctx.channel(), LOG_MSG, msg.readableBytes(), msg);
+    logger.debug("[ {}{} ] [AddressHandler-channelRead0] AddressHandler channelRead0 encrypted msg: {} readableBytes => {}", ctx.channel(), LOG_MSG, msg.readableBytes(), msg);
     ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
 
     if (msg.readableBytes() <= 0) {
@@ -76,7 +75,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     if (dataBuff.readableBytes() < 2) {
       return;
     }
-    logger.debug("[ {}{} ] AddressHandler channelRead0 decrypted msg: {} readableBytes => {}", ctx.channel(), LOG_MSG, dataBuff.readableBytes(), dataBuff);
+    logger.debug("[ {}{} ][AddressHandler-channelRead0] decrypted msg: {} readableBytes => {}", ctx.channel(), LOG_MSG, dataBuff.readableBytes(), dataBuff);
     String host = null;
     int port = 0;
     int addressType = dataBuff.getUnsignedByte(0);
@@ -103,13 +102,13 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     } else {
       throw new IllegalStateException("unknown address type: " + addressType);
     }
-    logger.debug("[ {}{} ] AddressHandler parse address success: type={} => {}:{}", ctx.channel(), LOG_MSG, addressType, host, port);
+    logger.debug("[ {}{} ] [AddressHandler-channelRead0] parse address success: type={} => {}:{}", ctx.channel(), LOG_MSG, addressType, host, port);
     ctx.channel().attr(REQUEST_ADDRESS).set(new Address(host, port));
-    logger.debug("[ {}{} ] AddressHandler channelRead0 msg left after parse: {} readableBytes => {}", ctx.channel(), LOG_MSG, dataBuff.readableBytes(), dataBuff);
+    logger.debug("[ {}{} ] [AddressHandler-channelRead0] msg left after parse: {} readableBytes => {}", ctx.channel(), LOG_MSG, dataBuff.readableBytes(), dataBuff);
     ctx.channel().pipeline().addLast(new ConnectionHandler(dataBuff.retain())); // 黏包的数据加入到请求缓存列表
-    logger.info("[ {}{} ] add handler: ConnectionHandler", ctx.channel(), LOG_MSG);
+    logger.info("[ {}{} ] [AddressHandler-channelRead0] add handler: ConnectionHandler", ctx.channel(), LOG_MSG);
     ctx.channel().pipeline().remove(this);
-    logger.info("[ {}{} ] remove handler: AddressHandler", ctx.channel(), LOG_MSG);
+    logger.info("[ {}{} ] [AddressHandler-channelRead0] remove handler: AddressHandler", ctx.channel(), LOG_MSG);
     ctx.pipeline().fireChannelActive();
   }
 
