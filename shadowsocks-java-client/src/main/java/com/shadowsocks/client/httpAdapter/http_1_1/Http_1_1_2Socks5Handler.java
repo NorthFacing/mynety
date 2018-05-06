@@ -42,13 +42,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 
-import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 import static com.shadowsocks.common.constants.Constants.PATH_PATTERN;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
-import static com.shadowsocks.common.constants.Constants.SOCKS5_CONNECTED;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -64,24 +62,26 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 @Slf4j
 public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObject> {
 
-  private boolean firstRequest = true; // 是否是第一次请求
+  private DefaultHttpRequest httpRequest;
+
+  public Http_1_1_2Socks5Handler(DefaultHttpRequest httpRequest) {
+    this.httpRequest = httpRequest;
+  }
 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
     Channel clientChannel = ctx.channel();
 
-    DefaultHttpRequest httpRequest = ctx.channel().attr(HTTP_REQUEST).get();
-
-    Address fullPath = resolveHttpProxyPath(httpRequest.uri());
-    clientChannel.attr(REQUEST_ADDRESS).set(fullPath);
+    Address address = resolveHttpProxyPath(httpRequest.uri());
+    clientChannel.attr(REQUEST_ADDRESS).set(address);
     clientChannel.attr(REQUEST_TEMP_LIST).set(requestTempLists);
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
         .channel(Constants.channelClass)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
-        .handler(new HttpOutboundInitializer(clientChannel, this));
+        .handler(new HttpOutboundInitializer(this, clientChannel));
 
     String connHost;
     int connPort;
@@ -89,8 +89,8 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
       connHost = ClientConfig.LOCAL_ADDRESS;
       connPort = ClientConfig.SOCKS_LOCAL_PORT;
     } else {
-      connHost = fullPath.getHost();
-      connPort = fullPath.getPort();
+      connHost = address.getHost();
+      connPort = address.getPort();
     }
     try {
       ChannelFuture channelFuture = remoteBootStrap.connect(connHost, connPort);
@@ -115,9 +115,10 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+    logger.debug("[ {}{}{} ] http1.1 to socks handler receive http msg: {}", ctx.channel(), LOG_MSG, remoteChannelRef.get(), msg);
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
-      if (remoteChannel != null && Boolean.valueOf(remoteChannel.attr(SOCKS5_CONNECTED).get())) {
+      if (isConnected) {
         ReferenceCountUtil.retain(msg);
         remoteChannel.writeAndFlush(msg);
         logger.debug("[ {}{}{} ] transfer http1.1 request to socks: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, msg);
@@ -133,29 +134,8 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
     }
   }
 
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    Channel remoteChannel = remoteChannelRef.get();
-    if (firstRequest && remoteChannel != null
-        && Boolean.valueOf(remoteChannel.attr(SOCKS5_CONNECTED).get())) {
-      // 先消费完当前缓存的数据，然后将后续的消息直接透传即可
-      // ———— 1. 消费当前缓存消息（基本上应该是建立CONNECT连接所需要的消息）
-      logger.debug("[ {}{}{} ] consume temp http1.1 request over socks5 to dst host, msg num: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, requestTempLists.size());
-      super.consumeHttpObjectsTemp(remoteChannel);
-    }
-    if (firstRequest) {
-      // ———— 2. 一般HTTP代理无需建立成功的时候返回200，只需要将最后的结果返回透传即可
-      // ———— 3. 移除 inbound 和 outbound 双方的编解码（移除可以提效，不移除可以编辑请求头信息）
-//      ctx.channel().pipeline().remove(HttpServerCodec.class);
-//      logger.debug("[ {}{}{} ] http1.1 clientChannel remove handler: HttpClientCodec", ctx.channel(), LOG_MSG, remoteChannel);
-//      remoteChannel.pipeline().remove(HttpClientCodec.class);
-//      logger.debug("[ {}{}{} ] http1.1 remoteChannel remove handler: HttpClientCodec", ctx.channel(), LOG_MSG, remoteChannel);
-      firstRequest = false;
-    }
-  }
-
-  private Address resolveHttpProxyPath(String fullPath) {
-    Matcher matcher = PATH_PATTERN.matcher(fullPath);
+  private Address resolveHttpProxyPath(String address) {
+    Matcher matcher = PATH_PATTERN.matcher(address);
     if (matcher.find()) {
       String scheme = matcher.group(1);
       String host = matcher.group(2);
@@ -163,7 +143,7 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
       String path = matcher.group(5);
       return new Address(scheme, host, port, path);
     } else {
-      throw new IllegalStateException("Illegal http proxy path: " + fullPath);
+      throw new IllegalStateException("Illegal http proxy path: " + address);
     }
   }
 

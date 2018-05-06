@@ -23,7 +23,6 @@
  */
 package com.shadowsocks.common.nettyWrapper;
 
-import io.netty.channel.Channel;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +44,11 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandler<I> {
 
   /**
+   * 建立socks5连接需要时间，此字段标记远程连接是否建立完成
+   */
+  protected boolean isConnected = false;
+
+  /**
    * 缓存请求：
    * 1.HTTP请求下，HttpRequest,HttpContent,LastHttpContent 分开请求的情况
    * 2.HTTP请求下，并发请求的情况
@@ -54,14 +58,12 @@ public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandl
 
   /**
    * 消费之前缓存的HTTP相关请求
-   *
-   * @param remoteChannel outboundChannel，连接远程服务器的channel
    */
-  public void consumeHttpObjectsTemp(Channel remoteChannel) {
+  public void consumeHttpObjectsTemp() {
     synchronized (requestTempLists) {
       requestTempLists.forEach(msg -> {
-        remoteChannel.writeAndFlush(msg);
-        logger.debug("[ {}{} ] consume temp httpObjects: {}", LOG_MSG_OUT, remoteChannel, msg);
+        remoteChannelRef.get().writeAndFlush(msg);
+        logger.debug("[ {}{} ] consume temp httpObjects: {}", LOG_MSG_OUT, remoteChannelRef.get(), msg);
       });
       requestTempLists.clear();
     }
@@ -75,6 +77,10 @@ public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandl
       requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
       requestTempLists.clear();
     }
+  }
+
+  public void setConnected(boolean isConnected) {
+    this.isConnected = isConnected;
   }
 
 }

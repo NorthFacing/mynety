@@ -29,6 +29,11 @@ mvn versions:set -DnewVersion=0.0.4-SNAPSHOT
     if "%JAVACMD%"=="" set JAVACMD=..\lib\jre8\bin\java
     ```
 
+## DEBUG
+
+```bash
+com.shadowsocks.common.utils.ChannelUtils.
+```
 
 
 

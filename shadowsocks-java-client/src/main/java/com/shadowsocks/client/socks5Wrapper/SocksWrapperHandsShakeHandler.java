@@ -25,6 +25,7 @@ package com.shadowsocks.client.socks5Wrapper;
 
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
+import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -43,6 +44,7 @@ public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf
 
   private final ByteBuf buf;
   private Channel clientChannel;
+  private TempAbstractInRelayHandler inRelayhandler;
 
   /**
    * 发送的消息格式：
@@ -52,8 +54,9 @@ public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf
    * | 1  |    1     | 1 to 255 |
    * +----+----------+----------+
    */
-  public SocksWrapperHandsShakeHandler(Channel clientChannel) {
+  public SocksWrapperHandsShakeHandler(TempAbstractInRelayHandler inRelayhandler, Channel clientChannel) {
     this.clientChannel = clientChannel;
+    this.inRelayhandler = inRelayhandler;
     buf = Unpooled.buffer(3);
     buf.writeByte(0x05);
     buf.writeByte(0x01);
@@ -87,16 +90,12 @@ public class SocksWrapperHandsShakeHandler extends AbstractSimpleHandler<ByteBuf
       ctx.close();
     } else {
       logger.info("[ {}{}{} ]【socksWrapper】【握手】处理器收到响应消息：ver={},method={}", clientChannel, Constants.LOG_MSG, ctx.channel(), ver, method);
+      ctx.pipeline().addAfter(ctx.name(), null, new SocksWrapperConnectHandler(inRelayhandler, clientChannel));
+      logger.info("[ {}{}{} ] add handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
+      ctx.pipeline().remove(this);
+      logger.info("[ {}{}{} ] remove handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ctx.channel());
+      ctx.fireChannelActive();
     }
-  }
-
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    ctx.pipeline().addAfter(ctx.name(), null, new SocksWrapperConnectHandler(clientChannel));
-    logger.info("[ {}{}{} ] add handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
-    ctx.pipeline().remove(this);
-    logger.info("[ {}{}{} ] remove handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ctx.channel());
-    ctx.pipeline().fireChannelActive();
   }
 
 }

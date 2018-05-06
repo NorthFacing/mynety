@@ -26,18 +26,15 @@ package com.shadowsocks.client.httpAdapter;
 import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_2Socks5Handler;
 import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.client.socks5Wrapper.SocksWrapperHandsShakeHandler;
+import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.LinkedList;
-
-import static com.shadowsocks.common.constants.Constants.EXTRA_OUT_RELAY_HANDLER;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
@@ -51,38 +48,38 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
 
   private Channel clientChannel;
-  private ChannelHandler handler;
+  private TempAbstractInRelayHandler inRelayhandler;
 
-  public HttpOutboundInitializer(Channel clientChannel, ChannelHandler handler) {
+  public HttpOutboundInitializer(TempAbstractInRelayHandler inRelayhandler, Channel clientChannel) {
     this.clientChannel = clientChannel;
-    this.handler = handler;
+    this.inRelayhandler = inRelayhandler;
   }
 
   @Override
   @SuppressWarnings("Duplicates")
   protected void initChannel(SocketChannel ch) throws Exception {
-    LinkedList<ChannelHandler> handlers = new LinkedList<>();
-    // HTTP1.1
-    if (handler instanceof Http_1_1_2Socks5Handler) {
-      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(clientChannel));
-      logger.info("[ {}{}{} ] out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
-      handlers.add(new HttpClientCodec());
-      ch.pipeline().addLast(new HttpRemoteHandler(clientChannel));
-      logger.info("[ {}{}{} ] out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
-    }
     // HTTP tunnel
-    else if (handler instanceof HttpTunnel2Socks5Handler) {
-      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(clientChannel));
-      logger.info("[ {}{}{} ] out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
-      handlers.add(new HttpClientCodec());
+    if (inRelayhandler instanceof HttpTunnel2Socks5Handler) {
+      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(inRelayhandler, clientChannel));
+      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
+      ch.pipeline().addLast(new HttpClientCodec());
+      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
       ch.pipeline().addLast(new HttpRemoteHandler(clientChannel));
-      logger.info("[ {}{}{} ] out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
+      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
+    }
+    // HTTP1.1
+    else if (inRelayhandler instanceof Http_1_1_2Socks5Handler) {
+      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(inRelayhandler, clientChannel));
+      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
+      ch.pipeline().addLast(new HttpClientCodec());
+      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
+      ch.pipeline().addLast(new HttpRemoteHandler(clientChannel));
+      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
     }
     // to be supported...
     else {
-      logger.error("[ {}{}{} ] unhandled handler: {}", clientChannel, LOG_MSG, ch, handler.getClass().getSimpleName());
+      logger.error("[ {}{}{} ] unhandled inRelayhandler: {}", clientChannel, LOG_MSG, ch, inRelayhandler.getClass().getSimpleName());
     }
-    clientChannel.attr(EXTRA_OUT_RELAY_HANDLER).set(handlers);
   }
 
   @Override

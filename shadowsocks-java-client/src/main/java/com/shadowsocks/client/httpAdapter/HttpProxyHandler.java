@@ -32,11 +32,8 @@ import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.LastHttpContent;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.shadowsocks.common.constants.Constants.HTTP_REQUEST;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -52,28 +49,29 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+    logger.debug("[ {}{} ] http proxy receive first http msg: {}", ctx.channel(), LOG_MSG, msg);
     if (msg instanceof DefaultHttpRequest) {
       DefaultHttpRequest httpRequest = (DefaultHttpRequest) msg;
       HttpVersion httpVersion = httpRequest.protocolVersion();
       if (HTTP_1_1 == httpVersion) {
         if (HttpMethod.CONNECT == httpRequest.method()) {
-          ctx.pipeline().addLast(new HttpTunnel2Socks5Handler());
-          logger.info("[ {}{} ] choose and add handler by protocol: HttpTunnel2Socks5Handler", ctx.channel(), LOG_MSG);
+          ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnel2Socks5Handler(httpRequest));
+          logger.info("[ {}{} ] choose and add handler by http msg protocol: HttpTunnel2Socks5Handler", ctx.channel(), LOG_MSG);
         } else {
-          ctx.pipeline().addLast(new Http_1_1_2Socks5Handler());
-          logger.info("[ {}{} ] choose and add handler by protocol: Http_1_1_2Socks5Handler", ctx.channel(), LOG_MSG);
+          ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_2Socks5Handler(httpRequest));
+          logger.info("[ {}{} ] choose and add handler by http msg protocol: Http_1_1_2Socks5Handler", ctx.channel(), LOG_MSG);
         }
       } else {
         logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
         ctx.close();
       }
-      ReferenceCountUtil.retain(httpRequest);
-      ctx.channel().attr(HTTP_REQUEST).set(httpRequest);
       ctx.pipeline().remove(this);
       logger.info("[ {}{} ] remove handler: HttpProxyHandler", ctx.channel(), LOG_MSG);
-      ctx.pipeline().fireChannelActive();
-    } else if (LastHttpContent.class.isAssignableFrom(msg.getClass())) {
+      // TODO 不增加不会触发下个handler 的 active 方法？
+      ctx.fireChannelActive();
+    } else { // 如果第一次请求不是 DefaultHttpRequest 那么就说明HTTP请求异常
       logger.error("[ {}{} ] unhandled msg, type: {}", ctx.channel(), LOG_MSG, msg.getClass().getTypeName());
+      channelClose(ctx);
     }
 
   }
