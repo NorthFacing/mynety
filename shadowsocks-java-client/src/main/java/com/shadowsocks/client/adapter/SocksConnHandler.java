@@ -21,12 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.socks5Wrapper;
+package com.shadowsocks.client.adapter;
 
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
-import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -47,11 +46,10 @@ import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
  * @since v0.0.4
  */
 @Slf4j
-public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
+public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
 
   private final ByteBuf buf;
   private Channel clientChannel;
-  private TempAbstractInRelayHandler inRelayHandler;
 
   /**
    * 发送的消息格式：
@@ -61,9 +59,8 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
    * | 1  |  1  | X'00' |  1   | Variable |    2     |
    * +----+-----+-------+------+----------+----------+
    */
-  public SocksWrapperConnectHandler(TempAbstractInRelayHandler inRelayHandler, Channel clientChannel) {
+  public SocksConnHandler(Channel clientChannel) {
     this.clientChannel = clientChannel;
-    this.inRelayHandler = inRelayHandler;
 
     Address address = clientChannel.attr(REQUEST_ADDRESS).get();
     buf = Unpooled.buffer();
@@ -123,7 +120,7 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
           clientChannel, LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
       // 移除socks5连接相关处理器
       ctx.pipeline().remove(this);
-      logger.info("[ {}{}{} ] 【socksWrapper】remove handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
+      logger.info("[ {}{}{} ] 【socksWrapper】remove handlers: SocksConnHandler", clientChannel, LOG_MSG, ctx.channel());
       // 调用remoteHandler的 channelActive方法发送缓存数据（缓存的是数据是编解码之后可以直接发送的数据）
       ctx.pipeline().fireChannelActive();
       logger.info("[ {}{}{} ] 【socksWrapper】what's done is done, the remote channelActive method will run next...", clientChannel, LOG_MSG, ctx.channel());

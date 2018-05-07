@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter.tunnel;
+package com.shadowsocks.client.http.tunnel;
 
-import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
+import com.shadowsocks.client.http.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;

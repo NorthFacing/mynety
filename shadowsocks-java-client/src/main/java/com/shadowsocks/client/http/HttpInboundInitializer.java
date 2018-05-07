@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter;
+package com.shadowsocks.client.http;
 
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;

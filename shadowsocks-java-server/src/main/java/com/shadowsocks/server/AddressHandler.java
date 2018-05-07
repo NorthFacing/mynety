@@ -105,7 +105,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     logger.debug("[ {}{} ] [AddressHandler-channelRead0] parse address success: type={} => {}:{}", ctx.channel(), LOG_MSG, addressType, host, port);
     ctx.channel().attr(REQUEST_ADDRESS).set(new Address(host, port));
     logger.debug("[ {}{} ] [AddressHandler-channelRead0] msg left after parse: {} readableBytes => {}", ctx.channel(), LOG_MSG, dataBuff.readableBytes(), dataBuff);
-    ctx.channel().pipeline().addLast(new ConnectionHandler(dataBuff.retain())); // 黏包的数据加入到请求缓存列表
+    ctx.channel().pipeline().addLast(new ConnectionHandler(dataBuff)); // 黏包的数据加入到请求缓存列表
     logger.info("[ {}{} ] [AddressHandler-channelRead0] add handler: ConnectionHandler", ctx.channel(), LOG_MSG);
     ctx.channel().pipeline().remove(this);
     logger.info("[ {}{} ] [AddressHandler-channelRead0] remove handler: AddressHandler", ctx.channel(), LOG_MSG);

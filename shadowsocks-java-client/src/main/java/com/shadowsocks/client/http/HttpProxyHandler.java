@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter;
+package com.shadowsocks.client.http;
 
-import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_2Socks5Handler;
-import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
+import com.shadowsocks.client.http.http_1_1.Http_1_1_2Socks5Handler;
+import com.shadowsocks.client.http.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;

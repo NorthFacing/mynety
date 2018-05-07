@@ -25,7 +25,7 @@ package com.shadowsocks.client;
 
 import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.config.ConfigLoader;
-import com.shadowsocks.client.httpAdapter.HttpInboundInitializer;
+import com.shadowsocks.client.http.HttpInboundInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;

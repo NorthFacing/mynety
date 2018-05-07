@@ -33,3 +33,4 @@ sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
 * Traffic statistics
 * DNS config (ignores localhost,127.0.0.1 and so on)
 * Other protocols supported
+* Http keep-alive supported

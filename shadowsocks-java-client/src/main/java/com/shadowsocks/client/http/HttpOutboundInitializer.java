@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter;
+package com.shadowsocks.client.http;
 
-import com.shadowsocks.client.socks5Wrapper.SocksWrapperHandsShakeHandler;
+import com.shadowsocks.client.adapter.SocksHandsShakeHandler;
 import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
@@ -47,11 +47,11 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
 
   private Channel clientChannel;
-  private TempAbstractInRelayHandler inRelayhandler;
+  private TempAbstractInRelayHandler inRelayHandler;
 
-  public HttpOutboundInitializer(TempAbstractInRelayHandler inRelayhandler, Channel clientChannel) {
+  public HttpOutboundInitializer(TempAbstractInRelayHandler inRelayHandler, Channel clientChannel) {
     this.clientChannel = clientChannel;
-    this.inRelayhandler = inRelayhandler;
+    this.inRelayHandler = inRelayHandler;
   }
 
   @Override
@@ -59,15 +59,15 @@ public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
   protected void initChannel(SocketChannel ch) throws Exception {
     // 如果需要HTTP通过socks5加密通信，那么需要激活socks5代理
     if (HTTP_2_SOCKS5) {
-      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(inRelayhandler, clientChannel));
-      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
+      ch.pipeline().addLast(new SocksHandsShakeHandler(clientChannel));
+      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: SocksHandsShakeHandler", clientChannel, LOG_MSG, ch);
     }
 
     // 所有代理都增加 HTTP 编解码类
     ch.pipeline().addLast(new HttpClientCodec());
     logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
     // 个性化协议的个性化处理器（当前HTTP的远程连接处理器可以共用）
-    ch.pipeline().addLast(new HttpRemoteHandler(inRelayhandler, clientChannel));
+    ch.pipeline().addLast(new HttpRemoteHandler(inRelayHandler, clientChannel));
     logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
 
   }

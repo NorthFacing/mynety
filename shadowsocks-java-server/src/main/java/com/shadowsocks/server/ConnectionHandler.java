@@ -57,7 +57,7 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
 
   public ConnectionHandler(ByteBuf msg) {
     if (msg.readableBytes() > 0) {
-      requestTempLists.add(msg);
+      requestTempLists.add(msg.retain());
       logger.debug("[ {} ] [ConnectionHandler-constructor] add socks client request to temp list: {}", LOG_MSG, msg);
     } else {
       logger.debug("[ {} ] [ConnectionHandler-constructor] discard empty msg: {}", LOG_MSG, msg);

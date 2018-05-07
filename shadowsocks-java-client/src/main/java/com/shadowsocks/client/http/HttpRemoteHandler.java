@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.httpAdapter;
+package com.shadowsocks.client.http;
 
-import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
+import com.shadowsocks.client.http.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.common.nettyWrapper.AbstractOutRelayHandler;
 import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.channel.Channel;
@@ -51,11 +51,11 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 @Slf4j
 public class HttpRemoteHandler extends AbstractOutRelayHandler<Object> {
 
-  private TempAbstractInRelayHandler inRelayhandler;
+  private TempAbstractInRelayHandler inRelayHandler;
 
-  public HttpRemoteHandler(TempAbstractInRelayHandler inRelayhandler, Channel clientProxyChannel) {
+  public HttpRemoteHandler(TempAbstractInRelayHandler inRelayHandler, Channel clientProxyChannel) {
     super(clientProxyChannel);
-    this.inRelayhandler = inRelayhandler;
+    this.inRelayHandler = inRelayHandler;
   }
 
   @Override
@@ -64,10 +64,10 @@ public class HttpRemoteHandler extends AbstractOutRelayHandler<Object> {
     super.channelActive(ctx);
 
     // 连接成功
-    inRelayhandler.setConnected(true);
+    inRelayHandler.setConnected(true);
 
     // 如果是tunnel连接，则告诉客户端建立隧道成功（直接将后续数据进行转发）
-    if (inRelayhandler instanceof HttpTunnel2Socks5Handler) {
+    if (inRelayHandler instanceof HttpTunnel2Socks5Handler) {
       DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
       clientChannel.writeAndFlush(response);
       logger.debug("[ {}{}{} ] httpTunnel connect socks success, write response to user-agent: {}", clientChannel, LOG_MSG, remoteClient, response);
