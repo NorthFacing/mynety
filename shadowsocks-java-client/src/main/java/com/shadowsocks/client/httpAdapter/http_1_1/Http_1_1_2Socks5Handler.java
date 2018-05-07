@@ -34,9 +34,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.DefaultHttpRequest;
-import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +62,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObject> {
+public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<Object> {
 
   private DefaultHttpRequest httpRequest;
 
@@ -119,7 +117,7 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+  protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
     logger.debug("[ {}{}{} ] http1.1 to socks handler receive http msg: {}", ctx.channel(), LOG_MSG, remoteChannelRef.get(), msg);
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
@@ -133,24 +131,10 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<HttpObje
           requestTempLists.add(msg);
           logger.debug("[ {}{}{} ] add transfer http1.1 request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         } else {
-          logger.warn("[ {}{}{} ] unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+          logger.warn("[ {}{}{} ] http1.1 unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         }
       }
     }
-  }
-
-  @Override
-  public void afterConn(Channel clientChannel) {
-    // 连接成功标记
-    isConnected = true;
-    Channel remoteClient = remoteChannelRef.get();
-    // 消费缓存信息
-    super.afterConn(clientChannel);
-    // inbound 和 outbound 双方的编解码（移除可以提效，不移除可以编辑请求头信息）
-    clientChannel.pipeline().remove(HttpServerCodec.class);
-    logger.debug("[ {}{}{} ] http1.1 clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, remoteClient);
-    remoteClient.pipeline().remove(HttpClientCodec.class);
-    logger.debug("[ {}{}{} ] http1.1 remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, remoteClient);
   }
 
   private Address resolveHttpProxyPath(String address) {

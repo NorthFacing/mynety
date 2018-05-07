@@ -121,10 +121,12 @@ public class SocksWrapperConnectHandler extends AbstractSimpleHandler<ByteBuf> {
       // socks5 连接并初始化成功，从现在开始可以使用此socks通道进行数据传输了
       logger.info("[ {}{}{} ]【socksWrapper】【连接】处理器收到响应消息：ver={}, cmd={}, psv={}, atyp={}, dstLen={}, addr={}, port={}",
           clientChannel, LOG_MSG, ctx.channel(), ver, cmd, psv, atyp, dstLen, addr, port);
-      // 连接成功第一步，消费缓存数据
-      inRelayHandler.afterConn(clientChannel);
       // 移除socks5连接相关处理器
       ctx.pipeline().remove(this);
+      logger.info("[ {}{}{} ] 【socksWrapper】remove handlers: SocksWrapperConnectHandler", clientChannel, LOG_MSG, ctx.channel());
+      // 调用remoteHandler的 channelActive方法发送缓存数据（缓存的是数据是编解码之后可以直接发送的数据）
+      ctx.pipeline().fireChannelActive();
+      logger.info("[ {}{}{} ] 【socksWrapper】what's done is done, the remote channelActive method will run next...", clientChannel, LOG_MSG, ctx.channel());
     }
   }
 

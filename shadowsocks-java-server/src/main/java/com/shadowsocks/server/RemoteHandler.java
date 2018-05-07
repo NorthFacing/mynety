@@ -32,12 +32,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
-
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_IN;
-import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
-import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
 
 /**
  * 远程处理器，连接真正的目标地址
@@ -50,26 +46,10 @@ import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
 public final class RemoteHandler extends AbstractOutRelayHandler<ByteBuf> {
 
   private final ICrypt _crypt;
-  private final List requestTempList;
 
   public RemoteHandler(Channel clientChannel, ICrypt _crypt) {
     super(clientChannel);
     this._crypt = _crypt;
-    this.requestTempList = clientChannel.attr(REQUEST_TEMP_LIST).get();
-  }
-
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{}{} ] [RemoteHandler-channelActive] channel active...", clientChannel, LOG_MSG, ctx.channel());
-    if (requestTempList != null) {
-      requestTempList.forEach(msg -> {
-        ctx.channel().writeAndFlush(msg);
-        logger.debug("[ {}{}{} ] [RemoteHandler-channelActive] write temp msg to des host: {}", clientChannel, LOG_MSG_OUT, ctx.channel(), msg);
-      });
-      requestTempList.clear();
-    } else {
-      logger.info("[ {}{}{} ] [RemoteHandler-channelActive] temp msg list is null...", clientChannel, LOG_MSG_OUT, ctx.channel());
-    }
   }
 
   @Override

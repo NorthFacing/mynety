@@ -23,8 +23,6 @@
  */
 package com.shadowsocks.client.httpAdapter;
 
-import com.shadowsocks.client.httpAdapter.http_1_1.Http_1_1_2Socks5Handler;
-import com.shadowsocks.client.httpAdapter.tunnel.HttpTunnel2Socks5Handler;
 import com.shadowsocks.client.socks5Wrapper.SocksWrapperHandsShakeHandler;
 import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
@@ -35,6 +33,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.shadowsocks.client.config.ClientConfig.HTTP_2_SOCKS5;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 
 /**
@@ -58,28 +57,19 @@ public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   @SuppressWarnings("Duplicates")
   protected void initChannel(SocketChannel ch) throws Exception {
-    // HTTP tunnel
-    if (inRelayhandler instanceof HttpTunnel2Socks5Handler) {
+    // 如果需要HTTP通过socks5加密通信，那么需要激活socks5代理
+    if (HTTP_2_SOCKS5) {
       ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(inRelayhandler, clientChannel));
       logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
-      ch.pipeline().addLast(new HttpClientCodec());
-      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
-      ch.pipeline().addLast(new HttpRemoteHandler(clientChannel));
-      logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
     }
-    // HTTP1.1
-    else if (inRelayhandler instanceof Http_1_1_2Socks5Handler) {
-      ch.pipeline().addLast(new SocksWrapperHandsShakeHandler(inRelayhandler, clientChannel));
-      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: SocksWrapperHandsShakeHandler", clientChannel, LOG_MSG, ch);
-      ch.pipeline().addLast(new HttpClientCodec());
-      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
-      ch.pipeline().addLast(new HttpRemoteHandler(clientChannel));
-      logger.info("[ {}{}{} ] http1.1 out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
-    }
-    // to be supported...
-    else {
-      logger.error("[ {}{}{} ] unhandled inRelayhandler: {}", clientChannel, LOG_MSG, ch, inRelayhandler.getClass().getSimpleName());
-    }
+
+    // 所有代理都增加 HTTP 编解码类
+    ch.pipeline().addLast(new HttpClientCodec());
+    logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpClientCodec", clientChannel, LOG_MSG, ch);
+    // 个性化协议的个性化处理器（当前HTTP的远程连接处理器可以共用）
+    ch.pipeline().addLast(new HttpRemoteHandler(inRelayhandler, clientChannel));
+    logger.info("[ {}{}{} ] http tunnel out pipeline add handlers: HttpRemoteHandler", clientChannel, LOG_MSG, ch);
+
   }
 
   @Override

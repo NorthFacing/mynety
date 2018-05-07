@@ -26,6 +26,11 @@ CONNECT msfwifi.3g.qq.com:8080 HTTP/1.1
 Host: msfwifi.3g.qq.com:8080
 Proxy-Authorization: Basic Og==
 Proxy-Connection: Keep-Alive
+
+CONNECT 127.0.0.1:8080 HTTP/1.1
+Host: 127.0.0.1:8080
+Proxy-Authorization: Basic Og==
+Proxy-Connection: Keep-Alive
 ```
 
 ### HTTP 连接通信过程

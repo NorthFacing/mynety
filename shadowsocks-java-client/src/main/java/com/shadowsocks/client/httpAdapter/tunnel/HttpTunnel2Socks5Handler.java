@@ -23,52 +23,46 @@
  */
 package com.shadowsocks.client.httpAdapter.tunnel;
 
-import com.shadowsocks.client.config.ClientConfig;
 import com.shadowsocks.client.httpAdapter.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.DefaultHttpRequest;
-import io.netty.handler.codec.http.DefaultHttpResponse;
-import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Matcher;
 
+import static com.shadowsocks.client.config.ClientConfig.HTTP_2_SOCKS5;
 import static com.shadowsocks.client.config.ClientConfig.SOCKS_PROXY_PORT;
-import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 import static com.shadowsocks.common.constants.Constants.LOOPBACK_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
 import static com.shadowsocks.common.constants.Constants.TUNNEL_ADDR_PATTERN;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * http tunnel 代理模式下 嵌套socks5处理器
  * <p>
  * 关于channel中的数据类型：
- * 1. 首先通过CONNECT请求建立socks5连接，此时数据类型是HttpRequest
+ * 1. 首先通过CONNECT请求建立socks5连接，此时数据类型是HttpObject
  * 2. CONNECT 连接成功之后移除双方编解码，此时数据类型是ByteBuf
- * （如果增加了ssl解析，那么缓存中的数据类型就不是ByteBuf了）
+ * 3. 如果增加了ssl解析，那么就不能移除编解码，缓存中的数据类型就不是ByteBuf了，则还是HttpObject
  *
  * @author Bob.Zhu
  * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObject> {
+public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<Object> {
 
   private DefaultHttpRequest httpRequest;
 
@@ -94,7 +88,7 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
 
     String connHost;
     int connPort;
-    if (ClientConfig.HTTP_2_SOCKS5) {
+    if (HTTP_2_SOCKS5) {
       connHost = LOOPBACK_ADDRESS;
       connPort = SOCKS_PROXY_PORT;
     } else {
@@ -123,7 +117,8 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
   }
 
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+  protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
+    logger.debug("[ {}{}{} ] http tunnel to socks handler receive http msg: {}", ctx.channel(), LOG_MSG, remoteChannelRef.get(), msg);
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
       if (isConnected) {
@@ -131,39 +126,15 @@ public class HttpTunnel2Socks5Handler extends TempAbstractInRelayHandler<HttpObj
         remoteChannel.writeAndFlush(msg);
         logger.debug("[ {}{}{} ] transfer http tunnel request to socks: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, msg);
       } else {
-        if (msg instanceof ByteBuf) {
-          ByteBuf byteBuf = (ByteBuf) msg;
-          if (byteBuf.readableBytes() <= 0) {
-            logger.warn("[ {}{}{} ] discard unreadable msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
-            return;
-          }
-          ReferenceCountUtil.retain(byteBuf);
-          requestTempLists.add(byteBuf);
+        if (msg instanceof HttpObject) {
+          ReferenceCountUtil.retain(msg);
+          requestTempLists.add(msg);
           logger.debug("[ {}{}{} ] add transfer http tunnel request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         } else {
-          logger.warn("[ {}{}{} ] unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+          logger.warn("[ {}{}{} ] http tunnel unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         }
       }
     }
-  }
-
-  @Override
-  public void afterConn(Channel clientChannel) {
-    // 连接成功
-    isConnected = true;
-    Channel remoteClient = remoteChannelRef.get();
-    // 消费缓存信息
-    super.afterConn(clientChannel);
-    // 告诉客户端建立隧道成功（直接将后续数据进行转发）
-    DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
-    clientChannel.writeAndFlush(response);
-    logger.debug("[ {}{}{} ] httpTunnel connect socks success, write response to user-agent: {}", clientChannel, LOG_MSG, remoteClient, response);
-
-    // ———— 3. 移除 inbound 和 outbound 双方的编解码(tunnel代理如果没有增加ssl解析，那么就必须移除HTTP编解码器)
-    clientChannel.pipeline().remove(HttpServerCodec.class);
-    logger.debug("[ {}{}{} ] clientChannel remove handler: HttpServerCodec", clientChannel, LOG_MSG, remoteClient);
-    remoteClient.pipeline().remove(HttpClientCodec.class);
-    logger.debug("[ {}{}{} ] remoteChannel remove handler: HttpClientCodec", clientChannel, LOG_MSG, remoteClient);
   }
 
   private Address resolveTunnelAddr(String addr) {

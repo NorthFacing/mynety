@@ -23,15 +23,11 @@
  */
 package com.shadowsocks.common.nettyWrapper;
 
-import io.netty.channel.Channel;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * 带有缓存的本地连接处理器：
@@ -59,27 +55,6 @@ public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandl
    */
   protected final List<Object> requestTempLists = new LinkedList();
 
-
-  /**
-   * 远程连接建立成功之后的回调方法
-   */
-  public void afterConn(Channel clientChannel) {
-    consumeHttpObjectsTemp();
-  }
-
-  /**
-   * 消费之前缓存的HTTP相关请求
-   */
-  private void consumeHttpObjectsTemp() {
-    synchronized (requestTempLists) {
-      requestTempLists.forEach(msg -> {
-        remoteChannelRef.get().writeAndFlush(msg);
-        logger.debug("[ {}{} ] [{}] consume temp httpObjects: {}", LOG_MSG_OUT, remoteChannelRef.get(), getSimpleName(this), msg);
-      });
-      requestTempLists.clear();
-    }
-  }
-
   /**
    * 释放HTTP相关缓存
    */
@@ -88,6 +63,10 @@ public abstract class TempAbstractInRelayHandler<I> extends AbstractInRelayHandl
       requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
       requestTempLists.clear();
     }
+  }
+
+  public void setConnected(boolean isConnected) {
+    this.isConnected = isConnected;
   }
 
 }

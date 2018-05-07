@@ -127,8 +127,4 @@ public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
     }
   }
 
-  @Override
-  public void afterConn(Channel clientChannel) {
-    super.afterConn(clientChannel);
-  }
 }
