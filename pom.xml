@@ -4,15 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.shadowsocks</groupId>
-  <artifactId>shadowsocks-java</artifactId>
+  <groupId>com.adolphor</groupId>
+  <artifactId>mynety</artifactId>
   <packaging>pom</packaging>
   <version>0.0.5-SNAPSHOT</version>
 
   <modules>
-    <module>shadowsocks-java-server</module>
-    <module>shadowsocks-java-client</module>
-    <module>shadowsocks-java-common</module>
+    <module>mynety-server</module>
+    <module>mynety-client</module>
+    <module>mynety-common</module>
   </modules>
 
   <properties>
@@ -26,8 +26,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.shadowsocks</groupId>
-        <artifactId>shadowsocks-java-common</artifactId>
+        <groupId>com.adolphor</groupId>
+        <artifactId>mynety-common</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!--netty-->
@@ -54,7 +54,7 @@
         <artifactId>commons-net</artifactId>
         <version>3.6</version>
       </dependency>
-      <!-- com.shadowsocks.common.encryption -->
+      <!-- com.adolphor.mynety.common.encryption -->
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
