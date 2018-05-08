@@ -1,5 +1,6 @@
 package com.shadowsocks.client.http;
 
+import com.shadowsocks.client.http.http_1_0.Http_1_0_ConnectionHandler;
 import com.shadowsocks.client.http.http_1_1.Http_1_1_ConnectionHandler;
 import com.shadowsocks.client.http.tunnel.HttpTunnelConnectionHandler;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
@@ -12,7 +13,6 @@ import io.netty.handler.codec.http.HttpVersion;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
  * http 代理入口 请求分发，当前实现不加权限验证
@@ -30,15 +30,23 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
     if (msg instanceof DefaultHttpRequest) {
       DefaultHttpRequest httpRequest = (DefaultHttpRequest) msg;
       HttpVersion httpVersion = httpRequest.protocolVersion();
-      if (HTTP_1_1 == httpVersion) {
-        if (HttpMethod.CONNECT == httpRequest.method()) {
-          ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnelConnectionHandler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnelConnectionHandler", ctx.channel(), LOG_MSG);
-        } else {
-          ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_ConnectionHandler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_ConnectionHandler", ctx.channel(), LOG_MSG);
-        }
-      } else {
+      // 优先判断是否是tunnel代理，HTTP1.0，HTTP1.1，HTTP2.0 都支持（协议规则是否完全一致需要确认）
+      if (HttpMethod.CONNECT == httpRequest.method()) {
+        ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnelConnectionHandler(httpRequest));
+        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnelConnectionHandler", ctx.channel(), LOG_MSG);
+      }
+      // HTTP1.1
+      else if (HttpMethod.CONNECT == httpRequest.method()) {
+        ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_ConnectionHandler(httpRequest));
+        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_ConnectionHandler", ctx.channel(), LOG_MSG);
+      }
+      // HTTP1.0
+      else if (HttpMethod.CONNECT == httpRequest.method()) {
+        ctx.pipeline().addAfter(ctx.name(), null, new Http_1_0_ConnectionHandler(httpRequest));
+        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_0_ConnectionHandler", ctx.channel(), LOG_MSG);
+      }
+      // To be done...
+      else {
         logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
         ctx.close();
       }
