@@ -26,15 +26,17 @@ package com.shadowsocks.common.nettyWrapper;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
-
 /**
- * 主要是覆写增加了LOG日志和channel关闭方法
+ * 带有缓存的本地连接处理器：
+ * 1. 增加 requestTempLists 用于缓存远程连接未成功之前客户端发送的请求信息
+ * 2. 增加可供手动调用的释放方法
  *
  * @author Bob.Zhu
  * @Email 0haizhu0@gmail.com
@@ -43,30 +45,35 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 @Slf4j
 public abstract class AbstractInRelayHandler<I> extends AbstractSimpleHandler<I> {
 
+  /**
+   * 建立socks5连接需要时间，此字段标记远程连接是否建立完成
+   */
+  protected boolean isConnected = false;
   protected AtomicReference<Channel> remoteChannelRef = new AtomicReference<>();
 
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    super.channelActive(ctx);
+  /**
+   * 缓存请求：
+   * 1.HTTP请求下，HttpRequest,HttpContent,LastHttpContent 分开请求的情况
+   * 2.HTTP请求下，并发请求的情况
+   * 3.socks请求下，黏包的问题
+   */
+  protected final List<Object> requestTempLists = new LinkedList();
+
+  /**
+   * 释放HTTP相关缓存
+   */
+  public void releaseHttpObjectsTemp() {
+    synchronized (requestTempLists) {
+      requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
+      requestTempLists.clear();
+    }
+  }
+
+  public void setConnected(boolean isConnected) {
+    this.isConnected = isConnected;
   }
 
   @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    channelClose(ctx);
-    logger.info("[ {}{}{} ] {} channel inactive, channel closed...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
-  }
-
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    super.channelReadComplete(ctx);
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    channelClose(ctx);
-    logger.error("[ " + ctx.channel() + LOG_MSG + remoteChannelRef.get() + " ] " + getSimpleName(this) + " error", cause);
-  }
-
   protected void channelClose(ChannelHandlerContext ctx) {
     SocksServerUtils.flushOnClose(ctx.channel());
     SocksServerUtils.flushOnClose(remoteChannelRef.get());

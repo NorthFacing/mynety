@@ -30,14 +30,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * 远程连接处理器：
+ * 带有缓存的远程连接处理器：
  * 1.覆写增加了LOG日志和channel关闭方法
+ * 2.消费缓存的请求信息
  *
  * @author Bob.Zhu
  * @Email 0haizhu0@gmail.com
@@ -62,7 +62,7 @@ public abstract class AbstractOutRelayHandler<I> extends AbstractSimpleHandler<I
    */
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.info("[ {}{}{} ] [{}-channelActive] channel active...", clientChannel, LOG_MSG, ctx.channel(), getSimpleName(this));
+    super.channelActive(ctx);
     if (requestTempList != null) {
       requestTempList.forEach(msg -> {
         ctx.channel().writeAndFlush(msg);
@@ -75,22 +75,6 @@ public abstract class AbstractOutRelayHandler<I> extends AbstractSimpleHandler<I
   }
 
   @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    channelClose(ctx);
-    logger.info("[ {}{}{} ] [{}-channelInactive] channel inactive, channel closed...", clientChannel, LOG_MSG, ctx.channel(), getSimpleName(this));
-  }
-
-  @Override
-  public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    super.channelReadComplete(ctx);
-  }
-
-  @Override
-  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    channelClose(ctx);
-    logger.error("[ " + clientChannel + LOG_MSG + ctx.channel() + " ] " + getSimpleName(this) + " error", cause);
-  }
-
   protected void channelClose(ChannelHandlerContext ctx) {
     SocksServerUtils.flushOnClose(ctx.channel());
     SocksServerUtils.flushOnClose(clientChannel);

@@ -27,7 +27,7 @@ import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
-import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
+import com.shadowsocks.common.nettyWrapper.AbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -53,7 +53,7 @@ import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
  * @since v0.0.1
  */
 @Slf4j
-public class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
+public class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
 
   public ConnectionHandler(ByteBuf msg) {
     if (msg.readableBytes() > 0) {

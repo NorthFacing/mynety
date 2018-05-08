@@ -29,7 +29,7 @@ import com.shadowsocks.client.utils.PacFilter;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.encryption.CryptFactory;
 import com.shadowsocks.common.encryption.ICrypt;
-import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
+import com.shadowsocks.common.nettyWrapper.AbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -67,7 +67,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.1
  */
 @Slf4j
-public final class ConnectionHandler extends TempAbstractInRelayHandler<ByteBuf> {
+public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
 
   private boolean isProxy;
 

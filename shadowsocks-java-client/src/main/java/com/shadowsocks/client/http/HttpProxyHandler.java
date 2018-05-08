@@ -23,8 +23,8 @@
  */
 package com.shadowsocks.client.http;
 
-import com.shadowsocks.client.http.http_1_1.Http_1_1_2Socks5Handler;
-import com.shadowsocks.client.http.tunnel.HttpTunnel2Socks5Handler;
+import com.shadowsocks.client.http.http_1_1.Http_1_1_ConnectionHandler;
+import com.shadowsocks.client.http.tunnel.HttpTunnelConnectionHandler;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;
@@ -55,11 +55,11 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
       HttpVersion httpVersion = httpRequest.protocolVersion();
       if (HTTP_1_1 == httpVersion) {
         if (HttpMethod.CONNECT == httpRequest.method()) {
-          ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnel2Socks5Handler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnel2Socks5Handler", ctx.channel(), LOG_MSG);
+          ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnelConnectionHandler(httpRequest));
+          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnelConnectionHandler", ctx.channel(), LOG_MSG);
         } else {
-          ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_2Socks5Handler(httpRequest));
-          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_2Socks5Handler", ctx.channel(), LOG_MSG);
+          ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_ConnectionHandler(httpRequest));
+          logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_ConnectionHandler", ctx.channel(), LOG_MSG);
         }
       } else {
         logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
@@ -67,7 +67,6 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
       }
       ctx.pipeline().remove(this);
       logger.info("[ {}{} ] remove handler: HttpProxyHandler", ctx.channel(), LOG_MSG);
-      // TODO 不增加不会触发下个handler 的 active 方法？
       ctx.fireChannelActive();
     } else { // 如果第一次请求不是 DefaultHttpRequest 那么就说明HTTP请求异常
       logger.error("[ {}{} ] unhandled msg, type: {}", ctx.channel(), LOG_MSG, msg.getClass().getTypeName());
@@ -81,4 +80,10 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
     SocksServerUtils.flushOnClose(ctx.channel());
     logger.error("[ " + ctx.channel() + LOG_MSG + "] error: ", cause);
   }
+
+  @Override
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
+  }
+
 }

@@ -25,6 +25,7 @@ package com.shadowsocks.client.adapter;
 
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
+import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -93,6 +94,11 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
       logger.info("[ {}{}{} ] remove handlers: SocksHandsShakeHandler", clientChannel, LOG_MSG, ctx.channel());
       ctx.fireChannelActive();
     }
+  }
+
+  @Override
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

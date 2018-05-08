@@ -28,6 +28,7 @@ import com.shadowsocks.common.encryption.CryptFactory;
 import com.shadowsocks.common.encryption.CryptUtil;
 import com.shadowsocks.common.encryption.ICrypt;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
+import com.shadowsocks.common.utils.SocksServerUtils;
 import com.shadowsocks.server.Config.Config;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -110,6 +111,11 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     ctx.channel().pipeline().remove(this);
     logger.info("[ {}{} ] [AddressHandler-channelRead0] remove handler: AddressHandler", ctx.channel(), LOG_MSG);
     ctx.pipeline().fireChannelActive();
+  }
+
+  @Override
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

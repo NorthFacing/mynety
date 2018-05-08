@@ -24,6 +24,7 @@
 package com.shadowsocks.client;
 
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
+import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.socksx.SocksMessage;
@@ -105,6 +106,11 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
         ctx.close();
         break;
     }
+  }
+
+  @Override
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

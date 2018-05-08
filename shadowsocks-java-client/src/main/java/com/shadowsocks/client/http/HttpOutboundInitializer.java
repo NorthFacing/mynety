@@ -24,7 +24,7 @@
 package com.shadowsocks.client.http;
 
 import com.shadowsocks.client.adapter.SocksHandsShakeHandler;
-import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
+import com.shadowsocks.common.nettyWrapper.AbstractInRelayHandler;
 import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -47,9 +47,9 @@ import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
 
   private Channel clientChannel;
-  private TempAbstractInRelayHandler inRelayHandler;
+  private AbstractInRelayHandler inRelayHandler;
 
-  public HttpOutboundInitializer(TempAbstractInRelayHandler inRelayHandler, Channel clientChannel) {
+  public HttpOutboundInitializer(AbstractInRelayHandler inRelayHandler, Channel clientChannel) {
     this.clientChannel = clientChannel;
     this.inRelayHandler = inRelayHandler;
   }

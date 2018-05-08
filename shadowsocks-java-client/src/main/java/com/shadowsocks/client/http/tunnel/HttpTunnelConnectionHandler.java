@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.shadowsocks.client.http.http_1_1;
+package com.shadowsocks.client.http.tunnel;
 
 import com.shadowsocks.client.http.HttpOutboundInitializer;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
-import com.shadowsocks.common.nettyWrapper.TempAbstractInRelayHandler;
+import com.shadowsocks.common.nettyWrapper.AbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -37,7 +37,6 @@ import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 
@@ -46,27 +45,28 @@ import static com.shadowsocks.client.config.ClientConfig.SOCKS_PROXY_PORT;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_OUT;
 import static com.shadowsocks.common.constants.Constants.LOOPBACK_ADDRESS;
-import static com.shadowsocks.common.constants.Constants.PATH_PATTERN;
 import static com.shadowsocks.common.constants.Constants.REQUEST_ADDRESS;
-import static com.shadowsocks.common.constants.Constants.REQUEST_TEMP_LIST;
+import static com.shadowsocks.common.constants.Constants.TUNNEL_ADDR_PATTERN;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * http 代理模式下 主处理器
+ * http tunnel 代理模式下 嵌套socks5处理器
  * <p>
- * channel中的数据类型都经过HTTP编解码器解析，所以都是 HttpObject 类型
- * （后面再考虑效率问题吧，主要是缓存中的数据类型不好处理）
+ * 关于channel中的数据类型：
+ * 1. 首先通过CONNECT请求建立socks5连接，此时数据类型是HttpObject
+ * 2. CONNECT 连接成功之后移除双方编解码，此时数据类型是ByteBuf
+ * 3. 如果增加了ssl解析，那么就不能移除编解码，缓存中的数据类型就不是ByteBuf了，则还是HttpObject
  *
  * @author Bob.Zhu
  * @Email 0haizhu0@gmail.com
  * @since v0.0.4
  */
 @Slf4j
-public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<Object> {
+public class HttpTunnelConnectionHandler extends AbstractInRelayHandler<Object> {
 
   private DefaultHttpRequest httpRequest;
 
-  public Http_1_1_2Socks5Handler(DefaultHttpRequest httpRequest) {
+  public HttpTunnelConnectionHandler(DefaultHttpRequest httpRequest) {
     this.httpRequest = httpRequest; // 解析出地址，建立socks连接
     requestTempLists.add(httpRequest); // 连接建立之后，转发到目标地址
   }
@@ -74,11 +74,11 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<Object> 
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
+
     Channel clientChannel = ctx.channel();
 
-    Address address = resolveHttpProxyPath(httpRequest.uri());
+    Address address = resolveTunnelAddr(httpRequest.uri());
     clientChannel.attr(REQUEST_ADDRESS).set(address);
-    clientChannel.attr(REQUEST_TEMP_LIST).set(requestTempLists);
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
@@ -118,43 +118,32 @@ public class Http_1_1_2Socks5Handler extends TempAbstractInRelayHandler<Object> 
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
-    logger.debug("[ {}{}{} ] http1.1 to socks handler receive http msg: {}", ctx.channel(), LOG_MSG, remoteChannelRef.get(), msg);
+    logger.debug("[ {}{}{} ] http tunnel to socks handler receive http msg: {}", ctx.channel(), LOG_MSG, remoteChannelRef.get(), msg);
     Channel remoteChannel = remoteChannelRef.get();
     synchronized (requestTempLists) {
       if (isConnected) {
         ReferenceCountUtil.retain(msg);
         remoteChannel.writeAndFlush(msg);
-        logger.debug("[ {}{}{} ] transfer http1.1 request to socks: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, msg);
+        logger.debug("[ {}{}{} ] transfer http tunnel request to socks: {}", ctx.channel(), LOG_MSG_OUT, remoteChannel, msg);
       } else {
         if (msg instanceof HttpObject) {
           ReferenceCountUtil.retain(msg);
           requestTempLists.add(msg);
-          logger.debug("[ {}{}{} ] add transfer http1.1 request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+          logger.debug("[ {}{}{} ] add transfer http tunnel request to temp list: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         } else {
-          logger.warn("[ {}{}{} ] http1.1 unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
+          logger.warn("[ {}{}{} ] http tunnel unhandled msg type: {}", ctx.channel(), LOG_MSG, remoteChannel, msg);
         }
       }
     }
   }
 
-  private Address resolveHttpProxyPath(String address) {
-    Matcher matcher = PATH_PATTERN.matcher(address);
+  private Address resolveTunnelAddr(String addr) {
+    Matcher matcher = TUNNEL_ADDR_PATTERN.matcher(addr);
     if (matcher.find()) {
-      String scheme = matcher.group(1);
-      String host = matcher.group(2);
-      int port = resolvePort(scheme, matcher.group(4));
-      String path = matcher.group(5);
-      return new Address(scheme, host, port, path);
+      return new Address(matcher.group(1), Integer.parseInt(matcher.group(2)));
     } else {
-      throw new IllegalStateException("Illegal http proxy path: " + address);
+      throw new IllegalStateException("Illegal tunnel addr: " + addr);
     }
-  }
-
-  private int resolvePort(String scheme, String port) {
-    if (StringUtils.isEmpty(port)) {
-      return "https".equals(scheme) ? 443 : 80;
-    }
-    return Integer.parseInt(port);
   }
 
 }

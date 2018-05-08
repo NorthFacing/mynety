@@ -26,6 +26,7 @@ package com.shadowsocks.client.adapter;
 import com.shadowsocks.common.bean.Address;
 import com.shadowsocks.common.constants.Constants;
 import com.shadowsocks.common.nettyWrapper.AbstractSimpleHandler;
+import com.shadowsocks.common.utils.SocksServerUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -125,6 +126,11 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
       ctx.pipeline().fireChannelActive();
       logger.info("[ {}{}{} ] 【socksWrapper】what's done is done, the remote channelActive method will run next...", clientChannel, LOG_MSG, ctx.channel());
     }
+  }
+
+  @Override
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }
