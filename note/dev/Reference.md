@@ -12,14 +12,15 @@
     * [HTTP 代理原理及实现（一）](https://imququ.com/post/web-proxy.html)
     * [HTTP 代理原理及实现（二）](https://imququ.com/post/web-proxy-2.html)
 * RFC系列
-    - [1996年 - RFC 1945 - Hypertext Transfer Protocol -- HTTP/1.0](https://www.ietf.org/rfc/rfc1945.txt)
-    - [1997年 - RFC 2068 - Hypertext Transfer Protocol -- HTTP/1.1](https://www.ietf.org/rfc/rfc2068.txt)
-    - [1997年 - RFC 2145 - Use and Interpretation of HTTP Version Numbers](https://www.ietf.org/rfc/rfc2145.txt)
-    - [1999年 - RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1](https://www.ietf.org/rfc/rfc2616.txt)
-    - [1999年 - RFC 2617 - HTTP Authentication: Basic and Digest Access Authentication](https://www.rfc-editor.org/rfc/rfc2617.txt)
-    - [2000年 - RFC 2817 - Upgrading to TLS Within HTTP/1.1](https://www.ietf.org/rfc/rfc2817.txt)
-    - [2014年 - RFC 7230 - Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing](https://www.ietf.org/rfc/rfc7230.txt)
-    - [2015年 - RFC 7540 - Hypertext Transfer Protocol Version 2 (HTTP/2)](https://www.ietf.org/rfc/rfc7540.txt)
+    - [1996年 - RFC 1945 - Hypertext Transfer Protocol -- HTTP/1.0](https://www.rfc-editor.org/info/rfc1945)
+    - [1997年 - RFC 2068 - Hypertext Transfer Protocol -- HTTP/1.1](https://www.rfc-editor.org/info/rfc2068)
+    - [1997年 - RFC 2145 - Use and Interpretation of HTTP Version Numbers](https://www.rfc-editor.org/info/rfc2145)
+    - [1999年 - RFC 2616 - Hypertext Transfer Protocol -- HTTP/1.1](https://www.rfc-editor.org/info/rfc2616)
+    - [1999年 - RFC 2617 - HTTP Authentication: Basic and Digest Access Authentication](https://www.rfc-editor.org/info/rfc2617)
+    - [2000年 - RFC 2817 - Upgrading to TLS Within HTTP/1.1](https://www.rfc-editor.org/info/rfc2817)
+    - [2014年 - RFC 7230 - Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing](https://www.rfc-editor.org/info/rfc7230)
+    - [2014年 - RFC 7231 - Hypertext Transfer Protocol (HTTP/1.1): Semantics and Content](https://www.rfc-editor.org/info/rfc7231)
+    - [2015年 - RFC 7540 - Hypertext Transfer Protocol Version 2 (HTTP/2)](https://www.rfc-editor.org/info/rfc7540)
 * Github
 
 

@@ -57,5 +57,8 @@ https://blog.csdn.net/FishSeeker/article/details/78447684
 
 Q: 如果有多个handler，那么每个handler中的active方法都会执行吗？
 
+## Netty 超时时间
+对于HTTP 的 connection 头信息，keep-alive是否要特别设置超时时间来处理？
+
 
 
