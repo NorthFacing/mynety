@@ -78,9 +78,9 @@ public class HttpTunnelConnectionHandler extends AbstractInRelayHandler<Object> 
         if (future.isSuccess()) {
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);
-          logger.debug("[ {}{}{} ] http1.1 connect success: outHost = {}, outPort = {}", clientChannel, LOG_MSG, remoteChannel, connHost, connPort);
+          logger.debug("[ {}{}{} ] http tunnel connect success: outHost = {}, outPort = {}", clientChannel, LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          logger.debug("[ {}{}{} ] http1.1 connect failed: outHost = {}, outPort = {}", clientChannel, LOG_MSG, clientChannel, connHost, connPort);
+          logger.debug("[ {}{} ] http tunnel connect failed: outHost = {}, outPort = {}", clientChannel, LOG_MSG, connHost, connPort);
           super.releaseHttpObjectsTemp();
           future.cancel(true);
           channelClose(ctx);

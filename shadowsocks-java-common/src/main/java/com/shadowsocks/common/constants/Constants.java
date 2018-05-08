@@ -37,17 +37,15 @@ public class Constants {
   public static final Pattern IPV4_PATTERN = Pattern.compile("(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])");
   public static final Pattern IPV6_PATTERN = Pattern.compile("([0-9a-f]{1,4}:){3}([0-9a-f]){1,4}");
 
-  public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
-
   public static final AttributeKey<ICrypt> ATTR_CRYPT_KEY = AttributeKey.valueOf("crypt");
 
-  public static final AttributeKey<Socks5CommandRequest> SOCKS5_REQUEST = AttributeKey.valueOf("socks5.request");
-
-  public static final AttributeKey<Address> REQUEST_ADDRESS = AttributeKey.valueOf("http.request.address");
+  public static final AttributeKey<Address> REQUEST_ADDRESS = AttributeKey.valueOf("request.address");
   public static final AttributeKey<List> REQUEST_TEMP_LIST = AttributeKey.valueOf("request.temp.list");
 
-//  public static final AttributeKey<Boolean> SOCKS5_CONNECTED = AttributeKey.valueOf("is.socks.connected");
-//  public static final AttributeKey<DefaultHttpRequest> HTTP_REQUEST = AttributeKey.valueOf("http.request");
-//  public static final AttributeKey<List<ChannelHandler>> EXTRA_OUT_RELAY_HANDLER = AttributeKey.valueOf("extra.out.relay.handler");
+  public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
+  public static final AttributeKey<Boolean> IS_KEEP_ALIVE = AttributeKey.valueOf("keep.alive");
+
+
+  public static final AttributeKey<Socks5CommandRequest> SOCKS5_REQUEST = AttributeKey.valueOf("socks5.request");
 
 }

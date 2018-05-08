@@ -7,11 +7,13 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.shadowsocks.common.constants.Constants.CONNECTION_ESTABLISHED;
+import static com.shadowsocks.common.constants.Constants.IS_KEEP_ALIVE;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG;
 import static com.shadowsocks.common.constants.Constants.LOG_MSG_IN;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -46,6 +48,9 @@ public class HttpRemoteHandler extends AbstractOutRelayHandler<Object> {
     // 如果是tunnel连接，则告诉客户端建立隧道成功（直接将后续数据进行转发）
     if (inRelayHandler instanceof HttpTunnelConnectionHandler) {
       DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
+      if (Boolean.valueOf(clientChannel.attr(IS_KEEP_ALIVE).get())) {
+        response.headers().add(HttpHeaderNames.CONNECTION, HttpHeaderNames.KEEP_ALIVE);
+      }
       clientChannel.writeAndFlush(response);
       logger.debug("[ {}{}{} ] httpTunnel connect socks success, write response to user-agent: {}", clientChannel, LOG_MSG, remoteClient, response);
     }

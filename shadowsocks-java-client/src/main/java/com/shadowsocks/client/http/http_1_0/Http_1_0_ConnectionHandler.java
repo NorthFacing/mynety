@@ -80,7 +80,7 @@ public class Http_1_0_ConnectionHandler extends AbstractInRelayHandler<Object> {
           remoteChannelRef.set(remoteChannel);
           logger.debug("[ {}{}{} ] http1.0 connect success: outHost = {}, outPort = {}", clientChannel, LOG_MSG, remoteChannel, connHost, connPort);
         } else {
-          logger.debug("[ {}{}{} ] http1.0 connect failed: outHost = {}, outPort = {}", clientChannel, LOG_MSG, clientChannel, connHost, connPort);
+          logger.debug("[ {}{} ] http1.0 connect failed: outHost = {}, outPort = {}", clientChannel, LOG_MSG, connHost, connPort);
           super.releaseHttpObjectsTemp();
           future.cancel(true);
           channelClose(ctx);
