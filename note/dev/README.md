@@ -6,6 +6,10 @@ mvn versions:set -DnewVersion=0.0.4-SNAPSHOT
 
 ## Debug
 
+```
+com.adolphor.mynety.common.utils.SocksServerUtils.loggerHandlers()
+```
+
 #### HTTP 连接通信过程
 1.client请求proxy，使用的编解码器：serverCodec
 2.proxy解析client请求的目标地址
@@ -49,6 +53,16 @@ Proxy-Authorization: Basic Og==
 Proxy-Connection: Keep-Alive
 ```
 
+#### lanproxy
+
+配置完成之后，使用HTTP测试方式进行初步测试：
+
+```
+export http_proxy=http://0.0.0.0:1187;export https_proxy=http://0.0.0.0:1187;
+curl http://adolphor.com/js/main.js\?version\=20180129
+```
+
+
 ## Run in the background
 
 * unix & linux    
@@ -74,5 +88,19 @@ Proxy-Connection: Keep-Alive
     if "%JAVACMD%"=="" set JAVACMD=..\lib\jre8\bin\java
     ```
 
+## 多用户支持
 
+多用户支持的话就不能兼容shadow协议了，等这个版本稳定之后考虑。
+
+## 端口
+
+client
+
+http:1187
+socks:1186
+
+socks:2186
+lan:2187
+
+lan client
 

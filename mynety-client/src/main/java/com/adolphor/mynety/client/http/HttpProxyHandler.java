@@ -3,7 +3,7 @@ package com.adolphor.mynety.client.http;
 import com.adolphor.mynety.client.http.http_1_0.Http_1_0_ConnectionHandler;
 import com.adolphor.mynety.client.http.http_1_1.Http_1_1_ConnectionHandler;
 import com.adolphor.mynety.client.http.tunnel.HttpTunnelConnectionHandler;
-import com.adolphor.mynety.common.nettyWrapper.AbstractSimpleHandler;
+import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpRequest;
@@ -15,7 +15,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.common.constants.Constants.IS_KEEP_ALIVE;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_KEEP_ALIVE;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -44,7 +44,7 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
               || HttpHeaderNames.CONNECTION.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION))
               || HttpHeaderNames.KEEP_ALIVE.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION)))) {
         HttpUtil.setKeepAlive(httpRequest, true);
-        ctx.channel().attr(IS_KEEP_ALIVE).set(true);
+        ctx.channel().attr(ATTR_IS_KEEP_ALIVE).set(true);
       }
 
       // 优先判断是否是tunnel代理，HTTP1.0，HTTP1.1，HTTP2.0 都支持（协议规则是否完全一致需要确认）
@@ -81,13 +81,8 @@ public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    SocksServerUtils.flushOnClose(ctx.channel());
+    SocksServerUtils.closeOnFlush(ctx.channel());
     logger.error("[ " + ctx.channel() + LOG_MSG + "] error: ", cause);
-  }
-
-  @Override
-  protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

@@ -57,6 +57,8 @@ public class HttpHelloWorldServerHandler extends ChannelInboundHandlerAdapter {
         response.headers().set(CONNECTION, KEEP_ALIVE);
         ctx.write(response);
       }
+      System.out.println("receive msg:" + msg);
+      System.out.println("response msg:" + msg);
     }
   }
 

@@ -13,8 +13,8 @@
   <artifactId>mynety-client</artifactId>
 
   <properties>
-    <app.name>ss-client</app.name>
-    <app.mainClass>com.adolphor.client.ClientMain</app.mainClass>
+    <app.name>mynety-client</app.name>
+    <app.mainClass>com.adolphor.mynety.client.ClientMain</app.mainClass>
   </properties>
 
   <dependencies>

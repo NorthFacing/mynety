@@ -2,7 +2,7 @@ package com.adolphor.mynety.client;
 
 import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.nettyWrapper.AbstractOutRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractOutRelayHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -22,12 +22,10 @@ import java.io.ByteArrayOutputStream;
 public final class RemoteHandler extends AbstractOutRelayHandler<ByteBuf> {
 
   private final boolean isProxy;
-  private final ICrypt _crypt;
 
   public RemoteHandler(Channel clientProxyChannel, boolean isProxy, ICrypt _crypt) {
-    super(clientProxyChannel);
+    super(clientProxyChannel,_crypt);
     this.isProxy = isProxy;
-    this._crypt = _crypt;
   }
 
   @Override

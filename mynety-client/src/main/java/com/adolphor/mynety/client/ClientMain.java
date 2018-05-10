@@ -8,19 +8,9 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.kqueue.KQueueSocketChannel;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SystemUtils;
 
 /**
  * 客户端启动入口
@@ -32,34 +22,16 @@ import org.apache.commons.lang3.SystemUtils;
 @Slf4j
 public final class ClientMain {
 
-  @SuppressWarnings("Duplicates")
   public static void main(String[] args) throws Exception {
 
     ConfigLoader.loadConfig();
     ClientConfig.checkServers();
 
-    if (SystemUtils.IS_OS_MAC) { // And BSD system?
-      Constants.bossGroupClass = KQueueEventLoopGroup.class;
-      Constants.workerGroupClass = KQueueEventLoopGroup.class;
-      Constants.serverChannelClass = KQueueServerSocketChannel.class;
-      Constants.channelClass = KQueueSocketChannel.class;
-    } else if (SystemUtils.IS_OS_LINUX) { // For linux system
-      Constants.bossGroupClass = EpollEventLoopGroup.class;
-      Constants.workerGroupClass = EpollEventLoopGroup.class;
-      Constants.serverChannelClass = EpollServerSocketChannel.class;
-      Constants.channelClass = EpollSocketChannel.class;
-    } else {
-      Constants.bossGroupClass = NioEventLoopGroup.class;
-      Constants.workerGroupClass = NioEventLoopGroup.class;
-      Constants.serverChannelClass = NioServerSocketChannel.class;
-      Constants.channelClass = NioSocketChannel.class;
-    }
-
     new Thread(() -> {
       EventLoopGroup sBossGroup = null;
       EventLoopGroup sWorkerGroup = null;
       try {
-        sBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor(int.class).newInstance(1);
+        sBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
         sWorkerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
         ServerBootstrap sServerBoot = new ServerBootstrap();
         sServerBoot.group(sBossGroup, sWorkerGroup)
@@ -82,7 +54,7 @@ public final class ClientMain {
       EventLoopGroup hBossGroup = null;
       EventLoopGroup hWorkerGroup = null;
       try {
-        hBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor(int.class).newInstance(1);
+        hBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
         hWorkerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
         ServerBootstrap hServerBoot = new ServerBootstrap();
         hServerBoot.group(hBossGroup, hWorkerGroup)

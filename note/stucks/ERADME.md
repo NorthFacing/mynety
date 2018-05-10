@@ -25,6 +25,9 @@ http 的 tunnel 代理直接连接，去掉所有编解码器之后就可以进�
 但是 HTTP 代理，在进行转发的时候需要加上编解码器，这样 proxy 和 server 
 进行数据交换的时候，才能够识别到正确的 HTTP 内容。
 
+* 加密实例不能初始化之后保存为静态变量来引用，不知道为什么就是会报错？
+
+
 ## HttpObjectAggregator
 当 HTTP content 内容太大的时候，是不是会出现内容不全的情况？
 
@@ -60,5 +63,11 @@ Q: 如果有多个handler，那么每个handler中的active方法都会执行吗
 ## Netty 超时时间
 对于HTTP 的 connection 头信息，keep-alive是否要特别设置超时时间来处理？
 
+## host is down
 
+自己电脑的防火墙拦截，或者其他网络拦截工具导致的拦截
+
+## java.lang.IllegalStateException: executor not accepting a task
+
+断线重连时的异常，原因是上次连接的 EventLoopGroup 被关闭了，重连需要重新创建。
 

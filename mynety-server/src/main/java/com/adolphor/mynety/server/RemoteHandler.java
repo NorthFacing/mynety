@@ -3,7 +3,7 @@ package com.adolphor.mynety.server;
 import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.nettyWrapper.AbstractOutRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractOutRelayHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -20,11 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public final class RemoteHandler extends AbstractOutRelayHandler<ByteBuf> {
 
-  private final ICrypt _crypt;
-
   public RemoteHandler(Channel clientChannel, ICrypt _crypt) {
-    super(clientChannel);
-    this._crypt = _crypt;
+    super(clientChannel, _crypt);
   }
 
   @Override

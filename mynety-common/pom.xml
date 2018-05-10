@@ -13,7 +13,7 @@
   <artifactId>mynety-common</artifactId>
 
   <properties>
-    <app.name>ss-common</app.name>
+    <app.name>mynety-common</app.name>
   </properties>
 
   <dependencies>
@@ -42,6 +42,10 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

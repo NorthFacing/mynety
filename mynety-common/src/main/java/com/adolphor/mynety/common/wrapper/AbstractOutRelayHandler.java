@@ -1,5 +1,6 @@
-package com.adolphor.mynety.common.nettyWrapper;
+package com.adolphor.mynety.common.wrapper;
 
+import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -7,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_LIST;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
-import static com.adolphor.mynety.common.constants.Constants.REQUEST_TEMP_LIST;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -25,10 +26,38 @@ public abstract class AbstractOutRelayHandler<I> extends AbstractSimpleHandler<I
 
   protected final Channel clientChannel;
   protected final List requestTempList;
+  protected final ICrypt _crypt;
 
+  /**
+   * HTTP 等不需要加解密
+   *
+   * @param clientChannel
+   */
   public AbstractOutRelayHandler(Channel clientChannel) {
+    this(clientChannel, null);
+  }
+
+  /**
+   * 一般情况下都使用此缓存
+   *
+   * @param clientChannel
+   * @param _crypt
+   */
+  public AbstractOutRelayHandler(Channel clientChannel, ICrypt _crypt) {
+    this(clientChannel, _crypt, clientChannel.attr(ATTR_REQUEST_TEMP_LIST).get());
+  }
+
+  /**
+   * lan情况下的缓存使用传递过来的缓存容器参数
+   *
+   * @param clientChannel
+   * @param _crypt
+   * @param requestTempList
+   */
+  public AbstractOutRelayHandler(Channel clientChannel, ICrypt _crypt, List requestTempList) {
+    this._crypt = _crypt;
     this.clientChannel = clientChannel;
-    this.requestTempList = clientChannel.attr(REQUEST_TEMP_LIST).get();
+    this.requestTempList = requestTempList;
   }
 
   /**
@@ -53,8 +82,8 @@ public abstract class AbstractOutRelayHandler<I> extends AbstractSimpleHandler<I
 
   @Override
   protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
-    SocksServerUtils.flushOnClose(clientChannel);
+    SocksServerUtils.closeOnFlush(ctx.channel());
+    SocksServerUtils.closeOnFlush(clientChannel);
   }
 
 }

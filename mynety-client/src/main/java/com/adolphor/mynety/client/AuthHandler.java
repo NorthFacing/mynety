@@ -1,7 +1,6 @@
 package com.adolphor.mynety.client;
 
-import com.adolphor.mynety.common.nettyWrapper.AbstractSimpleHandler;
-import com.adolphor.mynety.common.utils.SocksServerUtils;
+import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.socksx.SocksMessage;
@@ -16,9 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_SOCKS5_REQUEST;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
-import static com.adolphor.mynety.common.constants.Constants.SOCKS5_REQUEST;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -64,7 +63,7 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
           if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
             logger.warn("[ {}{} ] SOCKS5 command request is CONNECT, need to executing connection handler...", ctx.channel(), LOG_MSG);
-            ctx.channel().attr(SOCKS5_REQUEST).set(socks5CmdRequest);
+            ctx.channel().attr(ATTR_SOCKS5_REQUEST).set(socks5CmdRequest);
             ctx.pipeline().remove(this); // 完成任务，从 pipeline 中移除
             logger.info("[ {}{} ] remove handler: AuthHandler", ctx.channel(), LOG_MSG);
             ctx.pipeline().addLast(new ConnectionHandler());
@@ -83,11 +82,6 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
         ctx.close();
         break;
     }
-  }
-
-  @Override
-  protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

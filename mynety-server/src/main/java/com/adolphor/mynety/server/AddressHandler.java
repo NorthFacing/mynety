@@ -5,9 +5,10 @@ import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.encryption.CryptFactory;
 import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.nettyWrapper.AbstractSimpleHandler;
+import com.adolphor.mynety.common.utils.ByteStrUtils;
+import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.common.utils.SocksServerUtils;
-import com.adolphor.mynety.server.Config.Config;
+import com.adolphor.mynety.server.config.Config;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -70,15 +71,16 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
       }
       dataBuff.readUnsignedByte();
       dataBuff.readUnsignedByte();
-      byte[] hostBytes = new byte[hostLength];
-      dataBuff.readBytes(hostBytes);
-      host = new String(hostBytes);
+
+      ByteBuf hostBytes = dataBuff.readBytes(hostLength);
+      host = ByteStrUtils.getString(hostBytes);
+
       port = dataBuff.readShort();
     } else {
       throw new IllegalStateException("unknown address type: " + addressType);
     }
     logger.debug("[ {}{} ] [AddressHandler-channelRead0] parse address success: type={} => {}:{}", ctx.channel(), Constants.LOG_MSG, addressType, host, port);
-    ctx.channel().attr(Constants.REQUEST_ADDRESS).set(new Address(host, port));
+    ctx.channel().attr(Constants.ATTR_REQUEST_ADDRESS).set(new Address(host, port));
     logger.debug("[ {}{} ] [AddressHandler-channelRead0] msg left after parse: {} readableBytes => {}", ctx.channel(), Constants.LOG_MSG, dataBuff.readableBytes(), dataBuff);
     ctx.channel().pipeline().addLast(new ConnectionHandler(dataBuff)); // 黏包的数据加入到请求缓存列表
     logger.info("[ {}{} ] [AddressHandler-channelRead0] add handler: ConnectionHandler", ctx.channel(), Constants.LOG_MSG);
@@ -89,7 +91,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
 
   @Override
   protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
+    SocksServerUtils.closeOnFlush(ctx.channel());
   }
 
 }

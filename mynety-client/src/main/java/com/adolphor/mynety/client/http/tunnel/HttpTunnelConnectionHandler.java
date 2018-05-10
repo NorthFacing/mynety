@@ -4,7 +4,7 @@ import com.adolphor.mynety.client.config.ClientConfig;
 import com.adolphor.mynety.client.http.HttpOutboundInitializer;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.constants.Constants;
-import com.adolphor.mynety.common.nettyWrapper.AbstractInRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractInRelayHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -18,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.regex.Matcher;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
 import static com.adolphor.mynety.common.constants.Constants.LOOPBACK_ADDRESS;
-import static com.adolphor.mynety.common.constants.Constants.REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.TUNNEL_ADDR_PATTERN;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
@@ -54,7 +54,7 @@ public class HttpTunnelConnectionHandler extends AbstractInRelayHandler<Object> 
     Channel clientChannel = ctx.channel();
 
     Address address = resolveTunnelAddr(httpRequest.uri());
-    clientChannel.attr(REQUEST_ADDRESS).set(address);
+    clientChannel.attr(ATTR_REQUEST_ADDRESS).set(address);
 
     Bootstrap remoteBootStrap = new Bootstrap();
     remoteBootStrap.group(clientChannel.eventLoop())
@@ -80,7 +80,7 @@ public class HttpTunnelConnectionHandler extends AbstractInRelayHandler<Object> 
           logger.debug("[ {}{}{} ] http tunnel connect success: outHost = {}, outPort = {}", clientChannel, LOG_MSG, remoteChannel, connHost, connPort);
         } else {
           logger.debug("[ {}{} ] http tunnel connect failed: outHost = {}, outPort = {}", clientChannel, LOG_MSG, connHost, connPort);
-          super.releaseHttpObjectsTemp();
+          super.releaseRequestTempLists();
           future.cancel(true);
           channelClose(ctx);
         }

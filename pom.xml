@@ -13,6 +13,7 @@
     <module>mynety-server</module>
     <module>mynety-client</module>
     <module>mynety-common</module>
+    <module>mynety-lan</module>
   </modules>
 
   <properties>
@@ -72,6 +73,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.7</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.0</version>
       </dependency>
       <!--log4j-->
       <dependency>

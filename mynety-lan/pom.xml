@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>mynety</artifactId>
+    <groupId>com.adolphor</groupId>
+    <version>0.0.5-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>mynety-lan</artifactId>
+
+  <properties>
+    <app.name>mynety-server</app.name>
+    <app.mainClass>com.adolphor.mynety.lan.LanClientMain</app.mainClass>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.adolphor</groupId>
+      <artifactId>mynety-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${app.name}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>appassembler-maven-plugin</artifactId>
+        <configuration>
+          <assembleDirectory>${project.build.directory}/${app.name}</assembleDirectory>
+          <programs>
+            <program>
+              <name>${app.name}</name>
+              <mainClass>${app.mainClass}</mainClass>
+            </program>
+          </programs>
+        </configuration>
+      </plugin>
+      <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
+      <!--<plugin>-->
+      <!--<groupId>com.jolira</groupId>-->
+      <!--<artifactId>onejar-maven-plugin</artifactId>-->
+      <!--<configuration>-->
+      <!--<mainClass>${app.mainClass}</mainClass>-->
+      <!--</configuration>-->
+      <!--</plugin>-->
+    </plugins>
+  </build>
+
+</project>

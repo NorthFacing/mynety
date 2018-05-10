@@ -2,8 +2,8 @@ package com.adolphor.mynety.client.adapter;
 
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.constants.Constants;
-import com.adolphor.mynety.common.nettyWrapper.AbstractSimpleHandler;
-import com.adolphor.mynety.common.utils.SocksServerUtils;
+import com.adolphor.mynety.common.utils.ByteStrUtils;
+import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -12,11 +12,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.socks.SocksAddressType;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.IPV4_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.IPV6_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
-import static com.adolphor.mynety.common.constants.Constants.REQUEST_ADDRESS;
-
 
 /**
  * @author Bob.Zhu
@@ -40,13 +39,13 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
   public SocksConnHandler(Channel clientChannel) {
     this.clientChannel = clientChannel;
 
-    Address address = clientChannel.attr(REQUEST_ADDRESS).get();
+    Address address = clientChannel.attr(ATTR_REQUEST_ADDRESS).get();
     buf = Unpooled.buffer();
     buf.writeByte(0x05);
     buf.writeByte(0x01);
     buf.writeByte(0x00);
     String host = address.getHost();
-    byte[] bytes = host.getBytes();
+    byte[] bytes = ByteStrUtils.getByteArr(host);
     if (IPV4_PATTERN.matcher(host).find()) {
       buf.writeByte(SocksAddressType.IPv4.byteValue());
     } else if (IPV6_PATTERN.matcher(host).find()) {
@@ -85,7 +84,7 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
 
     byte dstLen = msg.readByte();
     ByteBuf addrBuf = msg.readBytes(dstLen);
-    String addr = ByteBufUtil.hexDump(addrBuf);
+    String addr = ByteStrUtils.getString(addrBuf);
     short port = msg.readShort();
 
     if (ver != 0X05 || cmd != 0x00) {
@@ -103,11 +102,6 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
       ctx.pipeline().fireChannelActive();
       logger.info("[ {}{}{} ] 【socksWrapper】what's done is done, the remote channelActive method will run next...", clientChannel, LOG_MSG, ctx.channel());
     }
-  }
-
-  @Override
-  protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

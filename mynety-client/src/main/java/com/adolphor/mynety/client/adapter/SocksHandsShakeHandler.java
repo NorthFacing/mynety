@@ -1,8 +1,7 @@
 package com.adolphor.mynety.client.adapter;
 
 import com.adolphor.mynety.common.constants.Constants;
-import com.adolphor.mynety.common.nettyWrapper.AbstractSimpleHandler;
-import com.adolphor.mynety.common.utils.SocksServerUtils;
+import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -71,11 +70,6 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
       logger.info("[ {}{}{} ] remove handlers: SocksHandsShakeHandler", clientChannel, LOG_MSG, ctx.channel());
       ctx.fireChannelActive();
     }
-  }
-
-  @Override
-  protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
   }
 
 }

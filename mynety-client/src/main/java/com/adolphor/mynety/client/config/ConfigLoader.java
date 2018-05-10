@@ -25,6 +25,8 @@ import java.util.List;
 @Slf4j
 public class ConfigLoader {
 
+  private static String configFileName = "client-config.xml";
+
   /**
    * 分别加载 pac 和 client 和 server 配置信息
    * <p>
@@ -38,10 +40,10 @@ public class ConfigLoader {
     loadPac(pacFile);
 
     // 服务器资源配置
-    String configFile = "client-config.xml";
-    loadClientConf("dev-" + configFile); // 先加载测试环境配置，如果为空再去找正式环境配置（为了调试开发方便）
+    // 先加载测试环境配置，如果为空再去找正式环境配置（为了调试开发方便）
+    loadClientConf("dev-" + configFileName);
     if (ClientConfig.getAvailableServer() == null) {
-      loadClientConf(configFile);
+      loadClientConf(configFileName);
     }
   }
 
@@ -54,9 +56,9 @@ public class ConfigLoader {
       }
       Document doc = domBuilder.parse(is);
       Element root = doc.getDocumentElement();
-      addDomains(root, "proxy", PacConfig.proxyDomains);
-      addDomains(root, "direct", PacConfig.directDomains);
-      addDomains(root, "deny", PacConfig.denyDomains);
+      addDomains(root, "proxy", ProxyPacConfig.PROXY_DOMAINS);
+      addDomains(root, "direct", ProxyPacConfig.DIRECT_DOMAINS);
+      addDomains(root, "deny", ProxyPacConfig.DENY_DOMAINS);
     }
   }
 
@@ -65,22 +67,26 @@ public class ConfigLoader {
 
     NodeList proxys = root.getElementsByTagName(strategy);
 
-    if (proxys == null)
+    if (proxys == null) {
       return;
+    }
 
     for (int i = 0; i < proxys.getLength(); i++) {
       Node proxy = proxys.item(i);
-      if (proxy.getNodeType() != Node.ELEMENT_NODE)
+      if (proxy.getNodeType() != Node.ELEMENT_NODE) {
         continue;
+      }
 
       NodeList domains = proxy.getChildNodes();
-      if (domains == null)
+      if (domains == null) {
         return;
+      }
 
       for (int j = 0; j < domains.getLength(); j++) {
         Node domain = domains.item(j);
-        if (domain.getNodeType() != Node.ELEMENT_NODE)
+        if (domain.getNodeType() != Node.ELEMENT_NODE) {
           continue;
+        }
 
         String name = domain.getNodeName();
         switch (name) {
@@ -104,7 +110,8 @@ public class ConfigLoader {
 
     try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
       if (is == null) {
-        if ("client-config.xml".equals(configFile)) {
+        // dev文件为空直接返回接着找pro文件；如果pro文件也为空，就说明缺少配置文件
+        if (configFileName.equals(configFile)) {
           throw new NullPointerException("缺少 client-config.xml 配置文件！");
         }
         return;
@@ -112,13 +119,15 @@ public class ConfigLoader {
       Document doc = domBuilder.parse(is);
       Element root = doc.getDocumentElement();
       NodeList configs = root.getChildNodes();
-      if (configs == null)
+      if (configs == null) {
         return;
+      }
 
       for (int i = 0; i < configs.getLength(); i++) {
         Node node = configs.item(i);
-        if (node.getNodeType() != Node.ELEMENT_NODE)
+        if (node.getNodeType() != Node.ELEMENT_NODE) {
           continue;
+        }
 
         String nodeName = node.getNodeName();
         String value = node.getFirstChild().getNodeValue();
@@ -147,7 +156,7 @@ public class ConfigLoader {
               logger.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
             }
             break;
-          case "http2socks5": // 此参数暂时未放置于xml配置文件
+          case "http2socks5":
             try {
               ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(value);
             } catch (Exception e) {
@@ -158,6 +167,7 @@ public class ConfigLoader {
             getServers(node);
             break;
           default:
+            logger.warn("Unknown config for proxy client: {}={}", nodeName, value);
             break;
         }
       }
@@ -166,16 +176,18 @@ public class ConfigLoader {
 
   private static void getServers(Node serversWrapperNode) {
     if (serversWrapperNode.getNodeType() != Node.ELEMENT_NODE
-        || !"servers".equals(serversWrapperNode.getNodeName()))
+        || !"servers".equals(serversWrapperNode.getNodeName())) {
       return;
+    }
 
     NodeList serverWrapperChildNodes = serversWrapperNode.getChildNodes();
     for (int j = 0; j < serverWrapperChildNodes.getLength(); j++) {
       Node serverWrapperNode = serverWrapperChildNodes.item(j);
 
       if (serversWrapperNode.getNodeType() != Node.ELEMENT_NODE
-          || !"server".equals(serverWrapperNode.getNodeName()))
+          || !"server".equals(serverWrapperNode.getNodeName())) {
         continue;
+      }
 
       NodeList serverChildNodes = serverWrapperNode.getChildNodes();
 
@@ -185,8 +197,9 @@ public class ConfigLoader {
       for (int k = 0; k < serverChildNodes.getLength(); k++) {
         Node serverChild = serverChildNodes.item(k);
 
-        if (serverChild.getNodeType() != Node.ELEMENT_NODE)
+        if (serverChild.getNodeType() != Node.ELEMENT_NODE) {
           continue;
+        }
 
         String name = serverChild.getNodeName();
         String val = serverChild.getFirstChild().getNodeValue();
@@ -207,16 +220,21 @@ public class ConfigLoader {
             bean.setPassword(val);
             break;
           default:
+            logger.warn("Unknown config for proxy client of server node: {}={}", name, val);
             break;
         }
       }
       ConfigLoader.getEncrypt(bean);
-      logger.debug("加载服务器：{}", bean);
+      logger.debug("Proxy server config loaded：{}", bean);
     }
-    logger.debug("配置加载完毕!");
+    logger.debug("Proxy server config loads success!");
   }
 
-  // 根据用户名和密码获取加密参数
+  /**
+   * 根据用户名和密码获取加密参数
+   *
+   * @param server 服务器信息
+   */
   private static void getEncrypt(Server server) {
     String method = server.getMethod();
     String password = server.getPassword();

@@ -6,7 +6,7 @@ import com.adolphor.mynety.client.utils.PacFilter;
 import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.encryption.CryptFactory;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.nettyWrapper.AbstractInRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractInRelayHandler;
 import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 
+import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -47,23 +48,24 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
     logger.info("[ {}{}{} ] {} channel active...", ctx.channel(), Constants.LOG_MSG, remoteChannelRef.get(), getSimpleName(this));
 
     Channel clientChannel = ctx.channel();
-    clientChannel.attr(Constants.REQUEST_TEMP_LIST).set(requestTempLists);
+    clientChannel.attr(Constants.ATTR_REQUEST_TEMP_LIST).set(requestTempLists);
 
     final Server server = ClientConfig.getAvailableServer();
     if (server == null) {
-      SocksServerUtils.flushOnClose(ctx.channel());
+      SocksServerUtils.closeOnFlush(ctx.channel());
       return;
     }
     final ICrypt crypt = CryptFactory.get(server.getMethod(), server.getPassword());
     ctx.channel().attr(Constants.ATTR_CRYPT_KEY).set(crypt);
 
-    Socks5CommandRequest socks5CmdRequest = ctx.channel().attr(Constants.SOCKS5_REQUEST).get();
+    Socks5CommandRequest socks5CmdRequest = ctx.channel().attr(Constants.ATTR_SOCKS5_REQUEST).get();
     String dstAddr = socks5CmdRequest.dstAddr();
     Integer dstPort = socks5CmdRequest.dstPort();
     boolean isDeny = PacFilter.isDeny(dstAddr);
     if (isDeny) {
       logger.warn("[ {}{} ]  dst address is configured to be shutdown: {}:{}", ctx.channel(), Constants.LOG_MSG, dstAddr, dstPort);
-      ctx.close();
+      channelClose(ctx);
+      return;
     }
     // TODO：使用此 crypt 避免每次都重新生成？
     // final ICrypt crypt = server.getCrypt();
@@ -100,7 +102,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
           Channel remoteChannel = future.channel();
           remoteChannelRef.set(remoteChannel);// 远程连接实例化
           if (isProxy) { // 如果使用了代理，那么就要发送远程连接指令
-            sendConnectRemoteMessage(clientChannel, remoteChannelRef.get(), crypt);
+            sendConnectRemoteMessage(clientChannel, remoteChannel, crypt);
           }
           logger.debug("[ {}{}{} ] socks client connect {} success: {}:{}", clientChannel, Constants.LOG_MSG, future.channel(), isProxy ? "socks server" : "dst host", connHost, connPort);
           DefaultSocks5CommandResponse socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
@@ -151,7 +153,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
           if (remoteChannel != null) {
             remoteChannel.writeAndFlush(encryptedBuf);
             logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] write msg to {} channel: {} bytes => {}",
-                ctx.channel(), Constants.LOG_MSG_OUT, remoteChannelRef.get(), isProxy ? "socks server" : "dst host", msg.readableBytes(), msg);
+                ctx.channel(), LOG_MSG_OUT, remoteChannelRef.get(), isProxy ? "socks server" : "dst host", msg.readableBytes(), msg);
           } else {
             requestTempLists.add(encryptedBuf);
             logger.debug("[ {}{}{} ] [ConnectionHandler-channelRead0] add msg to temp list: {}", ctx.channel(), Constants.LOG_MSG, remoteChannel, msg);
@@ -161,7 +163,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
         logger.warn("[ {}{}{} ] [ConnectionHandler-channelRead0] socks client unhandled msg: {}", ctx.channel(), Constants.LOG_MSG, remoteChannel, msg);
       }
     } catch (Exception e) {
-      logger.error(ctx.channel() + Constants.LOG_MSG_OUT + remoteChannel + " Send data to remoteServer error: ", e);
+      logger.error(ctx.channel() + LOG_MSG_OUT + remoteChannel + " Send data to remoteServer error: ", e);
       channelClose(ctx);
     }
   }
@@ -186,7 +188,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
    */
   private void sendConnectRemoteMessage(Channel clientChannel, Channel remoteChannel, ICrypt crypt) throws Exception {
 
-    Socks5CommandRequest socks5Request = clientChannel.attr(Constants.SOCKS5_REQUEST).get();
+    Socks5CommandRequest socks5Request = clientChannel.attr(Constants.ATTR_SOCKS5_REQUEST).get();
     Socks5AddressType dstAddrType = socks5Request.dstAddrType();
     String dstAddr = socks5Request.dstAddr();
     int dstPort = socks5Request.dstPort();
@@ -217,7 +219,7 @@ public final class ConnectionHandler extends AbstractInRelayHandler<ByteBuf> {
     temp = _remoteOutStream.toByteArray();
     ByteBuf encryptedBuf = Unpooled.wrappedBuffer(temp);
     remoteChannel.writeAndFlush(encryptedBuf); // 发送数据
-    logger.debug("[ {}{}{} ] socks client send decrypted msg to server: {} bytes => {}", clientChannel, Constants.LOG_MSG_OUT, remoteChannel, temp.length, encryptedBuf);
+    logger.debug("[ {}{}{} ] socks client send decrypted msg to server: {} bytes => {}", clientChannel, LOG_MSG_OUT, remoteChannel, temp.length, encryptedBuf);
   }
 
 }

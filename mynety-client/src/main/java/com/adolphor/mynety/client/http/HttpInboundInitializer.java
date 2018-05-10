@@ -31,7 +31,7 @@ public class HttpInboundInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     logger.error("[ " + ctx.channel() + LOG_MSG + "] HttpInboundInitializer error: ", cause);
-    SocksServerUtils.flushOnClose(ctx.channel());
+    SocksServerUtils.closeOnFlush(ctx.channel());
   }
 
 }

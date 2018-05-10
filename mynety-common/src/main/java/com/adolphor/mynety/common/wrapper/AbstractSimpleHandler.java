@@ -1,5 +1,6 @@
-package com.adolphor.mynety.common.nettyWrapper;
+package com.adolphor.mynety.common.wrapper;
 
+import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,8 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
     logger.error("[ " + ctx.channel() + LOG_MSG + " ] " + getSimpleName(this) + " error", cause);
   }
 
-  protected abstract void channelClose(ChannelHandlerContext ctx);
+  protected void channelClose(ChannelHandlerContext ctx) {
+    SocksServerUtils.closeOnFlush(ctx.channel());
+  }
 
 }

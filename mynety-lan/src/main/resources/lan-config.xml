@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<server>
+  <method>aes-256-cfb</method>
+  <password>123456</password>
+
+  <serverHost>127.0.0.1</serverHost>
+  <serverPort>2187</serverPort>
+</server>

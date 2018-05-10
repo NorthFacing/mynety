@@ -14,13 +14,13 @@ import java.util.List;
  * @since v0.0.2
  */
 @Slf4j
-public class PacConfig {
+public class ProxyPacConfig {
 
   // PAC优先直连模式下，使用代理的域名
-  public static List<String> proxyDomains = new ArrayList<>();
+  public static final List<String> PROXY_DOMAINS = new ArrayList<>();
   // PAC优先代理模式下，使用直连的域名
-  public static List<String> directDomains = new ArrayList<>();
+  public static final List<String> DIRECT_DOMAINS = new ArrayList<>();
   // 拒绝连接的域名
-  public static List<String> denyDomains = new ArrayList<>();
+  public static final List<String> DENY_DOMAINS = new ArrayList<>();
 
 }

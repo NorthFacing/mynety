@@ -2,7 +2,7 @@ package com.adolphor.mynety.client.http;
 
 import com.adolphor.mynety.client.adapter.SocksHandsShakeHandler;
 import com.adolphor.mynety.client.config.ClientConfig;
-import com.adolphor.mynety.common.nettyWrapper.AbstractInRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractInRelayHandler;
 import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -52,7 +52,7 @@ public class HttpOutboundInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
     logger.error("[ " + ctx.channel() + LOG_MSG + "] error: ", cause);
-    SocksServerUtils.flushOnClose(ctx.channel());
+    SocksServerUtils.closeOnFlush(ctx.channel());
   }
 
 }

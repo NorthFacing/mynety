@@ -1,4 +1,4 @@
-package com.adolphor.mynety.common.nettyWrapper;
+package com.adolphor.mynety.common.wrapper;
 
 import com.adolphor.mynety.common.utils.SocksServerUtils;
 import io.netty.channel.Channel;
@@ -37,9 +37,9 @@ public abstract class AbstractInRelayHandler<I> extends AbstractSimpleHandler<I>
   protected final List<Object> requestTempLists = new LinkedList();
 
   /**
-   * 释放HTTP相关缓存
+   * 释放缓存的请求信息
    */
-  public void releaseHttpObjectsTemp() {
+  public void releaseRequestTempLists() {
     synchronized (requestTempLists) {
       requestTempLists.forEach(msg -> ReferenceCountUtil.release(msg));
       requestTempLists.clear();
@@ -52,8 +52,8 @@ public abstract class AbstractInRelayHandler<I> extends AbstractSimpleHandler<I>
 
   @Override
   protected void channelClose(ChannelHandlerContext ctx) {
-    SocksServerUtils.flushOnClose(ctx.channel());
-    SocksServerUtils.flushOnClose(remoteChannelRef.get());
+    SocksServerUtils.closeOnFlush(ctx.channel());
+    SocksServerUtils.closeOnFlush(remoteChannelRef.get());
   }
 
 

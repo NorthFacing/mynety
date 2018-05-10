@@ -13,8 +13,8 @@
   <artifactId>mynety-server</artifactId>
 
   <properties>
-    <app.name>ss-server</app.name>
-    <app.mainClass>com.adolphor.server.ServerMain</app.mainClass>
+    <app.name>mynety-server</app.name>
+    <app.mainClass>com.adolphor.mynety.server.ServerMain</app.mainClass>
   </properties>
 
   <dependencies>

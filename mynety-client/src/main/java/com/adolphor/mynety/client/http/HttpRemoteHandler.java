@@ -1,8 +1,8 @@
 package com.adolphor.mynety.client.http;
 
 import com.adolphor.mynety.client.http.tunnel.HttpTunnelConnectionHandler;
-import com.adolphor.mynety.common.nettyWrapper.AbstractInRelayHandler;
-import com.adolphor.mynety.common.nettyWrapper.AbstractOutRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractInRelayHandler;
+import com.adolphor.mynety.common.wrapper.AbstractOutRelayHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultHttpResponse;
@@ -12,8 +12,8 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_KEEP_ALIVE;
 import static com.adolphor.mynety.common.constants.Constants.CONNECTION_ESTABLISHED;
-import static com.adolphor.mynety.common.constants.Constants.IS_KEEP_ALIVE;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -40,15 +40,15 @@ public class HttpRemoteHandler extends AbstractOutRelayHandler<Object> {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     Channel remoteClient = ctx.channel();
-    super.channelActive(ctx);
-
-    // 连接成功
+    // 先设置连接成功
     inRelayHandler.setConnected(true);
+    // 再消费缓存消息，保证边界条件下，所有缓存的消息都被消费
+    super.channelActive(ctx);
 
     // 如果是tunnel连接，则告诉客户端建立隧道成功（直接将后续数据进行转发）
     if (inRelayHandler instanceof HttpTunnelConnectionHandler) {
       DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
-      if (Boolean.valueOf(clientChannel.attr(IS_KEEP_ALIVE).get())) {
+      if (Boolean.valueOf(clientChannel.attr(ATTR_IS_KEEP_ALIVE).get())) {
         response.headers().add(HttpHeaderNames.CONNECTION, HttpHeaderNames.KEEP_ALIVE);
       }
       clientChannel.writeAndFlush(response);
