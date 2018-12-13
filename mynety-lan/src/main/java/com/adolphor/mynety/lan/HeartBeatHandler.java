@@ -16,7 +16,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.WRITE_IDLE_TIME;
  * 心跳处理器（客户端写超时，服务端读超时）
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Slf4j

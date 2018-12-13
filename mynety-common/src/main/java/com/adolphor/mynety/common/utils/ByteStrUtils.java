@@ -10,7 +10,7 @@ import java.util.UUID;
  * ByteBuf 和 String 转换工具类
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 public class ByteStrUtils {

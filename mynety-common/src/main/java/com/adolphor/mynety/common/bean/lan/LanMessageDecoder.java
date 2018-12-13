@@ -18,7 +18,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.MAX_FRAME_LENGTH
  * 解密
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Slf4j

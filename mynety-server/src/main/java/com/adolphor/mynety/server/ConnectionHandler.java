@@ -29,7 +29,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_L
  * 2. socks连接的内网穿透地址
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Slf4j

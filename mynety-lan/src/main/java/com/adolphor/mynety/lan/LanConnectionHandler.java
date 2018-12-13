@@ -33,7 +33,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER
  * TODO lan 建立远程失败的时候要发送断开指令给server，告诉server断开其和用户的连接
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Slf4j

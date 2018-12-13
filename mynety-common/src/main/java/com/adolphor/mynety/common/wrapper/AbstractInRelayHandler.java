@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 2. 增加可供手动调用的释放方法
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

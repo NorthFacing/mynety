@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @refactor v0.0.5
  * @since v0.0.1
  */

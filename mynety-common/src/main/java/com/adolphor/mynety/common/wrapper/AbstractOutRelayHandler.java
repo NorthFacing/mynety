@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * 2.消费缓存的请求信息
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

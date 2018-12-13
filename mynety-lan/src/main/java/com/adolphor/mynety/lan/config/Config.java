@@ -5,7 +5,7 @@ package com.adolphor.mynety.lan.config;
  * TODO 需要增加连接权限验证
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 public class Config {

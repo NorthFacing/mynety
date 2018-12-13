@@ -6,7 +6,7 @@ import io.netty.util.AttributeKey;
  * LAN 相关常量
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 public class LanConstants {

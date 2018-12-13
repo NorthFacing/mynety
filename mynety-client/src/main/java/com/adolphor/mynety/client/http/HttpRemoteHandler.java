@@ -24,7 +24,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * 本类中不指定数据类型，数据类型和编解码器都由 inRelay 处理器那里指定
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

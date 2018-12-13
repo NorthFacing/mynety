@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
  * 加密
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Slf4j

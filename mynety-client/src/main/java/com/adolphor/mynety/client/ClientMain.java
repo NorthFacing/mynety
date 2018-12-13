@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * 客户端启动入口
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Slf4j

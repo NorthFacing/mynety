@@ -14,7 +14,7 @@ import static com.adolphor.mynety.common.constants.CacheKey.PREFIX_PROXY_PROXY;
  * 域名判断工具类
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.2
  */
 @Slf4j

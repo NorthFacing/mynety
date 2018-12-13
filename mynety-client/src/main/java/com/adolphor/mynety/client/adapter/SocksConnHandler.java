@@ -19,7 +19,7 @@ import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 
 /**
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

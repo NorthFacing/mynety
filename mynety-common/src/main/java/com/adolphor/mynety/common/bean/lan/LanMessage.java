@@ -14,7 +14,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.ATTR_SERIAL_NO;
  * 消息长度 + 类型 + 流水号 + 请求来源长度 + 请求来源ID + URI长度 + URI + 正式数据
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Data

@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 请求路径解析
  *
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Data

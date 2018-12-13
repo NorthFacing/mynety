@@ -4,7 +4,7 @@ package com.adolphor.mynety.server.config;
  * 服务端配置
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 public class Config {

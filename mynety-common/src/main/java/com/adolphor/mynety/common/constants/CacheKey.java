@@ -4,7 +4,7 @@ package com.adolphor.mynety.common.constants;
  * 本地缓存主键前缀
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 public class CacheKey {

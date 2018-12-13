@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * server configs for proxy client
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Slf4j

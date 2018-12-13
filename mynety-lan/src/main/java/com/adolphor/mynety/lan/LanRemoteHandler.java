@@ -17,7 +17,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER
 
 /**
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.5
  */
 @Slf4j

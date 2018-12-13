@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * 3. 如果增加了ssl解析，那么就不能移除编解码，缓存中的数据类型就不是ByteBuf了，则还是HttpObject
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

@@ -24,7 +24,7 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * http 代理入口 请求分发，当前实现不加权限验证
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

@@ -12,7 +12,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * 主要是覆写增加了LOG日志和channel关闭抽象方法
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

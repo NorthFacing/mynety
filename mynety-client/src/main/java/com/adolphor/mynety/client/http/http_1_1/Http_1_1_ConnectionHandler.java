@@ -34,7 +34,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * （后面再考虑效率问题吧，主要是缓存中的数据类型不好处理）
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j

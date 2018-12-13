@@ -23,7 +23,7 @@ import java.net.InetAddress;
  * （可能会有黏包的问题，所以地址解析之后ByteBuf中还有数据）
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Slf4j

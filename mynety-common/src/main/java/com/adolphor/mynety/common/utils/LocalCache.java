@@ -12,7 +12,7 @@ import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
  * 本地缓存工具
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.3
  */
 @Slf4j

@@ -35,7 +35,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * 连接处理器：建立本地和远程服务器（代理服务器或者是目的服务器，根据代理规则来确定）的连接，
  *
  * @author Bob.Zhu
- * @Email 0haizhu0@gmail.com
+ * @Email adolphor@qq.com
  * @since v0.0.1
  */
 @Slf4j
