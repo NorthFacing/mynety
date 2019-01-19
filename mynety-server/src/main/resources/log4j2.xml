@@ -3,7 +3,7 @@
 
   <Properties>
     <Property name="logPath">../logs</Property>
-    <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss} %-5p] %-4relative [%thread] %c.%M(%L): %m%n</Property>
+    <Property name="logPattern">[%d{yyyy-MM-dd HH:mm:ss:SSS} %-5p] %-4relative [%thread] %c.%M(%L): %m%n</Property>
   </Properties>
 
   <appenders>

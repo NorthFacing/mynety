@@ -44,28 +44,25 @@ public class PacFilter {
    * @return 需要代理返回 true，否则 false
    */
   public static boolean isProxy(String domain) {
-    // 先看缓存中是否存在
+    if (0 == ClientConfig.PROXY_STRATEGY) {
+      return true;
+    }
+
     String proxyDomain = LocalCache.get(PREFIX_PROXY_PROXY + domain);
     if (StringUtils.isNotEmpty(proxyDomain)) {
       return Boolean.valueOf(proxyDomain);
     }
-    boolean bl = true;
-    int strategy = ClientConfig.PROXY_STRATEGY;
-    switch (strategy) {
-      case 1:
-        // PAC优先代理模式下，使用直连的域名来判断
-        bl = !DomainUtils.regCheckForSubdomain(ProxyPacConfig.DIRECT_DOMAINS, domain);
-        break;
-      case 2:
-        // PAC优先直连模式下，使用代理的域名来判断
-        bl = DomainUtils.regCheckForSubdomain(ProxyPacConfig.PROXY_DOMAINS, domain);
-        break;
-      default:
-        // 默认开启全局
-        break;
+    boolean isproxy = false;
+    // 优先代理
+    if (1 == ClientConfig.PROXY_STRATEGY) {
+      isproxy = !DomainUtils.regCheckForSubdomain(ProxyPacConfig.DIRECT_DOMAINS, domain);
     }
-    LocalCache.set(PREFIX_PROXY_PROXY + domain, Boolean.toString(bl), 60 * 60 * 1000);
-    return bl;
+    // 优先直连
+    else if (2 == ClientConfig.PROXY_STRATEGY) {
+      isproxy = DomainUtils.regCheckForSubdomain(ProxyPacConfig.PROXY_DOMAINS, domain);
+    }
+    LocalCache.set(PREFIX_PROXY_PROXY + domain, Boolean.toString(isproxy), 60 * 60 * 1000);
+    return isproxy;
   }
 
 }

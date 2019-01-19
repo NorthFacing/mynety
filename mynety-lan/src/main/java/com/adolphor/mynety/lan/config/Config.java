@@ -20,6 +20,6 @@ public class Config {
   /**
    * LAN 服务器端口号
    */
-  public static int LAN_SERVER_PORT = 2187;
+  public static int LAN_SERVER_PORT = 2087;
 
 }

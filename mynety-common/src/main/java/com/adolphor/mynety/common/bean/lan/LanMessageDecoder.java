@@ -13,6 +13,7 @@ import static com.adolphor.mynety.common.constants.LanConstants.LENGTH_ADJUSTMEN
 import static com.adolphor.mynety.common.constants.LanConstants.LENGTH_FIELD_LENGTH;
 import static com.adolphor.mynety.common.constants.LanConstants.LENGTH_FIELD_OFFSET;
 import static com.adolphor.mynety.common.constants.LanConstants.MAX_FRAME_LENGTH;
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * 解密
@@ -39,7 +40,7 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
    */
   @Override
   protected LanMessage decode(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-    logger.debug("[ {} ] [LanMessageDecoder-decode] received msg: {} bytes", ctx.channel(), msg.readableBytes());
+    logger.debug("[ {} ]【{}】待解码处理的 msg 信息: {} bytes", ctx.channel().id(), getSimpleName(this), msg.readableBytes());
     ByteBuf byteBuf = (ByteBuf) super.decode(ctx, msg);
     if (byteBuf == null) {
       return null;
@@ -78,8 +79,7 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     byteBuf.release();
 
-    logger.debug("[ {} ] [LanMessageDecoder-decode] decoded msg: {}", ctx.channel(), lanMessage);
-
+    logger.debug("[ {} ]【{}】解码处理之后的 msg 信息: {}", ctx.channel().id(), getSimpleName(this), lanMessage);
     return lanMessage;
   }
 

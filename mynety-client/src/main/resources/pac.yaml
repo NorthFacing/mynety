@@ -1,0 +1,6 @@
+direct:
+  - baidu.com
+proxy:
+  - google.com
+deny:
+  - weibo.com

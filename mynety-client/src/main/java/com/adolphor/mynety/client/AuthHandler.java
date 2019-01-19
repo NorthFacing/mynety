@@ -28,33 +28,36 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.1
  */
 @Slf4j
-@ChannelHandler.Sharable // 线程安全
+@ChannelHandler.Sharable
 public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
 
-  public static final AuthHandler INSTANCE = new AuthHandler(); // 因为线程安全，所以只需要初始化一个实例即可
+  public static final AuthHandler INSTANCE = new AuthHandler();
 
   @Override
   public void channelRead0(ChannelHandlerContext ctx, SocksMessage socksRequest) throws Exception {
     switch (socksRequest.version()) {
-      case SOCKS5: // Socks5代理则可以支持TCP和UDP两种应用
+      // Socks5代理则可以支持TCP和UDP两种应用
+      case SOCKS5:
         if (socksRequest instanceof Socks5InitialRequest) {
-          logger.info("[ {}{} ] SOCKS5 auth first request...", ctx.channel(), LOG_MSG);
+          logger.info("[ {}{} ] SOCKS5 auth first request...", ctx.channel().id(), LOG_MSG);
           // 不需要auth验证的代码范例
           List<Socks5AuthMethod> methods = ((Socks5InitialRequest) socksRequest).authMethods();
           if (methods.contains(Socks5AuthMethod.NO_AUTH)) {
-            ctx.pipeline().addFirst(new Socks5CommandRequestDecoder()); // Socks5CommandRequestDecoder 负责解码接下来会收到的 Command 请求
-            logger.info("[ {}{} ] add handler: Socks5CommandRequestDecoder", ctx.channel(), LOG_MSG);
-            ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH)); // 给客户端发送 NOAUTH 的响应
-            logger.info("[ {}{} ] socks response for handsShake: Socks5AuthMethod.NO_AUTH", ctx.channel(), LOG_MSG_IN);
+            // Socks5CommandRequestDecoder 负责解码接下来会收到的 Command 请求
+            ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
+            logger.info("[ {}{} ] add handler: Socks5CommandRequestDecoder", ctx.channel().id(), LOG_MSG);
+            // 给客户端发送 NOAUTH 的响应
+            ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
+            logger.info("[ {}{} ] socks response for handsShake: Socks5AuthMethod.NO_AUTH", ctx.channel().id(), LOG_MSG_IN);
           } else { // 只接受无密码连接
             ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.UNACCEPTED));
-            logger.info("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel(), LOG_MSG_IN);
+            logger.info("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel().id(), LOG_MSG_IN);
           }
           // auth验证的代码范例
 //					ctx.pipeline().addFirst(new Socks5PasswordAuthRequestDecoder());
 //					ctx.writeAndFlush(new DefaultSocks5AuthMethodResponse(Socks5AuthMethod.PASSWORD));
         } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
-          logger.warn("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel(), LOG_MSG);
+          logger.warn("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel().id(), LOG_MSG);
           ctx.close();
 //					ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
 //					ctx.writeAndFlush(new DefaultSocks5PasswordAuthResponse(Socks5PasswordAuthStatus.SUCCESS));
@@ -62,19 +65,19 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
           logger.warn("[ {}{} ] SOCKS5 command request...", ctx.channel(), LOG_MSG);
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
           if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
-            logger.warn("[ {}{} ] SOCKS5 command request is CONNECT, need to executing connection handler...", ctx.channel(), LOG_MSG);
+            logger.warn("[ {}{} ] SOCKS5 command request is CONNECT, need to executing connection handler...", ctx.channel().id(), LOG_MSG);
             ctx.channel().attr(ATTR_SOCKS5_REQUEST).set(socks5CmdRequest);
-            ctx.pipeline().remove(this); // 完成任务，从 pipeline 中移除
-            logger.info("[ {}{} ] remove handler: AuthHandler", ctx.channel(), LOG_MSG);
-            ctx.pipeline().addLast(new ConnectionHandler());
-            logger.info("[ {}{} ] add handler: ConnectionHandler", ctx.channel(), LOG_MSG);
+            ctx.pipeline().addLast(InBoundHandler.INSTANCE);
+            logger.info("[ {}{} ] add handler: InBoundHandler", ctx.channel().id(), LOG_MSG);
+            ctx.pipeline().remove(this);
+            logger.info("[ {}{} ] remove handler: AuthHandler", ctx.channel().id(), LOG_MSG);
             ctx.pipeline().fireChannelActive(); // 通知执行下一个InboundHandler，也就是ConnectHandler
           } else {
-            logger.warn("[ {}{} ] SOCKS5 command request is not CONNECT...", ctx.channel(), LOG_MSG);
+            logger.warn("[ {}{} ] SOCKS5 command request is not CONNECT...", ctx.channel().id(), LOG_MSG);
             ctx.close();
           }
         } else {
-          logger.warn("[ {}{} ] unsupported SOCKS5 command type: {}", ctx.channel(), LOG_MSG, getSimpleName(socksRequest));
+          logger.warn("[ {}{} ] unsupported SOCKS5 command type: {}", ctx.channel().id(), LOG_MSG, getSimpleName(socksRequest));
           ctx.close();
         }
         break;

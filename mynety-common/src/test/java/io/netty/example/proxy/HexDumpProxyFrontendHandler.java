@@ -39,7 +39,9 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
+  public void channelActive(ChannelHandlerContext ctx) throws Exception{
+    super.channelActive(ctx);
+
     final Channel inboundChannel = ctx.channel();
 
     // Start the connection attempt.

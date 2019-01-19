@@ -1,12 +1,15 @@
 package com.adolphor.mynety.common.bean.lan;
 
-import com.adolphor.mynety.common.utils.ByteStrUtils;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_SERIAL_NO;
+import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_AUTH;
+import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_CONNECT;
+import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_DISCONNECT;
+import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_HEARTBEAT;
+import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 
 /**
  * lan客户端与代理服务器消息交换协议：
@@ -63,20 +66,30 @@ public class LanMessage {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("LanMessage [")
-        .append("type=").append(type)
-        .append(", serNo=").append(serialNumber);
+        .append("type=").append(type);
+    if (LAN_MSG_AUTH == type) {
+      sb.append(", typeName=AUTH");
+    } else if (LAN_MSG_CONNECT == type) {
+      sb.append(", typeName=CONNECT");
+    } else if (LAN_MSG_HEARTBEAT == type) {
+      sb.append(", typeName=HEARTBEAT");
+    } else if (LAN_MSG_TRANSFER == type) {
+      sb.append(", typeName=TRANSFER");
+    } else if (LAN_MSG_DISCONNECT == type) {
+      sb.append(", typeName=DISCONNECT");
+    }
+    sb.append(", serNo=").append(serialNumber);
     if (StringUtils.isNotEmpty(requestId)) {
       sb.append(", requestId=").append(requestId);
     }
     if (StringUtils.isNotEmpty(uri)) {
-      sb.append(", uri").append(uri);
+      sb.append(", uri=").append(uri);
+    }
+    if (data != null && data.length > 0) {
+      sb.append(", data size: ").append(data.length);
+      sb.append(", data : ").append(data);
     }
     sb.append("]");
-    if (data != null && data.length > 0) {
-      sb.append(" ==== LanMessage Data: ====\n");
-      String str = ByteStrUtils.getString(Unpooled.wrappedBuffer(data));
-      sb.append(str).append("\n");
-    }
     return sb.toString();
   }
 

@@ -30,7 +30,9 @@ public final class RelayHandler extends ChannelInboundHandlerAdapter {
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
+  public void channelActive(ChannelHandlerContext ctx) throws Exception{
+    super.channelActive(ctx);
+
     ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
   }
 

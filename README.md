@@ -23,14 +23,17 @@ Shell commond:
 mvn clean package -D maven.test.skip=true
 
 # Running server
-sh ./shadowsocks-java-server/target/ss-server/bin/ss-server.sh
+sh ./shadowsocks-java-server/target/ss-server/bin/mynety-server.sh
 # Running client
-sh ./shadowsocks-java-client/target/ss-client/bin/ss-client.sh
+sh ./shadowsocks-java-client/target/ss-client/bin/mynety-client.sh
 ```
 
 # TODO list
 
 * Traffic statistics
 * DNS config (ignores localhost,127.0.0.1 and so on)
+    - [用netty开发一个DNS server](https://zhuanlan.zhihu.com/p/39832709)
 * Other protocols supported
 * Http keep-alive supported
+* instead of xml config by yaml
+* redefine port number

@@ -1,0 +1,23 @@
+# 是否开放代理给局域网内的其他设备：默认开启
+public: true
+# HTTP/HTTPS 监听端口，默认 1087
+httpLocalPort: 1087
+# socks5 监听端口，默认 1086
+socksLocalPort: 1086
+# 所有 HTTP 请求都进行socks5代理转发；只有在分析HTTP请求的时候才不需要转发到socks5（默认为true）
+http2socks5: true
+# 代理策略：
+#  0 = 代理所有请求(默认)；
+#  1 = 优先使用代理；
+#  2 = 优先直连
+proxyStrategy: 0
+# 代理服务器
+servers:
+  - host: 127.0.0.1
+    port: 2086
+    method: aes-256-cfb
+    password: 123456
+  - host: 127.0.0.2
+    port: 2086
+    method: aes-256-cfb
+    password: 123456

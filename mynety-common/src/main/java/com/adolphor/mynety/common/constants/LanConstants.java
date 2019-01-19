@@ -2,6 +2,9 @@ package com.adolphor.mynety.common.constants;
 
 import io.netty.util.AttributeKey;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * LAN 相关常量
  *
@@ -20,6 +23,17 @@ public class LanConstants {
    */
   public static final int MAX_IDLE_TIMES_LIMIT = 3;
 
+  /**
+   * 断线重连等待时间递增，此为等待初始值
+   */
+  public static final int INIT_SLEEP_TIME = 1000;
+  /**
+   * 断线重连等待时间递增，此为等待最大值
+   */
+  public static final int MAX_SLEEP_TIME = 6000;
+
+
+  // 协议相关
   /**
    * 信息最大长度，超过这个长度回报异常
    */
@@ -66,6 +80,7 @@ public class LanConstants {
    */
   public static final byte LAN_MSG_TRANSFER = 0x04;
 
+  // 会话管理
   /**
    *
    */

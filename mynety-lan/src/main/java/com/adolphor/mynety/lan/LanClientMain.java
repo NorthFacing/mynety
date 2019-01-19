@@ -5,9 +5,11 @@ import com.adolphor.mynety.lan.config.Config;
 import com.adolphor.mynety.lan.config.ConfigLoader;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.adolphor.mynety.common.constants.LanConstants.INIT_SLEEP_TIME;
+import static com.adolphor.mynety.common.constants.LanConstants.MAX_SLEEP_TIME;
 
 /**
  * @author Bob.Zhu
@@ -19,6 +21,7 @@ public class LanClientMain {
 
   private static Bootstrap bootstrap;
   private static EventLoopGroup workerGroup;
+  private static long SLEEP_TIME = INIT_SLEEP_TIME;
 
   public static void main(String[] args) throws Exception {
 
@@ -29,7 +32,7 @@ public class LanClientMain {
       doConnect();
 
     } catch (Exception e) {
-      logger.error("lan客户端启动出错：：", e);
+      logger.error("lan client start Error", e);
     } finally {
       if (workerGroup != null) {
         workerGroup.shutdownGracefully();
@@ -50,29 +53,27 @@ public class LanClientMain {
       workerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
       bootstrap.group(workerGroup)
           .channel(Constants.channelClass)
-          .option(ChannelOption.TCP_NODELAY, true)
-          .handler(new LanPipelineInitializer());
+          .handler(LanInBoundInitializer.INSTANCE);
 
       ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT).sync();
       future.channel().closeFuture().sync();
+
     } catch (Exception e) {
       doConnect();
     }
   }
 
-  private static long sleepTimeMill = 1000;
-
   public static void reconnectWait() {
     try {
-      if (sleepTimeMill > 60000) {
-        sleepTimeMill = 1000;
+      if (SLEEP_TIME > MAX_SLEEP_TIME) {
+        SLEEP_TIME = INIT_SLEEP_TIME;
       }
       synchronized (LanClientMain.class) {
-        sleepTimeMill = sleepTimeMill * 2;
-        Thread.sleep(sleepTimeMill);
+        SLEEP_TIME = SLEEP_TIME * 2;
+        Thread.sleep(SLEEP_TIME);
       }
     } catch (InterruptedException e) {
-      logger.error("reconnectWait error:", e);
+      logger.error("Reconnect wait Error", e);
     }
   }
 

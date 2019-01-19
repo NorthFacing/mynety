@@ -59,8 +59,9 @@ public class Socks03ConnectHandler extends SimpleChannelInboundHandler {
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
+  public void channelActive(ChannelHandlerContext ctx) throws Exception{
     logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【连接】处理器激活，发送连接请求：" + ByteBufUtil.hexDump(buf));
+    super.channelActive(ctx);
     ctx.writeAndFlush(buf);
   }
 

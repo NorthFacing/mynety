@@ -1,88 +1,89 @@
 package com.adolphor.mynety.client.http;
 
-import com.adolphor.mynety.client.http.http_1_0.Http_1_0_ConnectionHandler;
-import com.adolphor.mynety.client.http.http_1_1.Http_1_1_ConnectionHandler;
-import com.adolphor.mynety.client.http.tunnel.HttpTunnelConnectionHandler;
-import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
-import com.adolphor.mynety.common.utils.SocksServerUtils;
+import com.adolphor.mynety.common.bean.Address;
+import com.adolphor.mynety.common.constants.Constants;
+import com.adolphor.mynety.common.utils.ChannelUtils;
+import com.adolphor.mynety.common.utils.DomainUtils;
+import com.adolphor.mynety.common.wrapper.AbstractInBoundHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.DefaultHttpRequest;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_KEEP_ALIVE;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_HTTP_TUNNEL;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_0;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * http 代理入口 请求分发，当前实现不加权限验证
+ * http 代理入口，接收的对象肯定是 FullHttpRequest 类型，当前实现不加权限验证
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
  * @since v0.0.4
  */
 @Slf4j
-public class HttpProxyHandler extends AbstractSimpleHandler<HttpObject> {
+@ChannelHandler.Sharable
+public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
 
+  public static final HttpProxyHandler INSTANCE = new HttpProxyHandler();
+
+  /**
+   * 处理 HTTP 请求的第一条消息，其中最重要的一个功能就是解析出当前请求的目标地址并缓存。
+   * 目前保持handler和HttpInBoundHandler分开处理，这样HttpInBoundHandler的channelRead0中不需要处理建立连接的逻辑
+   *
+   * @param ctx
+   * @param msg
+   * @throws Exception
+   */
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-    logger.debug("[ {}{} ] http proxy receive first http msg: {}", ctx.channel(), LOG_MSG, msg);
-    if (msg instanceof DefaultHttpRequest) {
-      DefaultHttpRequest httpRequest = (DefaultHttpRequest) msg;
-      HttpVersion httpVersion = httpRequest.protocolVersion();
+  protected void channelRead0(final ChannelHandlerContext ctx, final FullHttpRequest msg) throws Exception {
 
-      // 根据头文件判断请求是否是长连接
-      HttpHeaders headers = httpRequest.headers();
-      if (headers.size() > 0 && (
-          HttpHeaderNames.CONNECTION.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.CONNECTION))
-              || HttpHeaderNames.CONNECTION.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION))
-              || HttpHeaderNames.KEEP_ALIVE.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION)))) {
-        HttpUtil.setKeepAlive(httpRequest, true);
-        ctx.channel().attr(ATTR_IS_KEEP_ALIVE).set(true);
-      }
+    logger.debug("[ {}{} ]【HTTP请求分发】第一条 http 消息: {}", ctx.channel().id(), LOG_MSG, msg);
 
-      // 优先判断是否是tunnel代理，HTTP1.0，HTTP1.1，HTTP2.0 都支持（协议规则是否完全一致需要确认）
-      if (HttpMethod.CONNECT == httpRequest.method()) {
-        ctx.pipeline().addAfter(ctx.name(), null, new HttpTunnelConnectionHandler(httpRequest));
-        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: HttpTunnelConnectionHandler", ctx.channel(), LOG_MSG);
-      }
-      // HTTP1.1
-      else if (HTTP_1_1 == httpVersion) {
-        ctx.pipeline().addAfter(ctx.name(), null, new Http_1_1_ConnectionHandler(httpRequest));
-        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_1_ConnectionHandler", ctx.channel(), LOG_MSG);
-      }
-      // HTTP1.0
-      else if (HTTP_1_0 == httpVersion) {
-        // 如果是1.0，则去掉connection头部，防止哑代理 (待验证之后放出此逻辑)
-        // headers.remove(HttpHeaderNames.CONNECTION);
-        ctx.pipeline().addAfter(ctx.name(), null, new Http_1_0_ConnectionHandler(httpRequest));
-        logger.info("[ {}{} ] choose and add handler by protocol type of http msg: Http_1_0_ConnectionHandler", ctx.channel(), LOG_MSG);
-      }
-      // To be done...
-      else {
-        logger.error("NOT SUPPORTED {} FOR NOW...", httpVersion);
-        ctx.close();
-      }
-      ctx.pipeline().remove(this);
-      logger.info("[ {}{} ] remove handler: HttpProxyHandler", ctx.channel(), LOG_MSG);
-      ctx.fireChannelActive();
-    } else { // 如果第一次请求不是 DefaultHttpRequest 那么就说明HTTP请求异常
-      logger.error("[ {}{} ] unhandled msg, type: {}", ctx.channel(), LOG_MSG, msg.getClass().getTypeName());
-      channelClose(ctx);
+    // TODO 为什么要设置这些东西？根据头文件判断请求是否是长连接？
+//      HttpHeaders headers = httpRequest.headers();
+//      // TODO 具体协议还需要研究，长连接的兼容性处理
+//      if (headers.size() > 0 && (
+//          HttpHeaderNames.CONNECTION.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.CONNECTION))
+//              || HttpHeaderNames.CONNECTION.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION))
+//              || HttpHeaderNames.KEEP_ALIVE.contentEqualsIgnoreCase(headers.get(HttpHeaderNames.PROXY_CONNECTION)))) {
+//        // TODO 为啥设置？
+//        HttpUtil.setKeepAlive(httpRequest, true);
+//        ctx.channel().attr(ATTR_IS_KEEP_ALIVE).set(true);
+//      } else {
+//        ctx.channel().attr(ATTR_IS_KEEP_ALIVE).set(false);
+//      }
+
+    Address address = DomainUtils.getAddress(msg);
+    logger.debug("[ {}{} ]【{}】HTTP请求分发 解析URL信息 {}=> {}:{}", ctx.channel().id(), LOG_MSG, getSimpleName(this), msg.uri(), address.getHost(), address.getPort());
+    ctx.channel().attr(ATTR_REQUEST_ADDRESS).set(address);
+
+    // 判断是否是tunnel代理，作为后续是否移除 httpCodec 处理器的标准之一（另外一个标准是 是否开启MITM）
+    if (HttpMethod.CONNECT == msg.method()) {
+      ctx.channel().attr(ATTR_IS_HTTP_TUNNEL).set(true);
+      logger.info("[ {} ]【{}】HTTP请求分发 添加 ATTR_IS_HTTP_TUNNEL 属性：true", ctx.channel().id(), getSimpleName(this));
+    } else {
+      // 如果不是tunnel代理，HTTP客户端不发送第二次请求，所以需要将本次请求进行缓存
+      ctx.channel().attr(ATTR_IS_HTTP_TUNNEL).set(false);
+      logger.info("[ {} ]【{}】HTTP请求分发 添加 ATTR_IS_HTTP_TUNNEL 属性：false", ctx.channel().id(), getSimpleName(this));
+      ReferenceCountUtil.retain(msg);
+      ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(msg);
+      logger.debug("[ {}{} ]【{}】HTTP请求分发 暂存消息到缓存: {}", ctx.channel().id(), Constants.LOG_MSG, getSimpleName(this), msg);
     }
-
+    ctx.pipeline().addLast(HttpInBoundHandler.INSTANCE);
+    ctx.pipeline().remove(this);
+    logger.info("[ {} ]【{}】HTTP请求分发 移除处理器: HttpProxyHandler", ctx.channel().id(), getSimpleName(this));
+    ctx.fireChannelActive();
   }
 
   @Override
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-    SocksServerUtils.closeOnFlush(ctx.channel());
-    logger.error("[ " + ctx.channel() + LOG_MSG + "] error: ", cause);
+    ChannelUtils.closeOnFlush(ctx.channel());
+    logger.error("[ " + ctx.channel().id() + LOG_MSG + "] error: ", cause);
   }
 
 }

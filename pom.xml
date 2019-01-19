@@ -21,7 +21,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <netty.version>4.1.24.Final</netty.version>
+    <netty.version>4.1.32.Final</netty.version>
   </properties>
 
   <dependencyManagement>
@@ -49,26 +49,29 @@
         <version>${netty.version}</version>
         <classifier>linux-x86_64</classifier>
       </dependency>
-      <!-- net -->
-      <dependency>
-        <groupId>commons-net</groupId>
-        <artifactId>commons-net</artifactId>
-        <version>3.6</version>
-      </dependency>
       <!-- com.adolphor.mynety.common.encryption -->
       <dependency>
         <groupId>org.bouncycastle</groupId>
         <artifactId>bcprov-jdk15on</artifactId>
         <version>1.52</version>
       </dependency>
-      <!--lombok-->
+      <!-- utils -->
       <dependency>
         <groupId>org.projectlombok</groupId>
         <artifactId>lombok</artifactId>
         <version>1.16.20</version>
         <scope>provided</scope>
       </dependency>
-      <!-- utils -->
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.5</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-net</groupId>
+        <artifactId>commons-net</artifactId>
+        <version>3.6</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
@@ -78,6 +81,11 @@
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
         <version>3.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.23</version>
       </dependency>
       <!--log4j-->
       <dependency>

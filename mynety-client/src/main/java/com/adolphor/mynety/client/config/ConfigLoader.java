@@ -1,17 +1,18 @@
 package com.adolphor.mynety.client.config;
 
-import com.adolphor.mynety.common.encryption.CryptFactory;
-import com.adolphor.mynety.common.encryption.ICrypt;
 import lombok.extern.slf4j.Slf4j;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.yaml.snakeyaml.Yaml;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+
+import static com.adolphor.mynety.client.config.ProxyPacConfig.DENY_DOMAINS;
+import static com.adolphor.mynety.client.config.ProxyPacConfig.DIRECT_DOMAINS;
+import static com.adolphor.mynety.client.config.ProxyPacConfig.PROXY_DOMAINS;
+import static com.adolphor.mynety.common.constants.Constants.CONN_DENY;
+import static com.adolphor.mynety.common.constants.Constants.CONN_DIRECT;
+import static com.adolphor.mynety.common.constants.Constants.CONN_PROXY;
 
 /**
  * 加载配置信息
@@ -25,7 +26,8 @@ import java.util.List;
 @Slf4j
 public class ConfigLoader {
 
-  private static String configFileName = "client-config.xml";
+  private final static String pacFileName = "pac.yaml";
+  private final static String configFileName = "client-config.yaml";
 
   /**
    * 分别加载 pac 和 client 和 server 配置信息
@@ -36,8 +38,7 @@ public class ConfigLoader {
    */
   public static void loadConfig() throws Exception {
     // PAC 模式配置
-    String pacFile = "pac.xml";
-    loadPac(pacFile);
+    loadPac(pacFileName);
 
     // 服务器资源配置
     // 先加载测试环境配置，如果为空再去找正式环境配置（为了调试开发方便）
@@ -48,198 +49,88 @@ public class ConfigLoader {
   }
 
   private static void loadPac(String pacFile) throws Exception {
-    DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
-    DocumentBuilder domBuilder = domfac.newDocumentBuilder();
     try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(pacFile)) {
       if (is == null) {
         return;
       }
-      Document doc = domBuilder.parse(is);
-      Element root = doc.getDocumentElement();
-      addDomains(root, "proxy", ProxyPacConfig.PROXY_DOMAINS);
-      addDomains(root, "direct", ProxyPacConfig.DIRECT_DOMAINS);
-      addDomains(root, "deny", ProxyPacConfig.DENY_DOMAINS);
-    }
-  }
 
-
-  private static void addDomains(Element root, String strategy, List<String> domainList) {
-
-    NodeList proxys = root.getElementsByTagName(strategy);
-
-    if (proxys == null) {
-      return;
-    }
-
-    for (int i = 0; i < proxys.getLength(); i++) {
-      Node proxy = proxys.item(i);
-      if (proxy.getNodeType() != Node.ELEMENT_NODE) {
-        continue;
+      Map pac = new Yaml().load(is);
+      if (pac.get(CONN_PROXY) != null) {
+        PROXY_DOMAINS.addAll((List) pac.get(CONN_PROXY));
       }
-
-      NodeList domains = proxy.getChildNodes();
-      if (domains == null) {
-        return;
+      if (pac.get(CONN_DIRECT) != null) {
+        DIRECT_DOMAINS.addAll((List) pac.get(CONN_DIRECT));
       }
-
-      for (int j = 0; j < domains.getLength(); j++) {
-        Node domain = domains.item(j);
-        if (domain.getNodeType() != Node.ELEMENT_NODE) {
-          continue;
-        }
-
-        String name = domain.getNodeName();
-        switch (name) {
-          case "domain":
-            String value = domain.getFirstChild().getNodeValue();
-            domainList.add(value);
-            break;
-          default:
-            break;
-        }
+      if (pac.get(CONN_DENY) != null) {
+        DENY_DOMAINS.addAll((List) pac.get(CONN_DENY));
       }
     }
-    logger.debug("读取{}代理配置完毕：{}个", strategy, domainList.size());
   }
 
 
   private static void loadClientConf(String configFile) throws Exception {
 
-    DocumentBuilderFactory domfac = DocumentBuilderFactory.newInstance();
-    DocumentBuilder domBuilder = domfac.newDocumentBuilder();
-
     try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
       if (is == null) {
         // dev文件为空直接返回接着找pro文件；如果pro文件也为空，就说明缺少配置文件
         if (configFileName.equals(configFile)) {
-          throw new NullPointerException("缺少 client-config.xml 配置文件！");
+          throw new NullPointerException("缺少 client-config 配置文件！");
         }
         return;
       }
-      Document doc = domBuilder.parse(is);
-      Element root = doc.getDocumentElement();
-      NodeList configs = root.getChildNodes();
-      if (configs == null) {
-        return;
+
+      Map config = new Yaml().load(is);
+      Object aPublic = config.get("public");
+      if (aPublic != null) {
+        ClientConfig.IS_PUBLIC = Boolean.valueOf(aPublic.toString());
+      }
+      Object socksLocalPort = config.get("socksLocalPort");
+      if (socksLocalPort != null) {
+        ClientConfig.SOCKS_PROXY_PORT = Integer.valueOf(socksLocalPort.toString());
+      }
+      Object httpLocalPort = config.get("httpLocalPort");
+      if (httpLocalPort != null) {
+        ClientConfig.HTTP_PROXY_PORT = Integer.valueOf(httpLocalPort.toString());
+      }
+      Object http2socks5 = config.get("http2socks5");
+      if (http2socks5 != null) {
+        ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
+      }
+      Object proxyStrategy = config.get("proxyStrategy");
+      if (proxyStrategy != null) {
+        ClientConfig.PROXY_STRATEGY = Integer.valueOf(proxyStrategy.toString());
       }
 
-      for (int i = 0; i < configs.getLength(); i++) {
-        Node node = configs.item(i);
-        if (node.getNodeType() != Node.ELEMENT_NODE) {
-          continue;
-        }
+      if (config.get("servers") != null) {
+        List<Map> servers = (List) config.get("servers");
+        for (Map server : servers) {
+          Server bean = new Server();
+          ClientConfig.addServer(bean);
 
-        String nodeName = node.getNodeName();
-        String value = node.getFirstChild().getNodeValue();
-        switch (nodeName) {
-          case "public":
-            ClientConfig.IS_PUBLIC = Boolean.valueOf(value);
-            break;
-          case "socksLocalPort":
-            try {
-              ClientConfig.SOCKS_PROXY_PORT = Integer.valueOf(value);
-            } catch (Exception e) {
-              logger.error("本地端口配置 socksLocalPort 参数不合法，将使用默认端口1086！");
-            }
-            break;
-          case "httpLocalPort":
-            try {
-              ClientConfig.HTTP_PROXY_PORT = Integer.valueOf(value);
-            } catch (Exception e) {
-              logger.error("本地端口配置 httpLocalPort 参数不合法，将使用默认端口1087！");
-            }
-            break;
-          case "proxyStrategy":
-            try {
-              ClientConfig.PROXY_STRATEGY = Integer.valueOf(value);
-            } catch (Exception e) {
-              logger.error("代理模式配置 proxyStrategy 参数不合法，将使用全局代理模式！");
-            }
-            break;
-          case "http2socks5":
-            try {
-              ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(value);
-            } catch (Exception e) {
-              logger.error("代理模式配置 http2socks5 参数不合法，将使用socks5二次代理http请求！");
-            }
-            break;
-          case "servers":
-            getServers(node);
-            break;
-          default:
-            logger.warn("Unknown config for proxy client: {}={}", nodeName, value);
-            break;
+          Object remarks = server.get("remarks");
+          if (remarks != null) {
+            bean.setRemarks(remarks.toString());
+          }
+          Object host = server.get("host");
+          if (host != null) {
+            bean.setHost(host.toString());
+          }
+          Object port = server.get("port");
+          if (port != null) {
+            bean.setPort(Integer.valueOf(port.toString()));
+          }
+          Object method = server.get("method");
+          if (method != null) {
+            bean.setMethod(method.toString());
+          }
+          Object password = server.get("password");
+          if (password != null) {
+            bean.setPassword(password.toString());
+          }
         }
       }
     }
   }
 
-  private static void getServers(Node serversWrapperNode) {
-    if (serversWrapperNode.getNodeType() != Node.ELEMENT_NODE
-        || !"servers".equals(serversWrapperNode.getNodeName())) {
-      return;
-    }
-
-    NodeList serverWrapperChildNodes = serversWrapperNode.getChildNodes();
-    for (int j = 0; j < serverWrapperChildNodes.getLength(); j++) {
-      Node serverWrapperNode = serverWrapperChildNodes.item(j);
-
-      if (serversWrapperNode.getNodeType() != Node.ELEMENT_NODE
-          || !"server".equals(serverWrapperNode.getNodeName())) {
-        continue;
-      }
-
-      NodeList serverChildNodes = serverWrapperNode.getChildNodes();
-
-      Server bean = new Server();
-      ClientConfig.addServer(bean);
-
-      for (int k = 0; k < serverChildNodes.getLength(); k++) {
-        Node serverChild = serverChildNodes.item(k);
-
-        if (serverChild.getNodeType() != Node.ELEMENT_NODE) {
-          continue;
-        }
-
-        String name = serverChild.getNodeName();
-        String val = serverChild.getFirstChild().getNodeValue();
-        switch (name) {
-          case "remarks":
-            bean.setRemarks(val);
-            break;
-          case "host":
-            bean.setHost(val);
-            break;
-          case "port":
-            bean.setPort(Integer.valueOf(val));
-            break;
-          case "method":
-            bean.setMethod(val);
-            break;
-          case "password":
-            bean.setPassword(val);
-            break;
-          default:
-            logger.warn("Unknown config for proxy client of server node: {}={}", name, val);
-            break;
-        }
-      }
-      ConfigLoader.getEncrypt(bean);
-      logger.debug("Proxy server config loaded：{}", bean);
-    }
-    logger.debug("Proxy server config loads success!");
-  }
-
-  /**
-   * 根据用户名和密码获取加密参数
-   *
-   * @param server 服务器信息
-   */
-  private static void getEncrypt(Server server) {
-    String method = server.getMethod();
-    String password = server.getPassword();
-    ICrypt crypt = CryptFactory.get(method, password);
-    server.setCrypt(crypt);
-  }
 
 }

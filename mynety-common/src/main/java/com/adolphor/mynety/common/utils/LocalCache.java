@@ -18,7 +18,7 @@ import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
 @Slf4j
 public class LocalCache {
 
-  private static final Map<String, ValueObject> localCache = new ConcurrentHashMap<>();
+  private static final Map<String, ValueObject> LOCAL_CACHE = new ConcurrentHashMap<>();
 
   public LocalCache() {
   }
@@ -33,16 +33,19 @@ public class LocalCache {
    */
   public static String set(String key, String newValue, long timeout) {
     long currentTime = System.currentTimeMillis();
-    ValueObject valueObject = localCache.get(key);
-    long newTimeOut = timeout == 0 ? 0 : (currentTime + timeout); // 新的超时时间
-    if (localCache.keySet().contains(key) && (valueObject.getTimeout() == 0 || currentTime <= valueObject.getTimeout())) {
+    ValueObject valueObject = LOCAL_CACHE.get(key);
+    // 新的超时时间
+    long newTimeOut = (timeout == 0) ? 0 : (currentTime + timeout);
+    if (!LOCAL_CACHE.keySet().contains(key) || valueObject.getTimeout() == 0 || currentTime <= valueObject.getTimeout()) {
+      LOCAL_CACHE.put(key, new ValueObject(newValue, newTimeOut));
+      // 新增或已经超时的话无返回
+      return null;
+    } else {
       String oldValue = valueObject.getValue();
       valueObject.timeout = newTimeOut;
       valueObject.value = newValue;
-      return oldValue; // 更新的话返回原来的缓存值
-    } else {
-      localCache.put(key, new ValueObject(newValue, newTimeOut));
-      return null; // 新增/或已经超时的话无返回
+      // 更新的话返回原来的缓存值
+      return oldValue;
     }
   }
 
@@ -63,14 +66,14 @@ public class LocalCache {
    */
   public static String get(String key) {
     long currentTime = System.currentTimeMillis();
-    ValueObject valueObject = localCache.get(key);
+    ValueObject valueObject = LOCAL_CACHE.get(key);
     if (valueObject == null) {
       return null;
     }
     if (valueObject.getTimeout() == 0 || currentTime <= valueObject.getTimeout()) {
       return valueObject.getValue();
     } else {
-      localCache.remove(key);
+      LOCAL_CACHE.remove(key);
       return null;
     }
   }
@@ -79,7 +82,7 @@ public class LocalCache {
    * @return 缓存数据量
    */
   public static int size() {
-    return localCache.size();
+    return LOCAL_CACHE.size();
   }
 
   /**
@@ -88,7 +91,7 @@ public class LocalCache {
    * @return
    */
   public static boolean clear() {
-    localCache.clear();
+    LOCAL_CACHE.clear();
     return true;
   }
 
@@ -96,13 +99,14 @@ public class LocalCache {
    * @param sizeLimit 超过limit值才进行处理，提高效率
    */
   public static void validateForGC(int sizeLimit) {
-    if (size() < sizeLimit)
+    if (size() < sizeLimit) {
       return;
+    }
     logger.debug("{} before resize keys: {}", LOG_MSG_OUT, size());
-    localCache.forEach((k, v) -> {
+    LOCAL_CACHE.forEach((k, v) -> {
       long currentTime = System.currentTimeMillis();
       if (v.getTimeout() != 0 && currentTime >= v.getTimeout()) {
-        localCache.remove(k);
+        LOCAL_CACHE.remove(k);
         logger.debug("{} remove key: {}", LOG_MSG_OUT, k);
       }
     });

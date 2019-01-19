@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class Server {
 
-  private String remarks; // 服务器备注名称
+  private String remarks;
   private String host;
   private int port;
   private String method;
   private String password;
   private ICrypt crypt;
-  private boolean available = true; // 是否可用
+  private boolean available = true;
   private Double pingTime = 0d;
 
   @Override

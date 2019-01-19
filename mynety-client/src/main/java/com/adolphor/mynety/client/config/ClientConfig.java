@@ -30,7 +30,9 @@ public class ClientConfig {
   public static int SOCKS_PROXY_PORT = 1086;
   public static int HTTP_PROXY_PORT = 1087;
 
-  // 默认为true，所有 HTTP 请求都进行socks5代理转发
+  /**
+   * 默认为true，所有 HTTP 请求都进行socks5代理转发；只有在分析HTTP请求的时候才不需要转发到socks5
+   */
   public static boolean HTTP_2_SOCKS5 = true;
 
   /**
@@ -60,11 +62,11 @@ public class ClientConfig {
       return null;
     }
 
-    // 按照ping时间排序 sorted by time asc
+    // 按照ping时间排序 sorted by time asc；不为空返回速度最快的一个服务器；为空随便返回一个，反正都不能用
     Server server = servers.parallelStream()
         .filter(Server::isAvailable)
         .min(Comparator.comparingDouble(Server::getPingTime))
-        .orElse(servers.get(0)); // 不为空返回速度最快的一个服务器；为空随便返回一个，反正都不能用
+        .orElse(servers.get(0));
     return server;
   }
 

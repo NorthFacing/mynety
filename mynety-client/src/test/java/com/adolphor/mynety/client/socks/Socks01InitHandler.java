@@ -55,8 +55,10 @@ public class Socks01InitHandler extends SimpleChannelInboundHandler {
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
     logger.info(Constants.LOG_MSG + ctx.channel() + "【握手】处理器激活，发送握手请求：" + ByteBufUtil.hexDump(buf));
+    super.channelActive(ctx);
+
     ctx.writeAndFlush(buf);
   }
 

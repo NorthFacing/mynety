@@ -2,7 +2,7 @@ package com.adolphor.mynety.server.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessageDecoder;
 import com.adolphor.mynety.common.bean.lan.LanMessageEncoder;
-import com.adolphor.mynety.common.constants.Constants;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 import lombok.extern.slf4j.Slf4j;
@@ -13,18 +13,21 @@ import lombok.extern.slf4j.Slf4j;
  * @since v0.0.5
  */
 @Slf4j
+@ChannelHandler.Sharable
 public class LanPipelineInitializer extends ChannelInitializer<SocketChannel> {
+
+  public static final LanPipelineInitializer INSTANCE = new LanPipelineInitializer();
 
   @Override
   public void initChannel(SocketChannel ch) throws Exception {
-    logger.info(" [{}{} ] Lan init handler...", ch, Constants.LOG_MSG);
+    logger.info("[ {} ]【LanPipelineInitializer】开始激活……", ch);
     ch.pipeline().addLast(new LanMessageDecoder());
-    logger.info("[ {}{} ] add handlers: LanMessageDecoder", ch, Constants.LOG_MSG);
+    logger.info("[ {} ]【LanPipelineInitializer】增加处理器: LanMessageDecoder", ch.id());
     ch.pipeline().addLast(new LanMessageEncoder());
-    logger.info("[ {}{} ] add handlers: LanMessageEncoder", ch, Constants.LOG_MSG);
+    logger.info("[ {} ]【LanPipelineInitializer】增加处理器: LanMessageEncoder", ch.id());
     ch.pipeline().addLast(new HeartBeatHandler());
-    logger.info("[ {}{} ] add handlers: HeartBeatHandler", ch, Constants.LOG_MSG);
-    ch.pipeline().addLast(new LanConnectionHandler());
-    logger.info("[ {}{} ] add handlers: LanConnectionHandler", ch, Constants.LOG_MSG);
+    logger.info("[ {} ]【LanPipelineInitializer】增加处理器: HeartBeatHandler", ch.id());
+    ch.pipeline().addLast(LanConnInBoundHandler.INSTANCE);
+    logger.info("[ {} ]【LanPipelineInitializer】增加处理器: LanConnInBoundHandler", ch.id());
   }
 }

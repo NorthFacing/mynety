@@ -29,17 +29,17 @@ public class HeartBeatHandler extends IdleStateHandler {
   @Override
   protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception {
     if (IdleStateEvent.WRITER_IDLE_STATE_EVENT.equals(evt)) {
-      logger.info("[ {} ] [HeartBeatHandler-channelIdle] read timeout evt...", ctx.channel());
+      logger.info("[ {} ] read timeout evt...", ctx.channel().id());
       Long incredSerNo = LanMessage.getIncredSerNo(ctx.channel());
       ctx.channel().attr(ATTR_LAST_BEAT_NO).set(incredSerNo);
 
       LanMessage beatMsg = new LanMessage();
       beatMsg.setType(LAN_MSG_HEARTBEAT);
       beatMsg.setSerialNumber(incredSerNo);
-      logger.info("[ {} ] [HeartBeatHandler-channelIdle] write heart beat msg: {}", ctx.channel(), beatMsg);
+      logger.info("[ {} ] write heart beat msg: {}", ctx.channel().id(), beatMsg);
       ctx.writeAndFlush(beatMsg);
     } else if (IdleStateEvent.READER_IDLE_STATE_EVENT.equals(evt)) {
-      logger.info("[ {} ] [HeartBeatHandler-channelIdle] write timeout evt...", ctx.channel());
+      logger.info("[ {} ] write timeout evt...", ctx.channel().id());
     }
     super.channelIdle(ctx, evt);
   }

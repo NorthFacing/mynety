@@ -26,6 +26,7 @@ public class LanPacFilter {
    * @param domain 需要判断的域名
    * @return 拒绝连接 true，否则 false
    */
+
   public static boolean isDeny(String domain) {
     // 先看缓存中是否存在
     String denyDomain = LocalCache.get(PREFIX_LAN_DENY + domain);
@@ -43,29 +44,26 @@ public class LanPacFilter {
    * @param domain 需要判断的域名
    * @return 需要转发 返回 true，否则 false
    */
-  public static boolean isProxy(String domain) {
-    // 先看缓存中是否存在
-    String proxyDomain = LocalCache.get(PREFIX_LAN_PROXY + domain);
-    if (StringUtils.isNotEmpty(proxyDomain)) {
-      return Boolean.valueOf(proxyDomain);
-    }
-    boolean bl = true;
-    int strategy = Config.LAN_STRATEGY;
-    switch (strategy) {
-      case -1:
-        // 不开启LAN内网穿透
-        bl = false;
-        break;
-      case 1:
-        // 指定域名转发至内网
-        bl = !DomainUtils.regCheckForSubdomain(LanPacConfig.DIRECT_DOMAINS, domain);
-        break;
+  public static boolean isLanProxy(String domain) {
+    switch (Config.LAN_STRATEGY) {
+      case CLOSE:
+        return false;
+      case ALL:
+        return true;
+      case MANUAL:
+        // 先看缓存中是否存在
+        String proxyDomain = LocalCache.get(PREFIX_LAN_PROXY + domain);
+        if (StringUtils.isNotEmpty(proxyDomain)) {
+          return Boolean.valueOf(proxyDomain);
+        }
+        // 缓存不存在的时候，根据配置的域名进行判断
+        boolean isLan = !DomainUtils.regCheckForSubdomain(LanPacConfig.DIRECT_DOMAINS, domain);
+        LocalCache.set(PREFIX_LAN_PROXY + domain, Boolean.toString(isLan), 60 * 60 * 1000);
+        return isLan;
       default:
-        // 除此之外，不用判断全部转发至内网
-        break;
+        return false;
     }
-    LocalCache.set(PREFIX_LAN_PROXY + domain, Boolean.toString(bl), 60 * 60 * 1000);
-    return bl;
+
   }
 
 }

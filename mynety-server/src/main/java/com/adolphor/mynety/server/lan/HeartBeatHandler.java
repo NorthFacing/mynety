@@ -1,6 +1,6 @@
 package com.adolphor.mynety.server.lan;
 
-import com.adolphor.mynety.common.utils.SocksServerUtils;
+import com.adolphor.mynety.common.utils.ChannelUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -33,17 +33,17 @@ public class HeartBeatHandler extends IdleStateHandler {
     lostBeatCnt = (lostBeatCnt == null) ? 0 : lostBeatCnt;
 
     if (IdleStateEvent.READER_IDLE_STATE_EVENT.equals(evt)) {
-      logger.info("[ {} ] [HeartBeatHandler-channelIdle] read timeout evt...", ctx.channel());
+      logger.info("[ {} ] read timeout evt...", ctx.channel().id());
       // 连续丢失最大容忍心跳包 (断开连接)
       if (lostBeatCnt >= MAX_IDLE_TIMES_LIMIT) {
-        SocksServerUtils.closeOnFlush(ctx.channel());
-        logger.debug("[ {} ] [HeartBeatHandler-channelIdle] over MAX_IDLE_TIMES_LIMIT, channel close", ctx.channel());
+        ChannelUtils.closeOnFlush(ctx.channel());
+        logger.debug("[ {} ] over MAX_IDLE_TIMES_LIMIT, channel close", ctx.channel().id());
       } else {
         ctx.channel().attr(ATTR_LOST_BEAT_CNT).set(++lostBeatCnt);
-        logger.debug("[ {} ] [HeartBeatHandler-channelIdle] lost the {}th heart beat...", ctx.channel(), lostBeatCnt);
+        logger.debug("[ {} ] lost the {}th heart beat...", ctx.channel().id(), lostBeatCnt);
       }
     } else {
-      logger.info("[ {} ] [HeartBeatHandler-channelIdle] write timeout evt...", ctx.channel());
+      logger.info("[ {} ] write timeout evt...", ctx.channel().id());
     }
     super.channelIdle(ctx, evt);
   }

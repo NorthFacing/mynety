@@ -16,9 +16,13 @@ import java.util.List;
 @Slf4j
 public class LanPacConfig {
 
-  // PAC配置下，使用直连的域名
+  /**
+   * PAC配置下，使用直连的域名
+   */
   public static final List<String> DIRECT_DOMAINS = new ArrayList<>();
-  // 拒绝连接的域名
+  /**
+   * 拒绝连接的域名
+   */
   public static final List<String> DENY_DOMAINS = new ArrayList<>();
 
 }

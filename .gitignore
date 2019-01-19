@@ -11,3 +11,5 @@ logs
 conf
 
 dev-client-config.xml
+dev-client-config.yaml
+test-*-client-config.yaml

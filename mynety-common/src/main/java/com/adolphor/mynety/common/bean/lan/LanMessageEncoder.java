@@ -7,6 +7,8 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
+
 /**
  * 加密
  *
@@ -22,47 +24,48 @@ public class LanMessageEncoder extends MessageToByteEncoder<LanMessage> {
    * 消息长度 + 类型 + 流水号 + 请求来源长度 + 请求来源ID + URI长度 + URI + 正式数据
    *
    * @param ctx
-   * @param msg
+   * @param lanMessage
    * @param out
    * @throws Exception
    */
   @Override
-  protected void encode(ChannelHandlerContext ctx, LanMessage msg, ByteBuf out) throws Exception {
+  protected void encode(ChannelHandlerContext ctx, LanMessage lanMessage, ByteBuf out) throws Exception {
 
-    logger.debug("[ {} ] [LanMessageEncoder-encode] received msg: {}", ctx.channel(), msg);
+    logger.debug("[ {} ]【{}】待编码处理的 msg 信息: {}", ctx.channel().id(), getSimpleName(this), lanMessage);
 
     int frameLength = LanMessage.HEADER_SIZE;
-    if (msg.getUri() != null) {
-      frameLength += ByteStrUtils.getByteArr(msg.getUri()).length;
+    if (lanMessage.getUri() != null) {
+      frameLength += ByteStrUtils.getByteArr(lanMessage.getUri()).length;
     }
-    if (msg.getRequestId() != null) {
-      frameLength += ByteStrUtils.getByteArr(msg.getRequestId()).length;
+    if (lanMessage.getRequestId() != null) {
+      frameLength += ByteStrUtils.getByteArr(lanMessage.getRequestId()).length;
     }
-    if (msg.getData() != null) {
-      frameLength += msg.getData().length;
+    if (lanMessage.getData() != null) {
+      frameLength += lanMessage.getData().length;
     }
 
     out.writeInt(frameLength);
-    out.writeByte(msg.getType());
-    out.writeLong(msg.getSerialNumber());
-    if (StringUtils.isNotEmpty(msg.getRequestId())) {
-      ByteBuf userId = ByteStrUtils.getByteBuf(msg.getRequestId());
+    out.writeByte(lanMessage.getType());
+    out.writeLong(lanMessage.getSerialNumber());
+    if (StringUtils.isNotEmpty(lanMessage.getRequestId())) {
+      ByteBuf userId = ByteStrUtils.getByteBuf(lanMessage.getRequestId());
       out.writeInt(userId.readableBytes());
       out.writeBytes(userId);
     } else {
       out.writeInt(0);
     }
-    if (StringUtils.isNotEmpty(msg.getUri())) {
-      ByteBuf uri = ByteStrUtils.getByteBuf(msg.getUri());
+    if (StringUtils.isNotEmpty(lanMessage.getUri())) {
+      ByteBuf uri = ByteStrUtils.getByteBuf(lanMessage.getUri());
       out.writeInt(uri.readableBytes());
       out.writeBytes(uri);
     } else {
       out.writeInt(0);
     }
-    if (msg.getData() != null) {
-      out.writeBytes(msg.getData());
+    if (lanMessage.getData() != null) {
+      logger.debug("[ {} ]【{}】需要编码处理的 data 信息: {} bytes => {}", ctx.channel().id(), getSimpleName(this), lanMessage.getData().length, lanMessage.getData());
+      out.writeBytes(lanMessage.getData());
     }
 
-    logger.debug("[ {} ] [LanMessageEncoder-encode] encoded msg: {} bytes", ctx.channel(), out.readableBytes());
+    logger.debug("[ {} ]【{}】编码处理之后的 msg 信息: {} bytes", ctx.channel().id(), getSimpleName(this), out.readableBytes());
   }
 }

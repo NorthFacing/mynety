@@ -35,6 +35,7 @@ public class Socks04DataHandler extends SimpleChannelInboundHandler {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     logger.info(Constants.LOG_MSG_OUT + ctx.channel() + "【数据】处理器激活，发送真实请求...");
+    super.channelActive(ctx);
     byte[] msg = getHttpRequest().getBytes("UTF-8");
     ctx.writeAndFlush(Unpooled.wrappedBuffer(msg));
   }

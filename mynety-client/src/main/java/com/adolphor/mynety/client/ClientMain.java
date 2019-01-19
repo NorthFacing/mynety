@@ -2,11 +2,10 @@ package com.adolphor.mynety.client;
 
 import com.adolphor.mynety.client.config.ClientConfig;
 import com.adolphor.mynety.client.config.ConfigLoader;
-import com.adolphor.mynety.client.http.HttpInboundInitializer;
+import com.adolphor.mynety.client.http.HttpInBoundInitializer;
 import com.adolphor.mynety.common.constants.Constants;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
@@ -36,9 +35,8 @@ public final class ClientMain {
         ServerBootstrap sServerBoot = new ServerBootstrap();
         sServerBoot.group(sBossGroup, sWorkerGroup)
             .channel(Constants.serverChannelClass)
-            .option(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.DEBUG))
-            .childHandler(new PipelineInitializer());
+            .childHandler(InBoundInitializer.INSTANCE);
         String sLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
         ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_PROXY_PORT).sync();
         sFuture.channel().closeFuture().sync();
@@ -59,9 +57,8 @@ public final class ClientMain {
         ServerBootstrap hServerBoot = new ServerBootstrap();
         hServerBoot.group(hBossGroup, hWorkerGroup)
             .channel(Constants.serverChannelClass)
-            .option(ChannelOption.TCP_NODELAY, true)
             .handler(new LoggingHandler(LogLevel.DEBUG))
-            .childHandler(new HttpInboundInitializer());
+            .childHandler(HttpInBoundInitializer.INSTANCE);
         String hLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
         ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_PROXY_PORT).sync();
         hFuture.channel().closeFuture().sync();
