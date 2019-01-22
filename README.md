@@ -26,6 +26,9 @@ mvn clean package -D maven.test.skip=true
 sh ./shadowsocks-java-server/target/ss-server/bin/mynety-server.sh
 # Running client
 sh ./shadowsocks-java-client/target/ss-client/bin/mynety-client.sh
+
+# 后台启动
+nohup sh mynety.sh >/dev/null 2>&1 &
 ```
 
 # TODO list
@@ -35,5 +38,4 @@ sh ./shadowsocks-java-client/target/ss-client/bin/mynety-client.sh
     - [用netty开发一个DNS server](https://zhuanlan.zhihu.com/p/39832709)
 * Other protocols supported
 * Http keep-alive supported
-* instead of xml config by yaml
 * redefine port number

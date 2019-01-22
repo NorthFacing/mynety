@@ -15,6 +15,7 @@
   <properties>
     <app.name>mynety-server</app.name>
     <app.mainClass>com.adolphor.mynety.server.ServerMain</app.mainClass>
+    <assemble.dir>${project.build.directory}/${app.name}</assemble.dir>
   </properties>
 
   <dependencies>
@@ -38,6 +39,15 @@
 
   <build>
     <finalName>${app.name}-${project.version}</finalName>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -54,15 +64,10 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
-        <configuration>
-          <assembleDirectory>${project.build.directory}/${app.name}</assembleDirectory>
-          <programs>
-            <program>
-              <name>${app.name}</name>
-              <mainClass>${app.mainClass}</mainClass>
-            </program>
-          </programs>
-        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
       </plugin>
       <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
       <!--<plugin>-->
