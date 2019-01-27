@@ -79,7 +79,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
 
       ByteBuf hostBytes = dataBuff.readBytes(hostLength);
       host = ByteStrUtils.getString(hostBytes);
-      port = dataBuff.readShort();
+      port = dataBuff.readUnsignedShort();
     } else {
       throw new Exception("unknown supported type: " + addressType);
     }
