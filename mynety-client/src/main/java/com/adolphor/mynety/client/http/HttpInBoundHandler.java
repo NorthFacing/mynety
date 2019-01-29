@@ -70,7 +70,8 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
           outRelayChannel.attr(ATTR_IN_RELAY_CHANNEL).set(ctx.channel());
           logger.debug("[ {}{}{} ]【{}】远程连接成功 => {}:{}", ctx.channel().id(), LOG_MSG, outRelayChannel.id(), getSimpleName(this), connHost, connPort);
         } else {
-          logger.debug("[ {} ]【{}】远程连接失败 => {}:{}", ctx.channel().id(), getSimpleName(this), connHost, connPort);
+          logger.warn("[ {} ]【{}】远程连接失败 => {}:{}", ctx.channel().id(), getSimpleName(this), connHost, connPort);
+          logger.warn(ctx.channel().toString(), future.cause());
           future.cancel(true);
           channelClose(ctx);
         }

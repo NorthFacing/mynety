@@ -94,7 +94,8 @@ public class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
             lanOutRelayChannel.attr(ATTR_IN_RELAY_CHANNEL).set(ctx.channel());
             logger.debug("[ {}{}{} ]【建立socks远程连接】连接成功 => {}:{}", ctx.channel().id(), Constants.LOG_MSG_OUT, lanOutRelayChannel.id(), dstAddr, dstPort);
           } else {
-            logger.debug("[ {}{} ]【建立socks远程连接】连接失败 => {}:{}", ctx.channel().id(), Constants.LOG_MSG, dstAddr, dstPort);
+            logger.warn("[ {}{} ]【建立socks远程连接】连接失败 => {}:{}", ctx.channel().id(), Constants.LOG_MSG, dstAddr, dstPort);
+            logger.warn(ctx.channel().toString(), future.cause());
             future.cancel(true);
             channelClose(ctx);
           }

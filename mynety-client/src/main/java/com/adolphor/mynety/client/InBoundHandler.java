@@ -113,7 +113,8 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
           }
           logger.debug("[ {}{}{} ]【{}】建立socks远程连接，{} 连接成功: {}:{}", ctx.channel().id(), Constants.LOG_MSG, outRelayChannel.id(), getSimpleName(this), isProxy ? "远程代理" : "请求地址", connHost, connPort);
         } else {
-          logger.debug("[ {}{} ]【{}】建立socks远程连接，{} 连接失败: {}:{}", ctx.channel().id(), Constants.LOG_MSG, isProxy ? "远程代理" : "请求地址", getSimpleName(this), connHost, connPort);
+          logger.warn("[ {}{} ]【{}】建立socks远程连接，{} 连接失败: {}:{}", ctx.channel().id(), Constants.LOG_MSG, isProxy ? "远程代理" : "请求地址", getSimpleName(this), connHost, connPort);
+          logger.warn(ctx.channel().toString(), future.cause());
           future.cancel(true);
           channelClose(ctx);
         }
