@@ -63,6 +63,19 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
+        <configuration>
+          <programs>
+            <program>
+              <jvmSettings>
+                <extraArguments>
+                  <extraArgument>-server</extraArgument>
+                  <extraArgument>-Xmx256m</extraArgument>
+                  <extraArgument>-Xms128m</extraArgument>
+                </extraArguments>
+              </jvmSettings>
+            </program>
+          </programs>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

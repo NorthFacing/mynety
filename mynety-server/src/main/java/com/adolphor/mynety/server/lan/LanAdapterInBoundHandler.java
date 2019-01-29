@@ -11,6 +11,7 @@ import com.adolphor.mynety.common.utils.ChannelUtils;
 import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.server.config.Config;
+import com.adolphor.mynety.server.lan.utils.LanChannelContainers;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;

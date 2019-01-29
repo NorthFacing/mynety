@@ -1,4 +1,4 @@
-package com.adolphor.mynety.server.lan;
+package com.adolphor.mynety.server.lan.utils;
 
 import com.adolphor.mynety.common.encryption.ICrypt;
 import io.netty.channel.Channel;

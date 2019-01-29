@@ -23,7 +23,9 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * http 代理模式下 远程处理器，连接真正的目标地址
+ * http 代理模式下 远程处理器，连接目标地址：
+ * 1. 如果开启了HTTP2SOCKS，那么连接的是socks服务器
+ * 2. 如果没有开启，那么连接的是请求的真实目的地址
  * <p>
  * 本类中不指定数据类型，数据类型和编解码器都由 inRelay 处理器那里指定
  *

@@ -1,6 +1,7 @@
-package com.adolphor.mynety.lan.config;
+package com.adolphor.mynety.lan.utils;
 
 import com.adolphor.mynety.common.encryption.ICrypt;
+import com.adolphor.mynety.lan.config.ReqChannel;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;

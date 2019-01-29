@@ -1,22 +1,21 @@
 
-# Features
+# 主要功能
 
-* Socks5 proxy
-    - popular encryption methods supports
-    - IP4, IP6 and domain supports
-    - auto proxy by pac config：proxy，direct or deny
-    - auto select the fastest one of available servers
-* Http 1.1 proxy
-    - http proxy over socks socks5
-    - http tunnel proxy over socks5
+* 内网穿透
+    - 最优美的内网穿透解决方案
+* Socks5 代理
+    - 支持IPv4和域名访问，IPv6暂不支持
+    - 根据配置选择代理方式：代理、直连和拒绝连接
+    - 自动选择优质线路
+* HTTP 代理
+    - 支持 HTTP 和 HTTPS tunnel
 
-## Package & run
+## 配置要求
 
-Requires:
-* Jdk8 or higher
+* Jdk8 或以上
 * Maven
 
-Shell commond:
+## 启动和运行
 
 ```bash
 # Packaging
@@ -31,11 +30,10 @@ sh ./shadowsocks-java-client/target/ss-client/bin/mynety-client.sh
 nohup sh mynety.sh >/dev/null 2>&1 &
 ```
 
-# TODO list
+# TODO
 
 * Traffic statistics
 * DNS config (ignores localhost,127.0.0.1 and so on)
     - [用netty开发一个DNS server](https://zhuanlan.zhihu.com/p/39832709)
 * Other protocols supported
 * Http keep-alive supported
-* redefine port number

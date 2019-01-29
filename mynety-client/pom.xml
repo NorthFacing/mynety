@@ -73,6 +73,17 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>appassembler-maven-plugin</artifactId>
         <configuration>
+          <programs>
+            <program>
+              <jvmSettings>
+                <extraArguments>
+                  <extraArgument>-server</extraArgument>
+                  <extraArgument>-Xmx512m</extraArgument>
+                  <extraArgument>-Xms128m</extraArgument>
+                </extraArguments>
+              </jvmSettings>
+            </program>
+          </programs>
         </configuration>
       </plugin>
       <plugin>

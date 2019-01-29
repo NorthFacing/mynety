@@ -5,12 +5,6 @@ import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.wrapper.AbstractOutBoundHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.epoll.EpollEventLoopGroup;
-import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
-import io.netty.channel.kqueue.KQueueEventLoopGroup;
-import io.netty.channel.kqueue.KQueueServerSocketChannel;
-import io.netty.channel.kqueue.KQueueSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -18,7 +12,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.SystemUtils;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -123,25 +116,25 @@ public class Constants {
 
   // TODO 其实可以自定义继承官方channel自定义实现自己的channel的，这样更能了解channel的原理，知道channel各个步骤都干了啥
   static {
-    if (SystemUtils.IS_OS_MAC) {
-      logger.debug("macOS and BSD system ...");
-      Constants.bossGroupClass = KQueueEventLoopGroup.class;
-      Constants.workerGroupClass = KQueueEventLoopGroup.class;
-      Constants.serverChannelClass = KQueueServerSocketChannel.class;
-      Constants.channelClass = KQueueSocketChannel.class;
-    } else if (SystemUtils.IS_OS_LINUX) {
-      logger.debug("linux system...");
-      Constants.bossGroupClass = EpollEventLoopGroup.class;
-      Constants.workerGroupClass = EpollEventLoopGroup.class;
-      Constants.serverChannelClass = EpollServerSocketChannel.class;
-      Constants.channelClass = EpollSocketChannel.class;
-    } else {
+//    if (SystemUtils.IS_OS_MAC) {
+//      logger.debug("macOS and BSD system ...");
+//      Constants.bossGroupClass = KQueueEventLoopGroup.class;
+//      Constants.workerGroupClass = KQueueEventLoopGroup.class;
+//      Constants.serverChannelClass = KQueueServerSocketChannel.class;
+//      Constants.channelClass = KQueueSocketChannel.class;
+//    } else if (SystemUtils.IS_OS_LINUX) {
+//      logger.debug("linux system...");
+//      Constants.bossGroupClass = EpollEventLoopGroup.class;
+//      Constants.workerGroupClass = EpollEventLoopGroup.class;
+//      Constants.serverChannelClass = EpollServerSocketChannel.class;
+//      Constants.channelClass = EpollSocketChannel.class;
+//    } else {
       logger.debug("others system...");
       Constants.bossGroupClass = NioEventLoopGroup.class;
       Constants.workerGroupClass = NioEventLoopGroup.class;
       Constants.serverChannelClass = NioServerSocketChannel.class;
       Constants.channelClass = NioSocketChannel.class;
-    }
+//    }
 
   }
 

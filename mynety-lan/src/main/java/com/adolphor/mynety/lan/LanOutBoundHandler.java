@@ -6,7 +6,7 @@ import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
 import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
-import com.adolphor.mynety.lan.config.ChannelContainer;
+import com.adolphor.mynety.lan.utils.ChannelContainer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
