@@ -30,7 +30,7 @@ public class HttpInBoundInitializer extends AbstractInBoundInitializer {
     // 所有代理都增加 HTTP 编解码类，才能解析出来HTTP请求地址等信息
     ch.pipeline().addLast(new HttpServerCodec());
     logger.info("[ {} ]【HttpInBoundInitializer】增加处理器: HttpServerCodec", ch.id());
-    ch.pipeline().addLast(new HttpObjectAggregator(65536));
+    ch.pipeline().addLast(new HttpObjectAggregator(6553600));
     logger.info("[ {} ]【HttpInBoundInitializer】增加处理器: HttpObjectAggregator", ch.id());
     ch.pipeline().addLast(HttpProxyHandler.INSTANCE);
     logger.info("[ {} ]【HttpInBoundInitializer】增加处理器: HttpProxyHandler", ch.id());

@@ -1,6 +1,7 @@
 package com.adolphor.mynety.client.config;
 
 import com.adolphor.mynety.client.utils.NetUtils;
+import com.adolphor.mynety.client.utils.cert.HttpsCertConfig;
 import com.adolphor.mynety.common.utils.LocalCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,13 +28,24 @@ public class ClientConfig {
    */
   public static boolean IS_PUBLIC = true;
 
+  /**
+   * SOCKS代理端口
+   */
   public static int SOCKS_PROXY_PORT = 1086;
+  /**
+   * HTTP 代理端口
+   */
   public static int HTTP_PROXY_PORT = 1087;
 
   /**
    * 默认为true，所有 HTTP 请求都进行socks5代理转发；只有在分析HTTP请求的时候才不需要转发到socks5
    */
   public static boolean HTTP_2_SOCKS5 = true;
+
+  /**
+   * 是否开启MITM处理ssl连接
+   */
+  public static boolean HANDLE_SSL = false;
 
   /**
    * 代理模式可选项：
@@ -43,7 +55,13 @@ public class ClientConfig {
    */
   public static int PROXY_STRATEGY = 0;
 
-  public static final List<Server> servers = new ArrayList<>();
+  /**
+   * CA证书相关配置
+   */
+  public static final HttpsCertConfig HTTPS_CERT_CONFIG = new HttpsCertConfig();
+
+
+  private static final List<Server> servers = new ArrayList<>();
 
   public static void addServer(Server server) {
     servers.add(server);

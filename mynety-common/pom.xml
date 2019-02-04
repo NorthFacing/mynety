@@ -31,10 +31,12 @@
       <artifactId>netty-transport-native-epoll</artifactId>
       <version>${netty.version}</version>
     </dependency>
+    <!--加密工具类-->
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
+      <artifactId>bcpkix-jdk15on</artifactId>
     </dependency>
+    <!--其他工具类-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -80,6 +82,10 @@
       </extension>
     </extensions>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>

@@ -1,6 +1,5 @@
 package com.adolphor.mynety.client.http;
 
-import com.adolphor.mynety.common.utils.ChannelUtils;
 import com.adolphor.mynety.common.wrapper.AbstractOutBoundHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -50,21 +49,15 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
       logger.debug("[ {}{}{} ]【{}】httpTunnel 连接成功，发送消息给客户端: {}", inRelayChannel.id(), LOG_MSG, inRelayChannel.id(), getSimpleName(this), response);
       inRelayChannel.writeAndFlush(response).addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
-          // 只有在开启MITM的时候，才不移除httpCodec
-          boolean isMITM = false;
-          boolean isRemoveHttpCodec = !isMITM;
-          // 移除 inbound 和 outbound 双方的HTTP编解码 (tunnel代理如果没有增加ssl解析进行MITM，那么就必须移除HTTP编解码器)
-          if (isRemoveHttpCodec) {
-            logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：inRelayChannel 移除处理器: HttpServerCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
-            inRelayChannel.pipeline().remove(HttpServerCodec.class);
+          logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：inRelayChannel 移除处理器: HttpObjectAggregator", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
+          inRelayChannel.pipeline().remove(HttpObjectAggregator.class);
+          logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：inRelayChannel 移除处理器: HttpServerCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
+          inRelayChannel.pipeline().remove(HttpServerCodec.class);
 
-            ChannelUtils.loggerHandlers(ctx.channel(), null);
-            logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpObjectAggregator", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
-            ctx.channel().pipeline().remove(HttpObjectAggregator.class);
-            logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpClientCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
-            ctx.channel().pipeline().remove(HttpClientCodec.class);
-            ChannelUtils.loggerHandlers(ctx.channel(), null);
-          }
+          logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpObjectAggregator", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
+          ctx.channel().pipeline().remove(HttpObjectAggregator.class);
+          logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpClientCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
+          ctx.channel().pipeline().remove(HttpClientCodec.class);
         } else {
           ctx.close();
         }
@@ -93,8 +86,8 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
     }
     try {
       ReferenceCountUtil.retain(msg);
-      inRelayChannel.writeAndFlush(msg);
       logger.debug("[ {}{}{} ]【{}】】收到请求结果发送给客户端: {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg);
+      inRelayChannel.writeAndFlush(msg);
     } catch (Exception e) {
       logger.error("[ " + inRelayChannel.id() + LOG_MSG_IN + ctx.channel().id() + " ] error", e);
       channelClose(ctx);

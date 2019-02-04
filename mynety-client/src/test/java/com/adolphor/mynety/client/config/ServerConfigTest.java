@@ -11,7 +11,7 @@ public class ServerConfigTest {
     for (int i = 0; i < 5; i++) {
       Server server = new Server();
       server.setPingTime(time + i);
-      ClientConfig.servers.add(server);
+      ClientConfig.addServer(server);
     }
 
     Server server = ClientConfig.getAvailableServer();

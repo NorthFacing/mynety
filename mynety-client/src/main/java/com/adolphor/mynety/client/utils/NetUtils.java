@@ -36,7 +36,7 @@ public class NetUtils {
       client.connect(server.getHost(), server.getPort());
       client.disconnect();
     } catch (Exception e) {
-      logger.warn("remote server: " + server.toString() + " connected failed", e);
+      logger.warn("remote server: " + server.toString() + " connected failed!");
       isAvailable = false;
     }
     server.setAvailable(isAvailable);
