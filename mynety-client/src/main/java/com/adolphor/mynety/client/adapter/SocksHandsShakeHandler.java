@@ -46,9 +46,8 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     super.channelActive(ctx);
-
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-    logger.info("[ {}{}{} ]【握手】发送初次访问请求：0x050100", inRelayChannel.id(), Constants.LOG_MSG_OUT, ctx.channel().id());
+    logger.info("[ {}{}{} ]【握手】发送初次访问请求：0x050100", (inRelayChannel != null ? inRelayChannel.id() : ""), Constants.LOG_MSG_OUT, ctx.channel().id());
     ReferenceCountUtil.retain(buf);
     ctx.writeAndFlush(buf);
   }
@@ -68,18 +67,18 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-    logger.info("[ {}{}{} ]【握手】处理器收到响应消息：{} bytes = {}", inRelayChannel.id(), Constants.LOG_MSG, ctx.channel().id(), msg.readableBytes(), msg);
+    logger.info("[ {}{}{} ]【握手】处理器收到响应消息：{} bytes = {}", (inRelayChannel != null ? inRelayChannel.id() : ""), Constants.LOG_MSG, ctx.channel().id(), msg.readableBytes(), msg);
     byte ver = msg.readByte();
     byte method = msg.readByte();
     if (ver != SocksVersion.SOCKS5.byteValue() || method != RESERVED_BYTE) {
-      logger.info("[ {}{}{} ]【握手】处理器收到响应消息内容错误：ver={},method={}", inRelayChannel.id(), Constants.LOG_MSG, ctx.channel().id(), ver, method);
+      logger.info("[ {}{}{} ]【握手】处理器收到响应消息内容错误：ver={},method={}", (inRelayChannel != null ? inRelayChannel.id() : ""), Constants.LOG_MSG, ctx.channel().id(), ver, method);
       ctx.close();
     } else {
-      logger.info("[ {}{}{} ]【握手】处理器收到响应消息：ver={},method={}", inRelayChannel.id(), Constants.LOG_MSG, ctx.channel().id(), ver, method);
+      logger.info("[ {}{}{} ]【握手】处理器收到响应消息：ver={},method={}", (inRelayChannel != null ? inRelayChannel.id() : ""), Constants.LOG_MSG, ctx.channel().id(), ver, method);
       ctx.pipeline().addLast(SocksConnHandler.INSTANCE);
-      logger.info("[ {}{}{} ]【握手】添加处理器：SocksConnHandler", inRelayChannel.id(), LOG_MSG, ctx.channel().id());
+      logger.info("[ {}{}{} ]【握手】添加处理器：SocksConnHandler", (inRelayChannel != null ? inRelayChannel.id() : ""), LOG_MSG, ctx.channel().id());
       ctx.pipeline().remove(this);
-      logger.info("[ {}{}{} ]【握手】移除处理器: SocksHandsShakeHandler", inRelayChannel.id(), LOG_MSG, ctx.channel().id());
+      logger.info("[ {}{}{} ]【握手】移除处理器: SocksHandsShakeHandler", (inRelayChannel != null ? inRelayChannel.id() : ""), LOG_MSG, ctx.channel().id());
       ctx.fireChannelActive();
     }
   }

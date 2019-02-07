@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -32,6 +33,7 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  * @since v0.0.4
  */
 @Slf4j
+@ChannelHandler.Sharable
 public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
 
   public static final SocksConnHandler INSTANCE = new SocksConnHandler();
@@ -49,13 +51,11 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     super.channelActive(ctx);
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     Address address = inRelayChannel.attr(ATTR_REQUEST_ADDRESS).get();
-    final ByteBuf buf;
-    buf = Unpooled.buffer();
+    final ByteBuf buf = Unpooled.buffer();
     buf.writeByte(SocksVersion.SOCKS5.byteValue());
     buf.writeByte(Socks5CommandType.CONNECT.byteValue());
     buf.writeByte(RESERVED_BYTE);
     String host = address.getHost();
-
     // 如果是IPv4：4 bytes for IPv4 address
     if (IPV4_PATTERN.matcher(host).find()) {
       buf.writeByte(SocksAddressType.IPv4.byteValue());
@@ -72,9 +72,7 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     else {
       buf.writeByte(SocksAddressType.DOMAIN.byteValue());
       byte[] bytes = ByteStrUtils.getByteArr(host);
-      // 1 byte: ADDR length
       buf.writeByte(bytes.length);
-      // 1–255 bytes: ADDR, the domain name
       buf.writeBytes(bytes);
     }
     // port
@@ -123,11 +121,11 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
       addr = sb.toString();
       port = msg.readShort();
     } else if (atyp == SocksAddressType.IPv6.byteValue()) {
-      logger.info("[ {}{}{} ]【连接】处理器收到响应消息，不支持IPv6类型：ver={}, rep={}, psv={}, atyp={}", inRelayChannel.id(), LOG_MSG, ctx.channel().id(),  ver, rep, psv, atyp);
+      logger.info("[ {}{}{} ]【连接】处理器收到响应消息，不支持IPv6类型：ver={}, rep={}, psv={}, atyp={}", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), ver, rep, psv, atyp);
       channelClose(ctx);
       return;
     } else {
-      logger.info("[ {}{}{} ]【连接】处理器收到响应消息，不支持的HOST类型：ver={}, rep={}, psv={}, atyp={}", inRelayChannel.id(), LOG_MSG, ctx.channel().id(),  ver, rep, psv, atyp);
+      logger.info("[ {}{}{} ]【连接】处理器收到响应消息，不支持的HOST类型：ver={}, rep={}, psv={}, atyp={}", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), ver, rep, psv, atyp);
       channelClose(ctx);
       return;
     }
