@@ -1,18 +1,15 @@
 package com.adolphor.mynety.common.utils;
 
 import com.adolphor.mynety.common.bean.Address;
-import io.netty.handler.codec.http.HttpRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.adolphor.mynety.common.constants.Constants.LOOPBACK_ADDRESS;
-import static com.adolphor.mynety.common.constants.Constants.PATH_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.PORT_443;
 import static com.adolphor.mynety.common.constants.Constants.PORT_80;
+import static com.adolphor.mynety.common.constants.Constants.SCHEME_HTTP;
 import static com.adolphor.mynety.common.constants.Constants.SCHEME_HTTPS;
 
 /**
@@ -73,31 +70,65 @@ public class DomainUtils {
    * - http 请求的时候， httpRequest.uri() 获取的是完整请求路径
    * - https 请求的时候，httpRequest.uri() 获取的是 '域名:端口' 或者是 'IP:端口'
    *
-   * @param httpRequest
+   * @param url 全路径字符串
    * @return
    * @since v0.0.5
    */
-  public static Address getAddress(HttpRequest httpRequest) {
-    String url = httpRequest.uri();
-    if (StringUtils.isEmpty(url)) {
-      new Address(LOOPBACK_ADDRESS, PORT_80);
+  public static Address getAddress(String url) throws Exception {
+    if (StringUtils.isEmpty(url.trim())) {
+      throw new Exception("unknown url...");
     }
-    Matcher matcher = PATH_PATTERN.matcher(url);
-    if (!matcher.find()) {
-      return new Address(LOOPBACK_ADDRESS, PORT_80);
+    Address address = new Address();
+    if (url.startsWith("https://")) {
+      address.setScheme(SCHEME_HTTPS);
+      url = url.substring(8);
+    } else if (url.startsWith("http://")) {
+      address.setScheme(SCHEME_HTTP);
+      url = url.substring(7);
     }
-    String host = matcher.group();
-    if (StringUtils.isEmpty(host)) {
-      return new Address(LOOPBACK_ADDRESS, PORT_80);
-    }
-    if (host.contains(":")) {
-      String[] ipPortArr = host.split(":");
-      return new Address(ipPortArr[0], Integer.parseInt(ipPortArr[1]));
-    }
-    if (url.toLowerCase().startsWith(SCHEME_HTTPS)) {
-      return new Address(host, PORT_443);
-    }
-    return new Address(host, PORT_80);
 
+    String host;
+    String port;
+    String path;
+    if (url.contains(":")) {
+      String[] split = url.split(":");
+      host = split[0];
+      if (split[1].contains("/")) {
+        int index = url.indexOf("/");
+        port = split[1].substring(0, index);
+        path = split[1].substring(index);
+      } else if (split[1].contains("#")) {
+        int index = url.indexOf("#");
+        port = split[1].substring(0, index);
+        path = split[1].substring(index);
+      } else {
+        port = split[1];
+        path = null;
+      }
+    } else {
+      if (SCHEME_HTTPS.equals(address.getScheme())) {
+        port = String.valueOf(PORT_443);
+      } else if (SCHEME_HTTP.equals(address.getScheme())) {
+        port = String.valueOf(PORT_80);
+      } else {
+        throw new Exception("unknown url...");
+      }
+      if (url.contains("/")) {
+        int index = url.indexOf("/");
+        host = url.substring(0, index);
+        path = url.substring(index);
+      } else if (url.contains("#")) {
+        int index = url.indexOf("#");
+        host = url.substring(0, index);
+        path = url.substring(index);
+      } else {
+        host = url;
+        path = null;
+      }
+    }
+    address.setHost(host);
+    address.setPort(Integer.valueOf(port));
+    address.setPath(path);
+    return address;
   }
 }

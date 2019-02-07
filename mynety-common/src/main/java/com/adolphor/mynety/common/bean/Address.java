@@ -17,6 +17,9 @@ public class Address {
   private int port;
   private String path;
 
+  public Address() {
+  }
+
   public Address(String host, int port) {
     this.host = host;
     this.port = port;

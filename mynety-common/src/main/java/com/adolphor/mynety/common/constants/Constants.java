@@ -32,6 +32,7 @@ public class Constants {
   public static final int PORT_80 = 80;
   public static final int PORT_443 = 443;
   public static final String SCHEME_HTTPS = "https";
+  public static final String SCHEME_HTTP = "http";
   public static final String LOOPBACK_ADDRESS = "127.0.0.1";
   public static final String ALL_LOCAL_ADDRESS = "0.0.0.0";
   /**

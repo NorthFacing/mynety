@@ -60,7 +60,7 @@ public class HttpProxyHandler extends AbstractInBoundHandler<Object> {
 //        ctx.channel().attr(ATTR_IS_KEEP_ALIVE).set(false);
 //      }
 
-      Address address = DomainUtils.getAddress(httpMsg);
+      Address address = DomainUtils.getAddress(httpMsg.uri());
       logger.debug("[ {}{} ]【{}】HTTP请求分发 解析URL信息 {}=> {}:{}", ctx.channel().id(), LOG_MSG, getSimpleName(this), httpMsg.uri(), address.getHost(), address.getPort());
       ctx.channel().attr(ATTR_REQUEST_ADDRESS).set(address);
 
