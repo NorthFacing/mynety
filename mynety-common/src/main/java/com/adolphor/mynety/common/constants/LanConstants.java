@@ -2,9 +2,6 @@ package com.adolphor.mynety.common.constants;
 
 import io.netty.util.AttributeKey;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * LAN 相关常量
  *
@@ -35,7 +32,7 @@ public class LanConstants {
 
   // 协议相关
   /**
-   * 信息最大长度，超过这个长度回报异常
+   * 信息最大长度，超过这个长度会报异常
    */
   public static final int MAX_FRAME_LENGTH = 2 * 1024 * 1024;
   /**
@@ -54,31 +51,6 @@ public class LanConstants {
    * 跳过的字节数，以便接收端直接接受到不含“长度属性”的内容
    */
   public static final int INITIAL_BYTES_TO_STRIP = 0;
-
-  /**
-   * 心跳消息
-   */
-  public static final byte LAN_MSG_HEARTBEAT = 0x00;
-
-  /**
-   * 权限验证
-   */
-  public static final byte LAN_MSG_AUTH = 0x01;
-
-  /**
-   * 建立连接
-   */
-  public static final byte LAN_MSG_CONNECT = 0x02;
-
-  /**
-   * 断开连接
-   */
-  public static final byte LAN_MSG_DISCONNECT = 0x03;
-
-  /**
-   * 数据转发
-   */
-  public static final byte LAN_MSG_TRANSFER = 0x04;
 
   // 会话管理
   /**

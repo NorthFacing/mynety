@@ -2,14 +2,14 @@ package com.adolphor.mynety.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.constants.Constants;
+import com.adolphor.mynety.common.constants.LanMsgType;
 import com.adolphor.mynety.common.encryption.CryptFactory;
 import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.utils.ByteStrUtils;
 import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.common.wrapper.AbstractInBoundHandler;
-import com.adolphor.mynety.lan.utils.ChannelContainer;
 import com.adolphor.mynety.lan.config.Config;
+import com.adolphor.mynety.lan.utils.ChannelContainer;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -27,10 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LAST_BEAT_NO;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_CONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_DISCONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_HEARTBEAT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -62,13 +58,13 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
   protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     logger.info("[ {} ]【{}-{}】收到 ss server 请求信息: {}", ctx.channel().id(), getSimpleName(this), msg.getRequestId(), msg);
     switch (msg.getType()) {
-      case LAN_MSG_HEARTBEAT:
+      case HEARTBEAT:
         handleHeartbeatMessage(ctx, msg);
         break;
-      case LAN_MSG_CONNECT:
+      case CONNECT:
         handleConnectionMessage(ctx, msg);
         break;
-      case LAN_MSG_TRANSFER:
+      case TRANSFER:
         handleTransferMessage(ctx, msg);
         break;
       default:
@@ -104,7 +100,7 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
         return;
       }
       logger.debug("[ {} ]【{}-{}】解密后的data数据: {} bytes => {}", ctx.channel().id(), getSimpleName(this), msg.getRequestId(), temp.length, temp);
-      decryptBuf = ByteStrUtils.getByteBuf(temp);
+      decryptBuf = Unpooled.wrappedBuffer(temp);
     } else {
       logger.debug("[ {} ]【{}-{}】请求信息为空，丢弃处理……", ctx.channel().id(), getSimpleName(this), msg.getRequestId());
       return;
@@ -134,7 +130,7 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
     String[] dst = uri.split(":");
     if (dst.length < 2) {
       logger.error("[ {} ]【{}-{}】远程请求地址解析错误：{}", ctx.channel().id(), getSimpleName(this), requestId, uri);
-      LanMessage lanMessage = LanMsgUtils.packageLanMsg(ctx.channel(), requestId, LAN_MSG_DISCONNECT);
+      LanMessage lanMessage = LanMsgUtils.packageLanMsg(ctx.channel(), requestId, LanMsgType.DISCONNECT.getVal());
       ctx.channel().writeAndFlush(lanMessage);
       ChannelContainer.removeReqChannel(requestId);
       logger.info("[ {} ]【{}-{}】发送断开连接信息给lan服务端，需要断开的requestId： {}", ctx.channel().id(), getSimpleName(this), requestId, requestId);
@@ -176,7 +172,7 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
 
     } catch (Exception e) {
       logger.error(LOG_MSG + "connect internet error", e);
-      LanMessage lanMessage = LanMsgUtils.packageLanMsg(ctx.channel(), requestId, LAN_MSG_DISCONNECT);
+      LanMessage lanMessage = LanMsgUtils.packageLanMsg(ctx.channel(), requestId, LanMsgType.DISCONNECT.getVal());
       ctx.channel().writeAndFlush(lanMessage);
       ChannelContainer.removeReqChannel(requestId);
       logger.info("[ {} ]【{}-{}】发送断开连接信息给lan服务端，需要断开的requestId： {}", ctx.channel().id(), getSimpleName(this), requestId);

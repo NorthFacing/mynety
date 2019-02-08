@@ -19,9 +19,6 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_CONNECTED_TIME
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LOST_BEAT_CNT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_DISCONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_HEARTBEAT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -65,13 +62,13 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
   protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     logger.debug("[ {} ]【{}】收到lan客户端的消息: {} ", ctx.channel().id(), getSimpleName(this), msg);
     switch (msg.getType()) {
-      case LAN_MSG_HEARTBEAT:
+      case HEARTBEAT:
         handleHeartbeatMessage(ctx, msg);
         break;
-      case LAN_MSG_TRANSFER:
+      case TRANSFER:
         handleTransferMessage(ctx, msg);
         break;
-      case LAN_MSG_DISCONNECT:
+      case DISCONNECT:
         handleDisconnectMessage(ctx, msg);
         break;
       default:
@@ -110,8 +107,8 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
     ICrypt inRelayCrypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
     ICrypt lanCrypt = LanChannelContainers.requestCryptsMap.get(requestId);
 
-    byte[] decrypt = CryptUtil.decrypt(lanCrypt, ByteStrUtils.getDirectByteBuf(data));
-    byte[] encrypt = CryptUtil.encrypt(inRelayCrypt, ByteStrUtils.getDirectByteBuf(decrypt));
+    byte[] decrypt = CryptUtil.decrypt(lanCrypt, ByteStrUtils.getDirectBuf(data));
+    byte[] encrypt = CryptUtil.encrypt(inRelayCrypt, ByteStrUtils.getDirectBuf(decrypt));
 
     inRelayChannel.writeAndFlush(Unpooled.directBuffer().writeBytes(encrypt));
     logger.debug("[ {}{}{} ]【{}】将回复信息返回给socks服务器: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), data.length, data);

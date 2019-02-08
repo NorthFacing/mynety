@@ -113,7 +113,7 @@ public class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
     AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
     ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
 
-    logger.debug("[ {}{}{} ]【{}】socks收到客户端请求消息: {} bytes => {}", ctx.channel().id(), Constants.LOG_MSG, (outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : "", getSimpleName(this), msg.readableBytes(), ByteStrUtils.getByteArr(msg.copy()));
+    logger.debug("[ {}{}{} ]【{}】socks收到客户端请求消息: {} bytes => {}", ctx.channel().id(), Constants.LOG_MSG, (outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : "", getSimpleName(this), msg.readableBytes(), ByteStrUtils.getArrByDirectBuf(msg.copy()));
     byte[] decrypt = CryptUtil.decrypt(crypt, msg);
     ByteBuf decryptBuf = Unpooled.wrappedBuffer(decrypt);
     logger.debug("[ {}{}{} ]【{}】socks收到客户端请求消息解密之后的内容: {} bytes => {}", ctx.channel().id(), Constants.LOG_MSG, (outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : "", getSimpleName(this), decrypt.length, decrypt);

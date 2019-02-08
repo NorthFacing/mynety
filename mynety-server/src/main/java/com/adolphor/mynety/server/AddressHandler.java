@@ -78,7 +78,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
       dataBuff.readUnsignedByte();
 
       ByteBuf hostBytes = dataBuff.readBytes(hostLength);
-      host = ByteStrUtils.getString(hostBytes);
+      host = ByteStrUtils.getStringByDirectBuf(hostBytes);
       port = dataBuff.readUnsignedShort();
     } else {
       throw new Exception("unknown supported type: " + addressType);
@@ -90,7 +90,7 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     if (dataBuff.readableBytes() > 0) {
       ByteBuf temp = Unpooled.directBuffer(dataBuff.readableBytes()).writeBytes(dataBuff);
       ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(temp);
-      logger.debug("[ {} ]【{}】数据包中剩余信息添加到缓存，具体内容: {} bytes => {}", ctx.channel().id(), getSimpleName(this), ByteStrUtils.getByteArr(temp.copy()).length, ByteStrUtils.getByteArr(temp.copy()));
+      logger.debug("[ {} ]【{}】数据包中剩余信息添加到缓存，具体内容: {} bytes => {}", ctx.channel().id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(temp.copy()).length, ByteStrUtils.getArrByDirectBuf(temp.copy()));
     }
     ctx.channel().pipeline().addLast(InBoundHandler.INSTANCE);
     logger.info("[ {} ]【{}】增加处理器: InBoundHandler", ctx.channel().id(), Constants.LOG_MSG);

@@ -1,6 +1,7 @@
 package com.adolphor.mynety.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
+import com.adolphor.mynety.common.constants.LanMsgType;
 import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
@@ -17,8 +18,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_DISCONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -59,15 +58,15 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<ByteBuf> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
-    logger.debug("[ {}{}{} ]【{}】LAN客户端收到目的地址返回信息: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg.readableBytes(), ByteStrUtils.getByteArr((msg).copy()));
+    logger.debug("[ {}{}{} ]【{}】LAN客户端收到目的地址返回信息: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg.readableBytes(), ByteStrUtils.getArrByDirectBuf((msg).copy()));
     try {
       byte[] encrypt = CryptUtil.encrypt(crypt, msg);
       LanMessage lanConnMsg = new LanMessage();
-      lanConnMsg.setType(LAN_MSG_TRANSFER);
+      lanConnMsg.setType(LanMsgType.TRANSFER);
       lanConnMsg.setRequestId(requestId);
       lanConnMsg.setData(encrypt);
       inRelayChannel.writeAndFlush(lanConnMsg);
-      logger.debug("[ {}{}{} ]【{}】将目的地址返回信息发送给ss服务端: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg.readableBytes(), ByteStrUtils.getByteArr((msg).copy()));
+      logger.debug("[ {}{}{} ]【{}】将目的地址返回信息发送给ss服务端: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg.readableBytes(), ByteStrUtils.getArrByDirectBuf((msg).copy()));
     } catch (Exception e) {
       logger.error("[ " + inRelayChannel + LOG_MSG_IN + ctx.channel() + " ] error", e);
       channelClose(ctx);
@@ -88,7 +87,7 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<ByteBuf> {
   @Override
   public void channelClose(ChannelHandlerContext ctx) {
     // 关闭之前先告诉lan服务端，断开用户和lan服务端的请求
-    LanMessage disConnLanMsg = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LAN_MSG_DISCONNECT);
+    LanMessage disConnLanMsg = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LanMsgType.DISCONNECT.getVal());
     inRelayChannel.writeAndFlush(disConnLanMsg);
     ChannelContainer.removeReqChannel(requestId);
     logger.info("[ {} ]【{}】发送断开连接信息给lan服务端，需要断开的requestId： {}", ctx.channel().id(), getSimpleName(this), requestId);

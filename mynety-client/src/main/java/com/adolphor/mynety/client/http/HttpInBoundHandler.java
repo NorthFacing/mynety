@@ -96,8 +96,9 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
     logger.debug("[ {}{} ]【{}】收到客户端消息: {}", ctx.channel().id(), LOG_MSG, getSimpleName(this), msg);
     Channel outRelayChannel = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get().get();
-    if (ClientConfig.HANDLE_SSL && msg instanceof ByteBuf) {
+    if (ClientConfig.HTTP_MITM && msg instanceof ByteBuf) {
       ByteBuf bufMsg = (ByteBuf) msg;
+      // TODO 如果开启MITM，在使用postman测试的时候就会出现问题
       if (bufMsg.getByte(0) == 22) { //ssl握手
         Address address = ctx.channel().attr(ATTR_REQUEST_ADDRESS).get();
         int port = ((InetSocketAddress) ctx.channel().localAddress()).getPort();
@@ -124,8 +125,8 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
       }
     }
     ReferenceCountUtil.retain(msg);
+    logger.debug("[ {}{}{} ]【{}】发送消息到{}...", ctx.channel().id(), LOG_MSG_OUT, outRelayChannel.id(), getSimpleName(this), ClientConfig.HTTP_2_SOCKS5 ? "socks代理" : "目的地址");
     outRelayChannel.writeAndFlush(msg);
-    logger.debug("[ {}{}{} ]【{}】发送消息到{}: {}", ctx.channel().id(), LOG_MSG_OUT, outRelayChannel.id(), getSimpleName(this), ClientConfig.HTTP_2_SOCKS5 ? "socks代理" : "目的地址", msg);
   }
 
 }

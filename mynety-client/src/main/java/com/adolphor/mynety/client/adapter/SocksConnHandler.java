@@ -114,7 +114,7 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     if (atyp == SocksAddressType.DOMAIN.byteValue()) {
       byte dstLen = msg.readByte();
       ByteBuf addrBuf = msg.readBytes(dstLen);
-      addr = ByteStrUtils.getString(addrBuf);
+      addr = ByteStrUtils.getStringByDirectBuf(addrBuf);
       port = msg.readShort();
     } else if (atyp == SocksAddressType.IPv4.byteValue()) {
       StringBuilder sb = new StringBuilder();

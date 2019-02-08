@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * netty 的 socket 工具类
@@ -47,10 +46,6 @@ public class ChannelUtils {
       logger.debug("[ {} ] {} => {}", channel.id(), key, value);
     });
     logger.debug("===============================================end====================================================");
-  }
-
-  public static String getUUID() {
-    return UUID.randomUUID().toString().replace("-", "");
   }
 
 }

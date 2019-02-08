@@ -1,20 +1,16 @@
 package com.adolphor.mynety.common.bean.lan;
 
+import com.adolphor.mynety.common.constants.LanMsgType;
 import io.netty.channel.Channel;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_SERIAL_NO;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_AUTH;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_CONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_DISCONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_HEARTBEAT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 
 /**
  * lan客户端与代理服务器消息交换协议：
- * 4       +  1   +   8   +     4      +     L     +    4   +  M  +  N
- * 消息长度 + 类型 + 流水号 + 请求来源长度 + 请求来源ID + URI长度 + URI + 正式数据
+ * 4       +  1   +   8   +          16           +  DATA
+ * 消息长度 + 类型 + 流水号 + 请求来源ID(压缩后的UUID) + 数据内容
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -23,13 +19,12 @@ import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER
 @Data
 public class LanMessage {
 
-  public static final int FRAME_SIZE = 4;
-  public static final int HEADER_SIZE = 4 + 1 + 8 + 4 + 4;
+  public static final int HEADER_SIZE = 4 + 1 + 8 + 16;
 
   /**
    * 消息类型（1字节）
    */
-  private byte type;
+  private LanMsgType type;
 
   /**
    * 流水号（long 数据类型占 8字节）
@@ -37,7 +32,7 @@ public class LanMessage {
   private long serialNumber = 0L;
 
   /**
-   * 请求ID（绑定请求地址，LAN通道是单通道，通过此ID来明确请求的目标地址，使用32位UUID，16字节）
+   * 请求ID（绑定请求地址，LAN通道是单通道，通过此ID来明确请求的目标地址，使用32位UUID，压缩为16字节）
    */
   private String requestId;
 
@@ -66,18 +61,8 @@ public class LanMessage {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("LanMessage [")
-        .append("type=").append(type);
-    if (LAN_MSG_AUTH == type) {
-      sb.append(", typeName=AUTH");
-    } else if (LAN_MSG_CONNECT == type) {
-      sb.append(", typeName=CONNECT");
-    } else if (LAN_MSG_HEARTBEAT == type) {
-      sb.append(", typeName=HEARTBEAT");
-    } else if (LAN_MSG_TRANSFER == type) {
-      sb.append(", typeName=TRANSFER");
-    } else if (LAN_MSG_DISCONNECT == type) {
-      sb.append(", typeName=DISCONNECT");
-    }
+        .append("typeVal=").append(type.getVal())
+        .append(", typeName=").append(type);
     sb.append(", serNo=").append(serialNumber);
     if (StringUtils.isNotEmpty(requestId)) {
       sb.append(", requestId=").append(requestId);
@@ -86,8 +71,8 @@ public class LanMessage {
       sb.append(", uri=").append(uri);
     }
     if (data != null && data.length > 0) {
-      sb.append(", data size: ").append(data.length);
-      sb.append(", data : ").append(data);
+      sb.append(", data size=").append(data.length);
+      sb.append(", data => ").append(data);
     }
     sb.append("]");
     return sb.toString();

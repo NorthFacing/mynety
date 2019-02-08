@@ -51,7 +51,7 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
       logger.debug("[ {} ]【{}】获取单条缓存信息：{} => {} ", ctx.channel().id(), getSimpleName(this), getSimpleName(tempMsg), tempMsg);
       if (tempMsg != null) {
         if (tempMsg instanceof ByteBuf) {
-          logger.debug("[ {}{}{} ]【{}】消费 ByteBuf 缓存消息，具体内容: {} bytes => {}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), ByteStrUtils.getByteArr(((ByteBuf) tempMsg).copy()).length, ByteStrUtils.getByteArr(((ByteBuf) tempMsg).copy()));
+          logger.debug("[ {}{}{} ]【{}】消费 ByteBuf 缓存消息，具体内容: {} bytes => {}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(((ByteBuf) tempMsg).copy()).length, ByteStrUtils.getArrByDirectBuf(((ByteBuf) tempMsg).copy()));
         } else if (tempMsg instanceof HttpRequest) {
           logger.debug("[ {}{}{} ]【{}】消费 HttpRequest 缓存消息，具体内容: {}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), tempMsg);
         } else {

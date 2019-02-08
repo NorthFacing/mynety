@@ -1,6 +1,7 @@
 package com.adolphor.mynety.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
+import com.adolphor.mynety.common.constants.LanMsgType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.adolphor.mynety.common.constants.LanConstants.ALL_IDLE_TIME;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LAST_BEAT_NO;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_HEARTBEAT;
 import static com.adolphor.mynety.common.constants.LanConstants.READ_IDLE_TIME;
 import static com.adolphor.mynety.common.constants.LanConstants.WRITE_IDLE_TIME;
 
@@ -34,7 +34,7 @@ public class HeartBeatHandler extends IdleStateHandler {
       ctx.channel().attr(ATTR_LAST_BEAT_NO).set(incredSerNo);
 
       LanMessage beatMsg = new LanMessage();
-      beatMsg.setType(LAN_MSG_HEARTBEAT);
+      beatMsg.setType(LanMsgType.HEARTBEAT);
       beatMsg.setSerialNumber(incredSerNo);
       logger.info("[ {} ] write heart beat msg: {}", ctx.channel().id(), beatMsg);
       ctx.writeAndFlush(beatMsg);

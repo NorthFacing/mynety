@@ -1,12 +1,15 @@
 package com.adolphor.mynety.common.bean.lan;
 
+import com.adolphor.mynety.common.constants.LanMsgType;
+import com.adolphor.mynety.common.utils.BaseUtils;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.common.bean.lan.LanMessage.FRAME_SIZE;
+import java.nio.charset.StandardCharsets;
+
 import static com.adolphor.mynety.common.bean.lan.LanMessage.HEADER_SIZE;
 import static com.adolphor.mynety.common.constants.LanConstants.INITIAL_BYTES_TO_STRIP;
 import static com.adolphor.mynety.common.constants.LanConstants.LENGTH_ADJUSTMENT;
@@ -30,8 +33,8 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
   }
 
   /**
-   * 4       +  1   +   8   +     4      +     L     +    4   +  M  +  N
-   * 消息长度 + 类型 + 流水号 + 请求来源长度 + 请求来源ID + URI长度 + URI + 正式数据
+   * 4       +  1   +   8   +          16           +  DATA
+   * 消息长度 + 类型 + 流水号 + 请求来源ID(压缩后的UUID) + 数据内容
    *
    * @param ctx
    * @param msg
@@ -49,35 +52,35 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
       return null;
     }
     int frameLength = byteBuf.readInt();
-    if (byteBuf.readableBytes() < (frameLength - FRAME_SIZE)) {
+    if (byteBuf.readableBytes() < (frameLength - 4)) {
+      logger.warn("incorrect msg length...");
       return null;
     }
     byte type = byteBuf.readByte();
+    LanMsgType lanMsgType = LanMsgType.getType(type);
+
     long sn = byteBuf.readLong();
-    int srcLen = byteBuf.readInt();
-    String userId = null;
-    if (srcLen > 0) {
-      userId = ByteStrUtils.getString(byteBuf, srcLen);
-    }
-    int uriLen = byteBuf.readInt();
+
+    ByteBuf reqIdBuf = byteBuf.readBytes(16);
+    byte[] reqIdArr = ByteStrUtils.getArrByDirectBuf(reqIdBuf);
+    String requestId = BaseUtils.deCompressUUID(reqIdArr);
+
     String uri = null;
-    if (uriLen > 0) {
-      uri = ByteStrUtils.getString(byteBuf, uriLen);
-    }
-    int dataLen = frameLength - (HEADER_SIZE + srcLen + uriLen);
     byte[] data = null;
-    if (dataLen > 0) {
-      data = ByteStrUtils.getByteArr(byteBuf, dataLen);
+    if (LanMsgType.CONNECT == lanMsgType) {
+      byte[] uriArr = ByteStrUtils.getArrByDirectBuf(byteBuf);
+      uri = new String(uriArr, StandardCharsets.UTF_8);
+    } else {
+      data = ByteStrUtils.getArrByDirectBuf(byteBuf);
     }
 
     LanMessage lanMessage = new LanMessage();
-    lanMessage.setType(type);
+
+    lanMessage.setType(lanMsgType);
     lanMessage.setSerialNumber(sn);
-    lanMessage.setRequestId(userId);
+    lanMessage.setRequestId(requestId);
     lanMessage.setUri(uri);
     lanMessage.setData(data);
-
-    byteBuf.release();
 
     logger.debug("[ {} ]【{}】解码处理之后的 msg 信息: {}", ctx.channel().id(), getSimpleName(this), lanMessage);
     return lanMessage;

@@ -3,11 +3,12 @@ package com.adolphor.mynety.server.lan;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.constants.Constants;
+import com.adolphor.mynety.common.constants.LanMsgType;
 import com.adolphor.mynety.common.encryption.CryptFactory;
 import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
+import com.adolphor.mynety.common.utils.BaseUtils;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
-import com.adolphor.mynety.common.utils.ChannelUtils;
 import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.server.config.Config;
@@ -25,8 +26,6 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_REQUEST_ID;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_CONNECT;
-import static com.adolphor.mynety.common.constants.LanConstants.LAN_MSG_TRANSFER;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -64,7 +63,7 @@ public final class LanAdapterInBoundHandler extends AbstractSimpleHandler<ByteBu
 
     logger.debug("[ {}{}{} ]【{}】准备建立socks和Lan之间的连接...", inRelayChannel.id(), Constants.LOG_MSG, lanChannel != null ? lanChannel.id() : "", getSimpleName(this));
 
-    String requestId = ChannelUtils.getUUID();
+    String requestId = BaseUtils.getUUID();
     LanChannelContainers.addChannels(requestId, inRelayChannel);
     inRelayChannel.attr(ATTR_REQUEST_ID).set(requestId);
 
@@ -91,14 +90,14 @@ public final class LanAdapterInBoundHandler extends AbstractSimpleHandler<ByteBu
     }
 
     // 第一次请求，发送带有地址的请求，使Lan客户端和目的地建立连接
-    LanMessage lanConnMsg = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LAN_MSG_CONNECT);
+    LanMessage lanConnMsg = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LanMsgType.CONNECT.getVal());
     lanConnMsg.setUri(landDstAddr + ":" + dstPort);
     logger.debug("[ {}{}{} ]【{}】发送给Lan客户端的第一条信息 => 建立连接: {}", inRelayChannel.id(), Constants.LOG_MSG_OUT, lanChannel.id(), getSimpleName(this), lanConnMsg);
     lanChannel.writeAndFlush(lanConnMsg).addListener((ChannelFutureListener) future -> {
       // 第二次请求，缓存的请求信息
       AtomicReference tempMstRef = ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get();
       if (tempMstRef != null && tempMstRef.get() != null) {
-        LanMessage lanMessage = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LAN_MSG_TRANSFER);
+        LanMessage lanMessage = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LanMsgType.TRANSFER.getVal());
         // 发送给lan客户端的加密使用自己channel对应的加密对象
         lanMessage.setData(CryptUtil.encrypt(lanCrypt, tempMstRef.get()));
         lanChannel.writeAndFlush(lanMessage);
@@ -125,16 +124,16 @@ public final class LanAdapterInBoundHandler extends AbstractSimpleHandler<ByteBu
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     Channel inRelayChannel = ctx.channel();
     Channel lanChannel = LanChannelContainers.lanChannel;
-    logger.debug("[ {}{}{} ]【{}】接收到请求信息，将要发送给lan客户端: {}", inRelayChannel.id(), Constants.LOG_MSG_OUT, lanChannel.id(), getSimpleName(this), ByteStrUtils.getByteArr(msg.copy()));
+    logger.debug("[ {}{}{} ]【{}】接收到请求信息，将要发送给lan客户端: {}", inRelayChannel.id(), Constants.LOG_MSG_OUT, lanChannel.id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(msg.copy()));
     try {
       String requestId = inRelayChannel.attr(ATTR_REQUEST_ID).get();
-      LanMessage lanMessage = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LAN_MSG_TRANSFER);
+      LanMessage lanMessage = LanMsgUtils.packageLanMsg(inRelayChannel, requestId, LanMsgType.TRANSFER.getVal());
 
       ICrypt inRelayCrypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
       ICrypt lanCrypt = LanChannelContainers.requestCryptsMap.get(requestId);
 
       byte[] decrypt = CryptUtil.decrypt(inRelayCrypt, msg);
-      byte[] encrypt = CryptUtil.encrypt(lanCrypt, ByteStrUtils.getDirectByteBuf(decrypt));
+      byte[] encrypt = CryptUtil.encrypt(lanCrypt, ByteStrUtils.getDirectBuf(decrypt));
 
       lanMessage.setData(encrypt);
       logger.debug("[ {}{}{} ]【{}】接收到请求信息，发送给lan的请求信息: {}", inRelayChannel.id(), Constants.LOG_MSG_OUT, lanChannel.id(), getSimpleName(this), lanMessage);
