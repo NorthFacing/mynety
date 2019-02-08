@@ -86,11 +86,11 @@ public class ConfigLoader {
       }
       Object socksLocalPort = config.get("socksLocalPort");
       if (socksLocalPort != null) {
-        ClientConfig.SOCKS_PROXY_PORT = Integer.valueOf(socksLocalPort.toString());
+        ClientConfig.SOCKS_PROXY_PORT = Integer.parseInt(socksLocalPort.toString());
       }
       Object httpLocalPort = config.get("httpLocalPort");
       if (httpLocalPort != null) {
-        ClientConfig.HTTP_PROXY_PORT = Integer.valueOf(httpLocalPort.toString());
+        ClientConfig.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
       }
       Object http2socks5 = config.get("http2socks5");
       if (http2socks5 != null) {
@@ -102,7 +102,7 @@ public class ConfigLoader {
       }
       Object proxyStrategy = config.get("proxyStrategy");
       if (proxyStrategy != null) {
-        ClientConfig.PROXY_STRATEGY = Integer.valueOf(proxyStrategy.toString());
+        ClientConfig.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());
       }
 
       if (config.get("servers") != null) {
@@ -121,7 +121,7 @@ public class ConfigLoader {
           }
           Object port = server.get("port");
           if (port != null) {
-            bean.setPort(Integer.valueOf(port.toString()));
+            bean.setPort(Integer.parseInt(port.toString()));
           }
           Object method = server.get("method");
           if (method != null) {

@@ -30,7 +30,7 @@ public class ConfigLoader {
       if (server != null) {
         Object socksPort = server.get("port");
         if (socksPort != null) {
-          Config.PROXY_PORT = Integer.valueOf(socksPort.toString());
+          Config.PROXY_PORT = Integer.parseInt(socksPort.toString());
         }
         Object method = server.get("method");
         if (method != null) {
@@ -47,11 +47,11 @@ public class ConfigLoader {
 
         Object lanStrategy = lannet.get("lanStrategy");
         if (lanStrategy != null) {
-          Config.LAN_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.valueOf(lanStrategy.toString()));
+          Config.LAN_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.parseInt(lanStrategy.toString()));
         }
         Object lanServerPort = lannet.get("lanPort");
         if (lanServerPort != null) {
-          Config.LAN_SERVER_PORT = Integer.valueOf(lanServerPort.toString());
+          Config.LAN_SERVER_PORT = Integer.parseInt(lanServerPort.toString());
         }
         Object lanHostName = lannet.get("lanHostName");
         if (lanHostName != null) {

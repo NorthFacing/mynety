@@ -1,5 +1,6 @@
 package com.adolphor.mynety.client.utils.cert;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@Slf4j
 public class CertUtils {
 
   private static final String preSub = "L=HangZhou, ST=ZheJiang, C=CN, OU=https://github.com/adolphor/mynety, O=Bob.Zhu, E=adolphor@qq.com, CN=";
@@ -167,7 +169,11 @@ public class CertUtils {
     KeyPair keyPair = CertUtils.genKeyPair();
     File caCertFile = new File("mynety-client/src/main/resources/mynety-root-ca.crt");
     if (caCertFile.exists()) {
-      caCertFile.delete();
+      boolean delete = caCertFile.delete();
+      if (!delete) {
+        logger.warn("file is existed and could not be deleted!");
+        return;
+      }
     }
     Files.write(Paths.get(caCertFile.toURI()),
         CertUtils.genCACert(
@@ -178,10 +184,14 @@ public class CertUtils {
         ).getEncoded());
 
     File caKeyFile = new File("mynety-client/src/main/resources/mynety-root-ca-private-key.der");
-    if (caKeyFile.exists()){
-      caKeyFile.delete();
+    if (caKeyFile.exists()) {
+      boolean delete = caKeyFile.delete();
+      if (!delete) {
+        logger.warn("file is existed and could not be deleted!");
+        return;
+      }
     }
-    Files.write(Paths.get(caKeyFile.toURI()),keyPair.getPrivate().getEncoded());
+    Files.write(Paths.get(caKeyFile.toURI()), keyPair.getPrivate().getEncoded());
   }
 
 }

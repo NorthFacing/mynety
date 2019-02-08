@@ -84,6 +84,8 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
       case UNKNOWN:
         ctx.close();
         break;
+      default:
+        ctx.close();
     }
   }
 

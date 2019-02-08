@@ -19,7 +19,6 @@ public class HttpsCertConfig {
   // 生产一对随机公私钥用于网站SSL证书动态创建
   private PrivateKey privateKey;
   private PublicKey publicKey;
-  private boolean handleSsl;
 
   public SslContext getClientSslCtx() {
     return clientSslCtx;

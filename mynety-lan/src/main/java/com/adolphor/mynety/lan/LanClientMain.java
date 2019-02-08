@@ -44,7 +44,7 @@ public class LanClientMain {
   /**
    * 抽取出该方法 (断线重连时使用)
    *
-   * @throws InterruptedException
+   * @throws
    */
   public static void doConnect() {
     reconnectWait();
@@ -59,6 +59,7 @@ public class LanClientMain {
       future.channel().closeFuture().sync();
 
     } catch (Exception e) {
+      logger.warn("", e);
       doConnect();
     }
   }

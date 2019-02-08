@@ -25,7 +25,7 @@ public class ConfigLoader {
       Config.METHOD = config.get("method").toString();
       Config.PASSWORD = config.get("password").toString();
       Config.LAN_SERVER_HOST = config.get("serverHost").toString();
-      Config.LAN_SERVER_PORT = Integer.valueOf(config.get("serverPort").toString());
+      Config.LAN_SERVER_PORT = Integer.parseInt(config.get("serverPort").toString());
     }
     logger.debug("Lan client config loads success：serverHost={}, serverPort={}", Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT);
   }

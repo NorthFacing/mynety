@@ -127,7 +127,7 @@ public class DomainUtils {
       }
     }
     address.setHost(host);
-    address.setPort(Integer.valueOf(port));
+    address.setPort(Integer.parseInt(port));
     address.setPath(path);
     return address;
   }

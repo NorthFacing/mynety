@@ -27,11 +27,14 @@ public class HeartBeatHandler extends IdleStateHandler {
   }
 
   @Override
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    super.channelActive(ctx);
+    ctx.channel().attr(ATTR_LOST_BEAT_CNT).set(0L);
+  }
+
+  @Override
   protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception {
-
     Long lostBeatCnt = ctx.channel().attr(ATTR_LOST_BEAT_CNT).get();
-    lostBeatCnt = (lostBeatCnt == null) ? 0 : lostBeatCnt;
-
     if (IdleStateEvent.READER_IDLE_STATE_EVENT.equals(evt)) {
       logger.info("[ {} ] read timeout evt...", ctx.channel().id());
       // 连续丢失最大容忍心跳包 (断开连接)

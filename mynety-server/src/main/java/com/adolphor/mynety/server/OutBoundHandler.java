@@ -32,7 +32,7 @@ public final class OutBoundHandler extends AbstractOutBoundHandler<ByteBuf> {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     logger.debug("[ {}{}{} ]【SocksOutBound 收到请求结果】内容: {} bytes => {}", (inRelayChannel != null ? inRelayChannel.id() : ""), Constants.LOG_MSG_IN, ctx.channel().id(), msg.readableBytes(), msg);
 
-    if (!inRelayChannel.isOpen()) {
+    if (inRelayChannel != null && !inRelayChannel.isOpen()) {
       channelClose(ctx);
       return;
     }

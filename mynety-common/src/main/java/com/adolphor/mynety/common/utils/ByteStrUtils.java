@@ -75,15 +75,16 @@ public class ByteStrUtils {
 
   /**
    * 获取 String
-   *
+   * use <code>ByteBufUtil.hexDump(buf)</code> instead
    * @param buf
    * @return
    */
-
+  @Deprecated
   public static String getString(ByteBuf buf) {
     return getString(buf, buf.readableBytes());
   }
 
+  @Deprecated
   public static String getString(ByteBuf buf, int len) {
     if (buf == null || buf.readableBytes() < 1) {
       return null;
@@ -92,6 +93,7 @@ public class ByteStrUtils {
     return new String(byteArr, StandardCharsets.UTF_8);
   }
 
+  @Deprecated
   public static String getString(byte[] arr) {
     if (arr == null) {
       return null;

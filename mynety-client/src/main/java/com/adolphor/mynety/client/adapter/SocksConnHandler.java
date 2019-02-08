@@ -19,6 +19,9 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
+
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.IPV4_PATTERN;
@@ -59,19 +62,19 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     // 如果是IPv4：4 bytes for IPv4 address
     if (IPV4_PATTERN.matcher(host).find()) {
       buf.writeByte(SocksAddressType.IPv4.byteValue());
-      String[] split = host.split("\\.");
-      for (String str : split) {
-        buf.writeByte(Integer.valueOf(str));
-      }
+      InetAddress inetAddress = InetAddress.getByName(host);
+      buf.writeBytes(inetAddress.getAddress());
     }
     // 如果是IPv6：16 bytes for IPv6 address
     else if (IPV6_PATTERN.matcher(host).find()) {
-      throw new Exception("unknown supported IPv6: " + SocksAddressType.IPv6);
+      buf.writeByte(SocksAddressType.IPv6.byteValue());
+      InetAddress inetAddress = InetAddress.getByName(host);
+      buf.writeBytes(inetAddress.getAddress());
     }
     // 如果是域名：1 byte of ATYP + 1 byte of domain name length + 1–255 bytes of the domain name
     else {
       buf.writeByte(SocksAddressType.DOMAIN.byteValue());
-      byte[] bytes = ByteStrUtils.getByteArr(host);
+      byte[] bytes = host.getBytes(StandardCharsets.UTF_8);
       buf.writeByte(bytes.length);
       buf.writeBytes(bytes);
     }
