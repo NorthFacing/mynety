@@ -14,6 +14,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.socks.SocksAddressType;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
@@ -88,9 +89,9 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     logger.debug("[ {} ]【{}】数据包中剩余的其他信息: {} bytes => {}", ctx.channel().id(), getSimpleName(this), dataBuff.readableBytes(), dataBuff);
     // 黏包的数据加入到请求缓存
     if (dataBuff.readableBytes() > 0) {
-      ByteBuf temp = Unpooled.directBuffer(dataBuff.readableBytes()).writeBytes(dataBuff);
-      ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(temp);
-      logger.debug("[ {} ]【{}】数据包中剩余信息添加到缓存，具体内容: {} bytes => {}", ctx.channel().id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(temp.copy()).length, ByteStrUtils.getArrByDirectBuf(temp.copy()));
+      ReferenceCountUtil.retain(dataBuff);
+      ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(dataBuff);
+      logger.debug("[ {} ]【{}】数据包中剩余信息添加到缓存，具体内容: {} bytes => {}", ctx.channel().id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(dataBuff.copy()).length, ByteStrUtils.getArrByDirectBuf(dataBuff.copy()));
     }
     ctx.channel().pipeline().addLast(InBoundHandler.INSTANCE);
     logger.info("[ {} ]【{}】增加处理器: InBoundHandler", ctx.channel().id(), Constants.LOG_MSG);

@@ -78,8 +78,8 @@ public abstract class AbstractInBoundHandler<I> extends AbstractSimpleHandler<I>
       if (tempMsgRef.get() instanceof ByteBuf) {
         Object tempMsg = tempMsgRef.get();
         if (((ByteBuf) tempMsg).refCnt() > 0) {
+          logger.info("[ {}{}{} ]【{}】inRelayChannel 将要关闭连接，释放缓存: {} bytes => {}", ctx.channel().id(), LOG_MSG, ((outRelayChannelRef != null && outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : ""), getSimpleName(this), ((ByteBuf) tempMsg).readableBytes(), ByteStrUtils.getArrByDirectBuf(((ByteBuf) tempMsg).copy()));
           ReferenceCountUtil.release(tempMsg);
-          logger.info("[ {}{}{} ]【{}】inRelayChannel 将要关闭连接，释放缓存: {} bytes => {}", ctx.channel().id(), LOG_MSG, ((outRelayChannelRef != null && outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : ""), getSimpleName(this), ((ByteBuf) tempMsg).readableBytes(), ByteStrUtils.getArrByDirectBuf((ByteBuf) tempMsg));
         } else {
           logger.info("[ {}{}{} ]【{}】inRelayChannel 将要关闭连接，没有需要释放的缓存……", ctx.channel().id(), LOG_MSG, ((outRelayChannelRef != null && outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : ""), getSimpleName(this));
         }

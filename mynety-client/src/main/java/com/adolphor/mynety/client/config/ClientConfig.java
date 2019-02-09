@@ -45,7 +45,7 @@ public class ClientConfig {
   /**
    * 是否开启MITM处理ssl连接
    */
-  public static boolean HANDLE_SSL = false;
+  public static boolean HTTP_MITM = false;
 
   /**
    * 代理模式可选项：

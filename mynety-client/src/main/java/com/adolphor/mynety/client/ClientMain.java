@@ -62,7 +62,7 @@ public final class ClientMain {
       EventLoopGroup hBossGroup = null;
       EventLoopGroup hWorkerGroup = null;
       try {
-        if (ClientConfig.HANDLE_SSL) {
+        if (ClientConfig.HTTP_MITM) {
           ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
           X509Certificate caCert = CertUtils.loadCert(classLoader.getResourceAsStream("mynety-root-ca.crt"));
           PrivateKey caPriKey = CertUtils.loadPriKey(classLoader.getResourceAsStream("mynety-root-ca-private-key.der"));

@@ -96,9 +96,9 @@ public class ConfigLoader {
       if (http2socks5 != null) {
         ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
       }
-      Object handleSsl = config.get("handleSsl");
+      Object httpMitm = config.get("httpMitm");
       if (http2socks5 != null) {
-        ClientConfig.HANDLE_SSL = Boolean.valueOf(handleSsl.toString());
+        ClientConfig.HTTP_MITM = Boolean.valueOf(httpMitm.toString());
       }
       Object proxyStrategy = config.get("proxyStrategy");
       if (proxyStrategy != null) {

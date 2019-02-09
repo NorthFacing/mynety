@@ -1,12 +1,11 @@
 package com.adolphor.mynety.common.wrapper;
 
-import com.adolphor.mynety.common.utils.ByteStrUtils;
 import com.adolphor.mynety.common.utils.ChannelUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpRequest;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -48,20 +47,18 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
     AtomicReference tempMsgRef = inRelayChannel.attr(ATTR_REQUEST_TEMP_MSG).get();
     if (tempMsgRef.get() != null) {
       Object tempMsg = tempMsgRef.get();
-      logger.debug("[ {} ]【{}】获取单条缓存信息：{} => {} ", ctx.channel().id(), getSimpleName(this), getSimpleName(tempMsg), tempMsg);
-      if (tempMsg != null) {
-        if (tempMsg instanceof ByteBuf) {
-          logger.debug("[ {}{}{} ]【{}】消费 ByteBuf 缓存消息，具体内容: {} bytes => {}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), ByteStrUtils.getArrByDirectBuf(((ByteBuf) tempMsg).copy()).length, ByteStrUtils.getArrByDirectBuf(((ByteBuf) tempMsg).copy()));
-        } else if (tempMsg instanceof HttpRequest) {
-          logger.debug("[ {}{}{} ]【{}】消费 HttpRequest 缓存消息，具体内容: {}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), tempMsg);
-        } else {
-          logger.debug("[ {}{}{} ]【{}】消费 其他 缓存消息 {}：{}", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id(), getSimpleName(this), getSimpleName(tempMsg), tempMsg);
+      if (tempMsg instanceof ByteBuf) {
+        ByteBuf byteBuf = (ByteBuf) tempMsg;
+        if (byteBuf.readableBytes() == 0) {
+          return;
         }
-        ChannelUtils.loggerHandlers(ctx.channel(), tempMsg);
-        ctx.channel().writeAndFlush(tempMsg);
-      } else {
-        logger.info("[ {}{}{} ] 无缓存消息", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id());
       }
+      logger.debug("[ {} ]【{}】获取并消费缓存信息：{}", ctx.channel().id(), getSimpleName(this), getSimpleName(tempMsg));
+      ReferenceCountUtil.retain(tempMsg);
+      ChannelUtils.loggerHandlers(ctx.channel(), tempMsg);
+      ctx.channel().writeAndFlush(tempMsg);
+    } else {
+      logger.info("[ {}{}{} ] 无缓存消息", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id());
     }
   }
 

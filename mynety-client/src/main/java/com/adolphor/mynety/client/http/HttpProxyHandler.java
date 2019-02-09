@@ -54,7 +54,7 @@ public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
     }
 
     Address address = DomainUtils.getAddress(msg.uri());
-    logger.debug("[ {}{} ]【{}】HTTP请求分发 解析URL信息 {}=> {}:{}", ctx.channel().id(), LOG_MSG, getSimpleName(this), msg.uri(), address.getHost(), address.getPort());
+    logger.debug("[ {}{} ]【{}】HTTP请求分发 解析URL信息 {} => {}:{}", ctx.channel().id(), LOG_MSG, getSimpleName(this), msg.uri(), address.getHost(), address.getPort());
     ctx.channel().attr(ATTR_REQUEST_ADDRESS).set(address);
 
     // 判断是否是tunnel代理，作为后续是否移除 httpCodec 处理器的标准之一（另外一个标准是 是否开启MITM）
@@ -67,7 +67,7 @@ public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
       logger.info("[ {} ]【{}】HTTP请求分发 添加 ATTR_IS_HTTP_TUNNEL 属性：false", ctx.channel().id(), getSimpleName(this));
       ReferenceCountUtil.retain(msg);
       ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(msg);
-      logger.debug("[ {}{} ]【{}】HTTP请求分发 暂存消息到缓存: {}", ctx.channel().id(), Constants.LOG_MSG, getSimpleName(this), msg);
+      logger.debug("[ {}{} ]【{}】HTTP请求分发 暂存消息到缓存...", ctx.channel().id(), Constants.LOG_MSG, getSimpleName(this));
     }
     ctx.pipeline().addLast(HttpInBoundHandler.INSTANCE);
     ctx.pipeline().remove(this);
