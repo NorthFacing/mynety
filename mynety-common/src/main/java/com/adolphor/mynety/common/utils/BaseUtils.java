@@ -4,15 +4,10 @@ import java.util.UUID;
 
 /**
  * Java基础工具类
- * <p>
- * <p>
- * 参考：
- * 1. [byte为什么要与上0xff？](https://www.cnblogs.com/think-in-java/p/5527389.html)
- * 2. [如何压缩UUID长度？](http://www.cnblogs.com/smallyard/p/8271082.html)
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
- * @since v0.0.5
+ * @since v0.0.6
  */
 public class BaseUtils {
 
@@ -39,7 +34,7 @@ public class BaseUtils {
         tmp = aShort << 4;
         isFirst = false;
       } else {
-        bytes[i/2] = (byte) (tmp | aShort);
+        bytes[i / 2] = (byte) (tmp | aShort);
 
         isFirst = true;
         tmp = 0;

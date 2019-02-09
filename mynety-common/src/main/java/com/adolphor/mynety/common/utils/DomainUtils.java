@@ -94,11 +94,7 @@ public class DomainUtils {
       String[] split = url.split(":");
       host = split[0];
       if (split[1].contains("/")) {
-        int index = url.indexOf("/");
-        port = split[1].substring(0, index);
-        path = split[1].substring(index);
-      } else if (split[1].contains("#")) {
-        int index = url.indexOf("#");
+        int index = split[1].indexOf("/");
         port = split[1].substring(0, index);
         path = split[1].substring(index);
       } else {
@@ -115,10 +111,6 @@ public class DomainUtils {
       }
       if (url.contains("/")) {
         int index = url.indexOf("/");
-        host = url.substring(0, index);
-        path = url.substring(index);
-      } else if (url.contains("#")) {
-        int index = url.indexOf("#");
         host = url.substring(0, index);
         path = url.substring(index);
       } else {

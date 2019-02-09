@@ -1,5 +1,10 @@
 package com.adolphor.mynety.common.utils;
 
+/**
+ * @author Bob.Zhu
+ * @Email adolphor@qq.com
+ * @since v0.0.6
+ */
 public class ByteUtils {
 
   /**

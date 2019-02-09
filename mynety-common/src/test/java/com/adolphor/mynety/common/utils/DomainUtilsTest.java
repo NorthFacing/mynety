@@ -70,41 +70,25 @@ public class DomainUtilsTest {
     Assert.assertEquals("adolphor.com", address.getHost());
     Assert.assertEquals(80, address.getPort());
 
-    uri = "http://adolphor.com";
-    address = DomainUtils.getAddress(uri);
-    Assert.assertEquals("adolphor.com", address.getHost());
-    Assert.assertEquals(80, address.getPort());
-    Assert.assertEquals(SCHEME_HTTP, address.getScheme());
-
-    uri = "http://adolphor.com:8080";
-    address = DomainUtils.getAddress(uri);
-    Assert.assertEquals("adolphor.com", address.getHost());
-    Assert.assertEquals(8080, address.getPort());
-    Assert.assertEquals(SCHEME_HTTP, address.getScheme());
-
-    uri = "https://adolphor.com";
-    address = DomainUtils.getAddress(uri);
-    Assert.assertEquals("adolphor.com", address.getHost());
-    Assert.assertEquals(443, address.getPort());
-    Assert.assertEquals(SCHEME_HTTPS, address.getScheme());
-
-    uri = "https://adolphor.com:666";
-    address = DomainUtils.getAddress(uri);
-    Assert.assertEquals("adolphor.com", address.getHost());
-    Assert.assertEquals(666, address.getPort());
-    Assert.assertEquals(SCHEME_HTTPS, address.getScheme());
-
-    uri = "https://git-scm.com/book/zh/v1/Git-%E5%B7%A5%E5%85%B7-%E9%87%8D%E5%86%99%E5%8E%86%E5%8F%B2";
+    uri = "https://git-scm.com/book/zh/v1/git";
     address = DomainUtils.getAddress(uri);
     Assert.assertEquals("git-scm.com", address.getHost());
     Assert.assertEquals(443, address.getPort());
     Assert.assertEquals(SCHEME_HTTPS, address.getScheme());
+    Assert.assertEquals("/book/zh/v1/git",address.getPath());
 
     uri = "http://www.runoob.com/try/try.php?filename=tryjsref_regexp4";
     address = DomainUtils.getAddress(uri);
     Assert.assertEquals("www.runoob.com", address.getHost());
     Assert.assertEquals(80, address.getPort());
     Assert.assertEquals(SCHEME_HTTP, address.getScheme());
+
+    uri = "http://adolphor.com:8080/";
+    address = DomainUtils.getAddress(uri);
+    Assert.assertEquals("adolphor.com", address.getHost());
+    Assert.assertEquals(8080, address.getPort());
+    Assert.assertEquals(SCHEME_HTTP, address.getScheme());
+    Assert.assertEquals("/", address.getPath());
 
   }
 

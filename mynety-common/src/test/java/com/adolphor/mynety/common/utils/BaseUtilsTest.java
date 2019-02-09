@@ -6,6 +6,15 @@ import static com.adolphor.mynety.common.utils.BaseUtils.compressUUID;
 import static com.adolphor.mynety.common.utils.BaseUtils.deCompressUUID;
 import static org.junit.Assert.assertEquals;
 
+/**
+ * 参考：
+ * 1. [byte为什么要与上0xff？](https://www.cnblogs.com/think-in-java/p/5527389.html)
+ * 2. [如何压缩UUID长度？](http://www.cnblogs.com/smallyard/p/8271082.html)
+ *
+ * @author Bob.Zhu
+ * @Email adolphor@qq.com
+ * @since v0.0.6
+ */
 public class BaseUtilsTest {
 
   @Test
