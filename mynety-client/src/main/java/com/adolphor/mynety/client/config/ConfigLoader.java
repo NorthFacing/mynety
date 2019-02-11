@@ -15,7 +15,7 @@ import static com.adolphor.mynety.common.constants.Constants.CONN_DIRECT;
 import static com.adolphor.mynety.common.constants.Constants.CONN_PROXY;
 
 /**
- * 加载配置信息
+ * load configuration
  * <p>
  * load config info
  *
@@ -71,13 +71,6 @@ public class ConfigLoader {
   private static void loadClientConf(String configFile) throws Exception {
 
     try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
-      if (is == null) {
-        // dev文件为空直接返回接着找pro文件；如果pro文件也为空，就说明缺少配置文件
-        if (configFileName.equals(configFile)) {
-          throw new NullPointerException("缺少 client-config 配置文件！");
-        }
-        return;
-      }
 
       Map config = new Yaml().load(is);
       Object aPublic = config.get("public");
@@ -97,8 +90,20 @@ public class ConfigLoader {
         ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
       }
       Object httpMitm = config.get("httpMitm");
-      if (http2socks5 != null) {
-        ClientConfig.HTTP_MITM = Boolean.valueOf(httpMitm.toString());
+      if (httpMitm != null) {
+        Map httpMitmMap = (Map) httpMitm;
+        Object isOpen = httpMitmMap.get("isOpen");
+        if (isOpen!=null){
+          ClientConfig.HTTP_MITM = Boolean.valueOf(isOpen.toString());
+        }
+        Object caPassword = httpMitmMap.get("caPassword");
+        if (caPassword!=null){
+          ClientConfig.CA_PASSWORD = caPassword.toString();
+        }
+        Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
+        if (caKeyStoreFile != null) {
+          ClientConfig.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
+        }
       }
       Object proxyStrategy = config.get("proxyStrategy");
       if (proxyStrategy != null) {

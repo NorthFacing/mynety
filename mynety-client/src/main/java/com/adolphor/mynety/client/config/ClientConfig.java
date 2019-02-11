@@ -1,7 +1,7 @@
 package com.adolphor.mynety.client.config;
 
 import com.adolphor.mynety.client.utils.NetUtils;
-import com.adolphor.mynety.client.utils.cert.HttpsCertConfig;
+import com.adolphor.mynety.client.utils.cert.CertConfig;
 import com.adolphor.mynety.common.utils.LocalCache;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +47,10 @@ public class ClientConfig {
    */
   public static boolean HTTP_MITM = false;
 
+  public static String CA_PASSWORD = "mynety";
+
+  public static String CA_KEYSTORE_FILE = "mynety-root-ca.jks";
+
   /**
    * 代理模式可选项：
    * 0：全局      Globle
@@ -58,7 +62,7 @@ public class ClientConfig {
   /**
    * CA证书相关配置
    */
-  public static final HttpsCertConfig HTTPS_CERT_CONFIG = new HttpsCertConfig();
+  public static final CertConfig HTTPS_CERT_CONFIG = new CertConfig();
 
 
   private static final List<Server> servers = new ArrayList<>();

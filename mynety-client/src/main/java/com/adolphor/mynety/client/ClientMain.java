@@ -63,9 +63,8 @@ public final class ClientMain {
       EventLoopGroup hWorkerGroup = null;
       try {
         if (ClientConfig.HTTP_MITM) {
-          ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-          X509Certificate caCert = CertUtils.loadCert(classLoader.getResourceAsStream("mynety-root-ca.crt"));
-          PrivateKey caPriKey = CertUtils.loadPriKey(classLoader.getResourceAsStream("mynety-root-ca-private-key.der"));
+          X509Certificate caCert = CertUtils.loadCert(ClientConfig.CA_KEYSTORE_FILE, ClientConfig.CA_PASSWORD.toCharArray());
+          PrivateKey caPriKey = CertUtils.loadPriKey(ClientConfig.CA_KEYSTORE_FILE, ClientConfig.CA_PASSWORD.toCharArray());
           SslContext sslCtx = SslContextBuilder.forClient()
               .trustManager(InsecureTrustManagerFactory.INSTANCE)
 //              .applicationProtocolConfig(new ApplicationProtocolConfig(
@@ -76,13 +75,13 @@ public final class ClientMain {
 //                  ApplicationProtocolNames.HTTP_1_1))
               .build();
           HTTPS_CERT_CONFIG.setClientSslCtx(sslCtx);
-          HTTPS_CERT_CONFIG.setIssuer(CertUtils.getSubject(caCert));
-          HTTPS_CERT_CONFIG.setCaNotBefore(caCert.getNotBefore());
-          HTTPS_CERT_CONFIG.setCaNotAfter(caCert.getNotAfter());
-          HTTPS_CERT_CONFIG.setCaPrivateKey(caPriKey);
+          HTTPS_CERT_CONFIG.setIssuer(caCert.getIssuerDN().toString());
+          HTTPS_CERT_CONFIG.setNotBefore(caCert.getNotBefore());
+          HTTPS_CERT_CONFIG.setNotAfter(caCert.getNotAfter());
+          HTTPS_CERT_CONFIG.setCaPriKey(caPriKey);
           KeyPair keyPair = CertUtils.genKeyPair();
-          HTTPS_CERT_CONFIG.setPrivateKey(keyPair.getPrivate());
-          HTTPS_CERT_CONFIG.setPublicKey(keyPair.getPublic());
+          HTTPS_CERT_CONFIG.setMitmPriKey(keyPair.getPrivate());
+          HTTPS_CERT_CONFIG.setMitmPubKey(keyPair.getPublic());
         }
         hBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
         hWorkerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();

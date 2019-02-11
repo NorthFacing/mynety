@@ -1,7 +1,8 @@
 package com.adolphor.mynety.client.utils.cert;
 
-import lombok.extern.slf4j.Slf4j;
+import com.adolphor.mynety.common.utils.BaseUtils;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.RFC4519Style;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
@@ -12,137 +13,122 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.security.spec.EncodedKeySpec;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.Enumeration;
 
-@Slf4j
+/**
+ * @author Bob.Zhu
+ * @Email adolphor@qq.com
+ * @since v0.0.5
+ */
 public class CertUtils {
 
-  private static final String preSub = "L=HangZhou, ST=ZheJiang, C=CN, OU=https://github.com/adolphor/mynety, O=Bob.Zhu, E=adolphor@qq.com, CN=";
+  public static final String preSubject = "L=HangZhou, ST=ZheJiang, C=CN, O=adolphor@qq.com, OU=https://github.com/adolphor/mynety, CN=";
+
   private static final String signatureAlgorithm = "SHA256WithRSAEncryption";
 
   static {
-    //注册BouncyCastleProvider加密库
     Security.addProvider(new BouncyCastleProvider());
   }
 
-  private static KeyFactory keyFactory = null;
-
-  private static KeyFactory getKeyFactory() throws NoSuchAlgorithmException {
-    if (keyFactory == null) {
-      keyFactory = KeyFactory.getInstance("RSA");
+  public static PrivateKey loadPriKey(String filePath, char[] password) throws Exception {
+    KeyStore keyStore = loadKeyStore(filePath, password);
+    Enumeration<String> aliasesEnum = keyStore.aliases();
+    while (aliasesEnum.hasMoreElements()) {
+      String aliases = aliasesEnum.nextElement();
+      return (PrivateKey) keyStore.getKey(aliases, password);
     }
-    return keyFactory;
+    throw new IllegalArgumentException("configuration of caKeyStoreFile is NOT right!");
   }
 
-  /**
-   * 从文件加载RSA私钥 openssl pkcs8 -topk8 -nocrypt -inform PEM -outform DER -in ca.key -out
-   * ca_private.der
-   */
-  public static PrivateKey loadPriKey(InputStream inputStream) throws IOException, InvalidKeySpecException, NoSuchAlgorithmException {
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    byte[] bts = new byte[1024];
-    int len;
-    while ((len = inputStream.read(bts)) != -1) {
-      outputStream.write(bts, 0, len);
+  public static X509Certificate loadCert(String filePath, char[] password) throws Exception {
+    KeyStore keyStore = loadKeyStore(filePath, password);
+    Enumeration<String> aliasesEnum = keyStore.aliases();
+    while (aliasesEnum.hasMoreElements()) {
+      String aliases = aliasesEnum.nextElement();
+      return (X509Certificate) keyStore.getCertificate(aliases);
     }
-    inputStream.close();
-    outputStream.close();
-    return loadPriKey(outputStream.toByteArray());
+    throw new IllegalArgumentException("configuration of caKeyStoreFile is NOT right!");
   }
 
-  /**
-   * 从文件加载RSA私钥 openssl pkcs8 -topk8 -nocrypt -inform PEM -outform DER -in ca.key -out
-   * ca_private.der
-   */
-  public static PrivateKey loadPriKey(byte[] bts) throws NoSuchAlgorithmException, InvalidKeySpecException {
-    EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(bts);
-    return getKeyFactory().generatePrivate(privateKeySpec);
-  }
-
-  /**
-   * 从文件加载证书
-   */
-  public static X509Certificate loadCert(InputStream inputStream) throws CertificateException {
-    CertificateFactory cf = CertificateFactory.getInstance("X.509");
-    return (X509Certificate) cf.generateCertificate(inputStream);
-  }
-
-  /**
-   * 读取ssl证书使用者信息
-   */
-  public static String getSubject(X509Certificate certificate) throws Exception {
-    //读出来顺序是反的需要反转下
-    List<String> tempList = Arrays.asList(certificate.getIssuerDN().toString().split(", "));
-    return IntStream.rangeClosed(0, tempList.size() - 1)
-        .mapToObj(i -> tempList.get(tempList.size() - i - 1)).collect(Collectors.joining(", "));
-  }
-
-  /**
-   * 根据CA证书subject来动态生成目标服务器证书，并进行CA签授
-   *
-   * @param issuer 颁发机构
-   */
-  public static X509Certificate genCert(String issuer, PrivateKey caPriKey, Date caNotBefore, Date caNotAfter,
-                                        PublicKey serverPubKey, String... hosts) throws Exception {
-    String subject = preSub + hosts[0];
+  public static X509Certificate genMitmCert(String issuer, PrivateKey caPriKey, Date notBefore, Date notAfter,
+                                            PublicKey publicKey, String... hosts) throws Exception {
+    String subject = preSubject + hosts[0];
     JcaX509v3CertificateBuilder jv3Builder = new JcaX509v3CertificateBuilder(
-        new X500Name(issuer),
-        // 修复ElementaryOS上证书不安全问题(serialNumber为1时证书会提示不安全)，避免serialNumber冲突，采用时间戳+4位随机数生成
-        BigInteger.valueOf(System.currentTimeMillis() + (long) (Math.random() * 10000) + 1000),
-        caNotBefore,
-        caNotAfter,
-        new X500Name(subject),
-        serverPubKey
+        new X500Name(RFC4519Style.INSTANCE, issuer),
+        BigInteger.valueOf(System.currentTimeMillis() + BaseUtils.getRandomInt(1000, 9999)),
+        notBefore,
+        notAfter,
+        new X500Name(RFC4519Style.INSTANCE, subject),
+        publicKey
     );
-    //SAN扩展证书支持的域名，否则浏览器提示证书不安全
     GeneralName[] generalNames = new GeneralName[hosts.length];
     for (int i = 0; i < hosts.length; i++) {
       generalNames[i] = new GeneralName(GeneralName.dNSName, hosts[i]);
     }
     GeneralNames subjectAltName = new GeneralNames(generalNames);
     jv3Builder.addExtension(Extension.subjectAlternativeName, false, subjectAltName);
-    //SHA256 用SHA1浏览器可能会提示证书不安全
     ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm).build(caPriKey);
     return new JcaX509CertificateConverter().getCertificate(jv3Builder.build(signer));
   }
 
+  public static KeyPair genKeyPair() throws NoSuchProviderException, NoSuchAlgorithmException {
+    KeyPairGenerator caKeyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
+    caKeyPairGen.initialize(2048, new SecureRandom());
+    return caKeyPairGen.genKeyPair();
+  }
+
+  private static KeyStore loadKeyStore(String filePath, char[] password) throws Exception {
+    KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
+    FileInputStream inputStream;
+    try {
+      inputStream = new FileInputStream(filePath);
+    } catch (FileNotFoundException e) {
+      filePath = Thread.currentThread().getContextClassLoader().getResource("").getPath() + filePath;
+      try {
+        inputStream = new FileInputStream(filePath);
+      } catch (FileNotFoundException e1) {
+        throw e1;
+      }
+    }
+    ks.load(inputStream, password);
+    return ks;
+  }
+
   /**
-   * 生成CA服务器根证书
+   * Generate the CA root cert
+   *
+   * @param subject
+   * @param notBefore
+   * @param notAfter
+   * @param keyPair
+   * @return
+   * @throws Exception
    */
-  public static X509Certificate genCACert(String subject, Date caNotBefore, Date caNotAfter, KeyPair keyPair)
-      throws Exception {
+  public static X509Certificate genCACert(String subject, Date notBefore, Date notAfter, KeyPair keyPair) throws Exception {
     JcaX509v3CertificateBuilder jv3Builder = new JcaX509v3CertificateBuilder(
-        new X500Name(subject),
-        BigInteger.valueOf(System.currentTimeMillis() + (long) (Math.random() * 10000) + 1000),
-        caNotBefore,
-        caNotAfter,
-        new X500Name(subject),
+        new X500Name(RFC4519Style.INSTANCE, subject),
+        BigInteger.valueOf(System.currentTimeMillis() + BaseUtils.getRandomInt(1000, 9999)),
+        notBefore,
+        notAfter,
+        new X500Name(RFC4519Style.INSTANCE, subject),
         keyPair.getPublic()
     );
     jv3Builder.addExtension(Extension.basicConstraints, true, new BasicConstraints(0));
@@ -150,48 +136,16 @@ public class CertUtils {
     return new JcaX509CertificateConverter().getCertificate(jv3Builder.build(signer));
   }
 
-  /**
-   * 生成RSA公私密钥对，长度为2048
-   */
-  public static KeyPair genKeyPair() throws Exception {
-    KeyPairGenerator caKeyPairGen = KeyPairGenerator.getInstance("RSA", "BC");
-    caKeyPairGen.initialize(2048, new SecureRandom());
-    return caKeyPairGen.genKeyPair();
+  public static void saveCertToFile(Certificate cert, String fileName) throws Exception {
+    Files.write(Paths.get(fileName), cert.getEncoded());
   }
 
-  /**
-   * 只需要运行main方法生成一次，导入到系统根证书列表，然后设置为信任即可
-   *
-   * @param args
-   * @throws Exception
-   */
-  public static void main(String[] args) throws Exception {
-    KeyPair keyPair = CertUtils.genKeyPair();
-    File caCertFile = new File("mynety-client/src/main/resources/mynety-root-ca.crt");
-    if (caCertFile.exists()) {
-      boolean delete = caCertFile.delete();
-      if (!delete) {
-        logger.warn("file is existed and could not be deleted!");
-        return;
-      }
-    }
-    Files.write(Paths.get(caCertFile.toURI()),
-        CertUtils.genCACert(
-            preSub + "mynety Root CA",
-            new Date(),
-            new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(3650)),
-            keyPair
-        ).getEncoded());
-
-    File caKeyFile = new File("mynety-client/src/main/resources/mynety-root-ca-private-key.der");
-    if (caKeyFile.exists()) {
-      boolean delete = caKeyFile.delete();
-      if (!delete) {
-        logger.warn("file is existed and could not be deleted!");
-        return;
-      }
-    }
-    Files.write(Paths.get(caKeyFile.toURI()), keyPair.getPrivate().getEncoded());
+  public static void saveKeyStoreToFile(Certificate cert, String storeType, KeyPair keyPair, String fileName) throws Exception {
+    KeyStore store = KeyStore.getInstance(storeType);
+    store.load(null, null);
+    store.setKeyEntry("mynety-cert", keyPair.getPrivate(), "mynety-ca-password".toCharArray(), new Certificate[]{cert});
+    cert.verify(keyPair.getPublic());
+    store.store(new FileOutputStream(fileName), "mynety-ca-password".toCharArray());
   }
 
 }

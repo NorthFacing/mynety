@@ -137,6 +137,8 @@
           <configuration>
             <encoding>UTF-8</encoding>
             <nonFilteredFileExtensions>
+              <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+              <nonFilteredFileExtension>p12</nonFilteredFileExtension>
               <nonFilteredFileExtension>crt</nonFilteredFileExtension>
               <nonFilteredFileExtension>der</nonFilteredFileExtension>
             </nonFilteredFileExtensions>

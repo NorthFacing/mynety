@@ -7,7 +7,13 @@ socksLocalPort: 1086
 # 所有 HTTP 请求都进行socks5代理转发；只有在分析HTTP请求的时候才不需要转发到socks5（默认为true）
 http2socks5: true
 # 是否使用MITM处理ssl连接
-httpMitm: false
+httpMitm:
+  # 是否启用 MITM
+  isOpen: true
+  # CA证书密码
+  caPassword: mynety-ca-password
+  # CA证书所在路径
+  caKeyStoreFile: mynety-root-ca.jks
 # 代理策略：
 #  0 = 代理所有请求(默认)；
 #  1 = 优先使用代理；

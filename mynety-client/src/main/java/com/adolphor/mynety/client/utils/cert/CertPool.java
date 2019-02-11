@@ -1,32 +1,34 @@
 package com.adolphor.mynety.client.utils.cert;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+/**
+ * @author Bob.Zhu
+ * @Email adolphor@qq.com
+ * @since v0.0.5
+ */
 public class CertPool {
 
-  private static Map<Integer, Map<String, X509Certificate>> certCache = new WeakHashMap<>();
+  private static Map<String, X509Certificate> certCache = new WeakHashMap<>();
 
-  public static X509Certificate getCert(Integer port, String host, HttpsCertConfig serverConfig)
-      throws Exception {
-    X509Certificate cert = null;
-    if (host != null) {
-      Map<String, X509Certificate> portCertCache = certCache.get(port);
-      if (portCertCache == null) {
-        portCertCache = new HashMap<>();
-        certCache.put(port, portCertCache);
-      }
-      String key = host.trim().toLowerCase();
-      if (portCertCache.containsKey(key)) {
-        return portCertCache.get(key);
-      } else {
-        cert = CertUtils.genCert(serverConfig.getIssuer(), serverConfig.getCaPrivateKey(),
-            serverConfig.getCaNotBefore(), serverConfig.getCaNotAfter(),
-            serverConfig.getPublicKey(), key);
-        portCertCache.put(key, cert);
-      }
+  public static X509Certificate getCert(String host, CertConfig serverConfig) throws Exception {
+    X509Certificate cert;
+    if (StringUtils.isEmpty(host)) {
+      return null;
+    }
+    cert = certCache.get(host);
+    if (cert == null) {
+      cert = CertUtils.genMitmCert(serverConfig.getIssuer(),
+          serverConfig.getCaPriKey(),
+          serverConfig.getNotBefore(),
+          serverConfig.getNotAfter(),
+          serverConfig.getMitmPubKey(),
+          host);
+      certCache.put(host, cert);
     }
     return cert;
   }

@@ -1,5 +1,6 @@
 package com.adolphor.mynety.common.utils;
 
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -60,6 +61,17 @@ public class BaseUtils {
       resultBuilder.append(Integer.toHexString(low));
     }
     return resultBuilder.toString();
+  }
+
+  /**
+   * Get random int number
+   *
+   * @param min the minute value of result
+   * @param max the max value of result
+   * @return random number
+   */
+  public static int getRandomInt(int min, int max) {
+    return new Random().nextInt(max - min) + min;
   }
 
 }

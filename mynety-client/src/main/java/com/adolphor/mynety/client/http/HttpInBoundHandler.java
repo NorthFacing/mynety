@@ -89,7 +89,6 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
       logger.error("[ " + ctx.channel() + LOG_MSG + connHost + ":" + connPort + " ] http1.1 connect internet error", e);
       channelClose(ctx);
     }
-
   }
 
   @Override
@@ -102,7 +101,7 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
       if (bufMsg.getByte(0) == 22) { //ssl握手
         Address address = ctx.channel().attr(ATTR_REQUEST_ADDRESS).get();
         int port = ((InetSocketAddress) ctx.channel().localAddress()).getPort();
-        SslContext sslCtx = SslContextBuilder.forServer(HTTPS_CERT_CONFIG.getPrivateKey(), CertPool.getCert(port, address.getHost(), HTTPS_CERT_CONFIG)).build();
+        SslContext sslCtx = SslContextBuilder.forServer(HTTPS_CERT_CONFIG.getMitmPriKey(), CertPool.getCert(address.getHost(), HTTPS_CERT_CONFIG)).build();
         ctx.pipeline().addFirst("sslHandler", sslCtx.newHandler(ctx.alloc()));
         logger.info("[ {} ]【{}】增加处理器: SslHandler", ctx.channel().id(), getSimpleName(this));
         ctx.pipeline().addAfter("sslHandler", "httpCodec", new HttpServerCodec());
