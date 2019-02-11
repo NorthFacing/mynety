@@ -37,15 +37,11 @@ public class ConfigLoader {
    * @throws Exception
    */
   public static void loadConfig() throws Exception {
-    // PAC 模式配置
+
     loadPac(pacFileName);
 
-    // 服务器资源配置
-    // 先加载测试环境配置，如果为空再去找正式环境配置（为了调试开发方便）
-    loadClientConf("dev-" + configFileName);
-    if (ClientConfig.getAvailableServer() == null) {
-      loadClientConf(configFileName);
-    }
+    loadClientConf(configFileName);
+
   }
 
   private static void loadPac(String pacFile) throws Exception {
@@ -93,11 +89,11 @@ public class ConfigLoader {
       if (httpMitm != null) {
         Map httpMitmMap = (Map) httpMitm;
         Object isOpen = httpMitmMap.get("isOpen");
-        if (isOpen!=null){
+        if (isOpen != null) {
           ClientConfig.HTTP_MITM = Boolean.valueOf(isOpen.toString());
         }
         Object caPassword = httpMitmMap.get("caPassword");
-        if (caPassword!=null){
+        if (caPassword != null) {
           ClientConfig.CA_PASSWORD = caPassword.toString();
         }
         Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
@@ -114,7 +110,7 @@ public class ConfigLoader {
         List<Map> servers = (List) config.get("servers");
         for (Map server : servers) {
           Server bean = new Server();
-          ClientConfig.addServer(bean);
+          ClientConfig.SERVERS.add(bean);
 
           Object remarks = server.get("remarks");
           if (remarks != null) {

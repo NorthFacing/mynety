@@ -21,17 +21,11 @@ public class LanInBoundInitializer extends ChannelInitializer<SocketChannel> {
   public static final LanInBoundInitializer INSTANCE = new LanInBoundInitializer();
 
   @Override
-  public void initChannel(SocketChannel ch) throws Exception {
-    logger.debug("[ {} ]【LanInBoundInitializer】调用 initChannel 方法开始……", ch);
+  public void initChannel(SocketChannel ch) {
     ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
-    logger.info(" [ {} ]【LanInBoundInitializer】增加处理器: LoggingHandler", ch.id());
     ch.pipeline().addLast(new LanMessageDecoder());
-    logger.info(" [ {} ]【LanInBoundInitializer】增加处理器: LanMessageDecoder", ch.id());
     ch.pipeline().addLast(new LanMessageEncoder());
-    logger.info(" [ {} ]【LanInBoundInitializer】增加处理器: LanMessageEncoder", ch.id());
     ch.pipeline().addLast(new HeartBeatHandler());
-    logger.info(" [ {} ]【LanInBoundInitializer】增加处理器: HeartBeatHandler", ch.id());
     ch.pipeline().addLast(LanInBoundHandler.INSTANCE);
-    logger.info(" [ {} ]【LanInBoundInitializer】增加处理器: LanInBoundHandler", ch.id());
   }
 }

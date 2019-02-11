@@ -1,13 +1,12 @@
 package com.adolphor.mynety.server.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
-import com.adolphor.mynety.common.encryption.CryptUtil;
 import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
 import com.adolphor.mynety.common.utils.ChannelUtils;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.server.lan.utils.LanChannelContainers;
-import io.netty.buffer.Unpooled;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,9 +30,9 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
+public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
 
-  public static final LanConnInBoundHandler INSTANCE = new LanConnInBoundHandler();
+  public static final LanOutBoundHandler INSTANCE = new LanOutBoundHandler();
 
   /**
    * 当有 lan client 请求的过来的时候，建立和client的连接，并将此连接保存到全局变量
@@ -60,7 +59,6 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
    */
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
-    logger.debug("[ {} ]【{}】收到lan客户端的消息: {} ", ctx.channel().id(), getSimpleName(this), msg);
     switch (msg.getType()) {
       case HEARTBEAT:
         handleHeartbeatMessage(ctx, msg);
@@ -85,7 +83,7 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
   private void handleDisconnectMessage(ChannelHandlerContext ctx, LanMessage msg) {
     Channel inRelayChannel = LanChannelContainers.getChannelByRequestId(msg.getRequestId());
     long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-    logger.info("[ {} ]【{}】根据requestId关闭连接，共计连接时间: {}ms", inRelayChannel, getSimpleName(this), connTime);
+    logger.info("[ {} ]inRelayChannel will be closed by requestId, connection time: {}ms", inRelayChannel, getSimpleName(this), connTime);
     ChannelUtils.closeOnFlush(inRelayChannel);
   }
 
@@ -97,21 +95,20 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
    * @param ctx
    * @param msg 回复信息
    */
-  private void handleTransferMessage(ChannelHandlerContext ctx, LanMessage msg) {
+  private void handleTransferMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     String requestId = msg.getRequestId();
     Channel inRelayChannel = LanChannelContainers.getChannelByRequestId(requestId);
-    logger.debug("[ {}{}{} ]【{}】收到回复信息: {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg);
+    logger.debug("[ {}{}{} ] {} receive reply msg: {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg);
     byte[] data = msg.getData();
-    logger.debug("[ {}{}{} ]【{}】收到回复信息-加密的data内容: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), data.length, data);
 
     ICrypt inRelayCrypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
     ICrypt lanCrypt = LanChannelContainers.requestCryptsMap.get(requestId);
 
-    byte[] decrypt = CryptUtil.decrypt(lanCrypt, ByteStrUtils.getDirectBuf(data));
-    byte[] encrypt = CryptUtil.encrypt(inRelayCrypt, ByteStrUtils.getDirectBuf(decrypt));
+    ByteBuf decryptBuf = lanCrypt.decrypt(ByteStrUtils.getHeapBuf(data));
+    ByteBuf encryptBuf = inRelayCrypt.encrypt(decryptBuf);
 
-    inRelayChannel.writeAndFlush(Unpooled.directBuffer().writeBytes(encrypt));
-    logger.debug("[ {}{}{} ]【{}】将回复信息返回给socks服务器: {} bytes => {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), data.length, data);
+    inRelayChannel.writeAndFlush(encryptBuf);
+    logger.debug("[ {}{}{} ] {} write reply msg to socks server: {} bytes", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), encryptBuf.readableBytes());
   }
 
   /**
@@ -121,28 +118,20 @@ public class LanConnInBoundHandler extends AbstractSimpleHandler<LanMessage> {
    * @param msg 心跳信息
    */
   private void handleHeartbeatMessage(ChannelHandlerContext ctx, LanMessage msg) {
-    logger.debug("[ {} ]【{}】处理心跳信息: {}", ctx.channel().id(), getSimpleName(this), msg);
     ctx.channel().attr(ATTR_LOST_BEAT_CNT).set(0L);
     ctx.channel().writeAndFlush(msg);
   }
 
   /**
-   * 如果客户端断开连接，那么server和client之间的所有连接都要断开
+   * TODO need to refactor, if lost lan connection, waits for 3 heart beats time
    */
   @Override
   public void channelClose(ChannelHandlerContext ctx) {
-    // 先关闭服务端和客户端的所有连接
     Collection<Channel> allChannels = LanChannelContainers.getAllChannels();
     for (Channel ch : allChannels) {
-      long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-      logger.info("[ {} ]【{}】关闭连接，共计连接时间: {}ms", ctx.channel().id(), getSimpleName(this), connTime);
       ChannelUtils.closeOnFlush(ch);
     }
-    // 再关闭lan服务端和客户端的链接
-    long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-    logger.info("[ {} ]【{}】关闭连接，共计连接时间: {}ms", ctx.channel().id(), getSimpleName(this), connTime);
-    ChannelUtils.closeOnFlush(ctx.channel());
-
+    super.channelClose(ctx);
   }
 
 

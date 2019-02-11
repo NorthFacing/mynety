@@ -34,6 +34,8 @@ import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.Promise;
 
+import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
+
 @ChannelHandler.Sharable
 public final class SocksServerConnectHandler extends SimpleChannelInboundHandler<SocksMessage> {
 
@@ -65,7 +67,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
       final Channel inboundChannel = ctx.channel();
       b.group(inboundChannel.eventLoop())
           .channel(NioSocketChannel.class)
-          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
           .handler(new DirectClientHandler(promise));
 
       b.connect(request.dstAddr(), request.dstPort()).addListener((ChannelFutureListener) future -> {
@@ -106,7 +108,7 @@ public final class SocksServerConnectHandler extends SimpleChannelInboundHandler
       final Channel inboundChannel = ctx.channel();
       b.group(inboundChannel.eventLoop())
           .channel(NioSocketChannel.class)
-          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
           .handler(new DirectClientHandler(promise));
 
       b.connect(request.dstAddr(), request.dstPort()).addListener((ChannelFutureListener) future -> {

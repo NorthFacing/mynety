@@ -5,7 +5,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -13,9 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CONNECTED_TIMESTAMP;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
+import static org.apache.commons.lang3.ClassUtils.getName;
 
 /**
  * 带有缓存的远程连接处理器：
@@ -41,25 +38,21 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
    */
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    logger.debug("[ {} ]【{}】调用 active 方法开始……", ctx.channel().id(), getSimpleName(this));
     super.channelActive(ctx);
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     AtomicReference tempMsgRef = inRelayChannel.attr(ATTR_REQUEST_TEMP_MSG).get();
-    if (tempMsgRef.get() != null) {
-      Object tempMsg = tempMsgRef.get();
-      if (tempMsg instanceof ByteBuf) {
-        ByteBuf byteBuf = (ByteBuf) tempMsg;
-        if (byteBuf.readableBytes() == 0) {
-          return;
-        }
-      }
-      logger.debug("[ {} ]【{}】获取并消费缓存信息：{}", ctx.channel().id(), getSimpleName(this), getSimpleName(tempMsg));
-      ReferenceCountUtil.retain(tempMsg);
-      ChannelUtils.loggerHandlers(ctx.channel(), tempMsg);
-      ctx.channel().writeAndFlush(tempMsg);
-    } else {
-      logger.info("[ {}{}{} ] 无缓存消息", inRelayChannel.id(), LOG_MSG_OUT, ctx.channel().id());
+    if (tempMsgRef.get() == null) {
+      return;
     }
+    Object tempMsg = tempMsgRef.get();
+    if (tempMsg instanceof ByteBuf) {
+      ByteBuf byteBuf = (ByteBuf) tempMsg;
+      if (byteBuf.readableBytes() == 0) {
+        return;
+      }
+    }
+    ChannelUtils.loggerHandlers(ctx.channel(), tempMsg);
+    ctx.channel().writeAndFlush(tempMsg);
   }
 
   /**
@@ -81,14 +74,12 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
   protected void channelClose(ChannelHandlerContext ctx) {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     if (inRelayChannel.isActive()) {
-      logger.info("[ {}{}{} ]【{}】调用 inRelayChannel 关闭方法，准备关闭……", inRelayChannel, LOG_MSG, ctx.channel().id(), getSimpleName(this));
+      long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
+      logger.info("[ {} ] {} inRelayChannel will be closed, connection time: {}ms", inRelayChannel, getName(this), connTime);
       ChannelUtils.closeOnFlush(inRelayChannel);
     }
 
-    long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-    logger.info("[ {}{}{} ]【{}】outRelayChannel 关闭连接，共计连接时间: {}ms", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this), connTime);
-    ChannelUtils.closeOnFlush(ctx.channel());
-
+    super.channelClose(ctx);
   }
 
 }

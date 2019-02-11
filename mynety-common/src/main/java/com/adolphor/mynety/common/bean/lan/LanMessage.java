@@ -1,16 +1,19 @@
 package com.adolphor.mynety.common.bean.lan;
 
 import com.adolphor.mynety.common.constants.LanMsgType;
-import io.netty.channel.Channel;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import static com.adolphor.mynety.common.constants.LanConstants.ATTR_SERIAL_NO;
-
 /**
- * lan客户端与代理服务器消息交换协议：
- * 4       +  1   +   8   +          16           +  DATA
- * 消息长度 + 类型 + 流水号 + 请求来源ID(压缩后的UUID) + 数据内容
+ * DATA STRUCTURE:
+ * <p>
+ * +----------------+--------------+---------------+------------+----------------+
+ * | message length | message type | serial number | request id | data content   |
+ * | -------------- | ------------ | ------------- | ---------- | -------------- |
+ * | 消息总长度       | 消息类型      |  流水序列号    | 请求来源ID  | 数据内容          |
+ * +----------------+--------------+---------------+------------+----------------+
+ * | 4 bytes        | 1 bytes      |  8 bytes      | 16 bytes   | dynamic (动态)  |
+ * +----------------+--------------+---------------+------------+----------------+
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -19,51 +22,43 @@ import static com.adolphor.mynety.common.constants.LanConstants.ATTR_SERIAL_NO;
 @Data
 public class LanMessage {
 
+
   public static final int HEADER_SIZE = 4 + 1 + 8 + 16;
 
   /**
-   * 消息类型（1字节）
+   * message type (byte), refer: {@link com.adolphor.mynety.common.constants.LanMsgType}
    */
   private LanMsgType type;
 
   /**
-   * 流水号（long 数据类型占 8字节）
+   * sequence number of heart beat message
    */
-  private long serialNumber = 0L;
+  private Long sequenceNumber = 0L;
 
   /**
-   * 请求ID（绑定请求地址，LAN通道是单通道，通过此ID来明确请求的目标地址，使用32位UUID，压缩为16字节）
+   * request id, to identify the request client/channel/domain:
+   * 1. Be created before the msg be sent to the lan client.
+   * 2. After received the result msg from lan, gets the request client by this id
+   * 3. The id is compressed from 32 bytes to 16 bytes while encoded, to save network traffic
    */
   private String requestId;
 
   /**
-   * 目标地址
+   * destination address；
    */
   private String uri;
 
   /**
-   * 需要传输的数据
+   * the message to be sent
    */
   private byte[] data;
-
-
-  public static Long getIncredSerNo(Channel channel) {
-    synchronized (channel) {
-      Long serNo = channel.attr(ATTR_SERIAL_NO).get();
-      if (serNo == null) {
-        serNo = 0L;
-      }
-      channel.attr(ATTR_SERIAL_NO).set(++serNo);
-      return serNo;
-    }
-  }
 
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("LanMessage [")
         .append("typeVal=").append(type.getVal())
         .append(", typeName=").append(type);
-    sb.append(", serNo=").append(serialNumber);
+    sb.append(", serNo=").append(sequenceNumber);
     if (StringUtils.isNotEmpty(requestId)) {
       sb.append(", requestId=").append(requestId);
     }

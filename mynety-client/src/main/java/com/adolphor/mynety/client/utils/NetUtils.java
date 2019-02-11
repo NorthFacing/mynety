@@ -1,13 +1,19 @@
 package com.adolphor.mynety.client.utils;
 
 import com.adolphor.mynety.client.config.Server;
+import com.adolphor.mynety.common.utils.LocalCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.telnet.TelnetClient;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static com.adolphor.mynety.client.config.ClientConfig.SERVERS;
 
 /**
  * 网络工具
@@ -20,6 +26,61 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class NetUtils {
+
+  /**
+   * 获取ping时间最短的可用服务器
+   * <p>
+   * get a available and fastest server
+   *
+   * @return 可用服务器
+   * @since v0.0.2
+   */
+  public static Server getBestServer() {
+    if (SERVERS.size() == 0) {
+      return null;
+    }
+    // 按照ping时间排序 sorted by time asc；不为空返回速度最快的一个服务器；为空随便返回一个，反正都不能用
+    Server server = SERVERS.parallelStream()
+        .filter(Server::isAvailable)
+        .min(Comparator.comparingDouble(Server::getPingTime))
+        .orElse(SERVERS.get(0));
+    return server;
+  }
+
+  /**
+   * 检测服务器列表中服务器可用性
+   * <p>
+   * check availability of a server of the servers list
+   *
+   * @since v0.0.2
+   */
+  public static void checkServers() {
+    // 验证服务器是否可用，30 秒执行一次
+    Executors.newScheduledThreadPool(1)
+        .scheduleWithFixedDelay(
+            () -> SERVERS.forEach(server -> NetUtils.isConnected(server)),
+            0,
+            500,
+            TimeUnit.SECONDS
+        );
+    // 查询 ping 所花费的时间，5 分钟执行一次
+    Executors.newScheduledThreadPool(1)
+        .scheduleWithFixedDelay(
+            () -> SERVERS.forEach(server -> NetUtils.avgPingTime(server)),
+            0,
+            300,
+            TimeUnit.SECONDS
+        );
+    // 检测域名domain缓存时间，剔除最近不再使用的数据节省本地缓存空间
+    Executors.newScheduledThreadPool(1)
+        .scheduleWithFixedDelay(
+            () -> LocalCache.validateForGC(10000),
+            0,
+            600,
+            TimeUnit.SECONDS
+        );
+
+  }
 
   /**
    * 检测服务器是否可用

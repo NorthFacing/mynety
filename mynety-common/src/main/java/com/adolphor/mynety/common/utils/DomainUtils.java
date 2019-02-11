@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.adolphor.mynety.common.constants.Constants.COLON;
 import static com.adolphor.mynety.common.constants.Constants.PORT_443;
 import static com.adolphor.mynety.common.constants.Constants.PORT_80;
 import static com.adolphor.mynety.common.constants.Constants.SCHEME_HTTP;
@@ -90,8 +91,8 @@ public class DomainUtils {
     String host;
     String port;
     String path;
-    if (url.contains(":")) {
-      String[] split = url.split(":");
+    if (url.contains(COLON)) {
+      String[] split = url.split(COLON);
       host = split[0];
       if (split[1].contains("/")) {
         int index = split[1].indexOf("/");

@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 public class Constants {
 
   /**
-   * 默认常用相关IP
+   * some default value of url
    */
   public static final int PORT_80 = 80;
   public static final int PORT_443 = 443;
@@ -35,43 +35,56 @@ public class Constants {
   public static final String SCHEME_HTTP = "http";
   public static final String LOOPBACK_ADDRESS = "127.0.0.1";
   public static final String ALL_LOCAL_ADDRESS = "0.0.0.0";
+  public static final String COLON = ":";
+
   /**
-   * 代理策略关键字
+   * proxy strategy
    */
   public static final String CONN_PROXY = "proxy";
   public static final String CONN_DIRECT = "direct";
   public static final String CONN_DENY = "deny";
+
   /**
-   * 日志相关
+   * max wait time
+   */
+  public static final int CONNECT_TIMEOUT = 3*1000;
+
+  /**
+   * logger flag
    */
   public static final String LOG_MSG = " <==> ";
   public static final String LOG_MSG_OUT = " >>> ";
   public static final String LOG_MSG_IN = " <<< ";
   /**
-   * 正则校验相关规则
-   * backup:   ((http|ftp|https)://)(([a-zA-Z0-9._-]+)|([0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}))(([a-zA-Z]{2,6})|(:[0-9]{1,4})?)
+   * Regular check rules
    */
-  public static final Pattern PATH_PATTERN = Pattern.compile("(?<=//|)((\\w)+\\.)+\\w+(:\\d{0,5})?");
   public static final Pattern IPV4_PATTERN = Pattern.compile("(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])");
   public static final Pattern IPV6_PATTERN = Pattern.compile("([0-9a-f]{1,4}:){3}([0-9a-f]){1,4}");
 
   /**
-   * httpTunnel 代理返回值
+   * httpTunnel response
    */
   public static final HttpResponseStatus CONNECTION_ESTABLISHED = new HttpResponseStatus(HttpResponseStatus.OK.code(), "Connection established");
+
+  /**
+   * encryption/decryption
+   */
+  public static final String ENCRYPT_NONE = "none";
+  public static final String CRYPT_TYPE_AES = "AES";
+  public static final String CRYPT_TYPE_AES_OFB = "ofb";
+  public static final String CRYPT_TYPE_BF = "BF";
+  public static final String CRYPT_TYPE_CL = "CL";
+  public static final String CRYPT_TYPE_SD = "SD";
 
   /**
    * 保留字节，填充空值
    */
   public static final int RESERVED_BYTE = 0x00;
+
   /**
    * 是否是http tunnel代理（inRelayChannel：httpProxy中使用）
    */
   public static final AttributeKey<Boolean> ATTR_IS_HTTP_TUNNEL = AttributeKey.valueOf("is.http.tunnel");
-  /**
-   * 是否是长连接（inRelayChannel）
-   */
-  public static final AttributeKey<Boolean> ATTR_IS_KEEP_ALIVE = AttributeKey.valueOf("keep.alive");
   /**
    * inRelayChannel (outRelayChannel)
    */
@@ -130,11 +143,11 @@ public class Constants {
 //      Constants.serverChannelClass = EpollServerSocketChannel.class;
 //      Constants.channelClass = EpollSocketChannel.class;
 //    } else {
-      logger.debug("others system...");
-      Constants.bossGroupClass = NioEventLoopGroup.class;
-      Constants.workerGroupClass = NioEventLoopGroup.class;
-      Constants.serverChannelClass = NioServerSocketChannel.class;
-      Constants.channelClass = NioSocketChannel.class;
+    logger.debug("others system...");
+    Constants.bossGroupClass = NioEventLoopGroup.class;
+    Constants.workerGroupClass = NioEventLoopGroup.class;
+    Constants.serverChannelClass = NioServerSocketChannel.class;
+    Constants.channelClass = NioSocketChannel.class;
 //    }
 
   }

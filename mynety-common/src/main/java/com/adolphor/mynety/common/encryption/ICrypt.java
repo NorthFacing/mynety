@@ -1,20 +1,24 @@
 package com.adolphor.mynety.common.encryption;
 
-import java.io.ByteArrayOutputStream;
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
 
 /**
- * crypt 加密
- *
+ * @author Bob.Zhu
  * @author zhaohui
+ * @Email adolphor@qq.com
+ * @since v0.0.1
  */
 public interface ICrypt {
 
-  void encrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
+  ByteBuf encrypt(ByteBuf data) throws IOException, InvalidAlgorithmParameterException;
 
-  void encrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
+  byte[] encryptToArray(ByteBuf data) throws IOException, InvalidAlgorithmParameterException;
 
-  void decrypt(byte[] data, ByteArrayOutputStream stream) throws Exception;
+  ByteBuf decrypt(ByteBuf data) throws IOException, InvalidAlgorithmParameterException;
 
-  void decrypt(byte[] data, int length, ByteArrayOutputStream stream) throws Exception;
+  byte[] decryptToArray(ByteBuf data) throws IOException, InvalidAlgorithmParameterException;
 
 }

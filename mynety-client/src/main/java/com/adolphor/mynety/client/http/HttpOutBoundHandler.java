@@ -17,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_HTTP_TUNNEL;
 import static com.adolphor.mynety.common.constants.Constants.CONNECTION_ESTABLISHED;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * http 代理模式下 远程处理器，连接目标地址：
@@ -43,15 +40,14 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     super.channelActive(ctx);
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-    Boolean isHttpTunnel = inRelayChannel.attr(ATTR_IS_HTTP_TUNNEL).get();
-    if (isHttpTunnel) {
+    if (inRelayChannel.attr(ATTR_IS_HTTP_TUNNEL).get()) {
       DefaultHttpResponse response = new DefaultHttpResponse(HTTP_1_1, CONNECTION_ESTABLISHED);
       response.headers().add(HttpHeaderNames.CONNECTION, HttpHeaderNames.CONNECTION);
-      logger.debug("[ {}{}{} ]【{}】httpTunnel 连接成功，发送消息给客户端: {}", inRelayChannel.id(), LOG_MSG, inRelayChannel.id(), getSimpleName(this), response);
       inRelayChannel.writeAndFlush(response).addListener((ChannelFutureListener) future -> {
         if (future.isSuccess()) {
           removeHttpHandler(ctx, inRelayChannel);
         } else {
+          logger.warn(ctx.channel().toString(), future.cause());
           ctx.close();
         }
       });
@@ -61,14 +57,10 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
   }
 
   private void removeHttpHandler(ChannelHandlerContext ctx, Channel inRelayChannel) {
-    logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：inRelayChannel 移除处理器: HttpObjectAggregator", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
     inRelayChannel.pipeline().remove(HttpObjectAggregator.class);
-    logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：inRelayChannel 移除处理器: HttpServerCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
     inRelayChannel.pipeline().remove(HttpServerCodec.class);
 
-    logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpObjectAggregator", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
     ctx.channel().pipeline().remove(HttpObjectAggregator.class);
-    logger.debug("[ {}{}{} ]【{}】HTTP代理连接完毕：outRelayChannel 移除处理器: HttpClientCodec", inRelayChannel.id(), LOG_MSG, ctx.channel().id(), getSimpleName(this));
     ctx.channel().pipeline().remove(HttpClientCodec.class);
   }
 
@@ -83,21 +75,14 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
    * @param msg
    */
   @Override
-  public void channelRead0(ChannelHandlerContext ctx, Object msg) {
+  public void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-    logger.debug("[ {}{}{} ]【{}】收到请求结果内容: {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg);
     if (!inRelayChannel.isOpen()) {
       channelClose(ctx);
       return;
     }
-    try {
-      ReferenceCountUtil.retain(msg);
-      logger.debug("[ {}{}{} ]【{}】】收到请求结果发送给客户端...", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this));
-      inRelayChannel.writeAndFlush(msg);
-    } catch (Exception e) {
-      logger.error("[ " + inRelayChannel.id() + LOG_MSG_IN + ctx.channel().id() + " ] error", e);
-      channelClose(ctx);
-    }
+    ReferenceCountUtil.retain(msg);
+    inRelayChannel.writeAndFlush(msg);
   }
 
 }

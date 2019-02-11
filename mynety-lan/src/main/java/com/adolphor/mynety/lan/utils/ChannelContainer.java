@@ -21,19 +21,13 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ChannelContainer {
 
   /**
-   * 各个requestId的缓存列表
+   * request client container
    */
   private static final Map<String, ReqChannel> requestChannelsMap = new HashMap<>();
 
-  /**
-   * 初始化连接目标地址的channel对应的相关参数
-   *
-   * @param requestId
-   * @param crypt
-   */
   public static void initChannelConfig(String requestId, ICrypt crypt) {
-    requestChannelsMap.put(requestId, new ReqChannel(requestId, crypt));
-    logger.debug("【ChannelContainer】initChannelConfig 新增之后缓存的 channel 个数：{}", requestChannelsMap.size());
+    requestChannelsMap.put(requestId, new ReqChannel(crypt));
+    logger.debug("【ChannelContainer】after initChannelConfig, now exists {} channels...", requestChannelsMap.size());
   }
 
   public static AtomicReference<Channel> getOutRelayChannelRef(String requestId) {

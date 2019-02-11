@@ -2,6 +2,7 @@ package com.adolphor.mynety.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.constants.LanMsgType;
+import com.adolphor.mynety.common.utils.LanMsgUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -27,21 +28,16 @@ public class HeartBeatHandler extends IdleStateHandler {
   }
 
   @Override
-  protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt) throws Exception {
+  protected void channelIdle(ChannelHandlerContext ctx, IdleStateEvent evt){
     if (IdleStateEvent.WRITER_IDLE_STATE_EVENT.equals(evt)) {
-      logger.info("[ {} ] read timeout evt...", ctx.channel().id());
-      Long incredSerNo = LanMessage.getIncredSerNo(ctx.channel());
-      ctx.channel().attr(ATTR_LAST_BEAT_NO).set(incredSerNo);
+      Long sequenceNumber = LanMsgUtils.getNextNumber(ctx.channel());
+      ctx.channel().attr(ATTR_LAST_BEAT_NO).set(sequenceNumber);
 
       LanMessage beatMsg = new LanMessage();
       beatMsg.setType(LanMsgType.HEARTBEAT);
-      beatMsg.setSerialNumber(incredSerNo);
-      logger.info("[ {} ] write heart beat msg: {}", ctx.channel().id(), beatMsg);
+      beatMsg.setSequenceNumber(sequenceNumber);
       ctx.writeAndFlush(beatMsg);
-    } else if (IdleStateEvent.READER_IDLE_STATE_EVENT.equals(evt)) {
-      logger.info("[ {} ] write timeout evt...", ctx.channel().id());
     }
-    super.channelIdle(ctx, evt);
   }
 
 }

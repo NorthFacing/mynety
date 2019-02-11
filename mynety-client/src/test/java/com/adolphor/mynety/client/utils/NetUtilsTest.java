@@ -1,5 +1,6 @@
 package com.adolphor.mynety.client.utils;
 
+import com.adolphor.mynety.client.config.ClientConfig;
 import com.adolphor.mynety.client.config.Server;
 import org.junit.Assert;
 import org.junit.Before;
@@ -16,6 +17,20 @@ public class NetUtilsTest {
   }
 
   @Test
+  public void getBestServer() {
+    double time = 100d;
+    for (int i = 0; i < 5; i++) {
+      Server server = new Server();
+      server.setPingTime(time + i);
+      ClientConfig.SERVERS.add(server);
+    }
+
+    Server server = NetUtils.getBestServer();
+    Assert.assertTrue(time == server.getPingTime());
+
+  }
+
+  @Test
   public void isConnected() {
 //    boolean connected = NetUtils.isConnected(server);
 //    Assert.assertFalse(connected);
@@ -26,4 +41,6 @@ public class NetUtilsTest {
     Double pingTime = NetUtils.avgPingTime(server);
     Assert.assertNotNull(pingTime);
   }
+
+
 }

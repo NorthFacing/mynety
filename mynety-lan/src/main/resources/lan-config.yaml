@@ -1,5 +1,5 @@
-method: aes-256-cfb
-password: 123456
+method: none
+password: none
 serverHost: 127.0.0.1
 serverPort: 2087
 channelPoolNum: 10

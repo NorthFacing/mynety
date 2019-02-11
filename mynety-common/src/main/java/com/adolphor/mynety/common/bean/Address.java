@@ -3,7 +3,7 @@ package com.adolphor.mynety.common.bean;
 import lombok.Data;
 
 /**
- * 请求路径解析
+ * request address info
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

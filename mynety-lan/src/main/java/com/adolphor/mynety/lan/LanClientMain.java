@@ -59,7 +59,7 @@ public class LanClientMain {
       future.channel().closeFuture().sync();
 
     } catch (Exception e) {
-      logger.warn("", e);
+      logger.warn(e.getMessage(), e);
       doConnect();
     }
   }

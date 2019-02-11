@@ -3,6 +3,7 @@ package com.adolphor.mynety.client;
 import com.adolphor.mynety.client.config.ClientConfig;
 import com.adolphor.mynety.client.config.ConfigLoader;
 import com.adolphor.mynety.client.http.HttpInBoundInitializer;
+import com.adolphor.mynety.client.utils.NetUtils;
 import com.adolphor.mynety.client.utils.cert.CertUtils;
 import com.adolphor.mynety.common.constants.Constants;
 import io.netty.bootstrap.ServerBootstrap;
@@ -34,7 +35,7 @@ public final class ClientMain {
   public static void main(String[] args) throws Exception {
 
     ConfigLoader.loadConfig();
-    ClientConfig.checkServers();
+    NetUtils.checkServers();
 
     new Thread(() -> {
       EventLoopGroup sBossGroup = null;

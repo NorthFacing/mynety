@@ -12,10 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ReqChannel {
 
   /**
-   * 请求ID
-   */
-  private final String requestId;
-  /**
    * 加解密对象，每个channel要维护自己的加解密对象
    */
   private final ICrypt crypt;
@@ -28,9 +24,8 @@ public class ReqChannel {
    */
   private final AtomicReference<Channel> outRelayChannelRef = new AtomicReference<>();
 
-  public ReqChannel(String requestId,ICrypt crypt) {
+  public ReqChannel(ICrypt crypt) {
     this.crypt = crypt;
-    this.requestId = requestId;
     // 初始化缓存对象容器
     tempMsgRef.set(Unpooled.directBuffer());
   }

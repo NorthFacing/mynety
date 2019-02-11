@@ -1,19 +1,16 @@
 package com.adolphor.mynety.client;
 
-import com.adolphor.mynety.client.config.ClientConfig;
 import com.adolphor.mynety.client.config.Server;
+import com.adolphor.mynety.client.utils.NetUtils;
 import com.adolphor.mynety.client.utils.PacFilter;
 import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.encryption.CryptFactory;
 import com.adolphor.mynety.common.encryption.ICrypt;
-import com.adolphor.mynety.common.utils.ChannelUtils;
 import com.adolphor.mynety.common.wrapper.AbstractInBoundHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,11 +19,12 @@ import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandResponse;
 import io.netty.handler.codec.socksx.v5.Socks5AddressType;
 import io.netty.handler.codec.socksx.v5.Socks5CommandRequest;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import io.netty.handler.codec.socksx.v5.Socks5Message;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
@@ -34,7 +32,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANN
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_PROXY;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_SOCKS5_REQUEST;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
+import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -53,22 +51,29 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     super.channelActive(ctx);
-
-    final Server server = ClientConfig.getAvailableServer();
+    // check proxy server
+    final Server server = NetUtils.getBestServer();
     if (server == null) {
-      ChannelUtils.closeOnFlush(ctx.channel());
+      channelClose(ctx);
       return;
     }
-    // 获取处理此channel的加解密对象
-    ICrypt crypt = CryptFactory.get(server.getMethod(), server.getPassword());
+    //check crypt cipher instance
+    ICrypt crypt;
+    try {
+      crypt = CryptFactory.get(server.getMethod(), server.getPassword());
+    } catch (InvalidAlgorithmParameterException e) {
+      logger.error(e.getMessage(), e);
+      channelClose(ctx);
+      return;
+    }
     ctx.channel().attr(ATTR_CRYPT_KEY).set(crypt);
 
-    Socks5CommandRequest socks5CmdRequest = ctx.channel().attr(ATTR_SOCKS5_REQUEST).get();
-    String dstAddr = socks5CmdRequest.dstAddr();
-    Integer dstPort = socks5CmdRequest.dstPort();
+    Socks5CommandRequest socksRequest = ctx.channel().attr(ATTR_SOCKS5_REQUEST).get();
+    String dstAddr = socksRequest.dstAddr();
+    Integer dstPort = socksRequest.dstPort();
     boolean isDeny = PacFilter.isDeny(dstAddr);
     if (isDeny) {
-      logger.warn("[ {}{} ]【socks客户端激活】拦截请求: {}:{}", ctx.channel().id(), Constants.LOG_MSG, dstAddr, dstPort);
+      logger.info("[ {}{} ] deny request by pac rules => {}:{}", ctx.channel().id(), Constants.LOG_MSG, dstAddr, dstPort);
       channelClose(ctx);
       return;
     }
@@ -78,7 +83,7 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
     Bootstrap outBoundBootStrap = new Bootstrap();
     outBoundBootStrap.group(ctx.channel().eventLoop())
         .channel(Constants.channelClass)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .handler(OutBoundInitializer.INSTANCE);
 
     // 连接目标服务器器
@@ -92,39 +97,22 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
       connPort = dstPort;
     }
 
-    try {
-      ChannelFuture channelFuture = outBoundBootStrap.connect(connHost, connPort);
-      channelFuture.addListener((ChannelFutureListener) future -> {
-        if (future.isSuccess()) {
-          // 远程连接实例化
-          Channel outRelayChannel = future.channel();
-          logger.debug("[ {}{}{} ]【{}】建立socks远程连接，连接信息: {}:{}", ctx.channel().id(), Constants.LOG_MSG, outRelayChannel.id(), getSimpleName(this), connHost, connPort);
-          ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get().set(outRelayChannel);
-          outRelayChannel.attr(ATTR_IN_RELAY_CHANNEL).set(ctx.channel());
-
-          // 如果使用了代理，那么就要发送远程连接指令，且需要在收到socks连接成功返回信息之后，再告诉客户端连接成功
-          if (isProxy) {
-            sendConnectRemoteMessage(ctx.channel(), outRelayChannel, crypt, socks5CmdRequest);
-          }
-          // 如果没使用代理，那么直接告诉客户端连接成功
-          else {
-            DefaultSocks5CommandResponse socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
-            ctx.channel().writeAndFlush(socks5cmdResponse);
-            logger.debug("[ {}{}{} ]【{}】建立socks远程连接，告诉客户端socks连接请求成功: {}", ctx.channel().id(), Constants.LOG_MSG_IN, outRelayChannel.id(), getSimpleName(this), socks5cmdResponse);
-          }
-          logger.debug("[ {}{}{} ]【{}】建立socks远程连接，{} 连接成功: {}:{}", ctx.channel().id(), Constants.LOG_MSG, outRelayChannel.id(), getSimpleName(this), isProxy ? "远程代理" : "请求地址", connHost, connPort);
+    outBoundBootStrap.connect(connHost, connPort).addListener((ChannelFutureListener) future -> {
+      if (future.isSuccess()) {
+        Channel outRelayChannel = future.channel();
+        ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get().set(outRelayChannel);
+        outRelayChannel.attr(ATTR_IN_RELAY_CHANNEL).set(ctx.channel());
+        if (isProxy) {
+          sendConnectRemoteMessage(ctx.channel(), outRelayChannel, crypt, socksRequest);
         } else {
-          logger.warn("[ {}{} ]【{}】建立socks远程连接，{} 连接失败: {}:{}", ctx.channel().id(), Constants.LOG_MSG, isProxy ? "远程代理" : "请求地址", getSimpleName(this), connHost, connPort);
-          logger.warn(ctx.channel().toString(), future.cause());
-          future.cancel(true);
-          channelClose(ctx);
+          Socks5Message socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS,
+              socksRequest.dstAddrType(), dstAddr, socksRequest.dstPort());
+          ctx.channel().writeAndFlush(socks5cmdResponse);
         }
-      });
-
-    } catch (Exception e) {
-      logger.error(ctx.channel().id() + LOG_MSG_OUT + " Send data to remoteServer error: ", e);
-      channelClose(ctx);
-    }
+      } else {
+        throw new Exception(future.cause());
+      }
+    });
   }
 
   /**
@@ -136,36 +124,21 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
    * @throws Exception
    */
   @Override
-  public void channelRead0(final ChannelHandlerContext ctx, final ByteBuf msg) throws Exception {
-    AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
-    Boolean isProxy = ctx.channel().attr(ATTR_IS_PROXY).get();
-    ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
-
-    logger.debug("[ {}{}{} ]【{}】socks收到客户请求消息，收到消息: {} bytes => {}", ctx.channel().id(), Constants.LOG_MSG, (outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : "", getSimpleName(this), msg.readableBytes(), msg);
+  public void channelRead0(final ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     if (msg.readableBytes() <= 0) {
       return;
     }
 
-    if (!msg.hasArray()) {
-      int len = msg.readableBytes();
-      byte[] temp = new byte[len];
-      msg.getBytes(0, temp);
-      if (isProxy) {
-        ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream();
-        crypt.encrypt(temp, temp.length, _remoteOutStream);
-        temp = _remoteOutStream.toByteArray();
-        logger.debug("[ {}{}{} ]【{}】socks收到客户请求消息，消息需要加密：{} bytes => {}", ctx.channel().id(), Constants.LOG_MSG, (outRelayChannelRef.get() != null) ? outRelayChannelRef.get().id() : "", getSimpleName(this), msg.readableBytes(), msg);
-      }
-      ByteBuf requestBuf = Unpooled.wrappedBuffer(temp);
-      outRelayChannelRef.get().writeAndFlush(requestBuf);
-      logger.debug("[ {}{}{} ]【{}】socks收到客户请求消息，发送消息到 {} : {} bytes => {}", ctx.channel().id(), LOG_MSG_OUT, outRelayChannelRef.get().id(), getSimpleName(this), isProxy ? "远程代理" : "请求地址", msg.readableBytes(), msg);
-    } else {
-      logger.warn("[ {}{}{} ]【{}】socks收到客户请求消息，不支持的消息类型: {}", ctx.channel().id(), Constants.LOG_MSG, outRelayChannelRef.get().id(), getSimpleName(this), msg);
+    if (ctx.channel().attr(ATTR_IS_PROXY).get()) {
+      msg = ctx.channel().attr(ATTR_CRYPT_KEY).get().encrypt(msg);
     }
+
+    AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
+    outRelayChannelRef.get().writeAndFlush(msg);
   }
 
   /**
-   * localServer 和 proxyServer 进行connect时，发送数据的方法以及格式（此格式拼接后需要加密之后才可发送）：
+   * to localServer & proxyServer, before send msg should be encrypt:
    * <p>
    * +------+----------+---------------+
    * | ATYP | DST.ADDR | DST.ATTR_PORT |
@@ -173,13 +146,13 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
    * | 1    | Variable | 2             |
    * +------+----------+---------------+
    * <p>
-   * 其中变长DST.ADDR：
+   * dynamic DST.ADDR：
    * - 4 bytes for IPv4 address
    * - 1 byte of name length followed by 1–255 bytes the domain name
    * - 16 bytes for IPv6 address
    *
-   * @param inRelayChannel  本地连接
-   * @param outRelayChannel 远程代理连接
+   * @param inRelayChannel
+   * @param outRelayChannel
    */
   private void sendConnectRemoteMessage(Channel inRelayChannel, Channel outRelayChannel, ICrypt crypt, Socks5CommandRequest socks5CmdRequest) throws Exception {
 
@@ -187,46 +160,35 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
     Socks5AddressType dstAddrType = socks5Request.dstAddrType();
     String dstAddr = socks5Request.dstAddr();
     int dstPort = socks5Request.dstPort();
-    logger.debug("[ {}{}{} ]【初始化socks远程连接】目的请求地址信息: type={} => {}:{}", inRelayChannel.id(), Constants.LOG_MSG, outRelayChannel.id(), dstAddrType, dstAddr, dstPort);
 
-    ByteBuf srcBuf = Unpooled.buffer();
+    ByteBuf connBuf = Unpooled.directBuffer();
     // ATYP 1 byte
-    srcBuf.writeByte(socks5Request.dstAddrType().byteValue());
+    connBuf.writeByte(socks5Request.dstAddrType().byteValue());
     // DST.ADDR: 4 bytes
     if (Socks5AddressType.IPv4 == dstAddrType) {
       InetAddress inetAddress = InetAddress.getByName(dstAddr);
-      srcBuf.writeBytes(inetAddress.getAddress());
+      connBuf.writeBytes(inetAddress.getAddress());
     }
     // DST.ADDR: 16 bytes
     else if (Socks5AddressType.IPv6 == dstAddrType) {
       InetAddress inetAddress = InetAddress.getByName(dstAddr);
-      srcBuf.writeBytes(inetAddress.getAddress());
+      connBuf.writeBytes(inetAddress.getAddress());
     }
     // DST.ADDR: 1 + N bytes
     else if (Socks5AddressType.DOMAIN == dstAddrType) {
       byte[] dstAddrBytes = dstAddr.getBytes(StandardCharsets.UTF_8);
-      srcBuf.writeByte(dstAddrBytes.length);
-      srcBuf.writeBytes(dstAddrBytes);
+      connBuf.writeByte(dstAddrBytes.length);
+      connBuf.writeBytes(dstAddrBytes);
     } else {
-      logger.debug("[ {}{}{} ]【初始化socks远程连接】链接出错，错误的地址类型：{} ", inRelayChannel.id(), Constants.LOG_MSG, outRelayChannel.id(), dstAddrType);
+      logger.error("[ {}{}{} ] {} wrong request address type: {}", inRelayChannel.id(), Constants.LOG_MSG, outRelayChannel.id(), getSimpleName(this), dstAddrType);
+      throw new IllegalArgumentException("wrong request address type:" + dstAddrType);
     }
     // DST.ATTR_PORT
-    srcBuf.writeShort(dstPort);
-
-    logger.debug("[ {}{}{} ]【初始化socks远程连接】未加密的请求连接内容: {} bytes => {}", inRelayChannel.id(), Constants.LOG_MSG, outRelayChannel.id(), srcBuf.readableBytes(), srcBuf);
-    byte[] temp = ByteBufUtil.getBytes(srcBuf);
-    ByteArrayOutputStream _remoteOutStream = new ByteArrayOutputStream();
-    crypt.encrypt(temp, temp.length, _remoteOutStream);
-    temp = _remoteOutStream.toByteArray();
-    ByteBuf encryptedBuf = Unpooled.wrappedBuffer(temp);
-    logger.debug("[ {}{}{} ]【初始化socks远程连接】发送加密后的请求连接内容: {} bytes => {}", inRelayChannel.id(), LOG_MSG_OUT, outRelayChannel.id(), temp.length, encryptedBuf);
-    // 发送数据
-    outRelayChannel.writeAndFlush(encryptedBuf).addListener((ChannelFutureListener) future -> {
-      // 告诉客户端连接成功
-      DefaultSocks5CommandResponse socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
+    connBuf.writeShort(dstPort);
+    ByteBuf encryptBuf = crypt.encrypt(connBuf);
+    outRelayChannel.writeAndFlush(encryptBuf).addListener((ChannelFutureListener) future -> {
+      Socks5Message socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
       inRelayChannel.writeAndFlush(socks5cmdResponse);
-      logger.debug("[ {}{}{} ]【建立socks远程连接】告诉客户端socks连接请求成功: {}", inRelayChannel.id(), Constants.LOG_MSG_IN, outRelayChannel.id(), socks5cmdResponse);
-
     });
   }
 

@@ -1,5 +1,7 @@
 package com.adolphor.mynety.lan.config;
 
+import com.adolphor.mynety.common.constants.Constants;
+
 /**
  * 服务端配置
  * TODO 需要增加连接权限验证
@@ -10,16 +12,9 @@ package com.adolphor.mynety.lan.config;
  */
 public class Config {
 
-  public static String METHOD = "aes-256-cfb";
-  public static String PASSWORD = "123456";
-
-  /**
-   * LAN 服务器域名地址
-   */
+  public static String METHOD = Constants.ENCRYPT_NONE;
+  public static String PASSWORD = Constants.ENCRYPT_NONE;
   public static String LAN_SERVER_HOST = "127.0.0.1";
-  /**
-   * LAN 服务器端口号
-   */
   public static int LAN_SERVER_PORT = 2087;
 
 }

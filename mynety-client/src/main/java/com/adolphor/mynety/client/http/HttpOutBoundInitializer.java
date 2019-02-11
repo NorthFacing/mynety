@@ -9,8 +9,6 @@ import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
-
 /**
  * http 代理模式下 远程连接处理器列表
  *
@@ -37,18 +35,13 @@ public class HttpOutBoundInitializer extends ChannelInitializer<SocketChannel> {
    */
   @Override
   protected void initChannel(SocketChannel ch) throws Exception {
-    logger.debug("[ {} ]【{}】调用 initChannel 方法开始……", ch, getSimpleName(this));
 
     if (ClientConfig.HTTP_2_SOCKS5) {
       ch.pipeline().addLast(SocksHandsShakeHandler.INSTANCE);
-      logger.info("[ {} ]【{}】增加处理器: SocksHandsShakeHandler", ch.id(), getSimpleName(this));
     } else {
       ch.pipeline().addLast(new HttpClientCodec());
-      logger.info("[ {} ]【{}】增加处理器: HttpClientCodec", ch.id(), getSimpleName(this));
       ch.pipeline().addLast(new HttpObjectAggregator(6553600));
-      logger.info("[ {} ]【{}】增加处理器: HttpObjectAggregator", ch.id(), getSimpleName(this));
       ch.pipeline().addLast(HttpOutBoundHandler.INSTANCE);
-      logger.info("[ {} ]【{}】增加处理器: HttpOutBoundHandler", ch.id(), getSimpleName(this));
     }
 
   }

@@ -7,7 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
 /**
- * Shadowsocks key generator
+ * Shadowsocks cryptType generator
  */
 @Slf4j
 public class ShadowSocksKey implements SecretKey {
@@ -17,11 +17,6 @@ public class ShadowSocksKey implements SecretKey {
   private final static int KEY_LENGTH = 32;
   private byte[] _key;
   private int _length;
-
-  public ShadowSocksKey(String password) {
-    _length = KEY_LENGTH;
-    _key = init(password);
-  }
 
   public ShadowSocksKey(String password, int length) {
     _length = length;

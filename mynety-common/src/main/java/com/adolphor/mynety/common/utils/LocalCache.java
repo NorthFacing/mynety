@@ -107,7 +107,7 @@ public class LocalCache {
       long currentTime = System.currentTimeMillis();
       if (v.getTimeout() != 0 && currentTime >= v.getTimeout()) {
         LOCAL_CACHE.remove(k);
-        logger.debug("{} remove key: {}", LOG_MSG_OUT, k);
+        logger.debug("{} remove cryptType: {}", LOG_MSG_OUT, k);
       }
     });
     logger.debug("{} after resize keys: {}", LOG_MSG_OUT, size());

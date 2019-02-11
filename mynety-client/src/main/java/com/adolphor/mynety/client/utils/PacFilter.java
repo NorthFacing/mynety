@@ -26,8 +26,8 @@ public class PacFilter {
    * @param domain 需要判断的域名
    * @return 拒绝连接 true，否则 false
    */
+  @SuppressWarnings("Duplicates")
   public static boolean isDeny(String domain) {
-    // 先看缓存中是否存在
     String denyDomain = LocalCache.get(PREFIX_PROXY_DENY + domain);
     if (StringUtils.isNotEmpty(denyDomain)) {
       return Boolean.valueOf(denyDomain);

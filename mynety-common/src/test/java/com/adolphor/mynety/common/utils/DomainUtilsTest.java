@@ -75,7 +75,7 @@ public class DomainUtilsTest {
     Assert.assertEquals("git-scm.com", address.getHost());
     Assert.assertEquals(443, address.getPort());
     Assert.assertEquals(SCHEME_HTTPS, address.getScheme());
-    Assert.assertEquals("/book/zh/v1/git",address.getPath());
+    Assert.assertEquals("/book/zh/v1/git", address.getPath());
 
     uri = "http://www.runoob.com/try/try.php?filename=tryjsref_regexp4";
     address = DomainUtils.getAddress(uri);

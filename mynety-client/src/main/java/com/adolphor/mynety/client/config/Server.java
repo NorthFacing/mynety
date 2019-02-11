@@ -4,6 +4,8 @@ import com.adolphor.mynety.common.encryption.ICrypt;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.common.constants.Constants.COLON;
+
 /**
  * 服务器信息
  * <p>
@@ -29,7 +31,7 @@ public class Server {
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
-    sb.append(this.host).append(":").append(this.port).append(" => ")
+    sb.append(this.host).append(COLON).append(this.port).append(" => ")
         .append(this.method).append(" / ").append(this.password)
         .append(" => ").append(this.available);
     return sb.toString();

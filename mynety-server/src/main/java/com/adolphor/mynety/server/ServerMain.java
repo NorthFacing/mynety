@@ -4,7 +4,7 @@ import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.constants.LanStrategy;
 import com.adolphor.mynety.server.config.Config;
 import com.adolphor.mynety.server.config.ConfigLoader;
-import com.adolphor.mynety.server.lan.LanPipelineInitializer;
+import com.adolphor.mynety.server.lan.LanOutBoundInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.EventLoopGroup;
@@ -60,7 +60,7 @@ public class ServerMain {
           serverBoot.group(bossGroup, workerGroup)
               .channel(Constants.serverChannelClass)
               .handler(new LoggingHandler(LogLevel.DEBUG))
-              .childHandler(LanPipelineInitializer.INSTANCE);
+              .childHandler(LanOutBoundInitializer.INSTANCE);
           ChannelFuture future = serverBoot.bind(Config.LAN_SERVER_PORT).sync();
           future.channel().closeFuture().sync();
         } catch (Exception e) {

@@ -1,13 +1,23 @@
-# ss代理相关设置
+# ss proxy configuration
 server:
+  # ss proxy port
   port: 2086
+  # ss encrypt/decrypt method
   method: aes-256-cfb
+  # ss encrypt/decrypt password
   password: 123456
-# 内网映射相关设置
+# lan net configuration
 lannet:
-  # 内网穿透映射/转发策略：关闭：-1；全部转发至内网：1 (默认)；指定域名转发至内网 0
-  lanStrategy: 1
-  # 内网穿透映射/转发服务器端口，默认2087
+  # lan server port, opened to be connected by lan client
   lanPort: 2087
-  # 内网穿透/映射域名，不指定的话默认"mynetylan.adolphor.com"，此域名下的所有请求，会转发到运行LAN服务的 "127.0.0.1"
+  # encrypt/decrypt method
+  lanMethod: none
+  # encrypt/decrypt password
+  lanPassword: none
+  # lan net strategy
+  # -1：close,do NOT transfer msg to lan net
+  # 1 (default)：transfer all msg to lan net
+  # 0：transfer designated domains's msg to lan net (TODO)
+  lanStrategy: -1
+  # the local address of lan server, all the msg request to lanHostName will be transferred to "127.0.0.1" of lan server machine
   lanHostName: mynetylan.adolphor.com
