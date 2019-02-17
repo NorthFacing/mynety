@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.apache.commons.lang3.ClassUtils.getName;
+
 /**
  * netty 的 socket 工具类
  *
@@ -36,8 +38,9 @@ public class ChannelUtils {
    *
    * @param channel
    */
-  public static void loggerHandlers(Channel channel, Object msg) {
+  public static void loggerHandlers(Object clazz, String method, Channel channel, Object msg) {
     logger.debug("=============================================start====================================================");
+    logger.debug("in class: {} => {}", getName(clazz), method);
     logger.debug("msg type: {}", msg != null ? msg.getClass().getTypeName() : null);
     Iterator<Map.Entry<String, ChannelHandler>> iterator = channel.pipeline().iterator();
     iterator.forEachRemaining(handler -> {

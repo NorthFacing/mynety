@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -51,24 +52,21 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
         return;
       }
     }
-    ChannelUtils.loggerHandlers(ctx.channel(), tempMsg);
     ctx.channel().writeAndFlush(tempMsg);
   }
 
   /**
-   * 本方法没增加任何逻辑，只为了说明架构公共代码逻辑，可以删除没有任何影响。
-   * <p>
-   * 本方法的作用，将目的地返回的消息发送给客户端，inRelayChannel需要从outRelayChannel的绑定关系中获取，关键代码如下：
-   * <p>
-   * Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-   * inRelayChannel.writeAndFlush(msg);
-   *
+   * receive msg from destination address, and transfer to inRelayChannel
    * @param ctx
    * @param msg
    * @throws Exception
    */
   @Override
-  protected abstract void channelRead0(ChannelHandlerContext ctx, I msg) throws Exception;
+  protected void channelRead0(ChannelHandlerContext ctx, I msg) throws Exception {
+    Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
+    ReferenceCountUtil.retain(msg);
+    inRelayChannel.writeAndFlush(msg);
+  }
 
   @Override
   protected void channelClose(ChannelHandlerContext ctx) {
@@ -78,7 +76,6 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
       logger.info("[ {} ] {} inRelayChannel will be closed, connection time: {}ms", inRelayChannel, getName(this), connTime);
       ChannelUtils.closeOnFlush(inRelayChannel);
     }
-
     super.channelClose(ctx);
   }
 

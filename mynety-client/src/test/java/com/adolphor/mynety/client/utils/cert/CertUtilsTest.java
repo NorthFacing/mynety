@@ -15,6 +15,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
+import static com.adolphor.mynety.client.config.ClientConfig.CA_PASSWORD;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.loadPriKey;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.preSubject;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.saveCertToFile;
@@ -27,7 +28,7 @@ public class CertUtilsTest {
 
   private static String keyStoreFile = System.getProperty("user.dir") + "/src/test/resources/mynety-root-ca.jks";
   private static String certFile = System.getProperty("user.dir") + "/src/test/resources/mynety-root-ca.cert";
-  private static char[] caPassword = "mynety-ca-password".toCharArray();
+  private static char[] caPassword = CA_PASSWORD.toCharArray();
 
   private static final Date notBefore = CalendarUtils.today();
   private static final Date notAfter = CalendarUtils.addYears(notBefore, 100);
@@ -78,15 +79,20 @@ public class CertUtilsTest {
 
   @Test
   public void M05_genMitmCert() throws Exception {
+    String domainName = "192.168.1.191";
+    String filePath = "/Users/adolphor/IdeaProjects/temp/demo/src/main/resources/192.168.1.191.jks";
+
     X509Certificate caCert = CertUtils.loadCert(keyStoreFile, caPassword);
     PrivateKey privateKey = loadPriKey(keyStoreFile, caPassword);
     String issuer = caCert.getIssuerDN().toString();
-    String subject = "adolphor.com";
-    X509Certificate mitmCert = CertUtils.genMitmCert(issuer, privateKey, notBefore, notAfter, caCert.getPublicKey(), subject);
+    X509Certificate mitmCert = CertUtils.genMitmCert(issuer, privateKey, notBefore, notAfter, caCert.getPublicKey(), domainName);
 
-    Assert.assertEquals(preSubject + subject, mitmCert.getSubjectDN().toString());
+    Assert.assertEquals(preSubject + domainName, mitmCert.getSubjectDN().toString());
     Assert.assertEquals(notAfter, mitmCert.getNotAfter());
     Assert.assertEquals(notBefore, mitmCert.getNotBefore());
+
+    KeyPair keyPair = new KeyPair(caCert.getPublicKey(), privateKey);
+    CertUtils.saveKeyStoreToFile(mitmCert,KeyStore.getDefaultType(),keyPair,filePath);
   }
 
   @Test

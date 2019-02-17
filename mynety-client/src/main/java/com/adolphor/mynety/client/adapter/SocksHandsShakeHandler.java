@@ -9,6 +9,10 @@ import io.netty.handler.codec.socksx.SocksVersion;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.ConnectException;
+
+import static com.adolphor.mynety.client.constants.ClientConstants.socksConn;
+import static com.adolphor.mynety.client.constants.ClientConstants.socksShaker;
 import static com.adolphor.mynety.common.constants.Constants.RESERVED_BYTE;
 
 /**
@@ -63,11 +67,10 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
     byte ver = msg.readByte();
     byte method = msg.readByte();
     if (ver != SocksVersion.SOCKS5.byteValue() || method != RESERVED_BYTE) {
-      ctx.close();
-      return;
+      throw new ConnectException("do NOT sport socks5!");
     }
-    ctx.pipeline().addLast(SocksConnHandler.INSTANCE);
-    ctx.pipeline().remove(this);
+    ctx.pipeline().addLast(socksConn, SocksConnHandler.INSTANCE);
+    ctx.pipeline().remove(socksShaker);
     ctx.fireChannelActive();
   }
 

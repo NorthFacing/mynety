@@ -10,6 +10,8 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.client.constants.ClientConstants.httpInBound;
+import static com.adolphor.mynety.client.constants.ClientConstants.httpProxy;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_HTTP_TUNNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
@@ -55,8 +57,8 @@ public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
       ReferenceCountUtil.retain(msg);
       ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(msg);
     }
-    ctx.pipeline().addLast(HttpInBoundHandler.INSTANCE);
-    ctx.pipeline().remove(this);
+    ctx.pipeline().addLast(httpInBound, HttpInBoundHandler.INSTANCE);
+    ctx.pipeline().remove(httpProxy);
     ctx.fireChannelActive();
   }
 

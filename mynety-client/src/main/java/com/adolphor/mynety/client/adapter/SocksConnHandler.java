@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.adapter;
 
-import com.adolphor.mynety.client.http.HttpOutBoundHandler;
+import com.adolphor.mynety.client.http.HttpOutBoundInitializer;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
@@ -8,17 +8,17 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.HttpClientCodec;
-import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.socks.SocksAddressType;
 import io.netty.handler.codec.socksx.SocksVersion;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
 import io.netty.handler.codec.socksx.v5.Socks5CommandType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 
+import static com.adolphor.mynety.client.constants.ClientConstants.socksConn;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.IPV4_PATTERN;
@@ -45,41 +45,37 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
    * +----+-----+-------+------+----------+---------------+
    */
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    try {
-      super.channelActive(ctx);
-      Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-      Address address = inRelayChannel.attr(ATTR_REQUEST_ADDRESS).get();
-      final ByteBuf buf = Unpooled.buffer();
-      buf.writeByte(SocksVersion.SOCKS5.byteValue());
-      buf.writeByte(Socks5CommandType.CONNECT.byteValue());
-      buf.writeByte(RESERVED_BYTE);
-      String host = address.getHost();
-      // IPv4：4 bytes for IPv4 address
-      if (IPV4_PATTERN.matcher(host).find()) {
-        buf.writeByte(SocksAddressType.IPv4.byteValue());
-        InetAddress inetAddress = InetAddress.getByName(host);
-        buf.writeBytes(inetAddress.getAddress());
-      }
-      // IPv6：16 bytes for IPv6 address
-      else if (IPV6_PATTERN.matcher(host).find()) {
-        buf.writeByte(SocksAddressType.IPv6.byteValue());
-        InetAddress inetAddress = InetAddress.getByName(host);
-        buf.writeBytes(inetAddress.getAddress());
-      }
-      // domain：1 byte of ATYP + 1 byte of domain name length + 1–255 bytes of the domain name
-      else {
-        buf.writeByte(SocksAddressType.DOMAIN.byteValue());
-        byte[] bytes = host.getBytes(StandardCharsets.UTF_8);
-        buf.writeByte(bytes.length);
-        buf.writeBytes(bytes);
-      }
-      // port
-      buf.writeShort(address.getPort());
-      ctx.writeAndFlush(buf);
-    } catch (Exception e) {
-
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    super.channelActive(ctx);
+    Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
+    Address address = inRelayChannel.attr(ATTR_REQUEST_ADDRESS).get();
+    final ByteBuf buf = Unpooled.buffer();
+    buf.writeByte(SocksVersion.SOCKS5.byteValue());
+    buf.writeByte(Socks5CommandType.CONNECT.byteValue());
+    buf.writeByte(RESERVED_BYTE);
+    String host = address.getHost();
+    // IPv4：4 bytes for IPv4 address
+    if (IPV4_PATTERN.matcher(host).find()) {
+      buf.writeByte(SocksAddressType.IPv4.byteValue());
+      InetAddress inetAddress = InetAddress.getByName(host);
+      buf.writeBytes(inetAddress.getAddress());
     }
+    // IPv6：16 bytes for IPv6 address
+    else if (IPV6_PATTERN.matcher(host).find()) {
+      buf.writeByte(SocksAddressType.IPv6.byteValue());
+      InetAddress inetAddress = InetAddress.getByName(host);
+      buf.writeBytes(inetAddress.getAddress());
+    }
+    // domain：1 byte of ATYP + 1 byte of domain name length + 1–255 bytes of the domain name
+    else {
+      buf.writeByte(SocksAddressType.DOMAIN.byteValue());
+      byte[] bytes = host.getBytes(StandardCharsets.UTF_8);
+      buf.writeByte(bytes.length);
+      buf.writeBytes(bytes);
+    }
+    // port
+    buf.writeShort(address.getPort());
+    ctx.writeAndFlush(buf);
   }
 
   /**
@@ -100,16 +96,13 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     byte rep = msg.readByte();
 
     if (ver != SocksVersion.SOCKS5.byteValue() || rep != Socks5CommandStatus.SUCCESS.byteValue()) {
-      channelClose(ctx);
-      return;
+      throw new ConnectException("connect failed: " + Socks5CommandStatus.valueOf(rep));
     }
 
-    ctx.channel().pipeline().addLast(new HttpClientCodec());
-    ctx.pipeline().addLast(new HttpObjectAggregator(6553600));
-    ctx.channel().pipeline().addLast(HttpOutBoundHandler.INSTANCE);
-    ctx.pipeline().remove(this);
-    ctx.fireChannelActive();
+    HttpOutBoundInitializer.addHttpOutBoundHandler(ctx.channel());
+    ctx.pipeline().remove(socksConn);
 
+    ctx.pipeline().fireChannelActive();
   }
 
 }

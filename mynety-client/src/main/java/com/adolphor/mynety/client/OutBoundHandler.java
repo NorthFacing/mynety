@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
@@ -25,15 +26,10 @@ public final class OutBoundHandler extends AbstractOutBoundHandler<ByteBuf> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
-
-    if (!inRelayChannel.isOpen()) {
-      channelClose(ctx);
-      return;
-    }
-
     if (inRelayChannel.attr(ATTR_IS_PROXY).get()) {
       msg = inRelayChannel.attr(ATTR_CRYPT_KEY).get().decrypt(msg);
     }
+    ReferenceCountUtil.retain(msg);
     inRelayChannel.writeAndFlush(msg);
 
   }

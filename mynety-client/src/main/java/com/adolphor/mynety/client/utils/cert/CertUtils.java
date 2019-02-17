@@ -33,6 +33,8 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Enumeration;
 
+import static com.adolphor.mynety.client.config.ClientConfig.CA_PASSWORD;
+
 /**
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -43,6 +45,7 @@ public class CertUtils {
   public static final String preSubject = "L=HangZhou, ST=ZheJiang, C=CN, O=adolphor@qq.com, OU=https://github.com/adolphor/mynety, CN=";
 
   private static final String signatureAlgorithm = "SHA256WithRSAEncryption";
+  private static final String alias = "mynety-cert";
 
   static {
     Security.addProvider(new BouncyCastleProvider());
@@ -143,9 +146,9 @@ public class CertUtils {
   public static void saveKeyStoreToFile(Certificate cert, String storeType, KeyPair keyPair, String fileName) throws Exception {
     KeyStore store = KeyStore.getInstance(storeType);
     store.load(null, null);
-    store.setKeyEntry("mynety-cert", keyPair.getPrivate(), "mynety-ca-password".toCharArray(), new Certificate[]{cert});
+    store.setKeyEntry(alias, keyPair.getPrivate(), CA_PASSWORD.toCharArray(), new Certificate[]{cert});
     cert.verify(keyPair.getPublic());
-    store.store(new FileOutputStream(fileName), "mynety-ca-password".toCharArray());
+    store.store(new FileOutputStream(fileName), CA_PASSWORD.toCharArray());
   }
 
 }
