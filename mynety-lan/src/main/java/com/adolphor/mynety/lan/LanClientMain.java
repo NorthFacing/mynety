@@ -1,14 +1,20 @@
 package com.adolphor.mynety.lan;
 
+import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.constants.Constants;
+import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.lan.config.Config;
 import com.adolphor.mynety.lan.config.ConfigLoader;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.EventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.ConnectException;
+
 import static com.adolphor.mynety.common.constants.LanConstants.INIT_SLEEP_TIME;
+import static com.adolphor.mynety.common.constants.LanConstants.IS_MAIN_CHANNEL;
 import static com.adolphor.mynety.common.constants.LanConstants.MAX_SLEEP_TIME;
 
 /**
@@ -28,9 +34,7 @@ public class LanClientMain {
     ConfigLoader.loadConfig();
 
     try {
-
       doConnect();
-
     } catch (Exception e) {
       logger.error("lan client start Error", e);
     } finally {
@@ -38,26 +42,42 @@ public class LanClientMain {
         workerGroup.shutdownGracefully();
       }
     }
-
   }
 
   /**
-   * 抽取出该方法 (断线重连时使用)
+   * to build mainChannel or requestChannel
    *
-   * @throws
+   * @return
    */
   public static void doConnect() {
     reconnectWait();
     try {
       bootstrap = new Bootstrap();
-      workerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
+      workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
       bootstrap.group(workerGroup)
           .channel(Constants.channelClass)
           .handler(LanInBoundInitializer.INSTANCE);
 
-      ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT).sync();
+      ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT)
+          .addListener((ChannelFutureListener) chFuture -> {
+            if (chFuture.isSuccess()) {
+              chFuture.channel().attr(IS_MAIN_CHANNEL).set(true);
+              logger.info("lan main channel connect to lan server success...");
+              // after conn success, need to send a client msg to mark as a lan client main channel
+              LanMessage lanClientMsg = LanMsgUtils.packClientMsg("password");
+              chFuture.channel().writeAndFlush(lanClientMsg).addListener((ChannelFutureListener) innerFuture -> {
+                if (innerFuture.isSuccess()) {
+                  logger.info("send client main msg to lan server success ...");
+                } else {
+                  throw new ConnectException("connect failed: " + innerFuture.cause().getMessage());
+                }
+              });
+            } else {
+              throw new ConnectException("connect failed: " + chFuture.cause().getMessage());
+            }
+          })
+          .sync();
       future.channel().closeFuture().sync();
-
     } catch (Exception e) {
       logger.warn(e.getMessage(), e);
       doConnect();

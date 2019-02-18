@@ -19,6 +19,8 @@ import java.net.InetAddress;
 
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
+import static com.adolphor.mynety.common.constants.HandlerName.addressHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.inBoundHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -54,53 +56,51 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
    * @param msg
    */
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) {
-    try {
-      if (msg.readableBytes() <= 0) {
-        return;
-      }
-      ByteBuf dataBuff = Unpooled.buffer();
-      dataBuff.writeBytes(ctx.channel().attr(ATTR_CRYPT_KEY).get().decrypt(msg));
-      if (dataBuff.readableBytes() < 2) {
-        return;
-      }
-      String host;
-      int port;
-      int addressType = dataBuff.getUnsignedByte(0);
-      if (addressType == SocksAddressType.IPv4.byteValue()) {
-        if (dataBuff.readableBytes() < 7) {
-          return;
-        }
-        dataBuff.readUnsignedByte();
-        byte[] ipBytes = new byte[4];
-        dataBuff.readBytes(ipBytes);
-        host = InetAddress.getByAddress(ipBytes).getHostAddress();
-        port = dataBuff.readShort();
-      } else if (addressType == SocksAddressType.DOMAIN.byteValue()) {
-        int hostLength = dataBuff.getUnsignedByte(1);
-        if (dataBuff.readableBytes() < hostLength + 4) {
-          return;
-        }
-        dataBuff.readUnsignedByte();
-        dataBuff.readUnsignedByte();
-
-        ByteBuf hostBytes = dataBuff.readBytes(hostLength);
-        host = ByteStrUtils.getStringByBuf(hostBytes);
-        port = dataBuff.readUnsignedShort();
-      } else {
-        throw new Exception("unknown supported type: " + addressType);
-      }
-      ctx.channel().attr(Constants.ATTR_REQUEST_ADDRESS).set(new Address(host, port));
-      if (dataBuff.readableBytes() > 0) {
-        ReferenceCountUtil.retain(dataBuff);
-        ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(dataBuff);
-        logger.debug("[ {} ] {} add msg to cache => {} ", ctx.channel().id(), getSimpleName(this), dataBuff);
-      }
-      ctx.channel().pipeline().addLast(InBoundHandler.INSTANCE);
-      ctx.pipeline().remove(this);
-      ctx.pipeline().fireChannelActive();
-    } catch (Exception e) {
+  protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+    if (msg.readableBytes() <= 0) {
+      throw new IllegalAccessException("date length is to short ...");
     }
+    ByteBuf dataBuff = Unpooled.buffer();
+    dataBuff.writeBytes(ctx.channel().attr(ATTR_CRYPT_KEY).get().decrypt(msg));
+    if (dataBuff.readableBytes() < 2) {
+      throw new IllegalAccessException("date length is to short ...");
+    }
+    String host;
+    int port;
+    int addressType = dataBuff.getUnsignedByte(0);
+    if (addressType == SocksAddressType.IPv4.byteValue()) {
+      if (dataBuff.readableBytes() < 7) {
+        throw new IllegalAccessException("date length is to short ...");
+      }
+      dataBuff.readUnsignedByte();
+      byte[] ipBytes = new byte[4];
+      dataBuff.readBytes(ipBytes);
+      host = InetAddress.getByAddress(ipBytes).getHostAddress();
+      port = dataBuff.readShort();
+    } else if (addressType == SocksAddressType.DOMAIN.byteValue()) {
+      int hostLength = dataBuff.getUnsignedByte(1);
+      if (dataBuff.readableBytes() < hostLength + 4) {
+        throw new IllegalAccessException("date length is to short ...");
+      }
+      dataBuff.readUnsignedByte();
+      dataBuff.readUnsignedByte();
+
+      ByteBuf hostBytes = dataBuff.readBytes(hostLength);
+      host = ByteStrUtils.readStringByBuf(hostBytes);
+      port = dataBuff.readUnsignedShort();
+    } else {
+      throw new IllegalAccessException("unknown supported type: " + addressType);
+    }
+    logger.info("new request to {}:{} ...", host, port);
+    ctx.channel().attr(Constants.ATTR_REQUEST_ADDRESS).set(new Address(host, port));
+    if (dataBuff.readableBytes() > 0) {
+      ReferenceCountUtil.retain(dataBuff);
+      ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(dataBuff);
+      logger.debug("[ {} ] {} add msg to cache => {} ", ctx.channel().id(), getSimpleName(this), dataBuff);
+    }
+    ctx.channel().pipeline().addAfter(addressHandler, inBoundHandler, InBoundHandler.INSTANCE);
+    ctx.pipeline().remove(addressHandler);
+    ctx.pipeline().fireChannelActive();
   }
 
 }

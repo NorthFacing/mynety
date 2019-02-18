@@ -7,15 +7,16 @@ import com.adolphor.mynety.server.config.ConfigLoader;
 import com.adolphor.mynety.server.lan.LanOutBoundInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
 import static com.adolphor.mynety.server.config.Config.LAN_STRATEGY;
 
 /**
- * 服务端启动入口
+ * server entrance
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -33,11 +34,13 @@ public class ServerMain {
       EventLoopGroup workerGroup = null;
       try {
         ServerBootstrap serverBoot = new ServerBootstrap();
-        bossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
-        workerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
+        bossGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
+        workerGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
         serverBoot.group(bossGroup, workerGroup)
             .channel(Constants.serverChannelClass)
-            .handler(new LoggingHandler(LogLevel.DEBUG))
+            .handler(new LoggingHandler(LOG_LEVEL))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(InBoundInitializer.INSTANCE);
         ChannelFuture future = serverBoot.bind(Config.PROXY_PORT).sync();
         future.channel().closeFuture().sync();
@@ -55,11 +58,13 @@ public class ServerMain {
         EventLoopGroup workerGroup = null;
         try {
           ServerBootstrap serverBoot = new ServerBootstrap();
-          bossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
-          workerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
+          bossGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
+          workerGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
           serverBoot.group(bossGroup, workerGroup)
               .channel(Constants.serverChannelClass)
-              .handler(new LoggingHandler(LogLevel.DEBUG))
+              .handler(new LoggingHandler(LOG_LEVEL))
+              .childOption(ChannelOption.TCP_NODELAY, true)
+              .childOption(ChannelOption.SO_KEEPALIVE, true)
               .childHandler(LanOutBoundInitializer.INSTANCE);
           ChannelFuture future = serverBoot.bind(Config.LAN_SERVER_PORT).sync();
           future.channel().closeFuture().sync();

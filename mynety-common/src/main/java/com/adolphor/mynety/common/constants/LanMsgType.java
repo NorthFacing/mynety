@@ -9,11 +9,16 @@ package com.adolphor.mynety.common.constants;
  */
 public enum LanMsgType {
 
+  // sequence number
   HEARTBEAT((byte) 0x00),
-  AUTH((byte) 0x01),
+  // with password
+  CLIENT((byte) 0x01),
+  // with requestId & uri
   CONNECT((byte) 0x02),
-  DISCONNECT((byte) 0x03),
-  TRANSFER((byte) 0x04);
+  // with requestId
+  CONNECTED((byte) 0x03),
+  // with data
+  TRANSMIT((byte) 0x04);
 
   private byte val;
 

@@ -56,7 +56,7 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
   }
 
   /**
-   * receive msg from destination address, and transfer to inRelayChannel
+   * receive msg from destination address, and transmit to inRelayChannel
    * @param ctx
    * @param msg
    * @throws Exception
@@ -73,7 +73,7 @@ public abstract class AbstractOutBoundHandler<I> extends AbstractSimpleHandler<I
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     if (inRelayChannel.isActive()) {
       long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-      logger.info("[ {} ] {} inRelayChannel will be closed, connection time: {}ms", inRelayChannel, getName(this), connTime);
+      logger.info("[ {} ] {} inRelayChannel will be closed, connection time: {} ms", inRelayChannel, getName(this), connTime);
       ChannelUtils.closeOnFlush(inRelayChannel);
     }
     super.channelClose(ctx);

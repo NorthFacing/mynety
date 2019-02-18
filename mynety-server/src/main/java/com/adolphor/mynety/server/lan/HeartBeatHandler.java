@@ -13,7 +13,8 @@ import static com.adolphor.mynety.common.constants.LanConstants.READ_IDLE_TIME;
 import static com.adolphor.mynety.common.constants.LanConstants.WRITE_IDLE_TIME;
 
 /**
- * long time no msg return, then mark
+ * heart beat: clint write timeout, server read timeout.
+ * long time no msg replied, then mark
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

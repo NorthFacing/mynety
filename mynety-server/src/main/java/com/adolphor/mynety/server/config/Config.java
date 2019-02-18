@@ -1,17 +1,18 @@
 package com.adolphor.mynety.server.config;
 
+import com.adolphor.mynety.common.bean.BaseConfig;
 import com.adolphor.mynety.common.constants.LanStrategy;
 
 import static com.adolphor.mynety.common.constants.Constants.ENCRYPT_NONE;
 
 /**
- * 服务端配置
+ * client configuration
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
  * @since v0.0.1
  */
-public class Config {
+public class Config extends BaseConfig {
 
   public static int PROXY_PORT = 2086;
   public static String PROXY_METHOD = "aes-256-cfb";

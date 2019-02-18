@@ -36,7 +36,7 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     long timestamp = System.currentTimeMillis();
     ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).set(timestamp);
-    logger.debug("[ {} ]{} set connect timestamp attr: {} => {}", ctx.channel().id(), getName(this), timestamp, ctx.channel().attr(ATTR_REQUEST_ADDRESS).get());
+    logger.debug("[ {} ]{} set connect timestamp attr: {}", ctx.channel().id(), getName(this), timestamp + " => " + ctx.channel().attr(ATTR_REQUEST_ADDRESS).get());
   }
 
   @Override
@@ -57,6 +57,7 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     logger.debug("[ {} ] {} call inactive method......", ctx.channel().id(), getName(this));
     super.channelInactive(ctx);
+    channelClose(ctx);
   }
 
   /**
@@ -74,7 +75,7 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
 
   protected void channelClose(ChannelHandlerContext ctx) {
     long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-    logger.info("[ {} ] {} channel will be closed, connection time: {}ms", ctx.channel(), getName(this), connTime);
+    logger.info("[ {} ] {} channel will be closed, connection time: {} ms", ctx.channel(), getName(this), connTime);
     ChannelUtils.closeOnFlush(ctx.channel());
   }
 

@@ -1,10 +1,9 @@
 package com.adolphor.mynety.server.config;
 
+import com.adolphor.mynety.common.bean.BaseConfigLoader;
 import com.adolphor.mynety.common.constants.LanStrategy;
 import lombok.extern.slf4j.Slf4j;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -21,49 +20,45 @@ public class ConfigLoader {
 
   public static void loadConfig() throws Exception {
 
-    try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
+    Map config = BaseConfigLoader.loadConfig(configFile);
 
-      Map config = new Yaml().load(is);
-      System.out.println(config);
-
-      Map server = (Map) config.get("server");
-      if (server != null) {
-        Object socksPort = server.get("port");
-        if (socksPort != null) {
-          Config.PROXY_PORT = Integer.parseInt(socksPort.toString());
-        }
-        Object method = server.get("method");
-        if (method != null) {
-          Config.PROXY_METHOD = method.toString();
-        }
-        Object password = server.get("password");
-        if (password != null) {
-          Config.PROXY_PASSWORD = password.toString();
-        }
+    Map server = (Map) config.get("server");
+    if (server != null) {
+      Object socksPort = server.get("port");
+      if (socksPort != null) {
+        Config.PROXY_PORT = Integer.parseInt(socksPort.toString());
       }
+      Object method = server.get("method");
+      if (method != null) {
+        Config.PROXY_METHOD = method.toString();
+      }
+      Object password = server.get("password");
+      if (password != null) {
+        Config.PROXY_PASSWORD = password.toString();
+      }
+    }
 
-      Map lannet = (Map) config.get("lannet");
-      if (lannet != null) {
-        Object lanServerPort = lannet.get("lanPort");
-        if (lanServerPort != null) {
-          Config.LAN_SERVER_PORT = Integer.parseInt(lanServerPort.toString());
-        }
-        Object lanMethod = lannet.get("lanMethod");
-        if (lanMethod != null) {
-          Config.LAN_METHOD = lanMethod.toString();
-        }
-        Object lanPassword = lannet.get("lanPassword");
-        if (lanPassword != null) {
-          Config.LAN_PASSWORD = lanPassword.toString();
-        }
-        Object lanStrategy = lannet.get("lanStrategy");
-        if (lanStrategy != null) {
-          Config.LAN_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.parseInt(lanStrategy.toString()));
-        }
-        Object lanHostName = lannet.get("lanHostName");
-        if (lanHostName != null) {
-          Config.LAN_HOST_NAME = lanHostName.toString();
-        }
+    Map lannet = (Map) config.get("lannet");
+    if (lannet != null) {
+      Object lanServerPort = lannet.get("lanPort");
+      if (lanServerPort != null) {
+        Config.LAN_SERVER_PORT = Integer.parseInt(lanServerPort.toString());
+      }
+      Object lanMethod = lannet.get("lanMethod");
+      if (lanMethod != null) {
+        Config.LAN_METHOD = lanMethod.toString();
+      }
+      Object lanPassword = lannet.get("lanPassword");
+      if (lanPassword != null) {
+        Config.LAN_PASSWORD = lanPassword.toString();
+      }
+      Object lanStrategy = lannet.get("lanStrategy");
+      if (lanStrategy != null) {
+        Config.LAN_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.parseInt(lanStrategy.toString()));
+      }
+      Object lanHostName = lannet.get("lanHostName");
+      if (lanHostName != null) {
+        Config.LAN_HOST_NAME = lanHostName.toString();
       }
     }
     logger.debug("Proxy server config loaded：Port={}, method={}, password={}", Config.PROXY_PORT, Config.PROXY_METHOD, Config.PROXY_PASSWORD);

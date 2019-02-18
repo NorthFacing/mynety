@@ -18,12 +18,12 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 
-import static com.adolphor.mynety.client.constants.ClientConstants.socksConn;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.IPV4_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.IPV6_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.RESERVED_BYTE;
+import static com.adolphor.mynety.common.constants.HandlerName.socksConnHandler;
 
 /**
  * @author Bob.Zhu
@@ -100,7 +100,7 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
     }
 
     HttpOutBoundInitializer.addHttpOutBoundHandler(ctx.channel());
-    ctx.pipeline().remove(socksConn);
+    ctx.pipeline().remove(socksConnHandler);
 
     ctx.pipeline().fireChannelActive();
   }

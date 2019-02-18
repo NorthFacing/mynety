@@ -1,13 +1,14 @@
 package com.adolphor.mynety.client.config;
 
 import com.adolphor.mynety.client.utils.cert.CertConfig;
+import com.adolphor.mynety.common.bean.BaseConfig;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 客户端使用的服务器配置
+ * client configuration
  * <p>
  * server configs for proxy client
  *
@@ -16,7 +17,7 @@ import java.util.List;
  * @since v0.0.1
  */
 @Slf4j
-public class ClientConfig {
+public class ClientConfig extends BaseConfig {
 
   public static boolean IS_PUBLIC = true;
   public static int SOCKS_PROXY_PORT = 1086;

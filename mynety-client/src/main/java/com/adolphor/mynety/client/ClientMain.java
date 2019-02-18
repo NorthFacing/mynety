@@ -8,8 +8,8 @@ import com.adolphor.mynety.client.utils.cert.CertUtils;
 import com.adolphor.mynety.common.constants.Constants;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
@@ -21,6 +21,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 import static com.adolphor.mynety.client.config.ClientConfig.HTTPS_CERT_CONFIG;
+import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
 
 /**
  * 客户端启动入口
@@ -41,12 +42,13 @@ public final class ClientMain {
       EventLoopGroup sBossGroup = null;
       EventLoopGroup sWorkerGroup = null;
       try {
-        sBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
-        sWorkerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
+        sBossGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
+        sWorkerGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
         ServerBootstrap sServerBoot = new ServerBootstrap();
         sServerBoot.group(sBossGroup, sWorkerGroup)
             .channel(Constants.serverChannelClass)
-            .handler(new LoggingHandler(LogLevel.DEBUG))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(InBoundInitializer.INSTANCE);
         String sLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
         ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_PROXY_PORT).sync();
@@ -84,12 +86,14 @@ public final class ClientMain {
           HTTPS_CERT_CONFIG.setMitmPriKey(keyPair.getPrivate());
           HTTPS_CERT_CONFIG.setMitmPubKey(keyPair.getPublic());
         }
-        hBossGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
-        hWorkerGroup = (EventLoopGroup) Constants.bossGroupClass.getDeclaredConstructor().newInstance();
+        hBossGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
+        hWorkerGroup = (EventLoopGroup) Constants.bossGroupType.newInstance();
         ServerBootstrap hServerBoot = new ServerBootstrap();
         hServerBoot.group(hBossGroup, hWorkerGroup)
             .channel(Constants.serverChannelClass)
-            .handler(new LoggingHandler(LogLevel.DEBUG))
+            .handler(new LoggingHandler(LOG_LEVEL))
+            .childOption(ChannelOption.TCP_NODELAY, true)
+            .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(HttpInBoundInitializer.INSTANCE);
         String hLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
         ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_PROXY_PORT).sync();

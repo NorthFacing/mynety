@@ -12,7 +12,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 
 /**
- * 远程处理器，连接真正的目标地址
+ * bind to lan server or destination
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

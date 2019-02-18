@@ -29,6 +29,17 @@ public class ByteStrUtilsTest {
 
   @Test
   public void getArrayByBuf() {
+    String text = "Hello world!";
+    ByteBuf byteBuf = Unpooled.buffer().writeBytes(text.getBytes(StandardCharsets.UTF_8));
+    byte[] arrayByBuf = ByteStrUtils.readArrayByBuf(byteBuf);
+    String result = new String(arrayByBuf, StandardCharsets.UTF_8);
+    Assert.assertEquals(text, result);
+
+    byte[] arrayByBuf1 = ByteStrUtils.readArrayByBuf(byteBuf, 5);
+    String result1 = new String(arrayByBuf1, StandardCharsets.UTF_8);
+    byte[] arrayByBuf2 = ByteStrUtils.readArrayByBuf(byteBuf);
+    String result2 = new String(arrayByBuf2, StandardCharsets.UTF_8);
+    Assert.assertEquals(text, result1 + result2);
   }
 
   @Test
@@ -43,7 +54,7 @@ public class ByteStrUtilsTest {
     Assert.assertTrue(buf01 instanceof UnpooledHeapByteBuf);
 
     ByteBuf buf02 = buf01.writeBytes(appedBytes);
-    Assert.assertEquals(str + append, ByteStrUtils.getStringByBuf(buf02));
+    Assert.assertEquals(str + append, ByteStrUtils.readStringByBuf(buf02));
 
     ByteBuf byteBuf = Unpooled.wrappedBuffer(strBytes);
     Assert.assertTrue(byteBuf instanceof UnpooledHeapByteBuf);

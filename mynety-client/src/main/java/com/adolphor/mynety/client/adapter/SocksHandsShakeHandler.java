@@ -11,9 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.ConnectException;
 
-import static com.adolphor.mynety.client.constants.ClientConstants.socksConn;
-import static com.adolphor.mynety.client.constants.ClientConstants.socksShaker;
 import static com.adolphor.mynety.common.constants.Constants.RESERVED_BYTE;
+import static com.adolphor.mynety.common.constants.HandlerName.socksConnHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.socksShakerHandler;
 
 /**
  * @author Bob.Zhu
@@ -69,8 +69,8 @@ public class SocksHandsShakeHandler extends AbstractSimpleHandler<ByteBuf> {
     if (ver != SocksVersion.SOCKS5.byteValue() || method != RESERVED_BYTE) {
       throw new ConnectException("do NOT sport socks5!");
     }
-    ctx.pipeline().addLast(socksConn, SocksConnHandler.INSTANCE);
-    ctx.pipeline().remove(socksShaker);
+    ctx.pipeline().addAfter(socksShakerHandler,socksConnHandler, SocksConnHandler.INSTANCE);
+    ctx.pipeline().remove(socksShakerHandler);
     ctx.fireChannelActive();
   }
 

@@ -10,11 +10,11 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.client.constants.ClientConstants.httpInBound;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpProxy;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_HTTP_TUNNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
+import static com.adolphor.mynety.common.constants.HandlerName.httpInBoundHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.httpProxyHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -32,9 +32,9 @@ public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
 
   /**
    * handle the first request of http(s), the main motivation for this handle is to parse the request address,
-   * then method {@link com.adolphor.mynety.client.http.HttpInBoundHandler#channelActive} could build the remote
-   * connection, and method {@link com.adolphor.mynety.client.http.HttpInBoundHandler#channelRead0} only need to
-   * cares about transfer the request msg:
+   * then method {@link HttpInBoundHandler#channelActive} could build the remote
+   * connection, and method {@link HttpInBoundHandler#channelRead0} only need to
+   * cares about transmit the request msg:
    * <p>
    * 1. if is CONNECT request, it must be tunnel proxy, and then add the tunnel attribute markup
    * 2. if not, cache the request
@@ -57,8 +57,8 @@ public class HttpProxyHandler extends AbstractInBoundHandler<FullHttpRequest> {
       ReferenceCountUtil.retain(msg);
       ctx.channel().attr(ATTR_REQUEST_TEMP_MSG).get().set(msg);
     }
-    ctx.pipeline().addLast(httpInBound, HttpInBoundHandler.INSTANCE);
-    ctx.pipeline().remove(httpProxy);
+    ctx.pipeline().addLast(httpInBoundHandler, HttpInBoundHandler.INSTANCE);
+    ctx.pipeline().remove(httpProxyHandler);
     ctx.fireChannelActive();
   }
 

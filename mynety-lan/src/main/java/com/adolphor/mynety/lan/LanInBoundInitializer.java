@@ -5,9 +5,16 @@ import com.adolphor.mynety.common.bean.lan.LanMessageEncoder;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
+
+import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
+import static com.adolphor.mynety.common.constants.HandlerName.heartBeatHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.lanInBoundHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.lanMessageDecoder;
+import static com.adolphor.mynety.common.constants.HandlerName.lanMessageEncoder;
+import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
+
 
 /**
  * @author Bob.Zhu
@@ -21,11 +28,12 @@ public class LanInBoundInitializer extends ChannelInitializer<SocketChannel> {
   public static final LanInBoundInitializer INSTANCE = new LanInBoundInitializer();
 
   @Override
-  public void initChannel(SocketChannel ch) {
-    ch.pipeline().addLast(new LoggingHandler(LogLevel.DEBUG));
-    ch.pipeline().addLast(new LanMessageDecoder());
-    ch.pipeline().addLast(new LanMessageEncoder());
-    ch.pipeline().addLast(new HeartBeatHandler());
-    ch.pipeline().addLast(LanInBoundHandler.INSTANCE);
+  @SuppressWarnings("Duplicates")
+  protected void initChannel(SocketChannel ch) {
+    ch.pipeline().addFirst(loggingHandler, new LoggingHandler(LOG_LEVEL));
+    ch.pipeline().addAfter(loggingHandler, lanMessageDecoder, new LanMessageDecoder());
+    ch.pipeline().addAfter(lanMessageDecoder, lanMessageEncoder, new LanMessageEncoder());
+    ch.pipeline().addAfter(lanMessageEncoder, heartBeatHandler, new HeartBeatHandler());
+    ch.pipeline().addAfter(heartBeatHandler, lanInBoundHandler, LanInBoundHandler.INSTANCE);
   }
 }

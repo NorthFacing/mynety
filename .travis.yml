@@ -1,0 +1,10 @@
+language: java
+script:
+  - echo "skipping tests"
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+deploy:
+  on:
+    branch: master

@@ -23,12 +23,12 @@ public class CryptUtilTest {
     for (int i = 0; i < 10; i++) {
       cryptMsg += (" => " + 1);
       byte[] bytesMsg = cryptMsg.getBytes(StandardCharsets.UTF_8);
-      ByteBuf srcBuf = ByteStrUtils.getDirectBuf(bytesMsg);
+      ByteBuf srcBuf = ByteStrUtils.getHeapBuf(bytesMsg);
 
       ByteBuf encryptMsg = enic.encrypt(srcBuf);
+      byte[] decryptMsg = deic.decryptToArray(encryptMsg);
 
-      ByteBuf decryptMsg = deic.decrypt(encryptMsg);
-      String result = new String(ByteStrUtils.getArrayByBuf(decryptMsg), StandardCharsets.UTF_8);
+      String result = new String(decryptMsg, StandardCharsets.UTF_8);
 
       Assert.assertEquals(cryptMsg, result);
     }

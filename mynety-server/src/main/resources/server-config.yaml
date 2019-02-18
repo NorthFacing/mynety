@@ -1,3 +1,5 @@
+# to use native NIO lib, default false
+nativeNio: false
 # ss proxy configuration
 server:
   # ss proxy port
@@ -18,6 +20,6 @@ lannet:
   # -1：close,do NOT transfer msg to lan net
   # 1 (default)：transfer all msg to lan net
   # 0：transfer designated domains's msg to lan net (TODO)
-  lanStrategy: -1
+  lanStrategy: 1
   # the local address of lan server, all the msg request to lanHostName will be transferred to "127.0.0.1" of lan server machine
   lanHostName: mynetylan.adolphor.com

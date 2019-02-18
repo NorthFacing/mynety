@@ -1,19 +1,22 @@
 package com.adolphor.mynety.common.bean.lan;
 
 import com.adolphor.mynety.common.constants.LanMsgType;
+import com.adolphor.mynety.common.utils.BaseUtils;
+import com.adolphor.mynety.common.utils.ByteStrUtils;
+import io.netty.buffer.ByteBuf;
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * DATA STRUCTURE:
  * <p>
- * +----------------+--------------+---------------+------------+----------------+
- * | message length | message type | serial number | request id | data content   |
- * | -------------- | ------------ | ------------- | ---------- | -------------- |
- * | 消息总长度       | 消息类型      |  流水序列号    | 请求来源ID  | 数据内容          |
- * +----------------+--------------+---------------+------------+----------------+
- * | 4 bytes        | 1 bytes      |  8 bytes      | 16 bytes   | dynamic (动态)  |
- * +----------------+--------------+---------------+------------+----------------+
+ * +----------------+--------------+----------------+
+ * | message length | message type | data content   |
+ * +----------------+--------------+----------------+
+ * | 4 bytes        | 1 bytes      | dynamic (动态)  |
+ * +----------------+--------------+----------------+
+ * <p>
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -22,52 +25,57 @@ import org.apache.commons.lang3.StringUtils;
 @Data
 public class LanMessage {
 
-
-  public static final int HEADER_SIZE = 4 + 1 + 8 + 16;
-
   /**
-   * message type (byte), refer: {@link com.adolphor.mynety.common.constants.LanMsgType}
+   * message type (byte), refer: {@link LanMsgType}
    */
   private LanMsgType type;
-
-  /**
-   * sequence number of heart beat message
-   */
-  private Long sequenceNumber = 0L;
-
-  /**
-   * request id, to identify the request client/channel/domain:
-   * 1. Be created before the msg be sent to the lan client.
-   * 2. After received the result msg from lan, gets the request client by this id
-   * 3. The id is compressed from 32 bytes to 16 bytes while encoded, to save network traffic
-   */
-  private String requestId;
-
-  /**
-   * destination address；
-   */
-  private String uri;
 
   /**
    * the message to be sent
    */
   private byte[] data;
 
+  private String password;
+  private String requestId;
+  private Long sequenceNum;
+  private String uri;
+
+  public byte[] getShortReqId() {
+    return BaseUtils.compressUUID(requestId);
+  }
+
+  public void setRequestIdByBuf(ByteBuf idBuf) {
+    this.requestId = BaseUtils.deCompressUUID(ByteStrUtils.readArrayByBuf(idBuf));
+  }
+
+  public void setSequenceNumByBuf(ByteBuf seqNumBuf) {
+    byte[] sequenceNumArray = ByteStrUtils.readArrayByBuf(seqNumBuf);
+    String sequenceNumStr = new String(sequenceNumArray, StandardCharsets.UTF_8);
+    this.sequenceNum = Long.parseLong(sequenceNumStr);
+  }
+
+  public byte[] getBytesSequenceNum(){
+    String strSequenceNum = String.valueOf(sequenceNum);
+    byte[] sequenceNum = strSequenceNum.getBytes(StandardCharsets.UTF_8);
+    return sequenceNum;
+  }
+
   @Override
   public String toString() {
     StringBuffer sb = new StringBuffer("LanMessage [")
         .append("typeVal=").append(type.getVal())
         .append(", typeName=").append(type);
-    sb.append(", serNo=").append(sequenceNumber);
-    if (StringUtils.isNotEmpty(requestId)) {
+    if (type == LanMsgType.CLIENT) {
+      sb.append(", password=").append(password);
+    } else if (type == LanMsgType.CONNECT) {
       sb.append(", requestId=").append(requestId);
-    }
-    if (StringUtils.isNotEmpty(uri)) {
       sb.append(", uri=").append(uri);
-    }
-    if (data != null && data.length > 0) {
+    } else if (type == LanMsgType.CONNECTED) {
+      sb.append(", requestId=").append(requestId);
+    } else if (type == LanMsgType.HEARTBEAT) {
+      sb.append(", sequenceNum=").append(sequenceNum);
+    } else if (type == LanMsgType.TRANSMIT) {
       sb.append(", data size=").append(data.length);
-      sb.append(", data => ").append(data);
     }
     sb.append("]");
     return sb.toString();

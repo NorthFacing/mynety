@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CONNECTED_TIMESTAMP;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static org.apache.commons.lang3.ClassUtils.getName;
 
 /**
@@ -82,7 +81,7 @@ public abstract class AbstractInBoundHandler<I> extends AbstractSimpleHandler<I>
 
     if (outRelayChannelRef != null && outRelayChannelRef.get() != null && outRelayChannelRef.get().isActive()) {
       long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-      logger.info("[ {}{}{} ] {} outRelayChannel will be closed, connection time: {}ms", LOG_MSG, outRelayChannelRef.get(), getName(this), connTime);
+      logger.info("[ {} ] {} outRelayChannel will be closed, connection time: {} ms", outRelayChannelRef.get(), getName(this), connTime);
       ChannelUtils.closeOnFlush(outRelayChannelRef.get());
     }
 

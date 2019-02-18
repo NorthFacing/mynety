@@ -1,16 +1,16 @@
 package com.adolphor.mynety.lan.config;
 
+import com.adolphor.mynety.common.bean.BaseConfig;
 import com.adolphor.mynety.common.constants.Constants;
 
 /**
- * 服务端配置
- * TODO 需要增加连接权限验证
+ * lan configuration
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
  * @since v0.0.5
  */
-public class Config {
+public class Config extends BaseConfig {
 
   public static String METHOD = Constants.ENCRYPT_NONE;
   public static String PASSWORD = Constants.ENCRYPT_NONE;

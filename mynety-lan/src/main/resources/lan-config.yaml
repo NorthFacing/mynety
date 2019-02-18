@@ -1,3 +1,5 @@
+# to use native NIO lib, default false
+nativeNio: false
 method: none
 password: none
 serverHost: 127.0.0.1

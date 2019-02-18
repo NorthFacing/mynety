@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client;
+package com.adolphor.mynety.server;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;

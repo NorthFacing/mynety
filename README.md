@@ -1,5 +1,7 @@
+[![Build Status](https://travis-ci.com/adolphor/mynety.svg?branch=master)](https://travis-ci.com/adolphor/mynety)
 
-# 主要功能
+
+# mynety
 
 * 内网穿透
     - 最优美的内网穿透解决方案
@@ -15,8 +17,8 @@
 
 ## 配置要求
 
-* Jdk8 或以上
-* Maven
+* Jdk8 or higher
+* Maven 
 
 ## 启动和运行
 

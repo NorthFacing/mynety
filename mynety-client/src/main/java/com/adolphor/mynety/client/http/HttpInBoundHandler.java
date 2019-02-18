@@ -21,17 +21,17 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.adolphor.mynety.client.config.ClientConfig.HTTPS_CERT_CONFIG;
-import static com.adolphor.mynety.client.constants.ClientConstants.MAX_CONTENT_LENGTH;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpAggregator;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpClientCodec;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpServerCodec;
-import static com.adolphor.mynety.client.constants.ClientConstants.sslClientHandler;
-import static com.adolphor.mynety.client.constants.ClientConstants.sslServerHandler;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
 import static com.adolphor.mynety.common.constants.Constants.LOOPBACK_ADDRESS;
+import static com.adolphor.mynety.common.constants.Constants.MAX_CONTENT_LENGTH;
+import static com.adolphor.mynety.common.constants.HandlerName.httpAggregatorHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.httpClientCodec;
+import static com.adolphor.mynety.common.constants.HandlerName.httpServerCodec;
+import static com.adolphor.mynety.common.constants.HandlerName.sslClientHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.sslServerHandler;
 
 /**
  * http over socks5
@@ -101,10 +101,10 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
         SslContext sslCtx = SslContextBuilder.forServer(HTTPS_CERT_CONFIG.getMitmPriKey(), CertPool.getCert(address.getHost(), HTTPS_CERT_CONFIG)).build();
         ctx.pipeline().addFirst(sslServerHandler, sslCtx.newHandler(ctx.alloc()));
         ctx.pipeline().addAfter(sslServerHandler, httpServerCodec, new HttpServerCodec());
-        ctx.pipeline().addAfter(httpServerCodec, httpAggregator, new HttpObjectAggregator(MAX_CONTENT_LENGTH));
+        ctx.pipeline().addAfter(httpServerCodec, httpAggregatorHandler, new HttpObjectAggregator(MAX_CONTENT_LENGTH));
         outRelayChannel.pipeline().addFirst(sslClientHandler, HTTPS_CERT_CONFIG.getClientSslCtx().newHandler(outRelayChannel.alloc(), address.getHost(), address.getPort()));
         outRelayChannel.pipeline().addAfter(sslClientHandler, httpClientCodec, new HttpClientCodec());
-        outRelayChannel.pipeline().addAfter(httpClientCodec, httpAggregator, new HttpObjectAggregator(MAX_CONTENT_LENGTH));
+        outRelayChannel.pipeline().addAfter(httpClientCodec, httpAggregatorHandler, new HttpObjectAggregator(MAX_CONTENT_LENGTH));
         // re-pass the pipeline, to get the https MITM msg
         ReferenceCountUtil.retain(msg);
         ctx.pipeline().fireChannelRead(msg);

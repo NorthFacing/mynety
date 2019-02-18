@@ -1,5 +1,6 @@
 package com.adolphor.mynety.client.config;
 
+import com.adolphor.mynety.common.bean.BaseConfigLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 
@@ -30,7 +31,6 @@ public class ConfigLoader {
   private final static String configFileName = "client-config.yaml";
 
   /**
-   * 分别加载 pac 和 client 和 server 配置信息
    * <p>
    * load pac & client & server conf info
    *
@@ -66,72 +66,70 @@ public class ConfigLoader {
 
   private static void loadClientConf(String configFile) throws Exception {
 
-    try (InputStream is = ConfigLoader.class.getClassLoader().getResourceAsStream(configFile)) {
+    Map config = BaseConfigLoader.loadConfig(configFile);
 
-      Map config = new Yaml().load(is);
-      Object aPublic = config.get("public");
-      if (aPublic != null) {
-        ClientConfig.IS_PUBLIC = Boolean.valueOf(aPublic.toString());
+    Object aPublic = config.get("public");
+    if (aPublic != null) {
+      ClientConfig.IS_PUBLIC = Boolean.valueOf(aPublic.toString());
+    }
+    Object socksLocalPort = config.get("socksLocalPort");
+    if (socksLocalPort != null) {
+      ClientConfig.SOCKS_PROXY_PORT = Integer.parseInt(socksLocalPort.toString());
+    }
+    Object httpLocalPort = config.get("httpLocalPort");
+    if (httpLocalPort != null) {
+      ClientConfig.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
+    }
+    Object http2socks5 = config.get("http2socks5");
+    if (http2socks5 != null) {
+      ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
+    }
+    Object httpMitm = config.get("httpMitm");
+    if (httpMitm != null) {
+      Map httpMitmMap = (Map) httpMitm;
+      Object isOpen = httpMitmMap.get("isOpen");
+      if (isOpen != null) {
+        ClientConfig.HTTP_MITM = Boolean.valueOf(isOpen.toString());
       }
-      Object socksLocalPort = config.get("socksLocalPort");
-      if (socksLocalPort != null) {
-        ClientConfig.SOCKS_PROXY_PORT = Integer.parseInt(socksLocalPort.toString());
+      Object caPassword = httpMitmMap.get("caPassword");
+      if (caPassword != null) {
+        ClientConfig.CA_PASSWORD = caPassword.toString();
       }
-      Object httpLocalPort = config.get("httpLocalPort");
-      if (httpLocalPort != null) {
-        ClientConfig.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
+      Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
+      if (caKeyStoreFile != null) {
+        ClientConfig.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
       }
-      Object http2socks5 = config.get("http2socks5");
-      if (http2socks5 != null) {
-        ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
-      }
-      Object httpMitm = config.get("httpMitm");
-      if (httpMitm != null) {
-        Map httpMitmMap = (Map) httpMitm;
-        Object isOpen = httpMitmMap.get("isOpen");
-        if (isOpen != null) {
-          ClientConfig.HTTP_MITM = Boolean.valueOf(isOpen.toString());
-        }
-        Object caPassword = httpMitmMap.get("caPassword");
-        if (caPassword != null) {
-          ClientConfig.CA_PASSWORD = caPassword.toString();
-        }
-        Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
-        if (caKeyStoreFile != null) {
-          ClientConfig.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
-        }
-      }
-      Object proxyStrategy = config.get("proxyStrategy");
-      if (proxyStrategy != null) {
-        ClientConfig.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());
-      }
+    }
+    Object proxyStrategy = config.get("proxyStrategy");
+    if (proxyStrategy != null) {
+      ClientConfig.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());
+    }
 
-      if (config.get("servers") != null) {
-        List<Map> servers = (List) config.get("servers");
-        for (Map server : servers) {
-          Server bean = new Server();
-          ClientConfig.SERVERS.add(bean);
+    if (config.get("servers") != null) {
+      List<Map> servers = (List) config.get("servers");
+      for (Map server : servers) {
+        Server bean = new Server();
+        ClientConfig.SERVERS.add(bean);
 
-          Object remarks = server.get("remarks");
-          if (remarks != null) {
-            bean.setRemarks(remarks.toString());
-          }
-          Object host = server.get("host");
-          if (host != null) {
-            bean.setHost(host.toString());
-          }
-          Object port = server.get("port");
-          if (port != null) {
-            bean.setPort(Integer.parseInt(port.toString()));
-          }
-          Object method = server.get("method");
-          if (method != null) {
-            bean.setMethod(method.toString());
-          }
-          Object password = server.get("password");
-          if (password != null) {
-            bean.setPassword(password.toString());
-          }
+        Object remarks = server.get("remarks");
+        if (remarks != null) {
+          bean.setRemarks(remarks.toString());
+        }
+        Object host = server.get("host");
+        if (host != null) {
+          bean.setHost(host.toString());
+        }
+        Object port = server.get("port");
+        if (port != null) {
+          bean.setPort(Integer.parseInt(port.toString()));
+        }
+        Object method = server.get("method");
+        if (method != null) {
+          bean.setMethod(method.toString());
+        }
+        Object password = server.get("password");
+        if (password != null) {
+          bean.setPassword(password.toString());
         }
       }
     }

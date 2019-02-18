@@ -18,6 +18,8 @@ import java.util.List;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_SOCKS5_REQUEST;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
+import static com.adolphor.mynety.common.constants.HandlerName.inBoundHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.socksAuthHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
@@ -54,8 +56,8 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
           if (socks5CmdRequest.type() == Socks5CommandType.CONNECT) {
             ctx.channel().attr(ATTR_SOCKS5_REQUEST).set(socks5CmdRequest);
-            ctx.pipeline().addLast(InBoundHandler.INSTANCE);
-            ctx.pipeline().remove(this);
+            ctx.pipeline().addAfter(socksAuthHandler, inBoundHandler, InBoundHandler.INSTANCE);
+            ctx.pipeline().remove(socksAuthHandler);
             ctx.pipeline().fireChannelActive();
           } else {
             logger.warn("[ {}{} ] SOCKS5 command request is not CONNECT...", ctx.channel().id(), LOG_MSG);

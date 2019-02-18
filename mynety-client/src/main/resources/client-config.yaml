@@ -1,3 +1,5 @@
+# to use native NIO lib, default false
+nativeNio: false
 # 是否开放代理给局域网内的其他设备：默认开启
 public: true
 # 代理策略：
@@ -14,7 +16,7 @@ http2socks5: true
 # 是否使用MITM处理ssl连接
 httpMitm:
   # 是否启用 MITM
-  isOpen: false
+  isOpen: true
   # CA证书密码
   caPassword: mynety-ca-password
   # CA证书所在路径

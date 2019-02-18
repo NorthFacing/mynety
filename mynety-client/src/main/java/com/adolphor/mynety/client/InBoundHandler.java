@@ -86,7 +86,6 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .handler(OutBoundInitializer.INSTANCE);
 
-    // 连接目标服务器器
     String connHost;
     Integer connPort;
     if (isProxy) {

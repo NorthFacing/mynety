@@ -12,7 +12,7 @@ import java.util.Map;
 import static org.apache.commons.lang3.ClassUtils.getName;
 
 /**
- * netty 的 socket 工具类
+ * socks utils
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -22,8 +22,7 @@ import static org.apache.commons.lang3.ClassUtils.getName;
 public class ChannelUtils {
 
   /**
-   * 关闭通道：
-   * 使用listener方式，保证数据传输完毕之后才关闭channel
+   * close the channel after all data has been transmitted
    *
    * @param ch
    */
@@ -34,7 +33,7 @@ public class ChannelUtils {
   }
 
   /**
-   * 调试工具，打印当前 channel pipeline 中的所有 handler，以及当前msg的数据类型
+   * debug method: log all handler in the pipeline
    *
    * @param channel
    */
@@ -48,7 +47,7 @@ public class ChannelUtils {
       ChannelHandler value = handler.getValue();
       logger.debug("[ {} ] {} => {}", channel.id(), key, value);
     });
-    logger.debug("===============================================end====================================================");
+    logger.debug("=============================================end======================================================");
   }
 
 }

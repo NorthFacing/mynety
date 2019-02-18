@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * Java基础工具类
+ * Java base utils
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -17,9 +17,7 @@ public class BaseUtils {
   }
 
   /**
-   * uuid压缩算法，利用高低位将32位的UUID压缩为16位。
-   * 虽然 tmp 使用的 int 占用4个字节，但这类运算的结果最大也不会超过一个字节内容。
-   * 同理，在构造字符串的时候将合并结果转为char只是为了字符串拼接。
+   * compress 32 chars UUID to 16 bytes
    *
    * @param uuid
    * @return
@@ -45,7 +43,7 @@ public class BaseUtils {
   }
 
   /**
-   * 压缩的uuid还原算法：将高低位拆分还原为32位的UUID
+   * decompress 16 bytes UUID to 32 chars
    *
    * @param compressedUUID
    * @return

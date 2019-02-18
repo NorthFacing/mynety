@@ -30,7 +30,7 @@ public class LanConstants {
   public static final int MAX_SLEEP_TIME = 6000;
 
 
-  // 协议相关
+  // 协议相关: https://iluoxuan.iteye.com/blog/1849302
   /**
    * 信息最大长度，超过这个长度会报异常
    */
@@ -46,21 +46,16 @@ public class LanConstants {
   /**
    * 长度调节值，在总长被定义为包含包头长度时，修正信息长度
    */
-  public static final int LENGTH_ADJUSTMENT = -4;
+  public static final int LENGTH_ADJUSTMENT = -LENGTH_FIELD_LENGTH;
   /**
    * 跳过的字节数，以便接收端直接接受到不含“长度属性”的内容
    */
-  public static final int INITIAL_BYTES_TO_STRIP = 0;
+  public static final int INITIAL_BYTES_TO_STRIP = LENGTH_FIELD_LENGTH;
 
-  // 会话管理
   /**
    *
    */
-  public static final String PREFIX_LAN_ID = "LAN-CLIENT-";
-  public static final AttributeKey<String> ATTR_LAN_ID = AttributeKey.valueOf("user.id");
-  public static final AttributeKey<String> ATTR_REQUEST_ID = AttributeKey.valueOf("request.id");
-
-
+  public static final AttributeKey<Boolean> IS_MAIN_CHANNEL = AttributeKey.valueOf("is.main.channel");
   public static final AttributeKey<Long> ATTR_SERIAL_NO = AttributeKey.valueOf("serial.number");
   public static final AttributeKey<Long> ATTR_LAST_BEAT_NO = AttributeKey.valueOf("last.beat.number");
   public static final AttributeKey<Long> ATTR_LOST_BEAT_CNT = AttributeKey.valueOf("lost.beat.number");

@@ -6,7 +6,7 @@ import org.junit.Test;
 public class LanMessageDecoderTest {
 
   /**
-   * All tests method has been done in => {@link com.adolphor.mynety.common.bean.lan.LanMessageEncoderTest}
+   * All tests method has been done in => {@link LanMessageEncoderTest}
    */
   @Test
   public void decode() {

@@ -8,12 +8,12 @@ import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.client.constants.ClientConstants.httpAggregator;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpClientCodec;
-import static com.adolphor.mynety.client.constants.ClientConstants.httpServerCodec;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IS_HTTP_TUNNEL;
 import static com.adolphor.mynety.common.constants.Constants.CONNECTION_ESTABLISHED;
+import static com.adolphor.mynety.common.constants.HandlerName.httpAggregatorHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.httpClientCodec;
+import static com.adolphor.mynety.common.constants.HandlerName.httpServerCodec;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
@@ -48,10 +48,10 @@ public class HttpOutBoundHandler extends AbstractOutBoundHandler<Object> {
       inRelayChannel.writeAndFlush(response);
     }
 
-    inRelayChannel.pipeline().remove(httpAggregator);
+    inRelayChannel.pipeline().remove(httpAggregatorHandler);
     inRelayChannel.pipeline().remove(httpServerCodec);
 
-    ctx.channel().pipeline().remove(httpAggregator);
+    ctx.channel().pipeline().remove(httpAggregatorHandler);
     ctx.channel().pipeline().remove(httpClientCodec);
   }
 

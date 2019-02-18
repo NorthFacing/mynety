@@ -60,7 +60,7 @@ public class CryptImpl implements ICrypt {
   @Override
   public byte[] encryptToArray(ByteBuf data) throws IOException, InvalidAlgorithmParameterException {
     if (cipherInfo == CryptCipherEnum.NONE) {
-      return ByteStrUtils.getArrayByBuf(data);
+      return ByteStrUtils.readArrayByBuf(data);
     }
     try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
       synchronized (encLock) {
@@ -73,7 +73,7 @@ public class CryptImpl implements ICrypt {
           encCipher.init(true, parameterIV);
           isEncryptIVSet = true;
         }
-        byte[] array = ByteStrUtils.getArrayByBuf(data);
+        byte[] array = ByteStrUtils.readArrayByBuf(data);
         processData(encCipher, array, stream);
       }
       return stream.toByteArray();
@@ -90,19 +90,19 @@ public class CryptImpl implements ICrypt {
   @Override
   public byte[] decryptToArray(ByteBuf data) throws IOException, InvalidAlgorithmParameterException {
     if (cipherInfo == CryptCipherEnum.NONE) {
-      return ByteStrUtils.getArrayByBuf(data);
+      return ByteStrUtils.readArrayByBuf(data);
     }
     try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
       synchronized (decLock) {
         stream.reset();
         if (!isDecryptIVSet) {
           decCipher = getCipher();
-          byte[] iv = ByteStrUtils.getArrayByBuf(data.readBytes(cipherInfo.ivLength));
+          byte[] iv = ByteStrUtils.readArrayByBuf(data.readBytes(cipherInfo.ivLength));
           ParametersWithIV parameterIV = new ParametersWithIV(new KeyParameter(key.getEncoded()), iv);
           decCipher.init(false, parameterIV);
           isDecryptIVSet = true;
         }
-        byte[] array = ByteStrUtils.getArrayByBuf(data);
+        byte[] array = ByteStrUtils.readArrayByBuf(data);
         processData(decCipher, array, stream);
       }
       return stream.toByteArray();

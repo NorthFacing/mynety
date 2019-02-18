@@ -4,26 +4,26 @@ import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.encryption.ICrypt;
 import com.adolphor.mynety.common.utils.ByteStrUtils;
 import com.adolphor.mynety.common.utils.ChannelUtils;
+import com.adolphor.mynety.common.utils.LanMsgUtils;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import com.adolphor.mynety.server.lan.utils.LanChannelContainers;
+import com.adolphor.mynety.server.lan.utils.LanClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CONNECTED_TIMESTAMP;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
+import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LOST_BEAT_CNT;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * lan服务器，监听lan客户端的请求。虽然此handler是一个监听服务端，但承担的是常规情况下的outBoundHandler的角色，
- * 所以收到消息之后，需要将消息返回给inRelayChannel，而inRelayChannel的获取条件是消息中的requestId。
- *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
  * @since v0.0.5
@@ -34,102 +34,101 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
 
   public static final LanOutBoundHandler INSTANCE = new LanOutBoundHandler();
 
-  /**
-   * 当有 lan client 请求的过来的时候，建立和client的连接，并将此连接保存到全局变量
-   *
-   * @param ctx
-   * @throws Exception
-   */
-  @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    super.channelActive(ctx);
-    LanChannelContainers.lanChannel = ctx.channel();
-
-    logger.debug("[ {} ]【{}】与lan客户端的连接创建成功... ", ctx.channel(), getSimpleName(this));
-  }
-
-  /**
-   * 收到lan客户端发送过来的消息：
-   * 1. 心跳信息：心跳丢失信息重置，并返回客户端心跳确认信息
-   * 2. 请求回复信息：将信息加密之后返回给socks server中的inRelayChannel
-   *
-   * @param ctx
-   * @param msg
-   * @throws Exception
-   */
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     switch (msg.getType()) {
+      case CLIENT:
+        handleClientMessage(ctx);
+        break;
+      case CONNECTED:
+        handleConnectedMessage(ctx, msg);
+        break;
       case HEARTBEAT:
         handleHeartbeatMessage(ctx, msg);
         break;
-      case TRANSFER:
+      case TRANSMIT:
         handleTransferMessage(ctx, msg);
         break;
-      case DISCONNECT:
-        handleDisconnectMessage(ctx, msg);
-        break;
       default:
-        break;
+        throw new IllegalArgumentException("NOT supported msg type:" + msg.getType());
     }
   }
 
   /**
-   * 断开连接：lan客户端和目的连接断开的时候，会发送断开连接信息，然后这里会断开socks服务器和客户端的连接
+   * main channel of lan client
+   *
+   * @param ctx
+   */
+  private void handleClientMessage(ChannelHandlerContext ctx) {
+    LanChannelContainers.clientMainChannel = ctx.channel();
+  }
+
+  /**
+   * connection reply msg:
+   * 1. bind inRelay and outRelay to each other by requestId;
+   * 2. consume cache msg
    *
    * @param ctx
    * @param msg
    */
-  private void handleDisconnectMessage(ChannelHandlerContext ctx, LanMessage msg) {
-    Channel inRelayChannel = LanChannelContainers.getChannelByRequestId(msg.getRequestId());
-    long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
-    logger.info("[ {} ]inRelayChannel will be closed by requestId, connection time: {}ms", inRelayChannel, getSimpleName(this), connTime);
-    ChannelUtils.closeOnFlush(inRelayChannel);
+  private void handleConnectedMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
+    String requestId = msg.getRequestId();
+    LanClient lanClient = LanChannelContainers.lanMaps.get(requestId);
+    Channel inRelayChannel = lanClient.getInRelayChannel();
+
+    AtomicReference<Channel> outRelayChannelRef = inRelayChannel.attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
+    outRelayChannelRef.set(ctx.channel());
+    ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).set(inRelayChannel);
+
+    ICrypt lanCrypt = lanClient.getCrypt();
+    ctx.channel().attr(ATTR_CRYPT_KEY).set(lanCrypt);
+
+    AtomicReference tempMstRef = inRelayChannel.attr(ATTR_REQUEST_TEMP_MSG).get();
+    if (tempMstRef.get() != null) {
+      synchronized (outRelayChannelRef) {
+        byte[] data = lanCrypt.encryptToArray((ByteBuf) tempMstRef.get());
+        LanMessage lanMessage = LanMsgUtils.packTransferMsg(data);
+        ctx.channel().writeAndFlush(lanMessage);
+      }
+    }
+
   }
 
   /**
-   * 数据传输：将LAN客户端回复数据返回给对应的inRelayChannel
-   * 1. 先用 lanChannel 对应的加解密对象解密
-   * 2. 在使用 inRelayChannel 对应的加解密对象加密
+   * from socks server to lan client
    *
    * @param ctx
-   * @param msg 回复信息
+   * @param msg
    */
   private void handleTransferMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
-    String requestId = msg.getRequestId();
-    Channel inRelayChannel = LanChannelContainers.getChannelByRequestId(requestId);
-    logger.debug("[ {}{}{} ] {} receive reply msg: {}", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), msg);
+
+    Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
+    ICrypt inRelayCrypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
+    ICrypt lanCrypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
+
     byte[] data = msg.getData();
 
-    ICrypt inRelayCrypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
-    ICrypt lanCrypt = LanChannelContainers.requestCryptsMap.get(requestId);
-
-    ByteBuf decryptBuf = lanCrypt.decrypt(ByteStrUtils.getHeapBuf(data));
+    ByteBuf decryptBuf = lanCrypt.decrypt(ByteStrUtils.getFixedLenHeapBuf(data));
     ByteBuf encryptBuf = inRelayCrypt.encrypt(decryptBuf);
 
     inRelayChannel.writeAndFlush(encryptBuf);
-    logger.debug("[ {}{}{} ] {} write reply msg to socks server: {} bytes", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getSimpleName(this), encryptBuf.readableBytes());
   }
 
   /**
-   * 心跳处理，复原超时计数，并直接返回心跳信息
-   *
    * @param ctx
-   * @param msg 心跳信息
+   * @param msg
    */
   private void handleHeartbeatMessage(ChannelHandlerContext ctx, LanMessage msg) {
     ctx.channel().attr(ATTR_LOST_BEAT_CNT).set(0L);
     ctx.channel().writeAndFlush(msg);
   }
 
-  /**
-   * TODO need to refactor, if lost lan connection, waits for 3 heart beats time
-   */
   @Override
-  public void channelClose(ChannelHandlerContext ctx) {
-    Collection<Channel> allChannels = LanChannelContainers.getAllChannels();
-    for (Channel ch : allChannels) {
-      ChannelUtils.closeOnFlush(ch);
+  protected void channelClose(ChannelHandlerContext ctx) {
+    Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
+    if (inRelayChannel != null && inRelayChannel.isActive()) {
+      long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
+      ChannelUtils.closeOnFlush(inRelayChannel);
     }
     super.channelClose(ctx);
   }

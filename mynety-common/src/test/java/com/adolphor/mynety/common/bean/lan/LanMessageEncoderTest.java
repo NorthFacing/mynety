@@ -4,6 +4,7 @@ import com.adolphor.mynety.common.constants.LanMsgType;
 import com.adolphor.mynety.common.utils.BaseUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.util.ReferenceCountUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,14 +13,15 @@ import java.nio.charset.StandardCharsets;
 public class LanMessageEncoderTest {
 
   /**
-   * Msg type => {@link com.adolphor.mynety.common.constants.LanMsgType}
+   * Msg type => {@link LanMsgType}
    */
   @Test
   public void encode() {
     M00_Heart_Beat();
+    M01_Client();
     M02_Connect();
-    M03_Disconnect();
-    M04_Transfer_Data();
+    M03_Connected();
+    M04_Transfer();
   }
 
   /**
@@ -27,26 +29,29 @@ public class LanMessageEncoderTest {
    */
   private void M00_Heart_Beat() {
     LanMessage message = new LanMessage();
-    String uuid = BaseUtils.getUUID();
     LanMsgType type = LanMsgType.HEARTBEAT;
-    Long serialNumber = Long.valueOf(BaseUtils.getRandomInt(1000, 9999));
-    message.setRequestId(uuid);
+    Long sequenceNum = Long.valueOf(BaseUtils.getRandomInt(1000, 9999));
     message.setType(type);
-    message.setSequenceNumber(serialNumber);
+    message.setSequenceNum(sequenceNum);
 
     EmbeddedChannel encodeChannel = new EmbeddedChannel(new LanMessageEncoder());
     Assert.assertTrue(encodeChannel.writeOutbound(message));
     Assert.assertTrue(encodeChannel.finish());
     ByteBuf encodeMsg = encodeChannel.readOutbound();
 
+    ReferenceCountUtil.retain(encodeMsg);
+
     EmbeddedChannel decodeChannel = new EmbeddedChannel(new LanMessageDecoder());
     Assert.assertTrue(decodeChannel.writeInbound(encodeMsg));
     Assert.assertTrue(decodeChannel.finish());
     LanMessage decodeMsg = decodeChannel.readInbound();
 
-    Assert.assertEquals(uuid, decodeMsg.getRequestId());
     Assert.assertEquals(type, decodeMsg.getType());
-    Assert.assertEquals(serialNumber, decodeMsg.getSequenceNumber());
+    Assert.assertEquals(sequenceNum, decodeMsg.getSequenceNum());
+  }
+
+  private void M01_Client(){
+
   }
 
   /**
@@ -57,8 +62,9 @@ public class LanMessageEncoderTest {
     String uuid = BaseUtils.getUUID();
     LanMsgType type = LanMsgType.CONNECT;
     String uri = "adolphor.com:443";
-    message.setRequestId(uuid);
+
     message.setType(type);
+    message.setRequestId(uuid);
     message.setUri(uri);
 
     EmbeddedChannel encodeChannel = new EmbeddedChannel(new LanMessageEncoder());
@@ -73,22 +79,21 @@ public class LanMessageEncoderTest {
 
     LanMessage decodeMsg = decodeChannel.readInbound();
 
-    Assert.assertEquals(uuid, decodeMsg.getRequestId());
     Assert.assertEquals(type, decodeMsg.getType());
+    Assert.assertEquals(uuid, decodeMsg.getRequestId());
     Assert.assertEquals(uri, decodeMsg.getUri());
   }
 
   /**
    * not null params: requestId,type
    */
-  private void M03_Disconnect() {
+  private void M03_Connected() {
     LanMessage message = new LanMessage();
     String uuid = BaseUtils.getUUID();
-    LanMsgType type = LanMsgType.DISCONNECT;
+    LanMsgType type = LanMsgType.CONNECTED;
 
-    message.setRequestId(uuid);
     message.setType(type);
-
+    message.setRequestId(uuid);
 
     EmbeddedChannel encodeChannel = new EmbeddedChannel(new LanMessageEncoder());
     Assert.assertTrue(encodeChannel.writeOutbound(message));
@@ -100,19 +105,17 @@ public class LanMessageEncoderTest {
     Assert.assertTrue(decodeChannel.finish());
     LanMessage decodeMsg = decodeChannel.readInbound();
 
-    Assert.assertEquals(uuid, decodeMsg.getRequestId());
     Assert.assertEquals(type, decodeMsg.getType());
+    Assert.assertEquals(uuid, decodeMsg.getRequestId());
   }
 
   /**
    * not null params: requestId,type,data
    */
-  private void M04_Transfer_Data() {
+  private void M04_Transfer() {
     LanMessage message = new LanMessage();
-    String uuid = BaseUtils.getUUID();
-    LanMsgType type = LanMsgType.TRANSFER;
-    String data = "hello encoder & decoder !";
-    message.setRequestId(uuid);
+    LanMsgType type = LanMsgType.TRANSMIT;
+    String data = "hello encode & decode ~";
     message.setType(type);
     message.setData(data.getBytes(StandardCharsets.UTF_8));
 
@@ -126,7 +129,6 @@ public class LanMessageEncoderTest {
     Assert.assertTrue(decodeChannel.finish());
     LanMessage decodeMsg = decodeChannel.readInbound();
 
-    Assert.assertEquals(uuid, decodeMsg.getRequestId());
     Assert.assertEquals(type, decodeMsg.getType());
     Assert.assertEquals(data, new String(decodeMsg.getData(), StandardCharsets.UTF_8));
   }
