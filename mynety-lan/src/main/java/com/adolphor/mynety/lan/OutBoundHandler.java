@@ -10,6 +10,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.adolphor.mynety.common.constants.Constants.ATTR_CRYPT_KEY;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 
 /**
@@ -18,17 +19,14 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANN
  * @since v0.0.5
  */
 @Slf4j
-public class LanOutBoundHandler extends AbstractSimpleHandler<ByteBuf> {
+public class OutBoundHandler extends AbstractSimpleHandler<ByteBuf> {
 
-  private final ICrypt crypt;
-
-  public LanOutBoundHandler(ICrypt crypt) {
-    this.crypt = crypt;
-  }
+  public static final OutBoundHandler INSTANCE = new OutBoundHandler();
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
+    ICrypt crypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
     ByteBuf encryptBuf = crypt.encrypt(msg);
     byte[] data = ByteStrUtils.readArrayByBuf(encryptBuf);
     LanMessage lanMessage = LanMsgUtils.packTransferMsg(data);

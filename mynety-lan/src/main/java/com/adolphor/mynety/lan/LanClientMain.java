@@ -56,7 +56,7 @@ public class LanClientMain {
       workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
       bootstrap.group(workerGroup)
           .channel(Constants.channelClass)
-          .handler(LanInBoundInitializer.INSTANCE);
+          .handler(InBoundInitializer.INSTANCE);
 
       ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT)
           .addListener((ChannelFutureListener) chFuture -> {

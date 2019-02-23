@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
 import static com.adolphor.mynety.common.constants.HandlerName.heartBeatHandler;
-import static com.adolphor.mynety.common.constants.HandlerName.lanInBoundHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.inBoundHandler;
 import static com.adolphor.mynety.common.constants.HandlerName.lanMessageDecoder;
 import static com.adolphor.mynety.common.constants.HandlerName.lanMessageEncoder;
 import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
@@ -23,9 +23,9 @@ import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class LanInBoundInitializer extends ChannelInitializer<SocketChannel> {
+public class InBoundInitializer extends ChannelInitializer<SocketChannel> {
 
-  public static final LanInBoundInitializer INSTANCE = new LanInBoundInitializer();
+  public static final InBoundInitializer INSTANCE = new InBoundInitializer();
 
   @Override
   @SuppressWarnings("Duplicates")
@@ -34,6 +34,6 @@ public class LanInBoundInitializer extends ChannelInitializer<SocketChannel> {
     ch.pipeline().addAfter(loggingHandler, lanMessageDecoder, new LanMessageDecoder());
     ch.pipeline().addAfter(lanMessageDecoder, lanMessageEncoder, new LanMessageEncoder());
     ch.pipeline().addAfter(lanMessageEncoder, heartBeatHandler, new HeartBeatHandler());
-    ch.pipeline().addAfter(heartBeatHandler, lanInBoundHandler, LanInBoundHandler.INSTANCE);
+    ch.pipeline().addAfter(heartBeatHandler, inBoundHandler, InBoundHandler.INSTANCE);
   }
 }

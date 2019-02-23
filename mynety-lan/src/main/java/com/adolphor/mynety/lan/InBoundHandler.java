@@ -14,11 +14,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,9 +30,6 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANN
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.COLON;
 import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
-import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
-import static com.adolphor.mynety.common.constants.HandlerName.lanOutBoundHandler;
-import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LAST_BEAT_NO;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
@@ -48,9 +42,9 @@ import static org.apache.commons.lang3.ClassUtils.getSimpleName;
  */
 @Slf4j
 @ChannelHandler.Sharable
-public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
+public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
 
-  public static final LanInBoundHandler INSTANCE = new LanInBoundHandler();
+  public static final InBoundHandler INSTANCE = new InBoundHandler();
 
   /**
    * @param ctx
@@ -134,14 +128,7 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .option(ChannelOption.TCP_NODELAY, true)
         .option(ChannelOption.SO_KEEPALIVE, true)
-        .handler(new ChannelInitializer<SocketChannel>() {
-          @Override
-          protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline()
-                .addFirst(loggingHandler, new LoggingHandler(LOG_LEVEL))
-                .addAfter(loggingHandler, lanOutBoundHandler, new LanOutBoundHandler(crypt));
-          }
-        })
+        .handler(OutBoundInitializer.INSTANCE)
         .connect(dstAddr, dstPort)
         .addListener((ChannelFutureListener) future -> {
           synchronized (connMsg) {
@@ -163,7 +150,7 @@ public class LanInBoundHandler extends AbstractInBoundHandler<LanMessage> {
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .option(ChannelOption.TCP_NODELAY, true)
         .option(ChannelOption.SO_KEEPALIVE, true)
-        .handler(LanInBoundInitializer.INSTANCE)
+        .handler(InBoundInitializer.INSTANCE)
         .connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT)
         .addListener((ChannelFutureListener) future -> {
           synchronized (connMsg) {
