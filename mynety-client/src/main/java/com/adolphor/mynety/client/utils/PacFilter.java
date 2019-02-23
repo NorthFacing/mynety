@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.utils;
 
-import com.adolphor.mynety.client.config.ClientConfig;
+import com.adolphor.mynety.client.config.Config;
 import com.adolphor.mynety.client.config.ProxyPacConfig;
 import com.adolphor.mynety.common.utils.DomainUtils;
 import com.adolphor.mynety.common.utils.LocalCache;
@@ -44,7 +44,7 @@ public class PacFilter {
    * @return 需要代理返回 true，否则 false
    */
   public static boolean isProxy(String domain) {
-    if (0 == ClientConfig.PROXY_STRATEGY) {
+    if (0 == Config.PROXY_STRATEGY) {
       return true;
     }
 
@@ -54,11 +54,11 @@ public class PacFilter {
     }
     boolean isproxy = false;
     // 优先代理
-    if (1 == ClientConfig.PROXY_STRATEGY) {
+    if (1 == Config.PROXY_STRATEGY) {
       isproxy = !DomainUtils.regCheckForSubdomain(ProxyPacConfig.DIRECT_DOMAINS, domain);
     }
     // 优先直连
-    else if (2 == ClientConfig.PROXY_STRATEGY) {
+    else if (2 == Config.PROXY_STRATEGY) {
       isproxy = DomainUtils.regCheckForSubdomain(ProxyPacConfig.PROXY_DOMAINS, domain);
     }
     LocalCache.set(PREFIX_PROXY_PROXY + domain, Boolean.toString(isproxy), 60 * 60 * 1000);

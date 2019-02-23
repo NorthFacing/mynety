@@ -70,46 +70,46 @@ public class ConfigLoader {
 
     Object aPublic = config.get("public");
     if (aPublic != null) {
-      ClientConfig.IS_PUBLIC = Boolean.valueOf(aPublic.toString());
+      Config.IS_PUBLIC = Boolean.valueOf(aPublic.toString());
     }
     Object socksLocalPort = config.get("socksLocalPort");
     if (socksLocalPort != null) {
-      ClientConfig.SOCKS_PROXY_PORT = Integer.parseInt(socksLocalPort.toString());
+      Config.SOCKS_PROXY_PORT = Integer.parseInt(socksLocalPort.toString());
     }
     Object httpLocalPort = config.get("httpLocalPort");
     if (httpLocalPort != null) {
-      ClientConfig.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
+      Config.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
     }
     Object http2socks5 = config.get("http2socks5");
     if (http2socks5 != null) {
-      ClientConfig.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
+      Config.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
     }
     Object httpMitm = config.get("httpMitm");
     if (httpMitm != null) {
       Map httpMitmMap = (Map) httpMitm;
       Object isOpen = httpMitmMap.get("isOpen");
       if (isOpen != null) {
-        ClientConfig.HTTP_MITM = Boolean.valueOf(isOpen.toString());
+        Config.HTTP_MITM = Boolean.valueOf(isOpen.toString());
       }
       Object caPassword = httpMitmMap.get("caPassword");
       if (caPassword != null) {
-        ClientConfig.CA_PASSWORD = caPassword.toString();
+        Config.CA_PASSWORD = caPassword.toString();
       }
       Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
       if (caKeyStoreFile != null) {
-        ClientConfig.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
+        Config.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
       }
     }
     Object proxyStrategy = config.get("proxyStrategy");
     if (proxyStrategy != null) {
-      ClientConfig.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());
+      Config.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());
     }
 
     if (config.get("servers") != null) {
       List<Map> servers = (List) config.get("servers");
       for (Map server : servers) {
         Server bean = new Server();
-        ClientConfig.SERVERS.add(bean);
+        Config.SERVERS.add(bean);
 
         Object remarks = server.get("remarks");
         if (remarks != null) {

@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client;
 
-import com.adolphor.mynety.client.config.ClientConfig;
+import com.adolphor.mynety.client.config.Config;
 import com.adolphor.mynety.client.config.ConfigLoader;
 import com.adolphor.mynety.client.http.HttpInBoundInitializer;
 import com.adolphor.mynety.client.utils.NetUtils;
@@ -20,11 +20,11 @@ import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
-import static com.adolphor.mynety.client.config.ClientConfig.HTTPS_CERT_CONFIG;
+import static com.adolphor.mynety.client.config.Config.HTTPS_CERT_CONFIG;
 import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
 
 /**
- * 客户端启动入口
+ * entrance of client
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -50,8 +50,8 @@ public final class ClientMain {
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(InBoundInitializer.INSTANCE);
-        String sLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
-        ChannelFuture sFuture = sServerBoot.bind(sLocalHost, ClientConfig.SOCKS_PROXY_PORT).sync();
+        String sLocalHost = Config.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
+        ChannelFuture sFuture = sServerBoot.bind(sLocalHost, Config.SOCKS_PROXY_PORT).sync();
         sFuture.channel().closeFuture().sync();
       } catch (Exception e) {
         logger.error("", e);
@@ -65,9 +65,9 @@ public final class ClientMain {
       EventLoopGroup hBossGroup = null;
       EventLoopGroup hWorkerGroup = null;
       try {
-        if (ClientConfig.HTTP_MITM) {
-          X509Certificate caCert = CertUtils.loadCert(ClientConfig.CA_KEYSTORE_FILE, ClientConfig.CA_PASSWORD.toCharArray());
-          PrivateKey caPriKey = CertUtils.loadPriKey(ClientConfig.CA_KEYSTORE_FILE, ClientConfig.CA_PASSWORD.toCharArray());
+        if (Config.HTTP_MITM) {
+          X509Certificate caCert = CertUtils.loadCert(Config.CA_KEYSTORE_FILE, Config.CA_PASSWORD.toCharArray());
+          PrivateKey caPriKey = CertUtils.loadPriKey(Config.CA_KEYSTORE_FILE, Config.CA_PASSWORD.toCharArray());
           SslContext sslCtx = SslContextBuilder.forClient()
               .trustManager(InsecureTrustManagerFactory.INSTANCE)
 //              .applicationProtocolConfig(new ApplicationProtocolConfig(
@@ -95,8 +95,8 @@ public final class ClientMain {
             .childOption(ChannelOption.TCP_NODELAY, true)
             .childOption(ChannelOption.SO_KEEPALIVE, true)
             .childHandler(HttpInBoundInitializer.INSTANCE);
-        String hLocalHost = ClientConfig.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
-        ChannelFuture hFuture = hServerBoot.bind(hLocalHost, ClientConfig.HTTP_PROXY_PORT).sync();
+        String hLocalHost = Config.IS_PUBLIC ? Constants.ALL_LOCAL_ADDRESS : Constants.LOOPBACK_ADDRESS;
+        ChannelFuture hFuture = hServerBoot.bind(hLocalHost, Config.HTTP_PROXY_PORT).sync();
         hFuture.channel().closeFuture().sync();
       } catch (Exception e) {
         logger.error("", e);

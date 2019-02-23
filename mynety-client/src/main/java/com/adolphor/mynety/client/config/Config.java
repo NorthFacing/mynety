@@ -17,7 +17,7 @@ import java.util.List;
  * @since v0.0.1
  */
 @Slf4j
-public class ClientConfig extends BaseConfig {
+public class Config extends BaseConfig {
 
   public static boolean IS_PUBLIC = true;
   public static int SOCKS_PROXY_PORT = 1086;

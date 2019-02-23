@@ -16,7 +16,7 @@ import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
 import static com.adolphor.mynety.server.config.Config.LAN_STRATEGY;
 
 /**
- * server entrance
+ * entrance of server
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

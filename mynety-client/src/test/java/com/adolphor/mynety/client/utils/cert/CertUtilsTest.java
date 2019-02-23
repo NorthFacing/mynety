@@ -15,7 +15,7 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 
-import static com.adolphor.mynety.client.config.ClientConfig.CA_PASSWORD;
+import static com.adolphor.mynety.client.config.Config.CA_PASSWORD;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.loadPriKey;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.preSubject;
 import static com.adolphor.mynety.client.utils.cert.CertUtils.saveCertToFile;

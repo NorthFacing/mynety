@@ -16,7 +16,7 @@ public class Config extends BaseConfig {
 
   public static int PROXY_PORT = 2086;
   public static String PROXY_METHOD = "aes-256-cfb";
-  public static String PROXY_PASSWORD = "123456˚";
+  public static String PROXY_PASSWORD = "123456";
 
   public static int LAN_SERVER_PORT = 2087;
   public static LanStrategy LAN_STRATEGY = LanStrategy.ALL;

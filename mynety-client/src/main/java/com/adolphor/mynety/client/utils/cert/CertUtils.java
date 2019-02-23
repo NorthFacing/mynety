@@ -33,7 +33,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Enumeration;
 
-import static com.adolphor.mynety.client.config.ClientConfig.CA_PASSWORD;
+import static com.adolphor.mynety.client.config.Config.CA_PASSWORD;
 
 /**
  * @author Bob.Zhu

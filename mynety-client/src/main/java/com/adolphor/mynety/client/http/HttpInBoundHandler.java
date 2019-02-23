@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.http;
 
-import com.adolphor.mynety.client.config.ClientConfig;
+import com.adolphor.mynety.client.config.Config;
 import com.adolphor.mynety.client.utils.cert.CertPool;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.constants.Constants;
@@ -20,7 +20,7 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.adolphor.mynety.client.config.ClientConfig.HTTPS_CERT_CONFIG;
+import static com.adolphor.mynety.client.config.Config.HTTPS_CERT_CONFIG;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
@@ -70,9 +70,9 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
         .handler(HttpOutBoundInitializer.INSTANCE);
     String connHost;
     int connPort;
-    if (ClientConfig.HTTP_2_SOCKS5) {
+    if (Config.HTTP_2_SOCKS5) {
       connHost = LOOPBACK_ADDRESS;
-      connPort = ClientConfig.SOCKS_PROXY_PORT;
+      connPort = Config.SOCKS_PROXY_PORT;
     } else {
       connHost = address.getHost();
       connPort = address.getPort();
@@ -93,7 +93,7 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
     Channel outRelayChannel = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get().get();
-    if (ClientConfig.HTTP_MITM && msg instanceof ByteBuf) {
+    if (Config.HTTP_MITM && msg instanceof ByteBuf) {
       ByteBuf bufMsg = (ByteBuf) msg;
       // TODO 如果开启MITM，在使用postman测试的时候就会出现问题
       if (bufMsg.getByte(0) == 22) {

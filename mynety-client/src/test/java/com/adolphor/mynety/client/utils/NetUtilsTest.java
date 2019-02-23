@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.utils;
 
-import com.adolphor.mynety.client.config.ClientConfig;
+import com.adolphor.mynety.client.config.Config;
 import com.adolphor.mynety.client.config.Server;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +22,7 @@ public class NetUtilsTest {
     for (int i = 0; i < 5; i++) {
       Server server = new Server();
       server.setPingTime(time + i);
-      ClientConfig.SERVERS.add(server);
+      Config.SERVERS.add(server);
     }
 
     Server server = NetUtils.getBestServer();

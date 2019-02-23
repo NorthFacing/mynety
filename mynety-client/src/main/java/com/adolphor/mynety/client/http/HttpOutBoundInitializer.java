@@ -1,7 +1,7 @@
 package com.adolphor.mynety.client.http;
 
 import com.adolphor.mynety.client.adapter.SocksHandsShakeHandler;
-import com.adolphor.mynety.client.config.ClientConfig;
+import com.adolphor.mynety.client.config.Config;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelInitializer;
@@ -41,7 +41,7 @@ public class HttpOutBoundInitializer extends ChannelInitializer<SocketChannel> {
   @Override
   protected void initChannel(SocketChannel ch) throws Exception {
     ch.pipeline().addFirst(loggingHandler, new LoggingHandler(LOG_LEVEL));
-    if (ClientConfig.HTTP_2_SOCKS5) {
+    if (Config.HTTP_2_SOCKS5) {
       ch.pipeline().addAfter(loggingHandler, socksShakerHandler, SocksHandsShakeHandler.INSTANCE);
     } else {
       addHttpOutBoundHandler(ch);
