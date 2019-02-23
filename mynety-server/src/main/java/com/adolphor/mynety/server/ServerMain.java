@@ -13,7 +13,7 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.adolphor.mynety.common.constants.Constants.LOG_LEVEL;
-import static com.adolphor.mynety.server.config.Config.LAN_STRATEGY;
+import static com.adolphor.mynety.server.config.Config.PROXY_STRATEGY;
 
 /**
  * entrance of server
@@ -52,7 +52,7 @@ public class ServerMain {
       }
     }, "socks-proxy-thread").start();
 
-    if (LanStrategy.CLOSE != LAN_STRATEGY) {
+    if (LanStrategy.CLOSE != PROXY_STRATEGY) {
       new Thread(() -> {
         EventLoopGroup bossGroup = null;
         EventLoopGroup workerGroup = null;

@@ -44,7 +44,7 @@ public class LanPacFilter {
    * @return 需要转发 返回 true，否则 false
    */
   public static boolean isLanProxy(String domain) {
-    switch (Config.LAN_STRATEGY) {
+    switch (Config.PROXY_STRATEGY) {
       case CLOSE:
         return false;
       case ALL:

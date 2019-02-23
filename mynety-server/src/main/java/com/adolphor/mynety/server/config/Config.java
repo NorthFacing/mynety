@@ -19,7 +19,7 @@ public class Config extends BaseConfig {
   public static String PROXY_PASSWORD = "123456";
 
   public static int LAN_SERVER_PORT = 2087;
-  public static LanStrategy LAN_STRATEGY = LanStrategy.ALL;
+  public static LanStrategy PROXY_STRATEGY = LanStrategy.ALL;
   public static String LAN_HOST_NAME = "mynetylan.adolphor.com";
   public static String LAN_METHOD = ENCRYPT_NONE;
   public static String LAN_PASSWORD = ENCRYPT_NONE;

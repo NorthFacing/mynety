@@ -52,9 +52,9 @@ public class ConfigLoader {
       if (lanPassword != null) {
         Config.LAN_PASSWORD = lanPassword.toString();
       }
-      Object lanStrategy = lannet.get("lanStrategy");
-      if (lanStrategy != null) {
-        Config.LAN_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.parseInt(lanStrategy.toString()));
+      Object proxyStrategy = lannet.get("proxyStrategy");
+      if (proxyStrategy != null) {
+        Config.PROXY_STRATEGY = LanStrategy.getLanStrategyByVal(Integer.parseInt(proxyStrategy.toString()));
       }
       Object lanHostName = lannet.get("lanHostName");
       if (lanHostName != null) {
@@ -62,7 +62,7 @@ public class ConfigLoader {
       }
     }
     logger.debug("Proxy server config loaded：Port={}, method={}, password={}", Config.PROXY_PORT, Config.PROXY_METHOD, Config.PROXY_PASSWORD);
-    logger.debug("Proxy lannet config loaded：lanStrategy={}, lanHostName={}, lanServerPort={}", Config.LAN_STRATEGY, Config.LAN_HOST_NAME, Config.LAN_SERVER_PORT);
+    logger.debug("Proxy lannet config loaded：proxyStrategy={}, lanHostName={}, lanServerPort={}", Config.PROXY_STRATEGY, Config.LAN_HOST_NAME, Config.LAN_SERVER_PORT);
     logger.debug("Proxy lannet config loaded：lanMethod={}, lanPassword={}", Config.LAN_METHOD, Config.LAN_PASSWORD);
   }
 
