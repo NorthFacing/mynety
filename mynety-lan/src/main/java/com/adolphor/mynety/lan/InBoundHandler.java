@@ -56,7 +56,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
         handleConnectionMessage(ctx, msg);
         break;
       case TRANSMIT:
-        handleTransferMessage(ctx, msg);
+        handleTransmitMessage(ctx, msg);
         break;
       case HEARTBEAT:
         handleHeartbeatMessage(ctx, msg);
@@ -73,7 +73,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
    * @param ctx
    * @param msg
    */
-  private void handleTransferMessage(ChannelHandlerContext ctx, LanMessage msg) throws IOException,
+  private void handleTransmitMessage(ChannelHandlerContext ctx, LanMessage msg) throws IOException,
       InvalidAlgorithmParameterException {
     ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
     ByteBuf decryptBuf = crypt.decrypt(ByteStrUtils.getFixedLenHeapBuf(msg.getData()));

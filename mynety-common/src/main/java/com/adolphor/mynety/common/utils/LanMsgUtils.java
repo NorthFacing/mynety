@@ -45,7 +45,7 @@ public class LanMsgUtils {
     lanMessage.setRequestId(requestId);
     return lanMessage;
   }
-  public static LanMessage packTransferMsg(byte[] data){
+  public static LanMessage packTransmitMsg(byte[] data){
     LanMessage lanMessage = new LanMessage();
     lanMessage.setType(LanMsgType.TRANSMIT);
     lanMessage.setData(data);

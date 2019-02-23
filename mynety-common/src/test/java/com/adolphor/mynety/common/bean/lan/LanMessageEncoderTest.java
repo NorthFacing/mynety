@@ -21,7 +21,7 @@ public class LanMessageEncoderTest {
     M01_Client();
     M02_Connect();
     M03_Connected();
-    M04_Transfer();
+    M04_Transmit();
   }
 
   /**
@@ -112,7 +112,7 @@ public class LanMessageEncoderTest {
   /**
    * not null params: requestId,type,data
    */
-  private void M04_Transfer() {
+  private void M04_Transmit() {
     LanMessage message = new LanMessage();
     LanMsgType type = LanMsgType.TRANSMIT;
     String data = "hello encode & decode ~";

@@ -29,7 +29,7 @@ public class OutBoundHandler extends AbstractSimpleHandler<ByteBuf> {
     ICrypt crypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
     ByteBuf encryptBuf = crypt.encrypt(msg);
     byte[] data = ByteStrUtils.readArrayByBuf(encryptBuf);
-    LanMessage lanMessage = LanMsgUtils.packTransferMsg(data);
+    LanMessage lanMessage = LanMsgUtils.packTransmitMsg(data);
     inRelayChannel.writeAndFlush(lanMessage);
   }
 

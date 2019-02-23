@@ -91,7 +91,7 @@ public final class LanAdapterInBoundHandler extends AbstractSimpleHandler<ByteBu
       if (outRelayChannel != null) {
         ICrypt lanCrypt = outRelayChannel.attr(ATTR_CRYPT_KEY).get();
         byte[] data = lanCrypt.encryptToArray(decryptBuf);
-        LanMessage lanMessage = LanMsgUtils.packTransferMsg(data);
+        LanMessage lanMessage = LanMsgUtils.packTransmitMsg(data);
         outRelayChannel.writeAndFlush(lanMessage);
         return;
       }

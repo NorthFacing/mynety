@@ -22,6 +22,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANN
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LOST_BEAT_CNT;
+import static org.apache.commons.lang3.ClassUtils.getName;
 
 /**
  * @author Bob.Zhu
@@ -47,7 +48,7 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
         handleHeartbeatMessage(ctx, msg);
         break;
       case TRANSMIT:
-        handleTransferMessage(ctx, msg);
+        handleTransmitMessage(ctx, msg);
         break;
       default:
         throw new IllegalArgumentException("NOT supported msg type:" + msg.getType());
@@ -87,11 +88,10 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
     if (tempMstRef.get() != null) {
       synchronized (outRelayChannelRef) {
         byte[] data = lanCrypt.encryptToArray((ByteBuf) tempMstRef.get());
-        LanMessage lanMessage = LanMsgUtils.packTransferMsg(data);
+        LanMessage lanMessage = LanMsgUtils.packTransmitMsg(data);
         ctx.channel().writeAndFlush(lanMessage);
       }
     }
-
   }
 
   /**
@@ -100,7 +100,7 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
    * @param ctx
    * @param msg
    */
-  private void handleTransferMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
+  private void handleTransmitMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
 
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     ICrypt inRelayCrypt = inRelayChannel.attr(ATTR_CRYPT_KEY).get();
@@ -128,6 +128,7 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     if (inRelayChannel != null && inRelayChannel.isActive()) {
       long connTime = System.currentTimeMillis() - ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).get();
+      logger.info("[ {} ] {} inRelayChannel will be closed, connection time: {} ms", inRelayChannel, getName(this), connTime);
       ChannelUtils.closeOnFlush(inRelayChannel);
     }
     super.channelClose(ctx);
