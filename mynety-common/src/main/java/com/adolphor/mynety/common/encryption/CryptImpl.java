@@ -84,6 +84,9 @@ public class CryptImpl implements ICrypt {
 
   @Override
   public ByteBuf encrypt(ByteBuf data) throws IOException, InvalidAlgorithmParameterException {
+    if (cipherInfo == CryptCipherEnum.NONE) {
+      return data;
+    }
     return Unpooled.wrappedBuffer(encryptToArray(data));
   }
 
@@ -97,7 +100,10 @@ public class CryptImpl implements ICrypt {
         stream.reset();
         if (!isDecryptIVSet) {
           decCipher = getCipher();
-          byte[] iv = ByteStrUtils.readArrayByBuf(data.readBytes(cipherInfo.ivLength));
+          ByteBuf ivBuf = data.readBytes(cipherInfo.ivLength);
+          byte[] iv = ByteStrUtils.readArrayByBuf(ivBuf);
+          // avoid resource leak
+          ivBuf.release();
           ParametersWithIV parameterIV = new ParametersWithIV(new KeyParameter(key.getEncoded()), iv);
           decCipher.init(false, parameterIV);
           isDecryptIVSet = true;
@@ -113,6 +119,9 @@ public class CryptImpl implements ICrypt {
 
   @Override
   public ByteBuf decrypt(ByteBuf data) throws IOException, InvalidAlgorithmParameterException {
+    if (cipherInfo == CryptCipherEnum.NONE) {
+      return data;
+    }
     return Unpooled.wrappedBuffer(decryptToArray(data));
   }
 

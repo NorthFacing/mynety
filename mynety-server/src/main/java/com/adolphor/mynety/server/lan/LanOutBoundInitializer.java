@@ -32,7 +32,7 @@ public class LanOutBoundInitializer extends ChannelInitializer<SocketChannel> {
     ch.pipeline().addFirst(loggingHandler, new LoggingHandler(LOG_LEVEL));
     ch.pipeline().addAfter(loggingHandler, lanMessageDecoder, new LanMessageDecoder());
     ch.pipeline().addAfter(lanMessageDecoder, lanMessageEncoder, new LanMessageEncoder());
-    ch.pipeline().addAfter(lanMessageEncoder, heartBeatHandler, new HeartBeatHandler());
+    ch.pipeline().addAfter(lanMessageEncoder, heartBeatHandler, HeartBeatHandler.INSTANCE);
     ch.pipeline().addAfter(heartBeatHandler, lanOutBoundHandler, LanOutBoundHandler.INSTANCE);
   }
 }

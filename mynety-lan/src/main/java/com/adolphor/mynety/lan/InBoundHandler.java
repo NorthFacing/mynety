@@ -15,12 +15,10 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ConnectException;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -31,7 +29,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHAN
 import static com.adolphor.mynety.common.constants.Constants.COLON;
 import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LAST_BEAT_NO;
-import static org.apache.commons.lang3.ClassUtils.getSimpleName;
+import static com.adolphor.mynety.common.constants.LanConstants.IS_MAIN_CHANNEL;
 
 /**
  * connect to lanServer
@@ -52,8 +50,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
    * @throws Exception
    */
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws InvalidAlgorithmParameterException,
-      IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
+  protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws InvalidAlgorithmParameterException, IOException {
     switch (msg.getType()) {
       case CONNECT:
         handleConnectionMessage(ctx, msg);
@@ -102,14 +99,13 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
    * @throws ConnectException
    */
   private void handleConnectionMessage(ChannelHandlerContext ctx, LanMessage connMsg)
-      throws InvalidAlgorithmParameterException, ConnectException, IllegalAccessException,
-      InvocationTargetException, InstantiationException {
+      throws InvalidAlgorithmParameterException, ConnectException{
 
     String requestId = connMsg.getRequestId();
 
     String uri = connMsg.getUri();
     if (StringUtils.isEmpty(uri) || uri.split(COLON).length < 2) {
-      logger.warn("[ {} ] {}-{} destination address is wrong: {}", ctx.channel().id(), getSimpleName(this), requestId, uri);
+      logger.warn("[ {} ] destination address is wrong: {} => {}", ctx.channel(), requestId, uri);
       throw new ConnectException(requestId);
     }
 
@@ -144,8 +140,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
         });
 
     // connect to lan server
-    EventLoopGroup workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
-    new Bootstrap().group(workerGroup)
+    new Bootstrap().group(LanClientMain.workerGroup)
         .channel(Constants.channelClass)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .option(ChannelOption.TCP_NODELAY, true)
@@ -192,6 +187,9 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
   @Override
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     super.channelInactive(ctx);
-    LanClientMain.doConnect();
+    // only main channel need to reconnect
+    if (ctx.channel().attr(IS_MAIN_CHANNEL).get()) {
+      LanClientMain.doConnect();
+    }
   }
 }

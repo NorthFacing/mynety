@@ -24,8 +24,7 @@ import static com.adolphor.mynety.common.constants.HandlerName.inBoundHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * 地址解析处理器
- * （可能会有黏包的问题，所以地址解析之后ByteBuf中还有数据）
+ * at first, parse the request address; if there are msg left in the buf, then put to caches
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com
@@ -38,15 +37,10 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
   public static final AddressHandler INSTANCE = new AddressHandler();
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) {
-    try {
-      super.channelActive(ctx);
-      ICrypt crypt = CryptFactory.get(Config.PROXY_METHOD, Config.PROXY_PASSWORD);
-      ctx.channel().attr(ATTR_CRYPT_KEY).set(crypt);
-    } catch (Exception e) {
-      logger.error(e.getMessage(), e);
-      channelClose(ctx);
-    }
+  public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    super.channelActive(ctx);
+    ICrypt crypt = CryptFactory.get(Config.PROXY_METHOD, Config.PROXY_PASSWORD);
+    ctx.channel().attr(ATTR_CRYPT_KEY).set(crypt);
   }
 
   /**
@@ -58,19 +52,19 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
     if (msg.readableBytes() <= 0) {
-      throw new IllegalAccessException("date length is to short ...");
+      throw new IllegalAccessException("date length is too short ...");
     }
     ByteBuf dataBuff = Unpooled.buffer();
     dataBuff.writeBytes(ctx.channel().attr(ATTR_CRYPT_KEY).get().decrypt(msg));
     if (dataBuff.readableBytes() < 2) {
-      throw new IllegalAccessException("date length is to short ...");
+      throw new IllegalAccessException("date length is too short ...");
     }
     String host;
     int port;
     int addressType = dataBuff.getUnsignedByte(0);
     if (addressType == SocksAddressType.IPv4.byteValue()) {
       if (dataBuff.readableBytes() < 7) {
-        throw new IllegalAccessException("date length is to short ...");
+        throw new IllegalAccessException("date length is too short ...");
       }
       dataBuff.readUnsignedByte();
       byte[] ipBytes = new byte[4];
@@ -80,13 +74,15 @@ public class AddressHandler extends AbstractSimpleHandler<ByteBuf> {
     } else if (addressType == SocksAddressType.DOMAIN.byteValue()) {
       int hostLength = dataBuff.getUnsignedByte(1);
       if (dataBuff.readableBytes() < hostLength + 4) {
-        throw new IllegalAccessException("date length is to short ...");
+        throw new IllegalAccessException("date length is too short ...");
       }
       dataBuff.readUnsignedByte();
       dataBuff.readUnsignedByte();
 
       ByteBuf hostBytes = dataBuff.readBytes(hostLength);
       host = ByteStrUtils.readStringByBuf(hostBytes);
+      // avoid resource leak
+      hostBytes.release();
       port = dataBuff.readUnsignedShort();
     } else {
       throw new IllegalAccessException("unknown supported type: " + addressType);

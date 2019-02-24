@@ -128,12 +128,14 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
       return;
     }
 
+    AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
     if (ctx.channel().attr(ATTR_IS_PROXY).get()) {
-      msg = ctx.channel().attr(ATTR_CRYPT_KEY).get().encrypt(msg);
+      ByteBuf encryptBuf = ctx.channel().attr(ATTR_CRYPT_KEY).get().encrypt(msg);
+      outRelayChannelRef.get().writeAndFlush(encryptBuf);
+    } else {
+      outRelayChannelRef.get().writeAndFlush(msg);
     }
 
-    AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
-    outRelayChannelRef.get().writeAndFlush(msg);
   }
 
   /**
@@ -185,6 +187,7 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
     // DST.ATTR_PORT
     connBuf.writeShort(dstPort);
     ByteBuf encryptBuf = crypt.encrypt(connBuf);
+    connBuf.release();
     outRelayChannel.writeAndFlush(encryptBuf).addListener((ChannelFutureListener) future -> {
       Socks5Message socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socks5CmdRequest.dstAddrType(), dstAddr, socks5CmdRequest.dstPort());
       inRelayChannel.writeAndFlush(socks5cmdResponse);

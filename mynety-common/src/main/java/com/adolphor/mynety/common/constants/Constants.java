@@ -46,7 +46,7 @@ public class Constants {
   public static final String COLON = ":";
   public static final int MAX_CONTENT_LENGTH = 6553600;
 
-  public static final LogLevel LOG_LEVEL = LogLevel.DEBUG;
+  public static final LogLevel LOG_LEVEL = LogLevel.TRACE;
 
   /**
    * proxy strategy

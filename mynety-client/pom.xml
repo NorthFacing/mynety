@@ -98,14 +98,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
       </plugin>
-      <!--使用此插件，需要更改父pom中jar-plugin配置，使jar包含配置文件-->
-      <!--<plugin>-->
-      <!--<groupId>com.jolira</groupId>-->
-      <!--<artifactId>onejar-maven-plugin</artifactId>-->
-      <!--<configuration>-->
-      <!--<mainClass>${app.mainClass}</mainClass>-->
-      <!--</configuration>-->
-      <!--</plugin>-->
     </plugins>
   </build>
 

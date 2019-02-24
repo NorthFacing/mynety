@@ -3,6 +3,7 @@ package com.adolphor.mynety.common.wrapper;
 import com.adolphor.mynety.common.utils.ChannelUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import static org.apache.commons.lang3.ClassUtils.getName;
  * @since v0.0.4
  */
 @Slf4j
+@ChannelHandler.Sharable
 public abstract class AbstractInBoundHandler<I> extends AbstractSimpleHandler<I> {
 
   /**

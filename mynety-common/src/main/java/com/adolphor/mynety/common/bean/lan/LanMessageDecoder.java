@@ -33,6 +33,7 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
   protected LanMessage decode(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
 
     ByteBuf byteBuf = (ByteBuf) super.decode(ctx, msg);
+
     if (byteBuf == null) {
       return null;
     }
@@ -61,6 +62,7 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
     } else {
       throw new IllegalArgumentException("unsupported msg type: " + type);
     }
+    byteBuf.release();
     return lanMessage;
   }
 

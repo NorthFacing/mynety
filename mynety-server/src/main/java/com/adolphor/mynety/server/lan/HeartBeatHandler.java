@@ -1,6 +1,7 @@
 package com.adolphor.mynety.server.lan;
 
 import com.adolphor.mynety.common.utils.ChannelUtils;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -21,7 +22,10 @@ import static com.adolphor.mynety.common.constants.LanConstants.WRITE_IDLE_TIME;
  * @since v0.0.5
  */
 @Slf4j
+@ChannelHandler.Sharable
 public class HeartBeatHandler extends IdleStateHandler {
+
+  public static final HeartBeatHandler INSTANCE = new HeartBeatHandler();
 
   public HeartBeatHandler() {
     super(READ_IDLE_TIME, WRITE_IDLE_TIME, ALL_IDLE_TIME);

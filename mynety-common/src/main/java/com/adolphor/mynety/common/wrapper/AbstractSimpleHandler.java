@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_CONNECTED_TIMESTAMP;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANNEL;
 import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHANNEL_REF;
-import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_OUT;
 import static org.apache.commons.lang3.ClassUtils.getName;
@@ -36,7 +35,7 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     long timestamp = System.currentTimeMillis();
     ctx.channel().attr(ATTR_CONNECTED_TIMESTAMP).set(timestamp);
-    logger.debug("[ {} ]{} set connect timestamp attr: {}", ctx.channel().id(), getName(this), timestamp + " => " + ctx.channel().attr(ATTR_REQUEST_ADDRESS).get());
+    logger.debug("[ {} ]{} set connect timestamp attr: {}", ctx.channel().id(), getName(this), timestamp);
   }
 
   @Override
@@ -44,11 +43,11 @@ public abstract class AbstractSimpleHandler<I> extends SimpleChannelInboundHandl
     AtomicReference<Channel> outRelayChannelRef = ctx.channel().attr(ATTR_OUT_RELAY_CHANNEL_REF).get();
     Channel inRelayChannel = ctx.channel().attr(ATTR_IN_RELAY_CHANNEL).get();
     if (outRelayChannelRef != null && outRelayChannelRef.get() != null) {
-      logger.debug("[ {}{}{} ] {} read complete......", ctx.channel().id(), LOG_MSG_OUT, outRelayChannelRef.get().id(), getName(this));
+      logger.trace("[ {}{}{} ] {} read complete......", ctx.channel().id(), LOG_MSG_OUT, outRelayChannelRef.get().id(), getName(this));
     } else if (inRelayChannel != null) {
-      logger.debug("[ {}{}{} ] {} read complete......", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getName(this));
+      logger.trace("[ {}{}{} ] {} read complete......", inRelayChannel.id(), LOG_MSG_IN, ctx.channel().id(), getName(this));
     } else {
-      logger.debug("[ {} ] {} read complete......", ctx.channel().id(), getName(this));
+      logger.trace("[ {} ] {} read complete......", ctx.channel().id(), getName(this));
     }
     super.channelReadComplete(ctx);
   }

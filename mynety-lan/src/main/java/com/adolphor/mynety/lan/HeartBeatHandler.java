@@ -2,6 +2,7 @@ package com.adolphor.mynety.lan;
 
 import com.adolphor.mynety.common.bean.lan.LanMessage;
 import com.adolphor.mynety.common.utils.LanMsgUtils;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
@@ -22,7 +23,10 @@ import static com.adolphor.mynety.common.constants.LanConstants.WRITE_IDLE_TIME;
  * @since v0.0.5
  */
 @Slf4j
+@ChannelHandler.Sharable
 public class HeartBeatHandler extends IdleStateHandler {
+
+  public static final HeartBeatHandler INSTANCE = new HeartBeatHandler();
 
   public HeartBeatHandler() {
     super(READ_IDLE_TIME, WRITE_IDLE_TIME, ALL_IDLE_TIME);
@@ -41,7 +45,7 @@ public class HeartBeatHandler extends IdleStateHandler {
       if (isMainChannel != null && isMainChannel) {
         Long sequenceNumber = LanMsgUtils.getNextNumber(ctx.channel());
         ctx.channel().attr(ATTR_LAST_BEAT_NO).set(sequenceNumber);
-        LanMessage lanMessage =LanMsgUtils.packHeartBeatMsg(sequenceNumber);
+        LanMessage lanMessage = LanMsgUtils.packHeartBeatMsg(sequenceNumber);
         ctx.writeAndFlush(lanMessage);
       }
     }

@@ -2,6 +2,8 @@ package com.adolphor.mynety.common.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.util.ReferenceCountUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,6 +14,7 @@ import java.nio.charset.StandardCharsets;
  * @Email adolphor@qq.com
  * @since v0.0.5
  */
+@Slf4j
 public class ByteStrUtils {
 
   public static ByteBuf getDirectBuf(byte[] arr) {
@@ -57,6 +60,8 @@ public class ByteStrUtils {
         tempBuf = buf.readBytes(len);
       }
     } else {
+      // at below will execute release method, so retain once, avoid IllegalReferenceCountException
+      ReferenceCountUtil.retain(buf);
       tempBuf = buf;
     }
     if (tempBuf.hasArray()) {
@@ -65,11 +70,15 @@ public class ByteStrUtils {
       int length = tempBuf.readableBytes();
       byte[] temp = new byte[length];
       System.arraycopy(array, offset, temp, 0, length);
+      // avoid resource leak
+      tempBuf.release();
       return temp;
     } else {
       int length = tempBuf.readableBytes();
       byte[] array = new byte[length];
       tempBuf.getBytes(tempBuf.readerIndex(), array);
+      // avoid resource leak
+      tempBuf.release();
       return array;
     }
   }
