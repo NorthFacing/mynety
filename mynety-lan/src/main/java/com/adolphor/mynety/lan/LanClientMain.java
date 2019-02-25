@@ -25,22 +25,18 @@ import static com.adolphor.mynety.common.constants.LanConstants.MAX_SLEEP_TIME;
 @Slf4j
 public class LanClientMain {
 
-  private static Bootstrap bootstrap;
-  public static EventLoopGroup workerGroup;
+  /**
+   * after conn success, need to send a client msg to mark as a lan client main channel
+   */
+  private static final LanMessage lanClientMsg = LanMsgUtils.packClientMsg("password");
   private static long SLEEP_TIME = INIT_SLEEP_TIME;
 
   public static void main(String[] args) throws Exception {
 
     ConfigLoader.loadConfig();
-    workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
-    bootstrap = new Bootstrap();
 
-    try {
-      doConnect();
-    } catch (Exception e) {
-      logger.error("lan client start Error", e);
-      doConnect();
-    }
+    doConnect();
+
   }
 
   /**
@@ -48,32 +44,42 @@ public class LanClientMain {
    *
    * @return
    */
-  public static void doConnect() throws Exception {
+  public static void doConnect() throws Exception{
     reconnectWait();
-    bootstrap.group(workerGroup)
-        .channel(Constants.channelClass)
-        .handler(InBoundInitializer.INSTANCE);
+    Bootstrap bootstrap = new Bootstrap();
+    EventLoopGroup workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
 
-    ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT)
-        .addListener((ChannelFutureListener) chFuture -> {
-          if (chFuture.isSuccess()) {
-            chFuture.channel().attr(IS_MAIN_CHANNEL).set(true);
-            logger.info("lan main channel connect to lan server success...");
-            // after conn success, need to send a client msg to mark as a lan client main channel
-            LanMessage lanClientMsg = LanMsgUtils.packClientMsg("password");
-            chFuture.channel().writeAndFlush(lanClientMsg).addListener((ChannelFutureListener) innerFuture -> {
-              if (innerFuture.isSuccess()) {
-                logger.info("send client main msg to lan server success ...");
-              } else {
-                throw new ConnectException("connect failed: " + innerFuture.cause().getMessage());
-              }
-            });
-          } else {
-            throw new ConnectException("connect failed: " + chFuture.cause().getMessage());
-          }
-        })
-        .sync();
-    future.channel().closeFuture().sync();
+    try {
+      bootstrap.group(workerGroup)
+          .channel(Constants.channelClass)
+          .handler(InBoundInitializer.INSTANCE);
+
+      ChannelFuture future = bootstrap.connect(Config.LAN_SERVER_HOST, Config.LAN_SERVER_PORT)
+          .addListener((ChannelFutureListener) chFuture -> {
+            if (chFuture.isSuccess()) {
+              chFuture.channel().attr(IS_MAIN_CHANNEL).set(true);
+              logger.info("lan main channel connect to lan server success...");
+              chFuture.channel().writeAndFlush(lanClientMsg).addListener((ChannelFutureListener) innerFuture -> {
+                if (innerFuture.isSuccess()) {
+                  logger.info("send client main msg to lan server success ...");
+                } else {
+                  throw new ConnectException("connect failed: " + innerFuture.cause().getMessage());
+                }
+              });
+            } else {
+              throw new ConnectException("connect failed: " + chFuture.cause().getMessage());
+            }
+          })
+          .sync();
+      future.channel().closeFuture().sync();
+    } catch (Exception e) {
+      logger.warn(e.getMessage(), e);
+      doConnect();
+    } finally {
+      if (workerGroup != null) {
+        workerGroup.shutdownGracefully();
+      }
+    }
   }
 
   public static void reconnectWait() {

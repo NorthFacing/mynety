@@ -15,10 +15,10 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.security.InvalidAlgorithmParameterException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,13 +44,27 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
 
   public static final InBoundHandler INSTANCE = new InBoundHandler();
 
+  private static EventLoopGroup workerGroup = null;
+
+  public static final EventLoopGroup singleEventLoop() throws Exception {
+    if (workerGroup == null) {
+      synchronized (InBoundHandler.class) {
+        if (workerGroup == null) {
+          workerGroup = (EventLoopGroup) Constants.workerGroupType.newInstance();
+        }
+      }
+    }
+    return workerGroup;
+  }
+
+
   /**
    * @param ctx
    * @param msg
    * @throws Exception
    */
   @Override
-  protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws InvalidAlgorithmParameterException, IOException {
+  protected void channelRead0(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     switch (msg.getType()) {
       case CONNECT:
         handleConnectionMessage(ctx, msg);
@@ -73,8 +87,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
    * @param ctx
    * @param msg
    */
-  private void handleTransmitMessage(ChannelHandlerContext ctx, LanMessage msg) throws IOException,
-      InvalidAlgorithmParameterException {
+  private void handleTransmitMessage(ChannelHandlerContext ctx, LanMessage msg) throws Exception {
     ICrypt crypt = ctx.channel().attr(ATTR_CRYPT_KEY).get();
     ByteBuf decryptBuf = crypt.decrypt(ByteStrUtils.getFixedLenHeapBuf(msg.getData()));
 
@@ -98,8 +111,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
    * @throws InvalidAlgorithmParameterException
    * @throws ConnectException
    */
-  private void handleConnectionMessage(ChannelHandlerContext ctx, LanMessage connMsg)
-      throws InvalidAlgorithmParameterException, ConnectException{
+  private void handleConnectionMessage(ChannelHandlerContext ctx, LanMessage connMsg) throws Exception {
 
     String requestId = connMsg.getRequestId();
 
@@ -140,7 +152,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
         });
 
     // connect to lan server
-    new Bootstrap().group(LanClientMain.workerGroup)
+    new Bootstrap().group(singleEventLoop())
         .channel(Constants.channelClass)
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
         .option(ChannelOption.TCP_NODELAY, true)
