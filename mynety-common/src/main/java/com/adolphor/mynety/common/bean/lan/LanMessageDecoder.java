@@ -51,6 +51,8 @@ public class LanMessageDecoder extends LengthFieldBasedFrameDecoder {
       ByteBuf compressedId = byteBuf.readBytes(requestIdLen);
       lanMessage.setRequestIdByBuf(compressedId);
       String uri = ByteStrUtils.readStringByBuf(byteBuf);
+      // fix: resource leak
+      compressedId.release();
       lanMessage.setUri(uri);
     } else if (LanMsgType.CONNECTED == type) {
       lanMessage.setRequestIdByBuf(byteBuf);
