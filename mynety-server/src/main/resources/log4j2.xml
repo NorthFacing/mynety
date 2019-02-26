@@ -16,6 +16,16 @@
       <PatternLayout pattern="%d{HH:mm:ss.SSS} %-p %class{36} %L %M - %m%n"/>
     </File>
 
+    <RollingFile name="TRACE" fileName="${logPath}/trace.log" filePattern="${logPath}/%d{y}-trace-%i.log">
+      <ThresholdFilter level="trace" onMatch="ACCEPT" onMismatch="DENY"/>
+      <PatternLayout pattern="${logPattern}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+        <SizeBasedTriggeringPolicy size="500K"/>
+      </Policies>
+      <DefaultRolloverStrategy max="20"/>
+    </RollingFile>
+
     <RollingFile name="DEBUG" fileName="${logPath}/debug.log" filePattern="${logPath}/%d{y}-debug-%i.log">
       <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
       <PatternLayout pattern="${logPattern}"/>
@@ -56,8 +66,9 @@
   </appenders>
 
   <loggers>
-    <root level="DEBUG">
+    <root level="TRACE">
       <appender-ref ref="Console"/>
+      <appender-ref ref="TRACE"/>
       <appender-ref ref="DEBUG"/>
       <appender-ref ref="INFO"/>
       <appender-ref ref="WARN"/>
