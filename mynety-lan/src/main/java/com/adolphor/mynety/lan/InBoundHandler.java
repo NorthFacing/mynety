@@ -200,7 +200,8 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
   public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     super.channelInactive(ctx);
     // only main channel need to reconnect
-    if (ctx.channel().attr(IS_MAIN_CHANNEL).get()) {
+    Boolean isMainChannel = ctx.channel().attr(IS_MAIN_CHANNEL).get();
+    if (isMainChannel != null && isMainChannel) {
       LanClientMain.doConnect();
     }
   }
