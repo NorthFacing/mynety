@@ -23,6 +23,7 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_OUT_RELAY_CHAN
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_TEMP_MSG;
 import static com.adolphor.mynety.common.constants.LanConstants.ATTR_LOST_BEAT_CNT;
 import static org.apache.commons.lang3.ClassUtils.getName;
+import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
  * @author Bob.Zhu
@@ -90,7 +91,10 @@ public class LanOutBoundHandler extends AbstractSimpleHandler<LanMessage> {
         byte[] data = lanCrypt.encryptToArray((ByteBuf) tempMstRef.get());
         LanMessage lanMessage = LanMsgUtils.packTransmitMsg(data);
         ctx.channel().writeAndFlush(lanMessage);
+        logger.debug("[ {} ] {} get cache msg => {} ", ctx.channel().id(), getSimpleName(this), tempMstRef.get());
       }
+    } else {
+      logger.debug("[ {} ] {} no cache msg... ", ctx.channel().id(), getSimpleName(this));
     }
   }
 

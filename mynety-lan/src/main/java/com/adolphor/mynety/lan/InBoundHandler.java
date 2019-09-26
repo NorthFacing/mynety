@@ -76,7 +76,7 @@ public class InBoundHandler extends AbstractInBoundHandler<LanMessage> {
         handleHeartbeatMessage(ctx, msg);
         break;
       default:
-        logger.info("[ {} ] {} unsupported msg type: {}", ctx.channel(), msg);
+        logger.warn("[ {} ] {} unsupported msg type: {}", ctx.channel(), msg);
         break;
     }
   }

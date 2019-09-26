@@ -17,9 +17,9 @@ lannet:
   # encrypt/decrypt password
   password: none
   # lan net strategy
-  # -1：close,do NOT transmit msg to lan net
-  # 1 (default)：transmit all msg to lan net
-  # 0：transmit designated domains's msg to lan net (TODO)
+  # -1: close, do NOT transmit msg to lan net
+  # 1 : default, transmit all msg to lan net
+  # 0 : transmit designated domains's msg to lan net (TODO)
   proxyStrategy: 1
   # the local address of lan server, all the msg request to lanHostName will be transmitred to "127.0.0.1" of lan server machine
   lanHostName: mynetylan.adolphor.com
