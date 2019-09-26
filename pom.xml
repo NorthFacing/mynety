@@ -23,7 +23,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <netty.version>4.1.32.Final</netty.version>
+    <netty.version>4.1.41.Final</netty.version>
     <assemble.dir>${project.build.directory}/${app.name}</assemble.dir>
   </properties>
 

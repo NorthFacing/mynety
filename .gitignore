@@ -10,6 +10,11 @@ pom.xml.versionsBackup
 logs
 conf
 
+.project
+.settings/
+.classpath
+.factorypath
+
 dev-client-config.xml
 dev-client-config.yaml
 test-*-client-config.yaml
