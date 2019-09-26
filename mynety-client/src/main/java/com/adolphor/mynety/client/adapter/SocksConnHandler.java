@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.adapter;
 
-import com.adolphor.mynety.client.http.HttpOutBoundInitializer;
+import com.adolphor.mynety.client.http.HttpOutBoundHandler;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
@@ -8,6 +8,9 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.socks.SocksAddressType;
 import io.netty.handler.codec.socksx.SocksVersion;
 import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
@@ -22,7 +25,12 @@ import static com.adolphor.mynety.common.constants.Constants.ATTR_IN_RELAY_CHANN
 import static com.adolphor.mynety.common.constants.Constants.ATTR_REQUEST_ADDRESS;
 import static com.adolphor.mynety.common.constants.Constants.IPV4_PATTERN;
 import static com.adolphor.mynety.common.constants.Constants.IPV6_PATTERN;
+import static com.adolphor.mynety.common.constants.Constants.MAX_CONTENT_LENGTH;
 import static com.adolphor.mynety.common.constants.Constants.RESERVED_BYTE;
+import static com.adolphor.mynety.common.constants.HandlerName.httpAggregatorHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.httpClientCodec;
+import static com.adolphor.mynety.common.constants.HandlerName.httpOutBoundHandler;
+import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
 import static com.adolphor.mynety.common.constants.HandlerName.socksConnHandler;
 
 /**
@@ -99,10 +107,13 @@ public class SocksConnHandler extends AbstractSimpleHandler<ByteBuf> {
       throw new ConnectException("connect failed: " + Socks5CommandStatus.valueOf(rep));
     }
 
-    HttpOutBoundInitializer.addHttpOutBoundHandler(ctx.channel());
-    ctx.pipeline().remove(socksConnHandler);
+    ChannelPipeline pipeline = ctx.pipeline();
+    pipeline.addAfter(loggingHandler, httpClientCodec, new HttpClientCodec());
+    pipeline.addAfter(httpClientCodec, httpAggregatorHandler, new HttpObjectAggregator(MAX_CONTENT_LENGTH));
+    pipeline.addAfter(httpAggregatorHandler, httpOutBoundHandler, HttpOutBoundHandler.INSTANCE);
 
-    ctx.pipeline().fireChannelActive();
+    pipeline.remove(socksConnHandler);
+    pipeline.fireChannelActive();
   }
 
 }

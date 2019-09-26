@@ -80,26 +80,6 @@ public class ConfigLoader {
     if (httpLocalPort != null) {
       Config.HTTP_PROXY_PORT = Integer.parseInt(httpLocalPort.toString());
     }
-    Object http2socks5 = config.get("http2socks5");
-    if (http2socks5 != null) {
-      Config.HTTP_2_SOCKS5 = Boolean.valueOf(http2socks5.toString());
-    }
-    Object httpMitm = config.get("httpMitm");
-    if (httpMitm != null) {
-      Map httpMitmMap = (Map) httpMitm;
-      Object isOpen = httpMitmMap.get("isOpen");
-      if (isOpen != null) {
-        Config.HTTP_MITM = Boolean.valueOf(isOpen.toString());
-      }
-      Object caPassword = httpMitmMap.get("caPassword");
-      if (caPassword != null) {
-        Config.CA_PASSWORD = caPassword.toString();
-      }
-      Object caKeyStoreFile = httpMitmMap.get("caKeyStoreFile");
-      if (caKeyStoreFile != null) {
-        Config.CA_KEYSTORE_FILE = caKeyStoreFile.toString();
-      }
-    }
     Object proxyStrategy = config.get("proxyStrategy");
     if (proxyStrategy != null) {
       Config.PROXY_STRATEGY = Integer.parseInt(proxyStrategy.toString());

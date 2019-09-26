@@ -17,7 +17,6 @@ import java.util.List;
 
 import static com.adolphor.mynety.common.constants.Constants.ATTR_SOCKS5_REQUEST;
 import static com.adolphor.mynety.common.constants.Constants.LOG_MSG;
-import static com.adolphor.mynety.common.constants.Constants.LOG_MSG_IN;
 import static com.adolphor.mynety.common.constants.HandlerName.inBoundHandler;
 import static com.adolphor.mynety.common.constants.HandlerName.socksAuthHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
@@ -44,13 +43,10 @@ public final class AuthHandler extends AbstractSimpleHandler<SocksMessage> {
           if (methods.contains(Socks5AuthMethod.NO_AUTH)) {
             ctx.pipeline().addFirst(new Socks5CommandRequestDecoder());
             ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.NO_AUTH));
-            logger.info("[ {}{} ] socks response for handsShake: Socks5AuthMethod.NO_AUTH", ctx.channel().id(), LOG_MSG_IN);
           } else {
             ctx.writeAndFlush(new DefaultSocks5InitialResponse(Socks5AuthMethod.UNACCEPTED));
-            logger.warn("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel().id(), LOG_MSG_IN);
           }
         } else if (socksRequest instanceof Socks5PasswordAuthRequest) {
-          logger.warn("[ {}{} ] socks response for handsShake: Socks5AuthMethod.UNACCEPTED", ctx.channel().id(), LOG_MSG);
           ctx.close();
         } else if (socksRequest instanceof Socks5CommandRequest) {
           Socks5CommandRequest socks5CmdRequest = (Socks5CommandRequest) socksRequest;
