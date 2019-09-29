@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client;
+package com.adolphor.mynety.client.socks5;
 
 import com.adolphor.mynety.common.wrapper.AbstractInBoundInitializer;
 import io.netty.channel.ChannelHandler;

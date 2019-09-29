@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client.http;
+package com.adolphor.mynety.client.http1;
 
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.utils.DomainUtils;
@@ -18,7 +18,7 @@ import static com.adolphor.mynety.common.constants.HandlerName.httpProxyHandler;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
 
 /**
- * entrance of http request
+ * entrance of http1 request
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

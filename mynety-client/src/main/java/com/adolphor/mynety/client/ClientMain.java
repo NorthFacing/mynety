@@ -2,7 +2,8 @@ package com.adolphor.mynety.client;
 
 import com.adolphor.mynety.client.config.Config;
 import com.adolphor.mynety.client.config.ConfigLoader;
-import com.adolphor.mynety.client.http.HttpInBoundInitializer;
+import com.adolphor.mynety.client.http1.HttpInBoundInitializer;
+import com.adolphor.mynety.client.socks5.InBoundInitializer;
 import com.adolphor.mynety.client.utils.NetUtils;
 import com.adolphor.mynety.common.constants.Constants;
 import io.netty.bootstrap.ServerBootstrap;
@@ -71,12 +72,12 @@ public final class ClientMain {
         ChannelFuture future = hServerBoot.bind(bindHost, HTTP_PROXY_PORT).sync();
         future.channel().closeFuture().sync();
       } catch (Exception e) {
-        logger.error("http proxy start error: ", e);
+        logger.error("http1 proxy start error: ", e);
       } finally {
         hBossGroup.shutdownGracefully();
         hWorkerGroup.shutdownGracefully();
       }
-    }, "http/https-proxy-thread").start();
+    }, "http1/https-proxy-thread").start();
 
   }
 }

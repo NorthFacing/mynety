@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client.http;
+package com.adolphor.mynety.client.http1;
 
 import com.adolphor.mynety.common.constants.Constants;
 import com.adolphor.mynety.common.wrapper.AbstractInBoundHandler;
@@ -18,7 +18,7 @@ import static com.adolphor.mynety.common.constants.Constants.CONNECT_TIMEOUT;
 import static com.adolphor.mynety.common.constants.Constants.LOOPBACK_ADDRESS;
 
 /**
- * http over socks5
+ * http1 over socks5
  * <p>
  * the msg type of channel:
  * 1. the first request msg is HttpObject (request for building socks5 connection)

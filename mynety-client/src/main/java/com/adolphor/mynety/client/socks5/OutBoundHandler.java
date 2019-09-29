@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client;
+package com.adolphor.mynety.client.socks5;
 
 import com.adolphor.mynety.common.wrapper.AbstractOutBoundHandler;
 import io.netty.buffer.ByteBuf;

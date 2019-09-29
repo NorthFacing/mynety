@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client.http;
+package com.adolphor.mynety.client.http1;
 
 import com.adolphor.mynety.common.wrapper.AbstractOutBoundHandler;
 import io.netty.channel.Channel;

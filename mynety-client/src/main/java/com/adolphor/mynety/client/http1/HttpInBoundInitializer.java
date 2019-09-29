@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client.http;
+package com.adolphor.mynety.client.http1;
 
 import com.adolphor.mynety.common.wrapper.AbstractInBoundInitializer;
 import io.netty.channel.ChannelHandler;
@@ -16,7 +16,7 @@ import static com.adolphor.mynety.common.constants.HandlerName.httpServerCodec;
 import static com.adolphor.mynety.common.constants.HandlerName.loggingHandler;
 
 /**
- * http 代理入口 处理器列表
+ * http1 代理入口 处理器列表
  *
  * @author Bob.Zhu
  * @Email adolphor@qq.com

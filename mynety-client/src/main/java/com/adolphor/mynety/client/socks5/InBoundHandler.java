@@ -1,4 +1,4 @@
-package com.adolphor.mynety.client;
+package com.adolphor.mynety.client.socks5;
 
 import com.adolphor.mynety.client.config.Server;
 import com.adolphor.mynety.client.utils.NetUtils;

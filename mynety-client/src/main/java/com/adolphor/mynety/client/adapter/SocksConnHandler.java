@@ -1,6 +1,6 @@
 package com.adolphor.mynety.client.adapter;
 
-import com.adolphor.mynety.client.http.HttpOutBoundHandler;
+import com.adolphor.mynety.client.http1.HttpOutBoundHandler;
 import com.adolphor.mynety.common.bean.Address;
 import com.adolphor.mynety.common.wrapper.AbstractSimpleHandler;
 import io.netty.buffer.ByteBuf;
