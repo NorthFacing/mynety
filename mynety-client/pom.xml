@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>mynety</artifactId>
     <groupId>com.adolphor</groupId>
+    <artifactId>mynety</artifactId>
     <version>0.0.6-SNAPSHOT</version>
   </parent>
 

@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <artifactId>mynety</artifactId>
     <groupId>com.adolphor</groupId>
+    <artifactId>mynety</artifactId>
     <version>0.0.6-SNAPSHOT</version>
   </parent>
 
@@ -18,19 +18,23 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-all</artifactId>
+      <groupId>com.adolphor</groupId>
+      <artifactId>mynety-netty</artifactId>
     </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.netty</groupId>-->
+    <!--      <artifactId>netty-all</artifactId>-->
+    <!--    </dependency>-->
     <!--for macOS and BSD system-->
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-kqueue</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.netty</groupId>-->
+    <!--      <artifactId>netty-transport-native-kqueue</artifactId>-->
+    <!--    </dependency>-->
     <!--for linux system-->
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-epoll</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.netty</groupId>-->
+    <!--      <artifactId>netty-transport-native-epoll</artifactId>-->
+    <!--    </dependency>-->
     <!--ecrypt & decrypte-->
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -46,8 +50,8 @@
       <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

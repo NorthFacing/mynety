@@ -59,7 +59,7 @@ public class HttpInBoundHandler extends AbstractInBoundHandler<Object> {
         outRelayChannel.attr(ATTR_IN_RELAY_CHANNEL).set(ctx.channel());
       } else {
         logger.warn(ctx.channel().toString(), future.cause());
-        channelClose(ctx);
+        super.channelClose(ctx);
       }
     });
   }

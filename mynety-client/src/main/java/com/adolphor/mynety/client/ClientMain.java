@@ -77,7 +77,7 @@ public final class ClientMain {
         hBossGroup.shutdownGracefully();
         hWorkerGroup.shutdownGracefully();
       }
-    }, "http1/https-proxy-thread").start();
+    }, "http1-proxy-thread").start();
 
   }
 }

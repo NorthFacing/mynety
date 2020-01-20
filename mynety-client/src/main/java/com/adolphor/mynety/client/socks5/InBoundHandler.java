@@ -51,23 +51,8 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     super.channelActive(ctx);
-    // check proxy server
-    final Server server = NetUtils.getBestServer();
-    if (server == null) {
-      channelClose(ctx);
-      return;
-    }
-    //check crypt cipher instance
-    ICrypt crypt;
-    try {
-      crypt = CryptFactory.get(server.getMethod(), server.getPassword());
-    } catch (InvalidAlgorithmParameterException e) {
-      logger.error(e.getMessage(), e);
-      channelClose(ctx);
-      return;
-    }
-    ctx.channel().attr(ATTR_CRYPT_KEY).set(crypt);
 
+    // check pac
     Socks5CommandRequest socksRequest = ctx.channel().attr(ATTR_SOCKS5_REQUEST).get();
     String dstAddr = socksRequest.dstAddr();
     Integer dstPort = socksRequest.dstPort();
@@ -77,17 +62,28 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
       channelClose(ctx);
       return;
     }
-    Boolean isProxy = PacFilter.isProxy(dstAddr);
-    ctx.channel().attr(ATTR_IS_PROXY).set(isProxy);
 
-    Bootstrap outBoundBootStrap = new Bootstrap();
-    outBoundBootStrap.group(ctx.channel().eventLoop())
-        .channel(Constants.channelClass)
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
-        .handler(OutBoundInitializer.INSTANCE);
+    // check server
+    Boolean isProxy = PacFilter.isProxy(dstAddr);
+    final Server server = NetUtils.getBestServer();
+    if (server == null) {
+      channelClose(ctx);
+      return;
+    }
+
+    //check crypt cipher instane
+    ICrypt crypt;
+    try {
+      crypt = CryptFactory.get(server.getMethod(), server.getPassword());
+    } catch (InvalidAlgorithmParameterException e) {
+      logger.error(e.getMessage(), e);
+      channelClose(ctx);
+      return;
+    }
 
     String connHost;
     Integer connPort;
+
     if (isProxy) {
       connHost = server.getHost();
       connPort = Integer.valueOf(server.getPort());
@@ -95,6 +91,15 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
       connHost = dstAddr;
       connPort = dstPort;
     }
+
+    ctx.channel().attr(ATTR_IS_PROXY).set(isProxy);
+    ctx.channel().attr(ATTR_CRYPT_KEY).set(crypt);
+
+    Bootstrap outBoundBootStrap = new Bootstrap();
+    outBoundBootStrap.group(ctx.channel().eventLoop())
+        .channel(Constants.channelClass)
+        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT)
+        .handler(OutBoundInitializer.INSTANCE);
 
     outBoundBootStrap.connect(connHost, connPort).addListener((ChannelFutureListener) future -> {
       if (future.isSuccess()) {
@@ -104,8 +109,7 @@ public final class InBoundHandler extends AbstractInBoundHandler<ByteBuf> {
         if (isProxy) {
           sendConnectRemoteMessage(ctx.channel(), outRelayChannel, crypt, socksRequest);
         } else {
-          Socks5Message socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS,
-              socksRequest.dstAddrType(), dstAddr, socksRequest.dstPort());
+          Socks5Message socks5cmdResponse = new DefaultSocks5CommandResponse(Socks5CommandStatus.SUCCESS, socksRequest.dstAddrType(), dstAddr, socksRequest.dstPort());
           ctx.channel().writeAndFlush(socks5cmdResponse);
         }
       } else {
