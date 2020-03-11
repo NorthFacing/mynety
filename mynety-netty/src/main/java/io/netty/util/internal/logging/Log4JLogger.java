@@ -93,8 +93,7 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log a message object at level TRACE.
    *
-   * @param msg
-   *          - the message object to be logged
+   * @param msg - the message object to be logged
    */
   @Override
   public void trace(String msg) {
@@ -110,10 +109,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for level TRACE.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arg
-   *          the argument
+   * @param format the format string
+   * @param arg    the argument
    */
   @Override
   public void trace(String format, Object arg) {
@@ -133,12 +130,9 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the TRACE level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argA
-   *          the first argument
-   * @param argB
-   *          the second argument
+   * @param format the format string
+   * @param argA   the first argument
+   * @param argB   the second argument
    */
   @Override
   public void trace(String format, Object argA, Object argB) {
@@ -158,10 +152,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the TRACE level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arguments
-   *          an array of arguments
+   * @param format    the format string
+   * @param arguments an array of arguments
    */
   @Override
   public void trace(String format, Object... arguments) {
@@ -175,10 +167,8 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at level TRACE with an accompanying message.
    *
-   * @param msg
-   *          the message accompanying the exception
-   * @param t
-   *          the exception (throwable) to log
+   * @param msg the message accompanying the exception
+   * @param t   the exception (throwable) to log
    */
   @Override
   public void trace(String msg, Throwable t) {
@@ -198,8 +188,7 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log a message object at level DEBUG.
    *
-   * @param msg
-   *          - the message object to be logged
+   * @param msg - the message object to be logged
    */
   @Override
   public void debug(String msg) {
@@ -215,10 +204,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for level DEBUG.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arg
-   *          the argument
+   * @param format the format string
+   * @param arg    the argument
    */
   @Override
   public void debug(String format, Object arg) {
@@ -237,12 +224,9 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the DEBUG level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argA
-   *          the first argument
-   * @param argB
-   *          the second argument
+   * @param format the format string
+   * @param argA   the first argument
+   * @param argB   the second argument
    */
   @Override
   public void debug(String format, Object argA, Object argB) {
@@ -261,8 +245,7 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the DEBUG level.
    * </p>
    *
-   * @param format
-   *          the format string
+   * @param format    the format string
    * @param arguments an array of arguments
    */
   @Override
@@ -276,10 +259,8 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at level DEBUG with an accompanying message.
    *
-   * @param msg
-   *          the message accompanying the exception
-   * @param t
-   *          the exception (throwable) to log
+   * @param msg the message accompanying the exception
+   * @param t   the exception (throwable) to log
    */
   @Override
   public void debug(String msg, Throwable t) {
@@ -299,8 +280,7 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log a message object at the INFO level.
    *
-   * @param msg
-   *          - the message object to be logged
+   * @param msg - the message object to be logged
    */
   @Override
   public void info(String msg) {
@@ -315,10 +295,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the INFO level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arg
-   *          the argument
+   * @param format the format string
+   * @param arg    the argument
    */
   @Override
   public void info(String format, Object arg) {
@@ -337,12 +315,9 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the INFO level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argA
-   *          the first argument
-   * @param argB
-   *          the second argument
+   * @param format the format string
+   * @param argA   the first argument
+   * @param argB   the second argument
    */
   @Override
   public void info(String format, Object argA, Object argB) {
@@ -361,10 +336,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the INFO level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argArray
-   *          an array of arguments
+   * @param format   the format string
+   * @param argArray an array of arguments
    */
   @Override
   public void info(String format, Object... argArray) {
@@ -378,10 +351,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * Log an exception (throwable) at the INFO level with an accompanying
    * message.
    *
-   * @param msg
-   *          the message accompanying the exception
-   * @param t
-   *          the exception (throwable) to log
+   * @param msg the message accompanying the exception
+   * @param t   the exception (throwable) to log
    */
   @Override
   public void info(String msg, Throwable t) {
@@ -401,8 +372,7 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log a message object at the WARN level.
    *
-   * @param msg
-   *          - the message object to be logged
+   * @param msg - the message object to be logged
    */
   @Override
   public void warn(String msg) {
@@ -418,10 +388,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the WARN level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arg
-   *          the argument
+   * @param format the format string
+   * @param arg    the argument
    */
   @Override
   public void warn(String format, Object arg) {
@@ -440,12 +408,9 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the WARN level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argA
-   *          the first argument
-   * @param argB
-   *          the second argument
+   * @param format the format string
+   * @param argA   the first argument
+   * @param argB   the second argument
    */
   @Override
   public void warn(String format, Object argA, Object argB) {
@@ -464,10 +429,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the WARN level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argArray
-   *          an array of arguments
+   * @param format   the format string
+   * @param argArray an array of arguments
    */
   @Override
   public void warn(String format, Object... argArray) {
@@ -481,10 +444,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * Log an exception (throwable) at the WARN level with an accompanying
    * message.
    *
-   * @param msg
-   *          the message accompanying the exception
-   * @param t
-   *          the exception (throwable) to log
+   * @param msg the message accompanying the exception
+   * @param t   the exception (throwable) to log
    */
   @Override
   public void warn(String msg, Throwable t) {
@@ -504,8 +465,7 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log a message object at the ERROR level.
    *
-   * @param msg
-   *          - the message object to be logged
+   * @param msg - the message object to be logged
    */
   @Override
   public void error(String msg) {
@@ -521,10 +481,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the ERROR level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param arg
-   *          the argument
+   * @param format the format string
+   * @param arg    the argument
    */
   @Override
   public void error(String format, Object arg) {
@@ -543,12 +501,9 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the ERROR level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argA
-   *          the first argument
-   * @param argB
-   *          the second argument
+   * @param format the format string
+   * @param argA   the first argument
+   * @param argB   the second argument
    */
   @Override
   public void error(String format, Object argA, Object argB) {
@@ -567,10 +522,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * for the ERROR level.
    * </p>
    *
-   * @param format
-   *          the format string
-   * @param argArray
-   *          an array of arguments
+   * @param format   the format string
+   * @param argArray an array of arguments
    */
   @Override
   public void error(String format, Object... argArray) {
@@ -584,10 +537,8 @@ class Log4JLogger extends AbstractInternalLogger {
    * Log an exception (throwable) at the ERROR level with an accompanying
    * message.
    *
-   * @param msg
-   *          the message accompanying the exception
-   * @param t
-   *          the exception (throwable) to log
+   * @param msg the message accompanying the exception
+   * @param t   the exception (throwable) to log
    */
   @Override
   public void error(String msg, Throwable t) {

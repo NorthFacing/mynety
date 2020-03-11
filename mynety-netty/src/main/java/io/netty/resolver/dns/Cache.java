@@ -18,11 +18,7 @@ package io.netty.resolver.dns;
 import io.netty.channel.EventLoop;
 import io.netty.util.internal.PlatformDependent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Delayed;

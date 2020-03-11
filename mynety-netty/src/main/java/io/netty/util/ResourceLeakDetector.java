@@ -35,9 +35,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import static io.netty.util.internal.StringUtil.EMPTY_STRING;
-import static io.netty.util.internal.StringUtil.NEWLINE;
-import static io.netty.util.internal.StringUtil.simpleClassName;
+import static io.netty.util.internal.StringUtil.*;
 
 public class ResourceLeakDetector<T> {
 

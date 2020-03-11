@@ -18,22 +18,7 @@ package io.netty.handler.proxy;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
-import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialRequest;
-import io.netty.handler.codec.socksx.v5.DefaultSocks5PasswordAuthRequest;
-import io.netty.handler.codec.socksx.v5.Socks5AddressType;
-import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
-import io.netty.handler.codec.socksx.v5.Socks5ClientEncoder;
-import io.netty.handler.codec.socksx.v5.Socks5CommandResponse;
-import io.netty.handler.codec.socksx.v5.Socks5CommandResponseDecoder;
-import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
-import io.netty.handler.codec.socksx.v5.Socks5CommandType;
-import io.netty.handler.codec.socksx.v5.Socks5InitialRequest;
-import io.netty.handler.codec.socksx.v5.Socks5InitialResponse;
-import io.netty.handler.codec.socksx.v5.Socks5InitialResponseDecoder;
-import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponse;
-import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponseDecoder;
-import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthStatus;
+import io.netty.handler.codec.socksx.v5.*;
 import io.netty.util.NetUtil;
 import io.netty.util.internal.StringUtil;
 

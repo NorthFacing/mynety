@@ -20,9 +20,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.nio.CharBuffer;
 
-import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieNameOctet;
-import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieValueOctet;
-import static io.netty.handler.codec.http.cookie.CookieUtil.unwrapValue;
+import static io.netty.handler.codec.http.cookie.CookieUtil.*;
 
 /**
  * Parent of Client and Server side cookie decoders

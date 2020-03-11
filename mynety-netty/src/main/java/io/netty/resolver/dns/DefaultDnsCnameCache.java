@@ -21,9 +21,7 @@ import io.netty.util.internal.UnstableApi;
 
 import java.util.List;
 
-import static io.netty.util.internal.ObjectUtil.checkNotNull;
-import static io.netty.util.internal.ObjectUtil.checkPositive;
-import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
+import static io.netty.util.internal.ObjectUtil.*;
 
 /**
  * Default implementation of a {@link DnsCnameCache}.

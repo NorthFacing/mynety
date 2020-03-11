@@ -16,20 +16,14 @@
 package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.MessageSizeEstimator;
-import io.netty.channel.RecvByteBufAllocator;
-import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.*;
 import io.netty.channel.socket.ServerSocketChannelConfig;
 import io.netty.util.NetUtil;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.SO_BACKLOG;
-import static io.netty.channel.ChannelOption.SO_RCVBUF;
-import static io.netty.channel.ChannelOption.SO_REUSEADDR;
+import static io.netty.channel.ChannelOption.*;
 import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 public class EpollServerChannelConfig extends EpollChannelConfig implements ServerSocketChannelConfig {

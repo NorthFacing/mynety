@@ -24,9 +24,7 @@ import io.netty.util.internal.UnstableApi;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.handler.codec.http2.Http2Headers.PseudoHeaderName.hasPseudoHeaderFormat;
-import static io.netty.util.AsciiString.CASE_INSENSITIVE_HASHER;
-import static io.netty.util.AsciiString.CASE_SENSITIVE_HASHER;
-import static io.netty.util.AsciiString.isUpperCase;
+import static io.netty.util.AsciiString.*;
 
 @UnstableApi
 public class DefaultHttp2Headers

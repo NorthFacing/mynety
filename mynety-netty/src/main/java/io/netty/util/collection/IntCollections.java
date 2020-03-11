@@ -14,12 +14,7 @@
  */
 package io.netty.util.collection;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utilities for int-based primitive collections.

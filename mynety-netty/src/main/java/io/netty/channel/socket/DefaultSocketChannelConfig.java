@@ -16,26 +16,14 @@
 package io.netty.channel.socket;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.DefaultChannelConfig;
-import io.netty.channel.MessageSizeEstimator;
-import io.netty.channel.RecvByteBufAllocator;
-import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.*;
 import io.netty.util.internal.PlatformDependent;
 
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.ALLOW_HALF_CLOSURE;
-import static io.netty.channel.ChannelOption.IP_TOS;
-import static io.netty.channel.ChannelOption.SO_KEEPALIVE;
-import static io.netty.channel.ChannelOption.SO_LINGER;
-import static io.netty.channel.ChannelOption.SO_RCVBUF;
-import static io.netty.channel.ChannelOption.SO_REUSEADDR;
-import static io.netty.channel.ChannelOption.SO_SNDBUF;
-import static io.netty.channel.ChannelOption.TCP_NODELAY;
+import static io.netty.channel.ChannelOption.*;
 
 /**
  * The default {@link SocketChannelConfig} implementation.

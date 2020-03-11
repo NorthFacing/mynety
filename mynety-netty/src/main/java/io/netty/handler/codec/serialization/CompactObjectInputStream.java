@@ -15,12 +15,7 @@
  */
 package io.netty.handler.codec.serialization;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectStreamClass;
-import java.io.StreamCorruptedException;
+import java.io.*;
 
 class CompactObjectInputStream extends ObjectInputStream {
 

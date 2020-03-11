@@ -27,20 +27,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.io.IOException;
 import java.util.Locale;
 
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evAdd;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evClear;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evDelete;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evDisable;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evEOF;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evEnable;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evError;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evfiltRead;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evfiltSock;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evfiltUser;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.evfiltWrite;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.noteConnReset;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.noteDisconnected;
-import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.noteReadClosed;
+import static io.netty.channel.kqueue.KQueueStaticallyReferencedJniMethods.*;
 import static io.netty.channel.unix.Errors.newIOException;
 
 /**

@@ -27,15 +27,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.io.IOException;
 import java.util.Locale;
 
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollerr;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollet;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollin;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollout;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollrdhup;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.isSupportingSendmmsg;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.isSupportingTcpFastopen;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.kernelVersion;
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.tcpMd5SigMaxKeyLen;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.*;
 import static io.netty.channel.unix.Errors.ioResult;
 import static io.netty.channel.unix.Errors.newIOException;
 

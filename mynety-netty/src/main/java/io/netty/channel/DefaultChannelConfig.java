@@ -23,21 +23,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import static io.netty.channel.ChannelOption.ALLOCATOR;
-import static io.netty.channel.ChannelOption.AUTO_CLOSE;
-import static io.netty.channel.ChannelOption.AUTO_READ;
-import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
-import static io.netty.channel.ChannelOption.MAX_MESSAGES_PER_READ;
-import static io.netty.channel.ChannelOption.MESSAGE_SIZE_ESTIMATOR;
-import static io.netty.channel.ChannelOption.RCVBUF_ALLOCATOR;
-import static io.netty.channel.ChannelOption.SINGLE_EVENTEXECUTOR_PER_GROUP;
-import static io.netty.channel.ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK;
-import static io.netty.channel.ChannelOption.WRITE_BUFFER_LOW_WATER_MARK;
-import static io.netty.channel.ChannelOption.WRITE_BUFFER_WATER_MARK;
-import static io.netty.channel.ChannelOption.WRITE_SPIN_COUNT;
-import static io.netty.util.internal.ObjectUtil.checkNotNull;
-import static io.netty.util.internal.ObjectUtil.checkPositive;
-import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
+import static io.netty.channel.ChannelOption.*;
+import static io.netty.util.internal.ObjectUtil.*;
 
 /**
  * The default {@link ChannelConfig} implementation.

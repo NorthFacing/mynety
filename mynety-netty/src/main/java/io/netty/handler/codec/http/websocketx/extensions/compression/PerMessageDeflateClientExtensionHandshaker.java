@@ -16,24 +16,13 @@
 package io.netty.handler.codec.http.websocketx.extensions.compression;
 
 import io.netty.handler.codec.compression.ZlibCodecFactory;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtension;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtensionHandshaker;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionData;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionDecoder;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionEncoder;
-import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionFilterProvider;
+import io.netty.handler.codec.http.websocketx.extensions.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.CLIENT_MAX_WINDOW;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.CLIENT_NO_CONTEXT;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.MAX_WINDOW_SIZE;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.MIN_WINDOW_SIZE;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.PERMESSAGE_DEFLATE_EXTENSION;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.SERVER_MAX_WINDOW;
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.SERVER_NO_CONTEXT;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.*;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**

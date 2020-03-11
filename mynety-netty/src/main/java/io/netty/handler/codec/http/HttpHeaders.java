@@ -24,17 +24,10 @@ import io.netty.util.AsciiString;
 import io.netty.util.CharsetUtil;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import static io.netty.util.AsciiString.contentEquals;
-import static io.netty.util.AsciiString.contentEqualsIgnoreCase;
-import static io.netty.util.AsciiString.trim;
+import static io.netty.util.AsciiString.*;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**

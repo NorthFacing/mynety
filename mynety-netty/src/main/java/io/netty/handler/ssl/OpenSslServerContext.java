@@ -17,11 +17,7 @@ package io.netty.handler.ssl;
 
 import io.netty.internal.tcnative.SSL;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.*;
 import java.io.File;
 import java.security.KeyStore;
 import java.security.PrivateKey;

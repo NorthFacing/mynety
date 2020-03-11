@@ -18,11 +18,7 @@ package io.netty.buffer;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.StringUtil;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * An {@link InputStream} which reads data from a {@link ByteBuf}.

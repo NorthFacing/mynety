@@ -18,12 +18,7 @@ package io.netty.channel;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Handles an I/O event or intercepts an I/O operation, and forwards it to its next handler in

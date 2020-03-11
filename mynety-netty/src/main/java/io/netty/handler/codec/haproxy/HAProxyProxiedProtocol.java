@@ -15,20 +15,7 @@
  */
 package io.netty.handler.codec.haproxy;
 
-import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_IPV4_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_IPV6_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_UNIX_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_UNSPEC_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_TCP4_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_TCP6_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UDP4_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UDP6_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNIX_DGRAM_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNIX_STREAM_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNKNOWN_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_DGRAM_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_STREAM_BYTE;
-import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_UNSPEC_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.*;
 
 /**
  * A protocol proxied by HAProxy which is represented by its transport protocol and address family.

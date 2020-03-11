@@ -15,11 +15,7 @@
  */
 package io.netty.util.internal;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Indicates a public API that can change at any time (even in minor/bugfix releases).

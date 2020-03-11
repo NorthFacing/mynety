@@ -18,12 +18,7 @@ package io.netty.handler.codec.compression;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.ChannelPromiseNotifier;
+import io.netty.channel.*;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.EventExecutor;
@@ -36,19 +31,7 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Checksum;
 
-import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_COMPRESSED;
-import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_NON_COMPRESSED;
-import static io.netty.handler.codec.compression.Lz4Constants.CHECKSUM_OFFSET;
-import static io.netty.handler.codec.compression.Lz4Constants.COMPRESSED_LENGTH_OFFSET;
-import static io.netty.handler.codec.compression.Lz4Constants.COMPRESSION_LEVEL_BASE;
-import static io.netty.handler.codec.compression.Lz4Constants.DECOMPRESSED_LENGTH_OFFSET;
-import static io.netty.handler.codec.compression.Lz4Constants.DEFAULT_BLOCK_SIZE;
-import static io.netty.handler.codec.compression.Lz4Constants.DEFAULT_SEED;
-import static io.netty.handler.codec.compression.Lz4Constants.HEADER_LENGTH;
-import static io.netty.handler.codec.compression.Lz4Constants.MAGIC_NUMBER;
-import static io.netty.handler.codec.compression.Lz4Constants.MAX_BLOCK_SIZE;
-import static io.netty.handler.codec.compression.Lz4Constants.MIN_BLOCK_SIZE;
-import static io.netty.handler.codec.compression.Lz4Constants.TOKEN_OFFSET;
+import static io.netty.handler.codec.compression.Lz4Constants.*;
 
 /**
  * Compresses a {@link ByteBuf} using the LZ4 format.

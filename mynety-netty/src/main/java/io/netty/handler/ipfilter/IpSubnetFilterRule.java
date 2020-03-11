@@ -18,11 +18,7 @@ package io.netty.handler.ipfilter;
 import io.netty.util.internal.SocketUtils;
 
 import java.math.BigInteger;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 
 /**
  * Use this class to create rules for {@link RuleBasedIpFilter} that group IP addresses into subnets.

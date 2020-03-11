@@ -19,10 +19,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 
 import java.net.URI;
 
-import static io.netty.handler.codec.http.websocketx.WebSocketVersion.V00;
-import static io.netty.handler.codec.http.websocketx.WebSocketVersion.V07;
-import static io.netty.handler.codec.http.websocketx.WebSocketVersion.V08;
-import static io.netty.handler.codec.http.websocketx.WebSocketVersion.V13;
+import static io.netty.handler.codec.http.websocketx.WebSocketVersion.*;
 
 /**
  * Creates a new {@link WebSocketClientHandshaker} of desired protocol version.

@@ -16,23 +16,13 @@
 package io.netty.handler.codec.compression;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.ChannelPromiseNotifier;
+import io.netty.channel.*;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.EventExecutor;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.BASE_BLOCK_SIZE;
-import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_1;
-import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_2;
-import static io.netty.handler.codec.compression.Bzip2Constants.MAGIC_NUMBER;
-import static io.netty.handler.codec.compression.Bzip2Constants.MAX_BLOCK_SIZE;
-import static io.netty.handler.codec.compression.Bzip2Constants.MIN_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.*;
 
 /**
  * Compresses a {@link ByteBuf} using the Bzip2 algorithm.

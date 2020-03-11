@@ -20,22 +20,12 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.NetUtil;
 
 import java.io.IOException;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.PortUnreachableException;
-import java.net.SocketAddress;
+import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.netty.channel.unix.Errors.ERRNO_EAGAIN_NEGATIVE;
-import static io.netty.channel.unix.Errors.ERRNO_EINPROGRESS_NEGATIVE;
-import static io.netty.channel.unix.Errors.ERRNO_EWOULDBLOCK_NEGATIVE;
-import static io.netty.channel.unix.Errors.ERROR_ECONNREFUSED_NEGATIVE;
-import static io.netty.channel.unix.Errors.ioResult;
-import static io.netty.channel.unix.Errors.newIOException;
-import static io.netty.channel.unix.Errors.throwConnectException;
+import static io.netty.channel.unix.Errors.*;
 import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.udsSunPathSize;
 import static io.netty.channel.unix.NativeInetAddress.address;
 import static io.netty.channel.unix.NativeInetAddress.ipv4MappedIpv6Address;

@@ -16,35 +16,16 @@
 package io.netty.channel.socket;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.DefaultChannelConfig;
-import io.netty.channel.FixedRecvByteBufAllocator;
-import io.netty.channel.MessageSizeEstimator;
-import io.netty.channel.RecvByteBufAllocator;
-import io.netty.channel.WriteBufferWaterMark;
+import io.netty.channel.*;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION;
-import static io.netty.channel.ChannelOption.IP_MULTICAST_ADDR;
-import static io.netty.channel.ChannelOption.IP_MULTICAST_IF;
-import static io.netty.channel.ChannelOption.IP_MULTICAST_LOOP_DISABLED;
-import static io.netty.channel.ChannelOption.IP_MULTICAST_TTL;
-import static io.netty.channel.ChannelOption.IP_TOS;
-import static io.netty.channel.ChannelOption.SO_BROADCAST;
-import static io.netty.channel.ChannelOption.SO_RCVBUF;
-import static io.netty.channel.ChannelOption.SO_REUSEADDR;
-import static io.netty.channel.ChannelOption.SO_SNDBUF;
+import static io.netty.channel.ChannelOption.*;
 
 /**
  * The default {@link DatagramChannelConfig} implementation.

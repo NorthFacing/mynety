@@ -19,11 +19,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderResult;
-import io.netty.handler.codec.memcache.AbstractMemcacheObjectDecoder;
-import io.netty.handler.codec.memcache.DefaultLastMemcacheContent;
-import io.netty.handler.codec.memcache.DefaultMemcacheContent;
-import io.netty.handler.codec.memcache.LastMemcacheContent;
-import io.netty.handler.codec.memcache.MemcacheContent;
+import io.netty.handler.codec.memcache.*;
 import io.netty.util.internal.UnstableApi;
 
 import java.util.List;

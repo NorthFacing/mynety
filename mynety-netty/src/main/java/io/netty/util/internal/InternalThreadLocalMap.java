@@ -24,12 +24,7 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * The internal data structure that stores the thread-local variables for Netty and all {@link FastThreadLocal}s.

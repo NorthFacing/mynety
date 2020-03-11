@@ -24,11 +24,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import static com.ning.compress.lzf.LZFChunk.BLOCK_TYPE_COMPRESSED;
-import static com.ning.compress.lzf.LZFChunk.BLOCK_TYPE_NON_COMPRESSED;
-import static com.ning.compress.lzf.LZFChunk.BYTE_V;
-import static com.ning.compress.lzf.LZFChunk.BYTE_Z;
-import static com.ning.compress.lzf.LZFChunk.HEADER_LEN_NOT_COMPRESSED;
+import static com.ning.compress.lzf.LZFChunk.*;
 
 /**
  * Uncompresses a {@link ByteBuf} encoded with the LZF format.

@@ -15,14 +15,7 @@
 
 package io.netty.util.collection;
 
-import java.util.AbstractCollection;
-import java.util.AbstractSet;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 import static io.netty.util.internal.MathUtil.safeFindNextPositivePowerOfTwo;
 

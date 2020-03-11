@@ -28,11 +28,7 @@ import io.netty.util.internal.PlatformDependent;
 import javax.net.ssl.SSLHandshakeException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 

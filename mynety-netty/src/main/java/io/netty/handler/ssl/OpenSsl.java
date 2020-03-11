@@ -35,25 +35,9 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static io.netty.handler.ssl.SslUtils.DEFAULT_CIPHER_SUITES;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V2;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V2_HELLO;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V3;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_1;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_2;
-import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_3;
-import static io.netty.handler.ssl.SslUtils.TLSV13_CIPHERS;
-import static io.netty.handler.ssl.SslUtils.TLSV13_CIPHER_SUITES;
-import static io.netty.handler.ssl.SslUtils.addIfSupported;
-import static io.netty.handler.ssl.SslUtils.isTLSv13Cipher;
-import static io.netty.handler.ssl.SslUtils.useFallbackCiphersIfDefaultIsEmpty;
+import static io.netty.handler.ssl.SslUtils.*;
 
 /**
  * Tells if <a href="https://netty.io/wiki/forked-tomcat-native.html">{@code netty-tcnative}</a> and its OpenSSL support

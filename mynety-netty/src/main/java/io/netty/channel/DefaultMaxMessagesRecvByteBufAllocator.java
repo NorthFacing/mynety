@@ -53,11 +53,11 @@ public abstract class DefaultMaxMessagesRecvByteBufAllocator implements MaxMessa
    * Determine if future instances of {@link #newHandle()} will stop reading if we think there is no more data.
    *
    * @param respectMaybeMoreData <ul>
-   *                                 <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
-   *                                      the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
-   *                                      quantum and have to wait for the selector to notify us of more data.</li>
-   *                                 <li>{@code false} to keep reading (up to {@link #maxMessagesPerRead()}) or until there is no data when we
-   *                                      attempt to read.</li>
+   *                             <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
+   *                             the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
+   *                             quantum and have to wait for the selector to notify us of more data.</li>
+   *                             <li>{@code false} to keep reading (up to {@link #maxMessagesPerRead()}) or until there is no data when we
+   *                             attempt to read.</li>
    *                             </ul>
    * @return {@code this}.
    */
@@ -70,11 +70,11 @@ public abstract class DefaultMaxMessagesRecvByteBufAllocator implements MaxMessa
    * Get if future instances of {@link #newHandle()} will stop reading if we think there is no more data.
    *
    * @return <ul>
-   *     <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
-   *          the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
-   *          quantum and have to wait for the selector to notify us of more data.</li>
-   *     <li>{@code false} to keep reading (up to {@link #maxMessagesPerRead()}) or until there is no data when we
-   *          attempt to read.</li>
+   * <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
+   * the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
+   * quantum and have to wait for the selector to notify us of more data.</li>
+   * <li>{@code false} to keep reading (up to {@link #maxMessagesPerRead()}) or until there is no data when we
+   * attempt to read.</li>
    * </ul>
    */
   public final boolean respectMaybeMoreData() {

@@ -26,11 +26,7 @@ import io.netty.util.CharsetUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.netty.handler.codec.mqtt.MqttCodecUtil.isValidClientId;
-import static io.netty.handler.codec.mqtt.MqttCodecUtil.isValidMessageId;
-import static io.netty.handler.codec.mqtt.MqttCodecUtil.isValidPublishTopicName;
-import static io.netty.handler.codec.mqtt.MqttCodecUtil.resetUnusedFields;
-import static io.netty.handler.codec.mqtt.MqttCodecUtil.validateFixedHeader;
+import static io.netty.handler.codec.mqtt.MqttCodecUtil.*;
 
 /**
  * Decodes Mqtt messages from bytes, following

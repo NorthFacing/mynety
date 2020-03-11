@@ -21,19 +21,9 @@ import com.sun.nio.sctp.NotificationHandler;
 import com.sun.nio.sctp.SctpChannel;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelException;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelMetadata;
-import io.netty.channel.ChannelOutboundBuffer;
-import io.netty.channel.ChannelPromise;
-import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.*;
 import io.netty.channel.nio.AbstractNioMessageChannel;
-import io.netty.channel.sctp.DefaultSctpChannelConfig;
-import io.netty.channel.sctp.SctpChannelConfig;
-import io.netty.channel.sctp.SctpMessage;
-import io.netty.channel.sctp.SctpNotificationHandler;
-import io.netty.channel.sctp.SctpServerChannel;
+import io.netty.channel.sctp.*;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.logging.InternalLogger;
@@ -45,12 +35,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * {@link io.netty.channel.sctp.SctpChannel} implementation which use non-blocking mode and allows to read /

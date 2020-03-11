@@ -18,29 +18,7 @@ package io.netty.handler.codec.spdy;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_DATA_FLAG_FIN;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_DATA_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_FLAG_FIN;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_FLAG_UNIDIRECTIONAL;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_GOAWAY_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADERS_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADER_FLAGS_OFFSET;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADER_LENGTH_OFFSET;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADER_SIZE;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADER_TYPE_OFFSET;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_PING_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_RST_STREAM_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_CLEAR;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_PERSISTED;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_PERSIST_VALUE;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SYN_REPLY_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SYN_STREAM_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_WINDOW_UPDATE_FRAME;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.getSignedInt;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.getUnsignedInt;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.getUnsignedMedium;
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.getUnsignedShort;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.*;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
 
 /**

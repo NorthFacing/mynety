@@ -18,9 +18,7 @@ package io.netty.handler.codec.compression;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ByteProcessor;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_1;
-import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_2;
-import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SYMBOL_RANGE_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.*;
 
 /**
  * Compresses and writes a single Bzip2 block.<br><br>

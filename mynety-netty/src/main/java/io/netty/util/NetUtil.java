@@ -22,19 +22,8 @@ import io.netty.util.internal.SystemPropertyUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.io.*;
+import java.net.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -1009,12 +998,12 @@ public final class NetUtil {
    *
    * @param ip         {@link InetAddress} to be converted to an address string
    * @param ipv4Mapped <ul>
-   *                   <li>{@code true} to stray from strict rfc 5952 and support the "IPv4 mapped" format
-   *                   defined in <a href="http://tools.ietf.org/html/rfc4291#section-2.5.5">rfc 4291 section 2</a> while still
-   *                   following the updated guidelines in
-   *                   <a href="http://tools.ietf.org/html/rfc5952#section-4">rfc 5952 section 4</a></li>
-   *                   <li>{@code false} to strictly follow rfc 5952</li>
-   *                   </ul>
+   *                                     <li>{@code true} to stray from strict rfc 5952 and support the "IPv4 mapped" format
+   *                                     defined in <a href="http://tools.ietf.org/html/rfc4291#section-2.5.5">rfc 4291 section 2</a> while still
+   *                                     following the updated guidelines in
+   *                                     <a href="http://tools.ietf.org/html/rfc5952#section-4">rfc 5952 section 4</a></li>
+   *                                     <li>{@code false} to strictly follow rfc 5952</li>
+   *                                     </ul>
    * @return {@code String} containing the text-formatted IP address
    */
   public static String toAddressString(InetAddress ip, boolean ipv4Mapped) {

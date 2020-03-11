@@ -20,16 +20,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.TooLongFrameException;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpMessage;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpResponseStatus;
-import io.netty.handler.codec.http.HttpUtil;
-import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.spdy.SpdyHttpHeaders.Names;
 import io.netty.util.ReferenceCountUtil;
 
@@ -37,12 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.HOST;
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.METHOD;
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.PATH;
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.SCHEME;
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.STATUS;
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.VERSION;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.*;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
 
 /**

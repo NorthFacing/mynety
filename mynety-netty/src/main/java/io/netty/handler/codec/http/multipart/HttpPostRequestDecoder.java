@@ -16,11 +16,7 @@
 package io.netty.handler.codec.http.multipart;
 
 import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.http.HttpConstants;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaderValues;
-import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.*;
 import io.netty.util.internal.StringUtil;
 
 import java.nio.charset.Charset;

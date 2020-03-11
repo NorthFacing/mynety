@@ -18,11 +18,7 @@ package io.netty.handler.codec;
 import io.netty.util.AsciiString;
 import io.netty.util.concurrent.FastThreadLocal;
 
-import java.util.BitSet;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+import java.util.*;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
