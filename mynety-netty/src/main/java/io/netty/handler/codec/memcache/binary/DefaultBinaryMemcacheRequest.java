@@ -40,7 +40,6 @@ public class DefaultBinaryMemcacheRequest extends AbstractBinaryMemcacheMessage 
 
   /**
    * Create a new {@link DefaultBinaryMemcacheRequest} with the header and key.
-   *
    * @param key the key to use.
    */
   public DefaultBinaryMemcacheRequest(ByteBuf key) {
@@ -49,7 +48,6 @@ public class DefaultBinaryMemcacheRequest extends AbstractBinaryMemcacheMessage 
 
   /**
    * Create a new {@link DefaultBinaryMemcacheRequest} with the header only.
-   *
    * @param key    the key to use.
    * @param extras the extras to use.
    */
@@ -95,7 +93,6 @@ public class DefaultBinaryMemcacheRequest extends AbstractBinaryMemcacheMessage 
 
   /**
    * Copies special metadata hold by this instance to the provided instance
-   *
    * @param dst The instance where to copy the metadata of this instance to
    */
   void copyMeta(DefaultBinaryMemcacheRequest dst) {

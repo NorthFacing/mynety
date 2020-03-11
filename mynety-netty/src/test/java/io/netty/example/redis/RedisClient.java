@@ -45,18 +45,18 @@ public class RedisClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            protected void initChannel(SocketChannel ch) throws Exception {
-              ChannelPipeline p = ch.pipeline();
-              p.addLast(new RedisDecoder());
-              p.addLast(new RedisBulkStringAggregator());
-              p.addLast(new RedisArrayAggregator());
-              p.addLast(new RedisEncoder());
-              p.addLast(new RedisClientHandler());
-            }
-          });
+        .channel(NioSocketChannel.class)
+        .handler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          protected void initChannel(SocketChannel ch) throws Exception {
+            ChannelPipeline p = ch.pipeline();
+            p.addLast(new RedisDecoder());
+            p.addLast(new RedisBulkStringAggregator());
+            p.addLast(new RedisArrayAggregator());
+            p.addLast(new RedisEncoder());
+            p.addLast(new RedisClientHandler());
+          }
+        });
 
       // Start the connection attempt.
       Channel ch = b.connect(HOST, PORT).sync().channel();

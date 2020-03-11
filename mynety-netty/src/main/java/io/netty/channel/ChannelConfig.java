@@ -96,7 +96,6 @@ public interface ChannelConfig {
    *     return false;
    * }
    * </pre>
-   *
    * @return {@code true} if and only if the property has been set
    */
   <T> boolean setOption(ChannelOption<T> option, T value);
@@ -105,7 +104,6 @@ public interface ChannelConfig {
    * Returns the connect timeout of the channel in milliseconds.  If the
    * {@link Channel} does not support connect operation, this property is not
    * used at all, and therefore will be ignored.
-   *
    * @return the connect timeout in milliseconds.  {@code 0} if disabled.
    */
   int getConnectTimeoutMillis();
@@ -114,7 +112,6 @@ public interface ChannelConfig {
    * Sets the connect timeout of the channel in milliseconds.  If the
    * {@link Channel} does not support connect operation, this property is not
    * used at all, and therefore will be ignored.
-   *
    * @param connectTimeoutMillis the connect timeout in milliseconds.
    *                             {@code 0} to disable.
    */
@@ -156,7 +153,6 @@ public interface ChannelConfig {
    * It is similar to what a spin lock is used for in concurrency programming.
    * It improves memory utilization and write throughput depending on
    * the platform that JVM runs on.  The default value is {@code 16}.
-   *
    * @throws IllegalArgumentException if the specified value is {@code 0} or less than {@code 0}
    */
   ChannelConfig setWriteSpinCount(int writeSpinCount);

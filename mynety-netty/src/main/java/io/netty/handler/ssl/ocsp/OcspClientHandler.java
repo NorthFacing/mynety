@@ -27,7 +27,6 @@ import javax.net.ssl.SSLHandshakeException;
 
 /**
  * A handler for SSL clients to handle and act upon stapled OCSP responses.
- *
  * @see ReferenceCountedOpenSslContext#enableOcsp()
  * @see ReferenceCountedOpenSslEngine#getOcspResponse()
  */

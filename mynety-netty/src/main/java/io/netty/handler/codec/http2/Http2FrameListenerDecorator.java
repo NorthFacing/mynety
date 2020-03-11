@@ -33,7 +33,7 @@ public class Http2FrameListenerDecorator implements Http2FrameListener {
 
   @Override
   public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data, int padding, boolean endOfStream)
-      throws Http2Exception {
+    throws Http2Exception {
     return listener.onDataRead(ctx, streamId, data, padding, endOfStream);
   }
 
@@ -88,13 +88,13 @@ public class Http2FrameListenerDecorator implements Http2FrameListener {
 
   @Override
   public void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-      throws Http2Exception {
+    throws Http2Exception {
     listener.onGoAwayRead(ctx, lastStreamId, errorCode, debugData);
   }
 
   @Override
   public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-      throws Http2Exception {
+    throws Http2Exception {
     listener.onWindowUpdateRead(ctx, streamId, windowSizeIncrement);
   }
 

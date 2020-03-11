@@ -29,7 +29,6 @@ final class ShuffledDnsServerAddressStream implements DnsServerAddressStream {
 
   /**
    * Create a new instance.
-   *
    * @param addresses The addresses are not cloned. It is assumed the caller has cloned this array or otherwise will
    *                  not modify the contents.
    */

@@ -43,7 +43,6 @@ public class DomainNameMapping<V> implements Mapping<String, V> {
   /**
    * Creates a default, order-sensitive mapping. If your hostnames are in conflict, the mapping
    * will choose the one you add first.
-   *
    * @param defaultValue the default value for {@link #map(String)} to return when nothing matches the input
    * @deprecated use {@link DomainNameMappingBuilder} to create and fill the mapping instead
    */
@@ -55,7 +54,6 @@ public class DomainNameMapping<V> implements Mapping<String, V> {
   /**
    * Creates a default, order-sensitive mapping. If your hostnames are in conflict, the mapping
    * will choose the one you add first.
-   *
    * @param initialCapacity initial capacity for the internal map
    * @param defaultValue    the default value for {@link #map(String)} to return when nothing matches the input
    * @deprecated use {@link DomainNameMappingBuilder} to create and fill the mapping instead
@@ -69,7 +67,7 @@ public class DomainNameMapping<V> implements Mapping<String, V> {
     this.defaultValue = checkNotNull(defaultValue, "defaultValue");
     this.map = map;
     unmodifiableMap = map != null ? Collections.unmodifiableMap(map)
-        : null;
+      : null;
   }
 
   /**
@@ -78,7 +76,6 @@ public class DomainNameMapping<V> implements Mapping<String, V> {
    * <a href="http://en.wikipedia.org/wiki/Wildcard_DNS_record">DNS wildcard</a> is supported as hostname.
    * For example, you can use {@code *.netty.io} to match {@code netty.io} and {@code downloads.netty.io}.
    * </p>
-   *
    * @param hostname the host name (optionally wildcard)
    * @param output   the output value that will be returned by {@link #map(String)} when the specified host name
    *                 matches the specified input host name
@@ -96,7 +93,7 @@ public class DomainNameMapping<V> implements Mapping<String, V> {
   static boolean matches(String template, String hostName) {
     if (template.startsWith("*.")) {
       return template.regionMatches(2, hostName, 0, hostName.length())
-          || commonSuffixOfLength(hostName, template, template.length() - 1);
+        || commonSuffixOfLength(hostName, template, template.length() - 1);
     }
     return template.equals(hostName);
   }

@@ -21,7 +21,6 @@ package io.netty.util;
 public interface BooleanSupplier {
   /**
    * Gets a boolean value.
-   *
    * @return a boolean value.
    * @throws Exception If an exception occurs.
    */

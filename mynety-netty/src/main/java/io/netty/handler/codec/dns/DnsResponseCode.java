@@ -113,7 +113,6 @@ public class DnsResponseCode implements Comparable<DnsResponseCode> {
 
   /**
    * Returns the {@link DnsResponseCode} that corresponds with the given {@code responseCode}.
-   *
    * @param responseCode the DNS RCODE
    * @return the corresponding {@link DnsResponseCode}
    */

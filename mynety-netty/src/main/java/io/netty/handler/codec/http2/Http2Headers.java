@@ -82,7 +82,6 @@ public interface Http2Headers extends Headers<CharSequence, CharSequence, Http2H
 
     /**
      * Indicates whether the specified header follows the pseudo-header format (begins with ':' character)
-     *
      * @return {@code true} if the header follow the pseudo-header format
      */
     public static boolean hasPseudoHeaderFormat(CharSequence headerName) {
@@ -103,7 +102,6 @@ public interface Http2Headers extends Headers<CharSequence, CharSequence, Http2H
 
     /**
      * Returns the {@link PseudoHeaderName} corresponding to the specified header name.
-     *
      * @return corresponding {@link PseudoHeaderName} if any, {@code null} otherwise.
      */
     public static PseudoHeaderName getPseudoHeader(CharSequence header) {
@@ -112,7 +110,6 @@ public interface Http2Headers extends Headers<CharSequence, CharSequence, Http2H
 
     /**
      * Indicates whether the pseudo-header is to be used in a request context.
-     *
      * @return {@code true} if the pseudo-header is to be used in a request context
      */
     public boolean isRequestOnly() {
@@ -130,7 +127,6 @@ public interface Http2Headers extends Headers<CharSequence, CharSequence, Http2H
 
   /**
    * Equivalent to {@link #getAll(Object)} but no intermediate list is generated.
-   *
    * @param name the name of the header to retrieve
    * @return an {@link Iterator} of header values corresponding to {@code name}.
    */
@@ -190,7 +186,6 @@ public interface Http2Headers extends Headers<CharSequence, CharSequence, Http2H
    * Returns {@code true} if a header with the {@code name} and {@code value} exists, {@code false} otherwise.
    * <p>
    * If {@code caseInsensitive} is {@code true} then a case insensitive compare is done on the value.
-   *
    * @param name            the name of the header to find
    * @param value           the value of the header to find
    * @param caseInsensitive {@code true} then a case insensitive compare is run to compare values.

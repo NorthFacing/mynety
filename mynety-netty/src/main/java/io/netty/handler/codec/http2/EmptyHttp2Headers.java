@@ -20,7 +20,7 @@ import io.netty.util.internal.UnstableApi;
 
 @UnstableApi
 public final class EmptyHttp2Headers
-    extends EmptyHeaders<CharSequence, CharSequence, Http2Headers> implements Http2Headers {
+  extends EmptyHeaders<CharSequence, CharSequence, Http2Headers> implements Http2Headers {
   public static final EmptyHttp2Headers INSTANCE = new EmptyHttp2Headers();
 
   private EmptyHttp2Headers() {

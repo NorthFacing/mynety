@@ -26,7 +26,6 @@ public class DefaultHttpResponse extends DefaultHttpMessage implements HttpRespo
 
   /**
    * Creates a new instance.
-   *
    * @param version the HTTP version of this response
    * @param status  the status of this response
    */
@@ -36,7 +35,6 @@ public class DefaultHttpResponse extends DefaultHttpMessage implements HttpRespo
 
   /**
    * Creates a new instance.
-   *
    * @param version         the HTTP version of this response
    * @param status          the status of this response
    * @param validateHeaders validate the header names and values when adding them to the {@link HttpHeaders}
@@ -47,7 +45,6 @@ public class DefaultHttpResponse extends DefaultHttpMessage implements HttpRespo
 
   /**
    * Creates a new instance.
-   *
    * @param version            the HTTP version of this response
    * @param status             the status of this response
    * @param validateHeaders    validate the header names and values when adding them to the {@link HttpHeaders}
@@ -65,7 +62,6 @@ public class DefaultHttpResponse extends DefaultHttpMessage implements HttpRespo
 
   /**
    * Creates a new instance.
-   *
    * @param version the HTTP version of this response
    * @param status  the status of this response
    * @param headers the headers for this HTTP Response

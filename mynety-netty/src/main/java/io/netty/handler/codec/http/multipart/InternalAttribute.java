@@ -90,7 +90,7 @@ final class InternalAttribute extends AbstractReferenceCounted implements Interf
   public int compareTo(InterfaceHttpData o) {
     if (!(o instanceof InternalAttribute)) {
       throw new ClassCastException("Cannot compare " + getHttpDataType() +
-          " with " + o.getHttpDataType());
+        " with " + o.getHttpDataType());
     }
     return compareTo((InternalAttribute) o);
   }

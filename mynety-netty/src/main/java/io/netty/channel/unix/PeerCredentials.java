@@ -44,7 +44,6 @@ public final class PeerCredentials {
    * Get the PID of the peer process.
    * <p>
    * This is currently not populated on MacOS and BSD based systems.
-   *
    * @return The PID of the peer process.
    */
   public int pid() {

@@ -18,7 +18,12 @@ package io.netty.channel.udt;
 import com.barchart.udt.TypeUDT;
 import com.barchart.udt.nio.KindUDT;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 
 /**
  * A {@link ChannelConfig} for a {@link UdtServerChannel}.
@@ -27,7 +32,6 @@ import io.netty.channel.*;
  * {@code "receiveBufferSize"} and {@code "sendBufferSize"} as maximum message
  * size. If received or sent message does not fit specified sizes,
  * {@link ChannelException} will be thrown.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated

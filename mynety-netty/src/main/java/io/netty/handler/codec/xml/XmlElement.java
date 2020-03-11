@@ -91,9 +91,9 @@ public abstract class XmlElement {
   @Override
   public String toString() {
     return ", name='" + name + '\'' +
-        ", namespace='" + namespace + '\'' +
-        ", prefix='" + prefix + '\'' +
-        ", namespaces=" + namespaces;
+      ", namespace='" + namespace + '\'' +
+      ", prefix='" + prefix + '\'' +
+      ", namespaces=" + namespaces;
   }
 
 }

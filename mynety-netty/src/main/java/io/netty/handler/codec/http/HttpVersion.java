@@ -31,7 +31,7 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 public class HttpVersion implements Comparable<HttpVersion> {
 
   private static final Pattern VERSION_PATTERN =
-      Pattern.compile("(\\S+)/(\\d+)\\.(\\d+)");
+    Pattern.compile("(\\S+)/(\\d+)\\.(\\d+)");
 
   private static final String HTTP_1_0_STRING = "HTTP/1.0";
   private static final String HTTP_1_1_STRING = "HTTP/1.1";
@@ -103,7 +103,6 @@ public class HttpVersion implements Comparable<HttpVersion> {
    * derived from HTTP, such as
    * <a href="http://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol">RTSP</a> and
    * <a href="http://en.wikipedia.org/wiki/Internet_Content_Adaptation_Protocol">ICAP</a>.
-   *
    * @param keepAliveDefault {@code true} if and only if the connection is kept alive unless
    *                         the {@code "Connection"} header is set to {@code "close"} explicitly.
    */
@@ -136,19 +135,18 @@ public class HttpVersion implements Comparable<HttpVersion> {
    * implementing a protocol derived from HTTP, such as
    * <a href="http://en.wikipedia.org/wiki/Real_Time_Streaming_Protocol">RTSP</a> and
    * <a href="http://en.wikipedia.org/wiki/Internet_Content_Adaptation_Protocol">ICAP</a>
-   *
    * @param keepAliveDefault {@code true} if and only if the connection is kept alive unless
    *                         the {@code "Connection"} header is set to {@code "close"} explicitly.
    */
   public HttpVersion(
-      String protocolName, int majorVersion, int minorVersion,
-      boolean keepAliveDefault) {
+    String protocolName, int majorVersion, int minorVersion,
+    boolean keepAliveDefault) {
     this(protocolName, majorVersion, minorVersion, keepAliveDefault, false);
   }
 
   private HttpVersion(
-      String protocolName, int majorVersion, int minorVersion,
-      boolean keepAliveDefault, boolean bytes) {
+    String protocolName, int majorVersion, int minorVersion,
+    boolean keepAliveDefault, boolean bytes) {
     if (protocolName == null) {
       throw new NullPointerException("protocolName");
     }
@@ -160,7 +158,7 @@ public class HttpVersion implements Comparable<HttpVersion> {
 
     for (int i = 0; i < protocolName.length(); i++) {
       if (Character.isISOControl(protocolName.charAt(i)) ||
-          Character.isWhitespace(protocolName.charAt(i))) {
+        Character.isWhitespace(protocolName.charAt(i))) {
         throw new IllegalArgumentException("invalid character in protocolName");
       }
     }
@@ -228,7 +226,7 @@ public class HttpVersion implements Comparable<HttpVersion> {
   @Override
   public int hashCode() {
     return (protocolName().hashCode() * 31 + majorVersion()) * 31 +
-        minorVersion();
+      minorVersion();
   }
 
   @Override
@@ -239,8 +237,8 @@ public class HttpVersion implements Comparable<HttpVersion> {
 
     HttpVersion that = (HttpVersion) o;
     return minorVersion() == that.minorVersion() &&
-        majorVersion() == that.majorVersion() &&
-        protocolName().equals(that.protocolName());
+      majorVersion() == that.majorVersion() &&
+      protocolName().equals(that.protocolName());
   }
 
   @Override

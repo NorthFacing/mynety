@@ -17,7 +17,6 @@ package io.netty.util;
 
 /**
  * An attribute which allows to store a value reference. It may be updated atomically and so is thread-safe.
- *
  * @param <T> the type of the value it holds.
  */
 public interface Attribute<T> {
@@ -61,7 +60,6 @@ public interface Attribute<T> {
    * thread or even the same thread later will call {@link AttributeMap#attr(AttributeKey)} again, a new
    * {@link Attribute} instance is created and so is not the same as the previous one that was removed. Because of
    * this special caution should be taken when you call {@link #remove()} or {@link #getAndRemove()}.
-   *
    * @deprecated please consider using {@link #getAndSet(Object)} (with value of {@code null}).
    */
   @Deprecated
@@ -85,7 +83,6 @@ public interface Attribute<T> {
    * thread or even the same thread later will call {@link AttributeMap#attr(AttributeKey)} again, a new
    * {@link Attribute} instance is created and so is not the same as the previous one that was removed. Because of
    * this special caution should be taken when you call {@link #remove()} or {@link #getAndRemove()}.
-   *
    * @deprecated please consider using {@link #set(Object)} (with value of {@code null}).
    */
   @Deprecated

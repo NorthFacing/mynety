@@ -41,26 +41,26 @@ public final class MsgEchoServer {
     final ThreadFactory acceptFactory = new DefaultThreadFactory("accept");
     final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
     final NioEventLoopGroup acceptGroup =
-        new NioEventLoopGroup(1, acceptFactory, NioUdtProvider.MESSAGE_PROVIDER);
+      new NioEventLoopGroup(1, acceptFactory, NioUdtProvider.MESSAGE_PROVIDER);
     final NioEventLoopGroup connectGroup =
-        new NioEventLoopGroup(1, connectFactory, NioUdtProvider.MESSAGE_PROVIDER);
+      new NioEventLoopGroup(1, connectFactory, NioUdtProvider.MESSAGE_PROVIDER);
 
     // Configure the server.
     try {
       final ServerBootstrap boot = new ServerBootstrap();
       boot.group(acceptGroup, connectGroup)
-          .channelFactory(NioUdtProvider.MESSAGE_ACCEPTOR)
-          .option(ChannelOption.SO_BACKLOG, 10)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new ChannelInitializer<UdtChannel>() {
-            @Override
-            public void initChannel(final UdtChannel ch)
-                throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new MsgEchoServerHandler());
-            }
-          });
+        .channelFactory(NioUdtProvider.MESSAGE_ACCEPTOR)
+        .option(ChannelOption.SO_BACKLOG, 10)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<UdtChannel>() {
+          @Override
+          public void initChannel(final UdtChannel ch)
+            throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new MsgEchoServerHandler());
+          }
+        });
       // Start the server.
       final ChannelFuture future = boot.bind(PORT).sync();
       // Wait until the server socket is closed.

@@ -29,7 +29,7 @@ public final class Delimiters {
    */
   public static ByteBuf[] nulDelimiter() {
     return new ByteBuf[]{
-        Unpooled.wrappedBuffer(new byte[]{0})};
+      Unpooled.wrappedBuffer(new byte[]{0})};
   }
 
   /**
@@ -38,8 +38,8 @@ public final class Delimiters {
    */
   public static ByteBuf[] lineDelimiter() {
     return new ByteBuf[]{
-        Unpooled.wrappedBuffer(new byte[]{'\r', '\n'}),
-        Unpooled.wrappedBuffer(new byte[]{'\n'}),
+      Unpooled.wrappedBuffer(new byte[]{'\r', '\n'}),
+      Unpooled.wrappedBuffer(new byte[]{'\n'}),
     };
   }
 

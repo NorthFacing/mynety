@@ -28,11 +28,10 @@ import io.netty.handler.codec.TooLongFrameException;
  * handler after {@link StompSubframeDecoder} in the {@link ChannelPipeline}:
  */
 public class StompSubframeAggregator
-    extends MessageAggregator<StompSubframe, StompHeadersSubframe, StompContentSubframe, StompFrame> {
+  extends MessageAggregator<StompSubframe, StompHeadersSubframe, StompContentSubframe, StompFrame> {
 
   /**
    * Creates a new instance.
-   *
    * @param maxContentLength the maximum length of the aggregated content.
    *                         If the length of the aggregated content exceeds this value,
    *                         a {@link TooLongFrameException} will be raised.
@@ -64,7 +63,7 @@ public class StompSubframeAggregator
   @Override
   protected boolean isContentLengthInvalid(StompHeadersSubframe start, int maxContentLength) {
     return (int) Math.min(Integer.MAX_VALUE, start.headers().getLong(StompHeaders.CONTENT_LENGTH, -1)) >
-        maxContentLength;
+      maxContentLength;
   }
 
   @Override

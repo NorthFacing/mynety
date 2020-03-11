@@ -40,7 +40,6 @@ public class MarshallingEncoder extends MessageToByteEncoder<Object> {
 
   /**
    * Creates a new encoder.
-   *
    * @param provider the {@link MarshallerProvider} to use
    */
   public MarshallingEncoder(MarshallerProvider provider) {

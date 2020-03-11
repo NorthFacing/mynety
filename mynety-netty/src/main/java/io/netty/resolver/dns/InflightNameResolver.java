@@ -72,8 +72,8 @@ final class InflightNameResolver<T> implements NameResolver<T> {
   }
 
   private <U> Promise<U> resolve(
-      final ConcurrentMap<String, Promise<U>> resolveMap,
-      final String inetHost, final Promise<U> promise, boolean resolveAll) {
+    final ConcurrentMap<String, Promise<U>> resolveMap,
+    final String inetHost, final Promise<U> promise, boolean resolveAll) {
 
     final Promise<U> earlyPromise = resolveMap.putIfAbsent(inetHost, promise);
     if (earlyPromise != null) {

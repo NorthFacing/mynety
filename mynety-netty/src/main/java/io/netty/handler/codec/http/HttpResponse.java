@@ -25,7 +25,6 @@ package io.netty.handler.codec.http;
  * {@link io.netty.handler.codec.http.cookie.ClientCookieDecoder},
  * {@link io.netty.handler.codec.http.cookie.ServerCookieEncoder},
  * and {@link io.netty.handler.codec.http.cookie.ClientCookieEncoder}.
- *
  * @see HttpRequest
  * @see io.netty.handler.codec.http.cookie.ServerCookieDecoder
  * @see io.netty.handler.codec.http.cookie.ClientCookieDecoder
@@ -42,7 +41,6 @@ public interface HttpResponse extends HttpMessage {
 
   /**
    * Returns the status of this {@link HttpResponse}.
-   *
    * @return The {@link HttpResponseStatus} of this {@link HttpResponse}
    */
   HttpResponseStatus status();

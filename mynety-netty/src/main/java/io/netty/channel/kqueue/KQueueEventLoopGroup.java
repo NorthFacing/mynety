@@ -15,7 +15,11 @@
  */
 package io.netty.channel.kqueue;
 
-import io.netty.channel.*;
+import io.netty.channel.DefaultSelectStrategyFactory;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopTaskQueueFactory;
+import io.netty.channel.MultithreadEventLoopGroup;
+import io.netty.channel.SelectStrategyFactory;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.EventExecutorChooserFactory;
 import io.netty.util.concurrent.RejectedExecutionHandler;
@@ -78,7 +82,6 @@ public final class KQueueEventLoopGroup extends MultithreadEventLoopGroup {
   /**
    * Create a new instance using the specified number of threads, the given {@link ThreadFactory} and the given
    * maximal amount of epoll events to handle per epollWait(...).
-   *
    * @deprecated Use {@link #KQueueEventLoopGroup(int)} or {@link #KQueueEventLoopGroup(int, ThreadFactory)}
    */
   @Deprecated
@@ -89,7 +92,6 @@ public final class KQueueEventLoopGroup extends MultithreadEventLoopGroup {
   /**
    * Create a new instance using the specified number of threads, the given {@link ThreadFactory} and the given
    * maximal amount of epoll events to handle per epollWait(...).
-   *
    * @deprecated Use {@link #KQueueEventLoopGroup(int)}, {@link #KQueueEventLoopGroup(int, ThreadFactory)}, or
    * {@link #KQueueEventLoopGroup(int, SelectStrategyFactory)}
    */
@@ -119,7 +121,7 @@ public final class KQueueEventLoopGroup extends MultithreadEventLoopGroup {
                               RejectedExecutionHandler rejectedExecutionHandler,
                               EventLoopTaskQueueFactory queueFactory) {
     super(nThreads, executor, chooserFactory, 0, selectStrategyFactory,
-        rejectedExecutionHandler, queueFactory);
+      rejectedExecutionHandler, queueFactory);
   }
 
   /**
@@ -137,7 +139,7 @@ public final class KQueueEventLoopGroup extends MultithreadEventLoopGroup {
     EventLoopTaskQueueFactory queueFactory = args.length == 4 ? (EventLoopTaskQueueFactory) args[3] : null;
 
     return new KQueueEventLoop(this, executor, (Integer) args[0],
-        ((SelectStrategyFactory) args[1]).newSelectStrategy(),
-        (RejectedExecutionHandler) args[2], queueFactory);
+      ((SelectStrategyFactory) args[1]).newSelectStrategy(),
+      (RejectedExecutionHandler) args[2], queueFactory);
   }
 }

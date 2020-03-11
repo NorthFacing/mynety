@@ -30,7 +30,7 @@ public class WebSocketServerCompressionHandler extends WebSocketServerExtensionH
    */
   public WebSocketServerCompressionHandler() {
     super(new PerMessageDeflateServerExtensionHandshaker(),
-        new DeflateFrameServerExtensionHandshaker());
+      new DeflateFrameServerExtensionHandshaker());
   }
 
 }

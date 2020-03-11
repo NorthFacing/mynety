@@ -25,7 +25,6 @@ import io.netty.util.internal.UnstableApi;
  * <p/>
  * A {@link BinaryMemcacheMessage} always consists of a header and optional extras or/and
  * a key.
- *
  * @see BinaryMemcacheRequest
  * @see BinaryMemcacheResponse
  */
@@ -34,14 +33,12 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
 
   /**
    * Returns the magic byte for the message.
-   *
    * @return the magic byte.
    */
   byte magic();
 
   /**
    * Sets the magic byte.
-   *
    * @param magic the magic byte to use.
    * @see BinaryMemcacheOpcodes for typesafe opcodes.
    */
@@ -49,14 +46,12 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
 
   /**
    * Returns the opcode for the message.
-   *
    * @return the opcode.
    */
   byte opcode();
 
   /**
    * Sets the opcode for the message.
-   *
    * @param code the opcode to use.
    */
   BinaryMemcacheMessage setOpcode(byte code);
@@ -65,7 +60,6 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
    * Returns the key length of the message.
    * <p/>
    * This may return 0, since the key is optional.
-   *
    * @return the key length.
    */
   short keyLength();
@@ -74,21 +68,18 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
    * Return the extras length of the message.
    * <p/>
    * This may be 0, since the extras content is optional.
-   *
    * @return the extras length.
    */
   byte extrasLength();
 
   /**
    * Returns the data type of the message.
-   *
    * @return the data type of the message.
    */
   byte dataType();
 
   /**
    * Sets the data type of the message.
-   *
    * @param dataType the data type of the message.
    */
   BinaryMemcacheMessage setDataType(byte dataType);
@@ -97,7 +88,6 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
    * Returns the total body length.
    * <p/>
    * Note that this may be 0, since the body is optional.
-   *
    * @return the total body length.
    */
   int totalBodyLength();
@@ -106,42 +96,36 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
    * Sets the total body length.
    * <p/>
    * Note that this may be 0, since the body length is optional.
-   *
    * @param totalBodyLength the total body length.
    */
   BinaryMemcacheMessage setTotalBodyLength(int totalBodyLength);
 
   /**
    * Returns the opaque value.
-   *
    * @return the opaque value.
    */
   int opaque();
 
   /**
    * Sets the opaque value.
-   *
    * @param opaque the opaque value to use.
    */
   BinaryMemcacheMessage setOpaque(int opaque);
 
   /**
    * Returns the CAS identifier.
-   *
    * @return the CAS identifier.
    */
   long cas();
 
   /**
    * Sets the CAS identifier.
-   *
    * @param cas the CAS identifier to use.
    */
   BinaryMemcacheMessage setCas(long cas);
 
   /**
    * Returns the optional key of the document.
-   *
    * @return the key of the document.
    */
   ByteBuf key();
@@ -149,7 +133,6 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
   /**
    * Sets the key of the document. {@link ByteBuf#release()} ownership of {@code key}
    * is transferred to this {@link BinaryMemcacheMessage}.
-   *
    * @param key the key of the message. {@link ByteBuf#release()} ownership is transferred
    *            to this {@link BinaryMemcacheMessage}.
    */
@@ -157,7 +140,6 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
 
   /**
    * Returns a {@link ByteBuf} representation of the optional extras.
-   *
    * @return the optional extras.
    */
   ByteBuf extras();
@@ -165,7 +147,6 @@ public interface BinaryMemcacheMessage extends MemcacheMessage {
   /**
    * Sets the extras buffer on the message. {@link ByteBuf#release()} ownership of {@code extras}
    * is transferred to this {@link BinaryMemcacheMessage}.
-   *
    * @param extras the extras buffer of the document. {@link ByteBuf#release()} ownership is transferred
    *               to this {@link BinaryMemcacheMessage}.
    */

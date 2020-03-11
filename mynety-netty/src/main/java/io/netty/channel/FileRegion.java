@@ -59,7 +59,6 @@ public interface FileRegion extends ReferenceCounted {
 
   /**
    * Returns the bytes which was transferred already.
-   *
    * @deprecated Use {@link #transferred()} instead.
    */
   @Deprecated
@@ -77,7 +76,6 @@ public interface FileRegion extends ReferenceCounted {
 
   /**
    * Transfers the content of this file region to the specified channel.
-   *
    * @param target   the destination of the transfer
    * @param position the relative offset of the file where the transfer
    *                 begins from.  For example, <tt>0</tt> will make the

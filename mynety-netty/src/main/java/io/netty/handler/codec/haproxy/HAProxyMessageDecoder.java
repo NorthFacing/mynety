@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * Decodes an HAProxy proxy protocol header
- *
  * @see <a href="http://haproxy.1wt.eu/download/1.5/doc/proxy-protocol.txt">Proxy Protocol Specification</a>
  */
 public class HAProxyMessageDecoder extends ByteToMessageDecoder {
@@ -53,26 +52,26 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
    * Binary header prefix
    */
   private static final byte[] BINARY_PREFIX = {
-      (byte) 0x0D,
-      (byte) 0x0A,
-      (byte) 0x0D,
-      (byte) 0x0A,
-      (byte) 0x00,
-      (byte) 0x0D,
-      (byte) 0x0A,
-      (byte) 0x51,
-      (byte) 0x55,
-      (byte) 0x49,
-      (byte) 0x54,
-      (byte) 0x0A
+    (byte) 0x0D,
+    (byte) 0x0A,
+    (byte) 0x0D,
+    (byte) 0x0A,
+    (byte) 0x00,
+    (byte) 0x0D,
+    (byte) 0x0A,
+    (byte) 0x51,
+    (byte) 0x55,
+    (byte) 0x49,
+    (byte) 0x54,
+    (byte) 0x0A
   };
 
   private static final byte[] TEXT_PREFIX = {
-      (byte) 'P',
-      (byte) 'R',
-      (byte) 'O',
-      (byte) 'X',
-      (byte) 'Y',
+    (byte) 'P',
+    (byte) 'R',
+    (byte) 'O',
+    (byte) 'X',
+    (byte) 'Y',
   };
 
   /**
@@ -84,13 +83,13 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
    * {@link ProtocolDetectionResult} for {@link HAProxyProtocolVersion#V1}.
    */
   private static final ProtocolDetectionResult<HAProxyProtocolVersion> DETECTION_RESULT_V1 =
-      ProtocolDetectionResult.detected(HAProxyProtocolVersion.V1);
+    ProtocolDetectionResult.detected(HAProxyProtocolVersion.V1);
 
   /**
    * {@link ProtocolDetectionResult} for {@link HAProxyProtocolVersion#V2}.
    */
   private static final ProtocolDetectionResult<HAProxyProtocolVersion> DETECTION_RESULT_V2 =
-      ProtocolDetectionResult.detected(HAProxyProtocolVersion.V2);
+    ProtocolDetectionResult.detected(HAProxyProtocolVersion.V2);
 
   /**
    * Used to extract a header frame out of the {@link ByteBuf} and return it.
@@ -139,7 +138,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
   /**
    * Creates a new decoder with no additional data (TLV) restrictions, whether or not to throw an exception as soon
    * as we exceed maxLength.
-   *
    * @param failFast Whether or not to throw an exception as soon as we exceed maxLength
    */
   public HAProxyMessageDecoder(boolean failFast) {
@@ -155,7 +153,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
    * TLV data is currently ignored. For maximum performance it would be best to configure your upstream proxy host to
    * <b>NOT</b> send TLV data and instantiate with a max TLV size of {@code 0}.
    * </p>
-   *
    * @param maxTlvSize maximum number of bytes allowed for additional data (Type-Length-Value vectors) in a v2 header
    */
   public HAProxyMessageDecoder(int maxTlvSize) {
@@ -165,7 +162,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
   /**
    * Creates a new decoder with restricted additional data (TLV) size, whether or not to throw an exception as soon
    * as we exceed maxLength.
-   *
    * @param maxTlvSize maximum number of bytes allowed for additional data (Type-Length-Value vectors) in a v2 header
    * @param failFast   Whether or not to throw an exception as soon as we exceed maxLength
    */
@@ -288,7 +284,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
 
   /**
    * Create a frame out of the {@link ByteBuf} and return it.
-   *
    * @param ctx    the {@link ChannelHandlerContext} which this {@link HAProxyMessageDecoder} belongs to
    * @param buffer the {@link ByteBuf} from which to read data
    * @return frame  the {@link ByteBuf} which represent the frame or {@code null} if no frame could
@@ -303,7 +298,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
 
   /**
    * Create a frame out of the {@link ByteBuf} and return it.
-   *
    * @param ctx    the {@link ChannelHandlerContext} which this {@link HAProxyMessageDecoder} belongs to
    * @param buffer the {@link ByteBuf} from which to read data
    * @return frame  the {@link ByteBuf} which represent the frame or {@code null} if no frame could
@@ -385,7 +379,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
 
     /**
      * Create a frame out of the {@link ByteBuf} and return it.
-     *
      * @param ctx    the {@link ChannelHandlerContext} which this {@link HAProxyMessageDecoder} belongs to
      * @param buffer the {@link ByteBuf} from which to read data
      * @return frame  the {@link ByteBuf} which represent the frame or {@code null} if no frame could
@@ -437,7 +430,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
     /**
      * Find the end of the header from the given {@link ByteBuf}，the end may be a CRLF, or the length given by the
      * header.
-     *
      * @param buffer the buffer to be searched
      * @return {@code -1} if can not find the end, otherwise return the buffer index of end
      */
@@ -445,7 +437,6 @@ public class HAProxyMessageDecoder extends ByteToMessageDecoder {
 
     /**
      * Get the length of the header delimiter.
-     *
      * @param buffer the buffer where delimiter is located
      * @param eoh    index of delimiter
      * @return length of the delimiter

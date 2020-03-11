@@ -82,7 +82,7 @@ public class DiskFileUpload extends AbstractDiskHttpData implements FileUpload {
   public int compareTo(InterfaceHttpData o) {
     if (!(o instanceof FileUpload)) {
       throw new ClassCastException("Cannot compare " + getHttpDataType() +
-          " with " + o.getHttpDataType());
+        " with " + o.getHttpDataType());
     }
     return compareTo((FileUpload) o);
   }
@@ -124,15 +124,15 @@ public class DiskFileUpload extends AbstractDiskHttpData implements FileUpload {
     }
 
     return HttpHeaderNames.CONTENT_DISPOSITION + ": " +
-        HttpHeaderValues.FORM_DATA + "; " + HttpHeaderValues.NAME + "=\"" + getName() +
-        "\"; " + HttpHeaderValues.FILENAME + "=\"" + filename + "\"\r\n" +
-        HttpHeaderNames.CONTENT_TYPE + ": " + contentType +
-        (getCharset() != null ? "; " + HttpHeaderValues.CHARSET + '=' + getCharset().name() + "\r\n" : "\r\n") +
-        HttpHeaderNames.CONTENT_LENGTH + ": " + length() + "\r\n" +
-        "Completed: " + isCompleted() +
-        "\r\nIsInMemory: " + isInMemory() + "\r\nRealFile: " +
-        (file != null ? file.getAbsolutePath() : "null") + " DefaultDeleteAfter: " +
-        deleteOnExitTemporaryFile;
+      HttpHeaderValues.FORM_DATA + "; " + HttpHeaderValues.NAME + "=\"" + getName() +
+      "\"; " + HttpHeaderValues.FILENAME + "=\"" + filename + "\"\r\n" +
+      HttpHeaderNames.CONTENT_TYPE + ": " + contentType +
+      (getCharset() != null ? "; " + HttpHeaderValues.CHARSET + '=' + getCharset().name() + "\r\n" : "\r\n") +
+      HttpHeaderNames.CONTENT_LENGTH + ": " + length() + "\r\n" +
+      "Completed: " + isCompleted() +
+      "\r\nIsInMemory: " + isInMemory() + "\r\nRealFile: " +
+      (file != null ? file.getAbsolutePath() : "null") + " DefaultDeleteAfter: " +
+      deleteOnExitTemporaryFile;
   }
 
   @Override
@@ -195,7 +195,7 @@ public class DiskFileUpload extends AbstractDiskHttpData implements FileUpload {
   @Override
   public FileUpload replace(ByteBuf content) {
     DiskFileUpload upload = new DiskFileUpload(
-        getName(), getFilename(), getContentType(), getContentTransferEncoding(), getCharset(), size);
+      getName(), getFilename(), getContentType(), getContentTransferEncoding(), getCharset(), size);
     if (content != null) {
       try {
         upload.setContent(content);

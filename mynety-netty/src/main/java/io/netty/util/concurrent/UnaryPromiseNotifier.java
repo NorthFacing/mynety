@@ -44,7 +44,7 @@ public final class UnaryPromiseNotifier<T> implements FutureListener<T> {
     } else {
       if (!promise.tryFailure(completedFuture.cause())) {
         logger.warn("Failed to mark a promise as failure because it's done already: {}", promise,
-            completedFuture.cause());
+          completedFuture.cause());
       }
     }
   }

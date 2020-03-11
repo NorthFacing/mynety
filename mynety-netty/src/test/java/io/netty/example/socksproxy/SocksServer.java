@@ -32,9 +32,9 @@ public final class SocksServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new SocksServerInitializer());
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new SocksServerInitializer());
       b.bind(PORT).sync().channel().closeFuture().sync();
     } finally {
       bossGroup.shutdownGracefully();

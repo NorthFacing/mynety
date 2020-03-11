@@ -41,7 +41,6 @@ public interface OpenSslPrivateKeyMethod {
 
   /**
    * Signs the input with the given key and returns the signed bytes.
-   *
    * @param engine             the {@link SSLEngine}
    * @param signatureAlgorithm the algorithm to use for signing
    * @param input              the digest itself
@@ -52,7 +51,6 @@ public interface OpenSslPrivateKeyMethod {
 
   /**
    * Decrypts the input with the given key and returns the decrypted bytes.
-   *
    * @param engine the {@link SSLEngine}
    * @param input  the input which should be decrypted
    * @return the decrypted data (must not be {@code null})

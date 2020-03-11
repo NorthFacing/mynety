@@ -53,7 +53,6 @@ public abstract class SimpleChannelInboundHandler<I> extends ChannelInboundHandl
 
   /**
    * Create a new instance which will try to detect the types to match out of the type parameter of the class.
-   *
    * @param autoRelease {@code true} if handled messages should be released automatically by passing them to
    *                    {@link ReferenceCountUtil#release(Object)}.
    */
@@ -71,7 +70,6 @@ public abstract class SimpleChannelInboundHandler<I> extends ChannelInboundHandl
 
   /**
    * Create a new instance
-   *
    * @param inboundMessageType The type of messages to match
    * @param autoRelease        {@code true} if handled messages should be released automatically by passing them to
    *                           {@link ReferenceCountUtil#release(Object)}.
@@ -110,7 +108,6 @@ public abstract class SimpleChannelInboundHandler<I> extends ChannelInboundHandl
 
   /**
    * Is called for each message of type {@link I}.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link SimpleChannelInboundHandler}
    *            belongs to
    * @param msg the message to handle

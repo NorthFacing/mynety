@@ -18,11 +18,17 @@ package io.netty.handler.codec.rtsp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.handler.codec.UnsupportedMessageTypeException;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObjectEncoder;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.StringUtil;
 
-import static io.netty.handler.codec.http.HttpConstants.*;
+import static io.netty.handler.codec.http.HttpConstants.CR;
+import static io.netty.handler.codec.http.HttpConstants.LF;
+import static io.netty.handler.codec.http.HttpConstants.SP;
 
 /**
  * Encodes an RTSP message represented in {@link HttpMessage} or an {@link HttpContent} into
@@ -33,13 +39,13 @@ public class RtspEncoder extends HttpObjectEncoder<HttpMessage> {
 
   @Override
   public boolean acceptOutboundMessage(final Object msg)
-      throws Exception {
+    throws Exception {
     return super.acceptOutboundMessage(msg) && ((msg instanceof HttpRequest) || (msg instanceof HttpResponse));
   }
 
   @Override
   protected void encodeInitialLine(final ByteBuf buf, final HttpMessage message)
-      throws Exception {
+    throws Exception {
     if (message instanceof HttpRequest) {
       HttpRequest request = (HttpRequest) message;
       ByteBufUtil.copy(request.method().asciiName(), buf);
@@ -58,7 +64,7 @@ public class RtspEncoder extends HttpObjectEncoder<HttpMessage> {
       ByteBufUtil.writeShortBE(buf, CRLF_SHORT);
     } else {
       throw new UnsupportedMessageTypeException("Unsupported type "
-          + StringUtil.simpleClassName(message));
+        + StringUtil.simpleClassName(message));
     }
   }
 }

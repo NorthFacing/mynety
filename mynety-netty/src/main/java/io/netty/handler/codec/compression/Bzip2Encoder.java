@@ -16,13 +16,23 @@
 package io.netty.handler.codec.compression;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelPromiseNotifier;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.EventExecutor;
 
 import java.util.concurrent.TimeUnit;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.*;
+import static io.netty.handler.codec.compression.Bzip2Constants.BASE_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_1;
+import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_2;
+import static io.netty.handler.codec.compression.Bzip2Constants.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.Bzip2Constants.MAX_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.MIN_BLOCK_SIZE;
 
 /**
  * Compresses a {@link ByteBuf} using the Bzip2 algorithm.
@@ -81,7 +91,6 @@ public class Bzip2Encoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a new bzip2 encoder with the specified {@code blockSizeMultiplier}.
-   *
    * @param blockSizeMultiplier The Bzip2 block size as a multiple of 100,000 bytes (minimum {@code 1}, maximum {@code 9}).
    *                            Larger block sizes require more memory for both compression and decompression,
    *                            but give better compression ratios. {@code 9} will usually be the best value to use.
@@ -89,7 +98,7 @@ public class Bzip2Encoder extends MessageToByteEncoder<ByteBuf> {
   public Bzip2Encoder(final int blockSizeMultiplier) {
     if (blockSizeMultiplier < MIN_BLOCK_SIZE || blockSizeMultiplier > MAX_BLOCK_SIZE) {
       throw new IllegalArgumentException(
-          "blockSizeMultiplier: " + blockSizeMultiplier + " (expected: 1-9)");
+        "blockSizeMultiplier: " + blockSizeMultiplier + " (expected: 1-9)");
     }
     streamBlockSize = blockSizeMultiplier * BASE_BLOCK_SIZE;
   }

@@ -22,7 +22,20 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import static io.netty.handler.codec.compression.FastLz.*;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_TYPE_COMPRESSED;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_TYPE_NON_COMPRESSED;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_WITHOUT_CHECKSUM;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_WITH_CHECKSUM;
+import static io.netty.handler.codec.compression.FastLz.CHECKSUM_OFFSET;
+import static io.netty.handler.codec.compression.FastLz.LEVEL_1;
+import static io.netty.handler.codec.compression.FastLz.LEVEL_2;
+import static io.netty.handler.codec.compression.FastLz.LEVEL_AUTO;
+import static io.netty.handler.codec.compression.FastLz.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.FastLz.MAX_CHUNK_LENGTH;
+import static io.netty.handler.codec.compression.FastLz.MIN_LENGTH_TO_COMPRESSION;
+import static io.netty.handler.codec.compression.FastLz.OPTIONS_OFFSET;
+import static io.netty.handler.codec.compression.FastLz.calculateOutputBufferLength;
+import static io.netty.handler.codec.compression.FastLz.compress;
 
 /**
  * Compresses a {@link ByteBuf} using the FastLZ algorithm.
@@ -49,7 +62,6 @@ public class FastLzFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a FastLZ encoder with specified compression level and without checksum calculator.
-   *
    * @param level supports only these values:
    *              0 - Encoder will choose level automatically depending on the length of the input buffer.
    *              1 - Level 1 is the fastest compression and generally useful for short data.
@@ -62,7 +74,6 @@ public class FastLzFrameEncoder extends MessageToByteEncoder<ByteBuf> {
   /**
    * Creates a FastLZ encoder with auto detection of compression
    * level and calculation of checksums as specified.
-   *
    * @param validateChecksums If true, the checksum of each block will be calculated and this value
    *                          will be added to the header of block.
    *                          By default {@link FastLzFrameEncoder} uses {@link java.util.zip.Adler32}
@@ -74,7 +85,6 @@ public class FastLzFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a FastLZ encoder with specified compression level and checksum calculator.
-   *
    * @param level    supports only these values:
    *                 0 - Encoder will choose level automatically depending on the length of the input buffer.
    *                 1 - Level 1 is the fastest compression and generally useful for short data.
@@ -86,7 +96,7 @@ public class FastLzFrameEncoder extends MessageToByteEncoder<ByteBuf> {
     super(false);
     if (level != LEVEL_AUTO && level != LEVEL_1 && level != LEVEL_2) {
       throw new IllegalArgumentException(String.format(
-          "level: %d (expected: %d or %d or %d)", level, LEVEL_AUTO, LEVEL_1, LEVEL_2));
+        "level: %d (expected: %d or %d or %d)", level, LEVEL_AUTO, LEVEL_1, LEVEL_2));
     }
     this.level = level;
     this.checksum = checksum;
@@ -176,7 +186,7 @@ public class FastLzFrameEncoder extends MessageToByteEncoder<ByteBuf> {
       out.setShort(outputOffset, length);
 
       out.setByte(outputIdx + OPTIONS_OFFSET,
-          blockType | (checksum != null ? BLOCK_WITH_CHECKSUM : BLOCK_WITHOUT_CHECKSUM));
+        blockType | (checksum != null ? BLOCK_WITH_CHECKSUM : BLOCK_WITHOUT_CHECKSUM));
       out.writerIndex(outputOffset + 2 + chunkLength);
       in.skipBytes(length);
     }

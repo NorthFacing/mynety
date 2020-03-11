@@ -47,7 +47,6 @@ public enum HAProxyProtocolVersion {
 
   /**
    * Returns the {@link HAProxyProtocolVersion} represented by the highest 4 bits of the specified byte.
-   *
    * @param verCmdByte protocol version and command byte
    */
   public static HAProxyProtocolVersion valueOf(byte verCmdByte) {

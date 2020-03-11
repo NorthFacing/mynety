@@ -16,7 +16,11 @@
 package io.netty.handler.codec.http.multipart;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpConstants;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.multipart.HttpPostBodyUtil.SeekAheadOptimize;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.EndOfDataDecoderException;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.ErrorDataDecoderException;
@@ -71,7 +75,7 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * HttpDatas as Map from Body
    */
   private final Map<String, List<InterfaceHttpData>> bodyMapHttpData = new TreeMap<String, List<InterfaceHttpData>>(
-      CaseIgnoringComparator.INSTANCE);
+    CaseIgnoringComparator.INSTANCE);
 
   /**
    * The current channelBuffer
@@ -148,13 +152,12 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
   private void checkDestroyed() {
     if (destroyed) {
       throw new IllegalStateException(HttpPostStandardRequestDecoder.class.getSimpleName()
-          + " was destroyed already");
+        + " was destroyed already");
     }
   }
 
   /**
    * True if this request is a Multipart request
-   *
    * @return True if this request is a Multipart request
    */
   @Override
@@ -186,7 +189,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return the list of HttpDatas from Body part for POST getMethod
    * @throws NotEnoughDataDecoderException Need more chunks
    */
@@ -206,7 +208,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return All Body HttpDatas with the given name (ignore case)
    * @throws NotEnoughDataDecoderException need more chunks
    */
@@ -226,7 +227,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return The first Body InterfaceHttpData with the given name (ignore
    * case)
    * @throws NotEnoughDataDecoderException need more chunks
@@ -247,7 +247,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
 
   /**
    * Initialized the internals from a new chunk
-   *
    * @param content the new received chunk
    * @throws ErrorDataDecoderException if there is a problem with the charset decoding or other
    *                                   errors
@@ -280,7 +279,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * InterfaceHttpData from the Body.
    * <p>
    * This getMethod works for chunked and not chunked request.
-   *
    * @return True if at current getStatus, there is a decoded InterfaceHttpData
    * @throws EndOfDataDecoderException No more data will be available
    */
@@ -304,7 +302,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
    * <p>
    * Be sure to call {@link InterfaceHttpData#release()} after you are done
    * with processing to make sure to not leak any resources
-   *
    * @return the next available InterfaceHttpData or null if none
    * @throws EndOfDataDecoderException No more data will be available
    */
@@ -325,7 +322,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
 
   /**
    * This getMethod will parse as much as possible data and fill the list and map
-   *
    * @throws ErrorDataDecoderException if there is a problem with the charset decoding or other
    *                                   errors
    */
@@ -358,7 +354,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
   /**
    * This getMethod fill the map and list with as much Attribute as possible from
    * Body in not Multipart mode.
-   *
    * @throws ErrorDataDecoderException if there is a problem with the charset decoding or other
    *                                   errors
    */
@@ -381,14 +376,14 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
               currentStatus = MultiPartStatus.FIELD;
               equalpos = currentpos - 1;
               String key = decodeAttribute(undecodedChunk.toString(firstpos, equalpos - firstpos, charset),
-                  charset);
+                charset);
               currentAttribute = factory.createAttribute(request, key);
               firstpos = currentpos;
             } else if (read == '&') { // special empty FIELD
               currentStatus = MultiPartStatus.DISPOSITION;
               ampersandpos = currentpos - 1;
               String key = decodeAttribute(
-                  undecodedChunk.toString(firstpos, ampersandpos - firstpos, charset), charset);
+                undecodedChunk.toString(firstpos, ampersandpos - firstpos, charset), charset);
               currentAttribute = factory.createAttribute(request, key);
               currentAttribute.setValue(""); // empty
               addHttpData(currentAttribute);
@@ -447,7 +442,7 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
       } else if (contRead && currentAttribute != null && currentStatus == MultiPartStatus.FIELD) {
         // reset index except if to continue in case of FIELD getStatus
         currentAttribute.addContent(undecodedChunk.copy(firstpos, currentpos - firstpos),
-            false);
+          false);
         firstpos = currentpos;
       }
       undecodedChunk.readerIndex(firstpos);
@@ -465,7 +460,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
   /**
    * This getMethod fill the map and list with as much Attribute as possible from
    * Body in not Multipart mode.
-   *
    * @throws ErrorDataDecoderException if there is a problem with the charset decoding or other
    *                                   errors
    */
@@ -494,14 +488,14 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
               currentStatus = MultiPartStatus.FIELD;
               equalpos = currentpos - 1;
               String key = decodeAttribute(undecodedChunk.toString(firstpos, equalpos - firstpos, charset),
-                  charset);
+                charset);
               currentAttribute = factory.createAttribute(request, key);
               firstpos = currentpos;
             } else if (read == '&') { // special empty FIELD
               currentStatus = MultiPartStatus.DISPOSITION;
               ampersandpos = currentpos - 1;
               String key = decodeAttribute(
-                  undecodedChunk.toString(firstpos, ampersandpos - firstpos, charset), charset);
+                undecodedChunk.toString(firstpos, ampersandpos - firstpos, charset), charset);
               currentAttribute = factory.createAttribute(request, key);
               currentAttribute.setValue(""); // empty
               addHttpData(currentAttribute);
@@ -569,7 +563,7 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
       } else if (contRead && currentAttribute != null && currentStatus == MultiPartStatus.FIELD) {
         // reset index except if to continue in case of FIELD getStatus
         currentAttribute.addContent(undecodedChunk.copy(firstpos, currentpos - firstpos),
-            false);
+          false);
         firstpos = currentpos;
       }
       undecodedChunk.readerIndex(firstpos);
@@ -598,7 +592,6 @@ public class HttpPostStandardRequestDecoder implements InterfaceHttpPostRequestD
 
   /**
    * Decode component
-   *
    * @return the decoded component
    */
   private static String decodeAttribute(String s, Charset charset) {

@@ -15,7 +15,11 @@
  */
 package io.netty.handler.codec.http.websocketx.extensions;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -43,7 +47,6 @@ public class WebSocketServerExtensionHandler extends ChannelDuplexHandler {
 
   /**
    * Constructor
-   *
    * @param extensionHandshakers The extension handshaker in priority order. A handshaker could be repeated many times
    *                             with fallback configuration.
    */
@@ -59,7 +62,7 @@ public class WebSocketServerExtensionHandler extends ChannelDuplexHandler {
 
   @Override
   public void channelRead(ChannelHandlerContext ctx, Object msg)
-      throws Exception {
+    throws Exception {
     if (msg instanceof HttpRequest) {
       HttpRequest request = (HttpRequest) msg;
 
@@ -68,17 +71,17 @@ public class WebSocketServerExtensionHandler extends ChannelDuplexHandler {
 
         if (extensionsHeader != null) {
           List<WebSocketExtensionData> extensions =
-              WebSocketExtensionUtil.extractExtensions(extensionsHeader);
+            WebSocketExtensionUtil.extractExtensions(extensionsHeader);
           int rsv = 0;
 
           for (WebSocketExtensionData extensionData : extensions) {
             Iterator<WebSocketServerExtensionHandshaker> extensionHandshakersIterator =
-                extensionHandshakers.iterator();
+              extensionHandshakers.iterator();
             WebSocketServerExtension validExtension = null;
 
             while (validExtension == null && extensionHandshakersIterator.hasNext()) {
               WebSocketServerExtensionHandshaker extensionHandshaker =
-                  extensionHandshakersIterator.next();
+                extensionHandshakersIterator.next();
               validExtension = extensionHandshaker.handshakeExtension(extensionData);
             }
 
@@ -100,14 +103,14 @@ public class WebSocketServerExtensionHandler extends ChannelDuplexHandler {
   @Override
   public void write(final ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
     if (msg instanceof HttpResponse &&
-        WebSocketExtensionUtil.isWebsocketUpgrade(((HttpResponse) msg).headers()) && validExtensions != null) {
+      WebSocketExtensionUtil.isWebsocketUpgrade(((HttpResponse) msg).headers()) && validExtensions != null) {
       HttpResponse response = (HttpResponse) msg;
       String headerValue = response.headers().getAsString(HttpHeaderNames.SEC_WEBSOCKET_EXTENSIONS);
 
       for (WebSocketServerExtension extension : validExtensions) {
         WebSocketExtensionData extensionData = extension.newReponseData();
         headerValue = WebSocketExtensionUtil.appendExtension(headerValue,
-            extensionData.name(), extensionData.parameters());
+          extensionData.name(), extensionData.parameters());
       }
 
       promise.addListener(new ChannelFutureListener() {

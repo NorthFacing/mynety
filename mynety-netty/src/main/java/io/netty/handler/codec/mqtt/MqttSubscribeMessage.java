@@ -23,9 +23,9 @@ package io.netty.handler.codec.mqtt;
 public final class MqttSubscribeMessage extends MqttMessage {
 
   public MqttSubscribeMessage(
-      MqttFixedHeader mqttFixedHeader,
-      MqttMessageIdVariableHeader variableHeader,
-      MqttSubscribePayload payload) {
+    MqttFixedHeader mqttFixedHeader,
+    MqttMessageIdVariableHeader variableHeader,
+    MqttSubscribePayload payload) {
     super(mqttFixedHeader, variableHeader, payload);
   }
 

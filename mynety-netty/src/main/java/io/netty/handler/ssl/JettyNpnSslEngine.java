@@ -57,8 +57,8 @@ final class JettyNpnSslEngine extends JdkSslEngine {
 
     if (server) {
       final ProtocolSelectionListener protocolListener = checkNotNull(applicationNegotiator
-              .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
-          "protocolListener");
+          .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
+        "protocolListener");
       NextProtoNego.put(engine, new ServerProvider() {
         @Override
         public void unsupported() {
@@ -81,8 +81,8 @@ final class JettyNpnSslEngine extends JdkSslEngine {
       });
     } else {
       final ProtocolSelector protocolSelector = checkNotNull(applicationNegotiator.protocolSelectorFactory()
-              .newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())),
-          "protocolSelector");
+          .newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())),
+        "protocolSelector");
       NextProtoNego.put(engine, new ClientProvider() {
         @Override
         public boolean supports() {

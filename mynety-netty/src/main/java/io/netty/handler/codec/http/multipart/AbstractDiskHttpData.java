@@ -89,7 +89,7 @@ public abstract class AbstractDiskHttpData extends AbstractHttpData {
       tmpFile = File.createTempFile(getPrefix(), newpostfix);
     } else {
       tmpFile = File.createTempFile(getPrefix(), newpostfix, new File(
-          getBaseDirectory()));
+        getBaseDirectory()));
     }
     if (deleteOnExit()) {
       tmpFile.deleteOnExit();
@@ -148,14 +148,14 @@ public abstract class AbstractDiskHttpData extends AbstractHttpData {
 
   @Override
   public void addContent(ByteBuf buffer, boolean last)
-      throws IOException {
+    throws IOException {
     if (buffer != null) {
       try {
         int localsize = buffer.readableBytes();
         checkSize(size + localsize);
         if (definedSize > 0 && definedSize < size + localsize) {
           throw new IOException("Out of size: " + (size + localsize) +
-              " > " + definedSize);
+            " > " + definedSize);
         }
         ByteBuffer byteBuffer = buffer.nioBufferCount() == 1 ? buffer.nioBuffer() : buffer.copy().nioBuffer();
         int written = 0;
@@ -415,14 +415,13 @@ public abstract class AbstractDiskHttpData extends AbstractHttpData {
 
   /**
    * Utility function
-   *
    * @return the array of bytes
    */
   private static byte[] readFrom(File src) throws IOException {
     long srcsize = src.length();
     if (srcsize > Integer.MAX_VALUE) {
       throw new IllegalArgumentException(
-          "File too big to be loaded in memory");
+        "File too big to be loaded in memory");
     }
     RandomAccessFile accessFile = new RandomAccessFile(src, "r");
     byte[] array = new byte[(int) srcsize];

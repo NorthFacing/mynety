@@ -67,8 +67,8 @@ abstract class JettyAlpnSslEngine extends JdkSslEngine {
       super(engine);
       checkNotNull(applicationNegotiator, "applicationNegotiator");
       final ProtocolSelectionListener protocolListener = checkNotNull(applicationNegotiator
-              .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
-          "protocolListener");
+          .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
+        "protocolListener");
       ALPN.put(engine, new ALPN.ClientProvider() {
         @Override
         public List<String> protocols() {
@@ -115,8 +115,8 @@ abstract class JettyAlpnSslEngine extends JdkSslEngine {
       super(engine);
       checkNotNull(applicationNegotiator, "applicationNegotiator");
       final ProtocolSelector protocolSelector = checkNotNull(applicationNegotiator.protocolSelectorFactory()
-              .newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())),
-          "protocolSelector");
+          .newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())),
+        "protocolSelector");
       ALPN.put(engine, new ALPN.ServerProvider() {
         @Override
         public String select(List<String> protocols) throws SSLException {

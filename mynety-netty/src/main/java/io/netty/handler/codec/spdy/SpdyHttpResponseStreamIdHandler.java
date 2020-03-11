@@ -31,7 +31,7 @@ import java.util.Queue;
  * for HTTP.
  */
 public class SpdyHttpResponseStreamIdHandler extends
-    MessageToMessageCodec<Object, HttpMessage> {
+  MessageToMessageCodec<Object, HttpMessage> {
   private static final Integer NO_ID = -1;
   private final Queue<Integer> ids = new ArrayDeque<Integer>();
 

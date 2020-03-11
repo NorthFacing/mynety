@@ -37,14 +37,14 @@ public final class WorldClockClient {
   static final String HOST = System.getProperty("host", "127.0.0.1");
   static final int PORT = Integer.parseInt(System.getProperty("port", "8463"));
   static final List<String> CITIES = Arrays.asList(System.getProperty(
-      "cities", "Asia/Seoul,Europe/Berlin,America/Los_Angeles").split(","));
+    "cities", "Asia/Seoul,Europe/Berlin,America/Los_Angeles").split(","));
 
   public static void main(String[] args) throws Exception {
     // Configure SSL.
     final SslContext sslCtx;
     if (SSL) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -53,8 +53,8 @@ public final class WorldClockClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new WorldClockClientInitializer(sslCtx));
+        .channel(NioSocketChannel.class)
+        .handler(new WorldClockClientInitializer(sslCtx));
 
       // Make a new connection.
       Channel ch = b.connect(HOST, PORT).sync().channel();

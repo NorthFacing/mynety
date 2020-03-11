@@ -27,7 +27,6 @@ import java.net.NetworkInterface;
  * way. Which {@link ChannelOption} is supported depends on the actual implementation
  * of {@link ChannelConfig} and may depend on the nature of the transport it belongs
  * to.
- *
  * @param <T> the type of the value which is valid for the {@link ChannelOption}
  */
 public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
@@ -65,7 +64,6 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
   /**
    * Creates a new {@link ChannelOption} for the given {@code name} or fail with an
    * {@link IllegalArgumentException} if a {@link ChannelOption} for the given {@code name} exists.
-   *
    * @deprecated use {@link #valueOf(String)}.
    */
   @Deprecated
@@ -97,7 +95,7 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
   @Deprecated
   public static final ChannelOption<Integer> WRITE_BUFFER_LOW_WATER_MARK = valueOf("WRITE_BUFFER_LOW_WATER_MARK");
   public static final ChannelOption<WriteBufferWaterMark> WRITE_BUFFER_WATER_MARK =
-      valueOf("WRITE_BUFFER_WATER_MARK");
+    valueOf("WRITE_BUFFER_WATER_MARK");
 
   public static final ChannelOption<Boolean> ALLOW_HALF_CLOSURE = valueOf("ALLOW_HALF_CLOSURE");
   public static final ChannelOption<Boolean> AUTO_READ = valueOf("AUTO_READ");
@@ -127,10 +125,10 @@ public class ChannelOption<T> extends AbstractConstant<ChannelOption<T>> {
 
   @Deprecated
   public static final ChannelOption<Boolean> DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION =
-      valueOf("DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION");
+    valueOf("DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION");
 
   public static final ChannelOption<Boolean> SINGLE_EVENTEXECUTOR_PER_GROUP =
-      valueOf("SINGLE_EVENTEXECUTOR_PER_GROUP");
+    valueOf("SINGLE_EVENTEXECUTOR_PER_GROUP");
 
   /**
    * Creates a new {@link ChannelOption} with the specified unique {@code name}.

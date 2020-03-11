@@ -93,7 +93,6 @@ public class WebSocket08FrameEncoder extends MessageToMessageEncoder<WebSocketFr
 
   /**
    * Constructor
-   *
    * @param maskPayload Web socket clients must set this to true to mask payload. Server implementations must set this to
    *                    false.
    */
@@ -138,7 +137,7 @@ public class WebSocket08FrameEncoder extends MessageToMessageEncoder<WebSocketFr
 
     if (opcode == OPCODE_PING && length > 125) {
       throw new TooLongFrameException("invalid payload for PING (payload length must be <= 125, was "
-          + length);
+        + length);
     }
 
     boolean release = true;
@@ -193,9 +192,9 @@ public class WebSocket08FrameEncoder extends MessageToMessageEncoder<WebSocketFr
           // Remark: & 0xFF is necessary because Java will do signed expansion from
           // byte to int which we don't want.
           int intMask = ((mask[0] & 0xFF) << 24)
-              | ((mask[1] & 0xFF) << 16)
-              | ((mask[2] & 0xFF) << 8)
-              | (mask[3] & 0xFF);
+            | ((mask[1] & 0xFF) << 16)
+            | ((mask[2] & 0xFF) << 8)
+            | (mask[3] & 0xFF);
 
           // If the byte order of our buffers it little endian we have to bring our mask
           // into the same format, because getInt() and writeInt() will use a reversed byte order

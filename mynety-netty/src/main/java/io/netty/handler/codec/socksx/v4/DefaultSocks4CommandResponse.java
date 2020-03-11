@@ -30,7 +30,6 @@ public class DefaultSocks4CommandResponse extends AbstractSocks4Message implemen
 
   /**
    * Creates a new instance.
-   *
    * @param status the status of the response
    */
   public DefaultSocks4CommandResponse(Socks4CommandStatus status) {
@@ -39,7 +38,6 @@ public class DefaultSocks4CommandResponse extends AbstractSocks4Message implemen
 
   /**
    * Creates a new instance.
-   *
    * @param status  the status of the response
    * @param dstAddr the {@code DSTIP} field of the response
    * @param dstPort the {@code DSTPORT} field of the response
@@ -51,7 +49,7 @@ public class DefaultSocks4CommandResponse extends AbstractSocks4Message implemen
     if (dstAddr != null) {
       if (!NetUtil.isValidIpV4Address(dstAddr)) {
         throw new IllegalArgumentException(
-            "dstAddr: " + dstAddr + " (expected: a valid IPv4 address)");
+          "dstAddr: " + dstAddr + " (expected: a valid IPv4 address)");
       }
     }
     if (dstPort < 0 || dstPort > 65535) {

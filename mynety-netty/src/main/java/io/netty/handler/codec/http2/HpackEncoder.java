@@ -42,7 +42,12 @@ import java.util.Map;
 
 import static io.netty.handler.codec.http2.HpackUtil.equalsConstantTime;
 import static io.netty.handler.codec.http2.HpackUtil.equalsVariableTime;
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.headerListSizeExceeded;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.util.internal.MathUtil.findNextPositivePowerOfTwo;
@@ -61,7 +66,7 @@ final class HpackEncoder {
   // a linked hash map of header fields
   private final HeaderEntry[] headerFields;
   private final HeaderEntry head = new HeaderEntry(-1, AsciiString.EMPTY_STRING,
-      AsciiString.EMPTY_STRING, Integer.MAX_VALUE, null);
+    AsciiString.EMPTY_STRING, Integer.MAX_VALUE, null);
   private final HpackHuffmanEncoder hpackHuffmanEncoder = new HpackHuffmanEncoder();
   private final byte hashMask;
   private final boolean ignoreMaxHeaderListSize;
@@ -105,7 +110,7 @@ final class HpackEncoder {
    * <strong>The given {@link CharSequence}s must be immutable!</strong>
    */
   public void encodeHeaders(int streamId, ByteBuf out, Http2Headers headers, SensitivityDetector sensitivityDetector)
-      throws Http2Exception {
+    throws Http2Exception {
     if (ignoreMaxHeaderListSize) {
       encodeHeadersIgnoreMaxHeaderListSize(out, headers, sensitivityDetector);
     } else {
@@ -115,7 +120,7 @@ final class HpackEncoder {
 
   private void encodeHeadersEnforceMaxHeaderListSize(int streamId, ByteBuf out, Http2Headers headers,
                                                      SensitivityDetector sensitivityDetector)
-      throws Http2Exception {
+    throws Http2Exception {
     long headerSize = 0;
     // To ensure we stay consistent with our peer check the size is valid before we potentially modify HPACK state.
     for (Map.Entry<CharSequence, CharSequence> header : headers) {
@@ -137,7 +142,7 @@ final class HpackEncoder {
       CharSequence name = header.getKey();
       CharSequence value = header.getValue();
       encodeHeader(out, name, value, sensitivityDetector.isSensitive(name, value),
-          HpackHeaderField.sizeOf(name, value));
+        HpackHeaderField.sizeOf(name, value));
     }
   }
 
@@ -197,7 +202,7 @@ final class HpackEncoder {
   public void setMaxHeaderTableSize(ByteBuf out, long maxHeaderTableSize) throws Http2Exception {
     if (maxHeaderTableSize < MIN_HEADER_TABLE_SIZE || maxHeaderTableSize > MAX_HEADER_TABLE_SIZE) {
       throw connectionError(PROTOCOL_ERROR, "Header Table Size must be >= %d and <= %d but was %d",
-          MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderTableSize);
+        MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderTableSize);
     }
     if (this.maxHeaderTableSize == maxHeaderTableSize) {
       return;
@@ -218,7 +223,7 @@ final class HpackEncoder {
   public void setMaxHeaderListSize(long maxHeaderListSize) throws Http2Exception {
     if (maxHeaderListSize < MIN_HEADER_LIST_SIZE || maxHeaderListSize > MAX_HEADER_LIST_SIZE) {
       throw connectionError(PROTOCOL_ERROR, "Header List Size must be >= %d and <= %d but was %d",
-          MIN_HEADER_LIST_SIZE, MAX_HEADER_LIST_SIZE, maxHeaderListSize);
+        MIN_HEADER_LIST_SIZE, MAX_HEADER_LIST_SIZE, maxHeaderListSize);
     }
     this.maxHeaderListSize = maxHeaderListSize;
   }
@@ -258,7 +263,7 @@ final class HpackEncoder {
   private void encodeStringLiteral(ByteBuf out, CharSequence string) {
     int huffmanLength;
     if (string.length() >= huffCodeThreshold
-        && (huffmanLength = hpackHuffmanEncoder.getEncodedLength(string)) < string.length()) {
+      && (huffmanLength = hpackHuffmanEncoder.getEncodedLength(string)) < string.length()) {
       encodeInteger(out, 0x80, 7, huffmanLength);
       hpackHuffmanEncoder.encode(out, string);
     } else {

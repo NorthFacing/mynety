@@ -42,21 +42,21 @@ public final class PortUnificationServer {
     // Configure SSL context
     SelfSignedCertificate ssc = new SelfSignedCertificate();
     final SslContext sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-        .build();
+      .build();
 
     EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel ch) throws Exception {
-              ch.pipeline().addLast(new PortUnificationServerHandler(sslCtx));
-            }
-          });
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          public void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast(new PortUnificationServerHandler(sslCtx));
+          }
+        });
 
       // Bind and start to accept incoming connections.
       b.bind(PORT).sync().channel().closeFuture().sync();

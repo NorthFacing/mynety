@@ -19,14 +19,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 /**
  * An {@link ObjectOutput} which is interoperable with {@link ObjectDecoder}
  * and {@link ObjectDecoderInputStream}.
  */
 public class ObjectEncoderOutputStream extends OutputStream implements
-    ObjectOutput {
+  ObjectOutput {
 
   private final DataOutputStream out;
   private final int estimatedLength;
@@ -34,7 +38,6 @@ public class ObjectEncoderOutputStream extends OutputStream implements
   /**
    * Creates a new {@link ObjectOutput} with the estimated length of 512
    * bytes.
-   *
    * @param out the {@link OutputStream} where the serialized form will be
    *            written out
    */
@@ -44,7 +47,6 @@ public class ObjectEncoderOutputStream extends OutputStream implements
 
   /**
    * Creates a new {@link ObjectOutput}.
-   *
    * @param out             the {@link OutputStream} where the serialized form will be
    *                        written out
    * @param estimatedLength the estimated byte length of the serialized form of an object.

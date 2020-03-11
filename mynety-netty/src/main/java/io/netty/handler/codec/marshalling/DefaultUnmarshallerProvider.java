@@ -31,7 +31,6 @@ public class DefaultUnmarshallerProvider implements UnmarshallerProvider {
 
   /**
    * Create a new instance of {@link DefaultMarshallerProvider}
-   *
    * @param factory the {@link MarshallerFactory} to use to create {@link Unmarshaller}
    * @param config  the {@link MarshallingConfiguration}
    */

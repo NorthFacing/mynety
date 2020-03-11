@@ -24,13 +24,12 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public class DefaultFullBinaryMemcacheResponse extends DefaultBinaryMemcacheResponse
-    implements FullBinaryMemcacheResponse {
+  implements FullBinaryMemcacheResponse {
 
   private final ByteBuf content;
 
   /**
    * Create a new {@link DefaultFullBinaryMemcacheResponse} with the header, key and extras.
-   *
    * @param key    the key to use.
    * @param extras the extras to use.
    */
@@ -40,7 +39,6 @@ public class DefaultFullBinaryMemcacheResponse extends DefaultBinaryMemcacheResp
 
   /**
    * Create a new {@link DefaultFullBinaryMemcacheResponse} with the header, key, extras and content.
-   *
    * @param key     the key to use.
    * @param extras  the extras to use.
    * @param content the content of the full request.

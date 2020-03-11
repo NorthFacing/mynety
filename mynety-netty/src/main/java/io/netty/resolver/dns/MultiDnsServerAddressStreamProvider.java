@@ -29,7 +29,6 @@ public final class MultiDnsServerAddressStreamProvider implements DnsServerAddre
 
   /**
    * Create a new instance.
-   *
    * @param providers The providers to use for DNS resolution. They will be queried in order.
    */
   public MultiDnsServerAddressStreamProvider(List<DnsServerAddressStreamProvider> providers) {
@@ -38,7 +37,6 @@ public final class MultiDnsServerAddressStreamProvider implements DnsServerAddre
 
   /**
    * Create a new instance.
-   *
    * @param providers The providers to use for DNS resolution. They will be queried in order.
    */
   public MultiDnsServerAddressStreamProvider(DnsServerAddressStreamProvider... providers) {

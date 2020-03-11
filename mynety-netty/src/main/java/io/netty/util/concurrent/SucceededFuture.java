@@ -25,7 +25,6 @@ public final class SucceededFuture<V> extends CompleteFuture<V> {
 
   /**
    * Creates a new instance.
-   *
    * @param executor the {@link EventExecutor} associated with this future
    */
   public SucceededFuture(EventExecutor executor, V result) {

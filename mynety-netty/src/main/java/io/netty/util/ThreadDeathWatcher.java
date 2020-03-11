@@ -39,7 +39,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * associated {@link Runnable}s.  When there is no thread to watch (i.e. all threads are dead), the daemon thread
  * will terminate itself, and a new daemon thread will be started again when a new watch is added.
  * </p>
- *
  * @deprecated will be removed in the next major release
  */
 @Deprecated
@@ -70,7 +69,6 @@ public final class ThreadDeathWatcher {
 
   /**
    * Schedules the specified {@code task} to run when the specified {@code thread} dies.
-   *
    * @param thread the {@link Thread} to watch
    * @param task   the {@link Runnable} to run when the {@code thread} dies
    * @throws IllegalArgumentException if the specified {@code thread} is not alive
@@ -132,7 +130,6 @@ public final class ThreadDeathWatcher {
    * this operation is only useful when you want to ensure that the watcher thread is terminated
    * <strong>after</strong> your application is shut down and there's no chance of calling
    * {@link #watch(Thread, Runnable)} afterwards.
-   *
    * @return {@code true} if and only if the watcher thread has been terminated
    */
   public static boolean awaitInactivity(long timeout, TimeUnit unit) throws InterruptedException {

@@ -15,7 +15,12 @@
  */
 package io.netty.channel.nio;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.ServerChannel;
 
 import java.io.IOException;
 import java.net.PortUnreachableException;
@@ -189,7 +194,6 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
 
   /**
    * Write a message to the underlying {@link java.nio.channels.Channel}.
-   *
    * @return {@code true} if and only if the message has been written
    */
   protected abstract boolean doWriteMessage(Object msg, ChannelOutboundBuffer in) throws Exception;

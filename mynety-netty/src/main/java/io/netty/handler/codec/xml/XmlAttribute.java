@@ -98,11 +98,11 @@ public class XmlAttribute {
   @Override
   public String toString() {
     return "XmlAttribute{" +
-        "type='" + type + '\'' +
-        ", name='" + name + '\'' +
-        ", prefix='" + prefix + '\'' +
-        ", namespace='" + namespace + '\'' +
-        ", value='" + value + '\'' +
-        '}';
+      "type='" + type + '\'' +
+      ", name='" + name + '\'' +
+      ", prefix='" + prefix + '\'' +
+      ", namespace='" + namespace + '\'' +
+      ", value='" + value + '\'' +
+      '}';
   }
 }

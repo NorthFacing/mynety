@@ -60,7 +60,7 @@ public class ChannelOutboundHandlerAdapter extends ChannelHandlerAdapter impleme
   @Skip
   @Override
   public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise)
-      throws Exception {
+    throws Exception {
     ctx.disconnect(promise);
   }
 
@@ -73,7 +73,7 @@ public class ChannelOutboundHandlerAdapter extends ChannelHandlerAdapter impleme
   @Skip
   @Override
   public void close(ChannelHandlerContext ctx, ChannelPromise promise)
-      throws Exception {
+    throws Exception {
     ctx.close(promise);
   }
 

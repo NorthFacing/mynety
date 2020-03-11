@@ -15,7 +15,14 @@
  */
 package io.netty.channel.epoll;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
+import io.netty.channel.ServerChannel;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -111,7 +118,7 @@ public abstract class AbstractEpollServerChannel extends AbstractEpollChannel im
 
             readPending = false;
             pipeline.fireChannelRead(newChildChannel(allocHandle.lastBytesRead(), acceptedAddress, 1,
-                acceptedAddress[0]));
+              acceptedAddress[0]));
           } while (allocHandle.continueReading());
         } catch (Throwable t) {
           exception = t;

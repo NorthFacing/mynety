@@ -18,7 +18,12 @@ package io.netty.channel.sctp;
 import com.sun.nio.sctp.SctpServerChannel;
 import com.sun.nio.sctp.SctpStandardSocketOptions;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.util.NetUtil;
 
 import java.io.IOException;
@@ -38,7 +43,7 @@ public class DefaultSctpServerChannelConfig extends DefaultChannelConfig impleme
    * Creates a new instance.
    */
   public DefaultSctpServerChannelConfig(
-      io.netty.channel.sctp.SctpServerChannel channel, SctpServerChannel javaChannel) {
+    io.netty.channel.sctp.SctpServerChannel channel, SctpServerChannel javaChannel) {
     super(channel);
     if (javaChannel == null) {
       throw new NullPointerException("javaChannel");
@@ -49,8 +54,8 @@ public class DefaultSctpServerChannelConfig extends DefaultChannelConfig impleme
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        ChannelOption.SO_RCVBUF, ChannelOption.SO_SNDBUF, SctpChannelOption.SCTP_INIT_MAXSTREAMS);
+      super.getOptions(),
+      ChannelOption.SO_RCVBUF, ChannelOption.SO_SNDBUF, SctpChannelOption.SCTP_INIT_MAXSTREAMS);
   }
 
   @SuppressWarnings("unchecked")

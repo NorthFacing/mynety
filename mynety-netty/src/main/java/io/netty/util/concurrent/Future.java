@@ -39,7 +39,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
   /**
    * Returns the cause of the failed I/O operation if the I/O operation has
    * failed.
-   *
    * @return the cause of the failure.
    * {@code null} if succeeded or this future is not
    * completed yet.
@@ -94,7 +93,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
 
   /**
    * Waits for this future to be completed.
-   *
    * @throws InterruptedException if the current thread was interrupted
    */
   Future<V> await() throws InterruptedException;
@@ -109,7 +107,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
   /**
    * Waits for this future to be completed within the
    * specified time limit.
-   *
    * @return {@code true} if and only if the future was completed within
    * the specified time limit
    * @throws InterruptedException if the current thread was interrupted
@@ -119,7 +116,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
   /**
    * Waits for this future to be completed within the
    * specified time limit.
-   *
    * @return {@code true} if and only if the future was completed within
    * the specified time limit
    * @throws InterruptedException if the current thread was interrupted
@@ -130,7 +126,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
    * Waits for this future to be completed within the
    * specified time limit without interruption.  This method catches an
    * {@link InterruptedException} and discards it silently.
-   *
    * @return {@code true} if and only if the future was completed within
    * the specified time limit
    */
@@ -140,7 +135,6 @@ public interface Future<V> extends java.util.concurrent.Future<V> {
    * Waits for this future to be completed within the
    * specified time limit without interruption.  This method catches an
    * {@link InterruptedException} and discards it silently.
-   *
    * @return {@code true} if and only if the future was completed within
    * the specified time limit
    */

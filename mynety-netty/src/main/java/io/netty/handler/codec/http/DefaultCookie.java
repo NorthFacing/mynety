@@ -21,7 +21,6 @@ import java.util.TreeSet;
 
 /**
  * The default {@link Cookie} implementation.
- *
  * @deprecated Use {@link io.netty.handler.codec.http.cookie.DefaultCookie} instead.
  */
 @Deprecated

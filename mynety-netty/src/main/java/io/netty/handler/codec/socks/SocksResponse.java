@@ -18,7 +18,6 @@ package io.netty.handler.codec.socks;
 /**
  * An abstract class that defines a SocksResponse, providing common properties for
  * {@link SocksInitResponse}, {@link SocksAuthResponse}, {@link SocksCmdResponse} and {@link UnknownSocksResponse}.
- *
  * @see SocksInitResponse
  * @see SocksAuthResponse
  * @see SocksCmdResponse
@@ -37,7 +36,6 @@ public abstract class SocksResponse extends SocksMessage {
 
   /**
    * Returns socks response type
-   *
    * @return socks response type
    */
   public SocksResponseType responseType() {

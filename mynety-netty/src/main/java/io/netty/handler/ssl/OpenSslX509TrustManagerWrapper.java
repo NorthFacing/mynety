@@ -43,7 +43,7 @@ import java.security.cert.X509Certificate;
 @SuppressJava6Requirement(reason = "Usage guarded by java version check")
 final class OpenSslX509TrustManagerWrapper {
   private static final InternalLogger LOGGER = InternalLoggerFactory
-      .getInstance(OpenSslX509TrustManagerWrapper.class);
+    .getInstance(OpenSslX509TrustManagerWrapper.class);
   private static final TrustManagerWrapper WRAPPER;
 
   static {
@@ -69,24 +69,24 @@ final class OpenSslX509TrustManagerWrapper {
         // - http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/file/
         //          cadea780bc76/src/share/classes/sun/security/ssl/SSLContextImpl.java#l127
         context.init(null, new TrustManager[]{
-            new X509TrustManager() {
-              @Override
-              public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
-                  throws CertificateException {
-                throw new CertificateException();
-              }
-
-              @Override
-              public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
-                  throws CertificateException {
-                throw new CertificateException();
-              }
-
-              @Override
-              public X509Certificate[] getAcceptedIssuers() {
-                return EmptyArrays.EMPTY_X509_CERTIFICATES;
-              }
+          new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(X509Certificate[] x509Certificates, String s)
+              throws CertificateException {
+              throw new CertificateException();
             }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] x509Certificates, String s)
+              throws CertificateException {
+              throw new CertificateException();
+            }
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+              return EmptyArrays.EMPTY_X509_CERTIFICATES;
+            }
+          }
         }, null);
       } catch (Throwable error) {
         context = null;

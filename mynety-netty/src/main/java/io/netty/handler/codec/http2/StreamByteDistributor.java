@@ -37,7 +37,6 @@ public interface StreamByteDistributor {
     /**
      * Get the amount of bytes this stream has pending to send. The actual amount written must not exceed
      * {@link #windowSize()}!
-     *
      * @return The amount of bytes this stream has pending to send.
      * @see Http2CodecUtil#streamableBytes(StreamState)
      */
@@ -54,7 +53,6 @@ public interface StreamByteDistributor {
      * if the window size is negative. The window size being {@code 0} may also be significant to determine when if
      * an stream has been given a chance to write an empty frame, and also enables optimizations like not writing
      * empty frames in some situations (don't write headers until data can also be written).
-     *
      * @return the size of the stream's flow control window.
      * @see Http2CodecUtil#streamableBytes(StreamState)
      */
@@ -70,7 +68,6 @@ public interface StreamByteDistributor {
      * <p>
      * Any {@link Throwable} thrown from this method is considered a programming error.
      * A {@code GOAWAY} frame will be sent and the will be connection closed.
-     *
      * @param stream   the stream for which to perform the write.
      * @param numBytes the number of bytes to write.
      */
@@ -86,7 +83,6 @@ public interface StreamByteDistributor {
 
   /**
    * Explicitly update the dependency tree. This method is called independently of stream state changes.
-   *
    * @param childStreamId  The stream identifier associated with the child stream.
    * @param parentStreamId The stream identifier associated with the parent stream. May be {@code 0},
    *                       to make {@code childStreamId} and immediate child of the connection.
@@ -105,7 +101,6 @@ public interface StreamByteDistributor {
    * <p>The streamable bytes are not automatically updated by calling this method. It is up to the
    * caller to indicate the number of bytes streamable after the write by calling
    * {@link #updateStreamableBytes(StreamState)}.
-   *
    * @param maxBytes the maximum number of bytes to write.
    * @return {@code true} if there are still streamable bytes that have not yet been written,
    * otherwise {@code false}.

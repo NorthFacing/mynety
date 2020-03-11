@@ -22,20 +22,18 @@ import javax.net.ssl.SSLEngine;
 
 /**
  * The {@link JdkApplicationProtocolNegotiator} to use if you need ALPN and are using {@link SslProvider#JDK}.
- *
  * @deprecated use {@link ApplicationProtocolConfig}.
  */
 @Deprecated
 public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicationProtocolNegotiator {
   private static final boolean AVAILABLE = Conscrypt.isAvailable() ||
-      jdkAlpnSupported() ||
-      JettyAlpnSslEngine.isAvailable();
+    jdkAlpnSupported() ||
+    JettyAlpnSslEngine.isAvailable();
 
   private static final SslEngineWrapperFactory ALPN_WRAPPER = AVAILABLE ? new AlpnWrapper() : new FailureWrapper();
 
   /**
    * Create a new instance.
-   *
    * @param protocols The order of iteration determines the preference of support for protocols.
    */
   public JdkAlpnApplicationProtocolNegotiator(Iterable<String> protocols) {
@@ -44,7 +42,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
 
   /**
    * Create a new instance.
-   *
    * @param protocols The order of iteration determines the preference of support for protocols.
    */
   public JdkAlpnApplicationProtocolNegotiator(String... protocols) {
@@ -53,7 +50,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
 
   /**
    * Create a new instance.
-   *
    * @param failIfNoCommonProtocols Fail with a fatal alert if not common protocols are detected.
    * @param protocols               The order of iteration determines the preference of support for protocols.
    */
@@ -63,7 +59,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
 
   /**
    * Create a new instance.
-   *
    * @param failIfNoCommonProtocols Fail with a fatal alert if not common protocols are detected.
    * @param protocols               The order of iteration determines the preference of support for protocols.
    */
@@ -73,7 +68,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
 
   /**
    * Create a new instance.
-   *
    * @param clientFailIfNoCommonProtocols Client side fail with a fatal alert if not common protocols are detected.
    * @param serverFailIfNoCommonProtocols Server side fail with a fatal alert if not common protocols are detected.
    * @param protocols                     The order of iteration determines the preference of support for protocols.
@@ -81,13 +75,12 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
   public JdkAlpnApplicationProtocolNegotiator(boolean clientFailIfNoCommonProtocols,
                                               boolean serverFailIfNoCommonProtocols, Iterable<String> protocols) {
     this(serverFailIfNoCommonProtocols ? FAIL_SELECTOR_FACTORY : NO_FAIL_SELECTOR_FACTORY,
-        clientFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
-        protocols);
+      clientFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
+      protocols);
   }
 
   /**
    * Create a new instance.
-   *
    * @param clientFailIfNoCommonProtocols Client side fail with a fatal alert if not common protocols are detected.
    * @param serverFailIfNoCommonProtocols Server side fail with a fatal alert if not common protocols are detected.
    * @param protocols                     The order of iteration determines the preference of support for protocols.
@@ -95,13 +88,12 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
   public JdkAlpnApplicationProtocolNegotiator(boolean clientFailIfNoCommonProtocols,
                                               boolean serverFailIfNoCommonProtocols, String... protocols) {
     this(serverFailIfNoCommonProtocols ? FAIL_SELECTOR_FACTORY : NO_FAIL_SELECTOR_FACTORY,
-        clientFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
-        protocols);
+      clientFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
+      protocols);
   }
 
   /**
    * Create a new instance.
-   *
    * @param selectorFactory The factory which provides classes responsible for selecting the protocol.
    * @param listenerFactory The factory which provides to be notified of which protocol was selected.
    * @param protocols       The order of iteration determines the preference of support for protocols.
@@ -113,7 +105,6 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
 
   /**
    * Create a new instance.
-   *
    * @param selectorFactory The factory which provides classes responsible for selecting the protocol.
    * @param listenerFactory The factory which provides to be notified of which protocol was selected.
    * @param protocols       The order of iteration determines the preference of support for protocols.
@@ -128,9 +119,9 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
     public SSLEngine wrapSslEngine(SSLEngine engine, ByteBufAllocator alloc,
                                    JdkApplicationProtocolNegotiator applicationNegotiator, boolean isServer) {
       throw new RuntimeException("ALPN unsupported. Is your classpath configured correctly?"
-          + " For Conscrypt, add the appropriate Conscrypt JAR to classpath and set the security provider."
-          + " For Jetty-ALPN, see "
-          + "http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html#alpn-starting");
+        + " For Conscrypt, add the appropriate Conscrypt JAR to classpath and set the security provider."
+        + " For Jetty-ALPN, see "
+        + "http://www.eclipse.org/jetty/documentation/current/alpn-chapter.html#alpn-starting");
     }
   }
 
@@ -140,14 +131,14 @@ public final class JdkAlpnApplicationProtocolNegotiator extends JdkBaseApplicati
                                    JdkApplicationProtocolNegotiator applicationNegotiator, boolean isServer) {
       if (Conscrypt.isEngineSupported(engine)) {
         return isServer ? ConscryptAlpnSslEngine.newServerEngine(engine, alloc, applicationNegotiator)
-            : ConscryptAlpnSslEngine.newClientEngine(engine, alloc, applicationNegotiator);
+          : ConscryptAlpnSslEngine.newClientEngine(engine, alloc, applicationNegotiator);
       }
       if (jdkAlpnSupported()) {
         return new Java9SslEngine(engine, applicationNegotiator, isServer);
       }
       if (JettyAlpnSslEngine.isAvailable()) {
         return isServer ? JettyAlpnSslEngine.newServerEngine(engine, applicationNegotiator)
-            : JettyAlpnSslEngine.newClientEngine(engine, applicationNegotiator);
+          : JettyAlpnSslEngine.newClientEngine(engine, applicationNegotiator);
       }
       throw new RuntimeException("Unable to wrap SSLEngine of type " + engine.getClass().getName());
     }

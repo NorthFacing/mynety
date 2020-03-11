@@ -49,7 +49,7 @@ final class DnsAddressResolveContext extends DnsResolveContext<InetAddress> {
                                                     DnsRecord[] additionals,
                                                     DnsServerAddressStream nameServerAddrs) {
     return new DnsAddressResolveContext(parent, hostname, additionals, nameServerAddrs, resolveCache,
-        authoritativeDnsServerCache, completeEarlyIfPossible);
+      authoritativeDnsServerCache, completeEarlyIfPossible);
   }
 
   @Override
@@ -89,7 +89,7 @@ final class DnsAddressResolveContext extends DnsResolveContext<InetAddress> {
   void doSearchDomainQuery(String hostname, Promise<List<InetAddress>> nextPromise) {
     // Query the cache for the hostname first and only do a query if we could not find it in the cache.
     if (!DnsNameResolver.doResolveAllCached(
-        hostname, additionals, nextPromise, resolveCache, parent.resolvedInternetProtocolFamiliesUnsafe())) {
+      hostname, additionals, nextPromise, resolveCache, parent.resolvedInternetProtocolFamiliesUnsafe())) {
       super.doSearchDomainQuery(hostname, nextPromise);
     }
   }

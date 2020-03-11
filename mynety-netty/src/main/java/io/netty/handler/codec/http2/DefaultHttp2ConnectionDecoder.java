@@ -26,7 +26,9 @@ import java.util.List;
 
 import static io.netty.handler.codec.http.HttpStatusClass.INFORMATIONAL;
 import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_PRIORITY_WEIGHT;
-import static io.netty.handler.codec.http2.Http2Error.*;
+import static io.netty.handler.codec.http2.Http2Error.INTERNAL_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.STREAM_CLOSED;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.handler.codec.http2.Http2Exception.streamError;
 import static io.netty.handler.codec.http2.Http2PromisedRequestVerifier.ALWAYS_VERIFY;
@@ -73,7 +75,6 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
   /**
    * Create a new instance.
-   *
    * @param connection      The {@link Http2Connection} associated with this decoder.
    * @param encoder         The {@link Http2ConnectionEncoder} associated with this decoder.
    * @param frameReader     Responsible for reading/parsing the raw frames. As opposed to this object which applies
@@ -94,7 +95,6 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
   /**
    * Create a new instance.
-   *
    * @param connection      The {@link Http2Connection} associated with this decoder.
    * @param encoder         The {@link Http2ConnectionEncoder} associated with this decoder.
    * @param frameReader     Responsible for reading/parsing the raw frames. As opposed to this object which applies
@@ -120,7 +120,7 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
     } else {
       if (!(encoder instanceof Http2SettingsReceivedConsumer)) {
         throw new IllegalArgumentException("disabling autoAckSettings requires the encoder to be a " +
-            Http2SettingsReceivedConsumer.class);
+          Http2SettingsReceivedConsumer.class);
       }
       settingsReceivedConsumer = (Http2SettingsReceivedConsumer) encoder;
     }
@@ -199,7 +199,6 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
   /**
    * Calculate the threshold in bytes which should trigger a {@code GO_AWAY} if a set of headers exceeds this amount.
-   *
    * @param maxHeaderListSize <a href="https://tools.ietf.org/html/rfc7540#section-6.5.2">SETTINGS_MAX_HEADER_LIST_SIZE</a> for the local
    *                          endpoint.
    * @return the threshold in bytes which should trigger a {@code GO_AWAY} if a set of headers exceeds this amount.
@@ -213,7 +212,7 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
   }
 
   void onGoAwayRead0(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-      throws Http2Exception {
+    throws Http2Exception {
     connection.goAwayReceived(lastStreamId, errorCode, debugData);
     listener.onGoAwayRead(ctx, lastStreamId, errorCode, debugData);
   }
@@ -268,11 +267,11 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
         case HALF_CLOSED_REMOTE:
         case CLOSED:
           error = streamError(stream.id(), STREAM_CLOSED, "Stream %d in unexpected state: %s",
-              stream.id(), stream.state());
+            stream.id(), stream.state());
           break;
         default:
           error = streamError(stream.id(), PROTOCOL_ERROR,
-              "Stream %d in unexpected state: %s", stream.id(), stream.state());
+            "Stream %d in unexpected state: %s", stream.id(), stream.state());
           break;
       }
 
@@ -337,11 +336,11 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
       }
 
       boolean isInformational = !connection.isServer() &&
-          HttpStatusClass.valueOf(headers.status()) == INFORMATIONAL;
+        HttpStatusClass.valueOf(headers.status()) == INFORMATIONAL;
       if ((isInformational || !endOfStream) && stream.isHeadersReceived() || stream.isTrailersReceived()) {
         throw streamError(streamId, PROTOCOL_ERROR,
-            "Stream %d received too many headers EOS: %s state: %s",
-            streamId, endOfStream, stream.state());
+          "Stream %d received too many headers EOS: %s state: %s",
+          streamId, endOfStream, stream.state());
       }
 
       switch (stream.state()) {
@@ -355,16 +354,16 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
         case HALF_CLOSED_REMOTE:
           if (!allowHalfClosedRemote) {
             throw streamError(stream.id(), STREAM_CLOSED, "Stream %d in unexpected state: %s",
-                stream.id(), stream.state());
+              stream.id(), stream.state());
           }
           break;
         case CLOSED:
           throw streamError(stream.id(), STREAM_CLOSED, "Stream %d in unexpected state: %s",
-              stream.id(), stream.state());
+            stream.id(), stream.state());
         default:
           // Connection error.
           throw connectionError(PROTOCOL_ERROR, "Stream %d in unexpected state: %s", stream.id(),
-              stream.state());
+            stream.state());
       }
 
       stream.headersReceived(isInformational);
@@ -519,24 +518,24 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
         default:
           // Connection error.
           throw connectionError(PROTOCOL_ERROR,
-              "Stream %d in unexpected state for receiving push promise: %s",
-              parentStream.id(), parentStream.state());
+            "Stream %d in unexpected state for receiving push promise: %s",
+            parentStream.id(), parentStream.state());
       }
 
       if (!requestVerifier.isAuthoritative(ctx, headers)) {
         throw streamError(promisedStreamId, PROTOCOL_ERROR,
-            "Promised request on stream %d for promised stream %d is not authoritative",
-            streamId, promisedStreamId);
+          "Promised request on stream %d for promised stream %d is not authoritative",
+          streamId, promisedStreamId);
       }
       if (!requestVerifier.isCacheable(headers)) {
         throw streamError(promisedStreamId, PROTOCOL_ERROR,
-            "Promised request on stream %d for promised stream %d is not known to be cacheable",
-            streamId, promisedStreamId);
+          "Promised request on stream %d for promised stream %d is not known to be cacheable",
+          streamId, promisedStreamId);
       }
       if (!requestVerifier.isSafe(headers)) {
         throw streamError(promisedStreamId, PROTOCOL_ERROR,
-            "Promised request on stream %d for promised stream %d is not known to be safe",
-            streamId, promisedStreamId);
+          "Promised request on stream %d for promised stream %d is not known to be safe",
+          streamId, promisedStreamId);
       }
 
       // Reserve the push stream based with a priority based on the current stream's priority.
@@ -547,13 +546,13 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
     @Override
     public void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-        throws Http2Exception {
+      throws Http2Exception {
       onGoAwayRead0(ctx, lastStreamId, errorCode, debugData);
     }
 
     @Override
     public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-        throws Http2Exception {
+      throws Http2Exception {
       Http2Stream stream = connection.stream(streamId);
       if (stream == null || stream.state() == CLOSED || streamCreatedAfterGoAwaySent(streamId)) {
         // Ignore this frame.
@@ -582,14 +581,14 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
       if (stream == null) {
         if (streamCreatedAfterGoAwaySent(streamId)) {
           logger.info("{} ignoring {} frame for stream {}. Stream sent after GOAWAY sent",
-              ctx.channel(), frameName, streamId);
+            ctx.channel(), frameName, streamId);
           return true;
         }
         // Its possible that this frame would result in stream ID out of order creation (PROTOCOL ERROR) and its
         // also possible that this frame is received on a CLOSED stream (STREAM_CLOSED after a RST_STREAM is
         // sent). We don't have enough information to know for sure, so we choose the lesser of the two errors.
         throw streamError(streamId, STREAM_CLOSED, "Received %s frame for an unknown stream %d",
-            frameName, streamId);
+          frameName, streamId);
       } else if (stream.isResetSent() || streamCreatedAfterGoAwaySent(streamId)) {
         // If we have sent a reset stream it is assumed the stream will be closed after the write completes.
         // If we have not sent a reset, but the stream was created after a GoAway this is not supported by
@@ -598,9 +597,9 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
         if (logger.isInfoEnabled()) {
           logger.info("{} ignoring {} frame for stream {}", ctx.channel(), frameName,
-              stream.isResetSent() ? "RST_STREAM sent." :
-                  ("Stream created after GOAWAY sent. Last known stream by peer " +
-                      connection.remote().lastStreamKnownByPeer()));
+            stream.isResetSent() ? "RST_STREAM sent." :
+              ("Stream created after GOAWAY sent. Last known stream by peer " +
+                connection.remote().lastStreamKnownByPeer()));
         }
 
         return true;
@@ -623,7 +622,7 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
     private boolean streamCreatedAfterGoAwaySent(int streamId) {
       Endpoint<?> remote = connection.remote();
       return connection.goAwaySent() && remote.isValidStreamId(streamId) &&
-          streamId > remote.lastStreamKnownByPeer();
+        streamId > remote.lastStreamKnownByPeer();
     }
 
     private void verifyStreamMayHaveExisted(int streamId) throws Http2Exception {
@@ -648,7 +647,7 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
     @Override
     public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data, int padding, boolean endOfStream)
-        throws Http2Exception {
+      throws Http2Exception {
       verifyPrefaceReceived();
       return internalFrameListener.onDataRead(ctx, streamId, data, padding, endOfStream);
     }
@@ -665,7 +664,7 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
                               short weight, boolean exclusive, int padding, boolean endOfStream) throws Http2Exception {
       verifyPrefaceReceived();
       internalFrameListener.onHeadersRead(ctx, streamId, headers, streamDependency, weight,
-          exclusive, padding, endOfStream);
+        exclusive, padding, endOfStream);
     }
 
     @Override
@@ -718,13 +717,13 @@ public class DefaultHttp2ConnectionDecoder implements Http2ConnectionDecoder {
 
     @Override
     public void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-        throws Http2Exception {
+      throws Http2Exception {
       onGoAwayRead0(ctx, lastStreamId, errorCode, debugData);
     }
 
     @Override
     public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-        throws Http2Exception {
+      throws Http2Exception {
       verifyPrefaceReceived();
       internalFrameListener.onWindowUpdateRead(ctx, streamId, windowSizeIncrement);
     }

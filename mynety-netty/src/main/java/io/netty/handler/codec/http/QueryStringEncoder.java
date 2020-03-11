@@ -34,7 +34,6 @@ import java.nio.charset.Charset;
  * encoder.addParam("recipient", "world");
  * assert encoder.toString().equals("/hello?recipient=world");
  * </pre>
- *
  * @see QueryStringDecoder
  */
 public class QueryStringEncoder {
@@ -116,7 +115,6 @@ public class QueryStringEncoder {
    * The JDK's encoder encode the space to {@code +} and this method directly encode the blank to {@code %20}
    * beyond that , this method reuse the {@link #uriBuilder} in this class rather then create a new one,
    * thus generates less garbage for the GC.
-   *
    * @param s The String to encode
    */
   private void encodeNonUtf8Component(CharSequence s) {
@@ -204,7 +202,6 @@ public class QueryStringEncoder {
 
   /**
    * Convert the given digit to a upper hexadecimal char.
-   *
    * @param digit the number to convert to a character.
    * @return the {@code char} representation of the specified digit
    * in hexadecimal.
@@ -220,12 +217,11 @@ public class QueryStringEncoder {
    * letters, decimal digits, hyphen, period, underscore, and tilde.
    * <p>
    * unreserved  = ALPHA / DIGIT / "-" / "_" / "." / "*"
-   *
    * @param ch the char to be judged whether it need to be encode
    * @return true or false
    */
   private static boolean dontNeedEncoding(char ch) {
     return ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch >= '0' && ch <= '9'
-        || ch == '-' || ch == '_' || ch == '.' || ch == '*';
+      || ch == '-' || ch == '_' || ch == '.' || ch == '*';
   }
 }

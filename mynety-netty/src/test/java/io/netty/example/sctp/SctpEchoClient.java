@@ -44,16 +44,16 @@ public final class SctpEchoClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSctpChannel.class)
-          .option(SctpChannelOption.SCTP_NODELAY, true)
-          .handler(new ChannelInitializer<SctpChannel>() {
-            @Override
-            public void initChannel(SctpChannel ch) throws Exception {
-              ch.pipeline().addLast(
-                  //new LoggingHandler(LogLevel.INFO),
-                  new SctpEchoClientHandler());
-            }
-          });
+        .channel(NioSctpChannel.class)
+        .option(SctpChannelOption.SCTP_NODELAY, true)
+        .handler(new ChannelInitializer<SctpChannel>() {
+          @Override
+          public void initChannel(SctpChannel ch) throws Exception {
+            ch.pipeline().addLast(
+              //new LoggingHandler(LogLevel.INFO),
+              new SctpEchoClientHandler());
+          }
+        });
 
       // Start the client.
       ChannelFuture f = b.connect(HOST, PORT).sync();

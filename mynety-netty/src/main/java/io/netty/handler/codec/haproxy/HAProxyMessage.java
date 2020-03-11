@@ -17,7 +17,13 @@ package io.netty.handler.codec.haproxy;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.haproxy.HAProxyProxiedProtocol.AddressFamily;
-import io.netty.util.*;
+import io.netty.util.AbstractReferenceCounted;
+import io.netty.util.ByteProcessor;
+import io.netty.util.CharsetUtil;
+import io.netty.util.NetUtil;
+import io.netty.util.ResourceLeakDetector;
+import io.netty.util.ResourceLeakDetectorFactory;
+import io.netty.util.ResourceLeakTracker;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +34,7 @@ import java.util.List;
  */
 public final class HAProxyMessage extends AbstractReferenceCounted {
   private static final ResourceLeakDetector<HAProxyMessage> leakDetector =
-      ResourceLeakDetectorFactory.instance().newResourceLeakDetector(HAProxyMessage.class);
+    ResourceLeakDetectorFactory.instance().newResourceLeakDetector(HAProxyMessage.class);
 
   private final ResourceLeakTracker<HAProxyMessage> leak;
   private final HAProxyProtocolVersion protocolVersion;
@@ -44,31 +50,31 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
    * Creates a new instance
    */
   private HAProxyMessage(
-      HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
-      String sourceAddress, String destinationAddress, String sourcePort, String destinationPort) {
+    HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
+    String sourceAddress, String destinationAddress, String sourcePort, String destinationPort) {
     this(
-        protocolVersion, command, proxiedProtocol,
-        sourceAddress, destinationAddress, portStringToInt(sourcePort), portStringToInt(destinationPort));
+      protocolVersion, command, proxiedProtocol,
+      sourceAddress, destinationAddress, portStringToInt(sourcePort), portStringToInt(destinationPort));
   }
 
   /**
    * Creates a new instance
    */
   private HAProxyMessage(
-      HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
-      String sourceAddress, String destinationAddress, int sourcePort, int destinationPort) {
+    HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
+    String sourceAddress, String destinationAddress, int sourcePort, int destinationPort) {
 
     this(protocolVersion, command, proxiedProtocol,
-        sourceAddress, destinationAddress, sourcePort, destinationPort, Collections.<HAProxyTLV>emptyList());
+      sourceAddress, destinationAddress, sourcePort, destinationPort, Collections.<HAProxyTLV>emptyList());
   }
 
   /**
    * Creates a new instance
    */
   private HAProxyMessage(
-      HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
-      String sourceAddress, String destinationAddress, int sourcePort, int destinationPort,
-      List<HAProxyTLV> tlvs) {
+    HAProxyProtocolVersion protocolVersion, HAProxyCommand command, HAProxyProxiedProtocol proxiedProtocol,
+    String sourceAddress, String destinationAddress, int sourcePort, int destinationPort,
+    List<HAProxyTLV> tlvs) {
 
     if (proxiedProtocol == null) {
       throw new NullPointerException("proxiedProtocol");
@@ -94,7 +100,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Decodes a version 2, binary proxy protocol header.
-   *
    * @param header a version 2 proxy protocol header
    * @return {@link HAProxyMessage} instance
    * @throws HAProxyProtocolException if any portion of the header is invalid
@@ -106,7 +111,7 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
     if (header.readableBytes() < 16) {
       throw new HAProxyProtocolException(
-          "incomplete header: " + header.readableBytes() + " bytes (expected: 16+ bytes)");
+        "incomplete header: " + header.readableBytes() + " bytes (expected: 16+ bytes)");
     }
 
     // Per spec, the 13th byte is the protocol version and command byte
@@ -161,8 +166,8 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
       // unix sockets require 216 bytes for address information
       if (addressInfoLen < 216 || header.readableBytes() < 216) {
         throw new HAProxyProtocolException(
-            "incomplete UNIX socket address information: " +
-                Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 216+ bytes)");
+          "incomplete UNIX socket address information: " +
+            Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 216+ bytes)");
       }
       int startIdx = header.readerIndex();
       int addressEnd = header.forEachByte(startIdx, 108, ByteProcessor.FIND_NUL);
@@ -190,21 +195,21 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
         // IPv4 requires 12 bytes for address information
         if (addressInfoLen < 12 || header.readableBytes() < 12) {
           throw new HAProxyProtocolException(
-              "incomplete IPv4 address information: " +
-                  Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 12+ bytes)");
+            "incomplete IPv4 address information: " +
+              Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 12+ bytes)");
         }
         addressLen = 4;
       } else if (addressFamily == AddressFamily.AF_IPv6) {
         // IPv6 requires 36 bytes for address information
         if (addressInfoLen < 36 || header.readableBytes() < 36) {
           throw new HAProxyProtocolException(
-              "incomplete IPv6 address information: " +
-                  Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 36+ bytes)");
+            "incomplete IPv6 address information: " +
+              Math.min(addressInfoLen, header.readableBytes()) + " bytes (expected: 36+ bytes)");
         }
         addressLen = 16;
       } else {
         throw new HAProxyProtocolException(
-            "unable to parse address information (unknown address family: " + addressFamily + ')');
+          "unable to parse address information (unknown address family: " + addressFamily + ')');
       }
 
       // Per spec, the src address begins at the 17th byte
@@ -283,7 +288,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Decodes a version 1, human-readable proxy protocol header.
-   *
    * @param header a version 1 proxy protocol header
    * @return {@link HAProxyMessage} instance
    * @throws HAProxyProtocolException if any portion of the header is invalid
@@ -298,7 +302,7 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
     if (numParts < 2) {
       throw new HAProxyProtocolException(
-          "invalid header: " + header + " (expected: 'PROXY' and proxied protocol values)");
+        "invalid header: " + header + " (expected: 'PROXY' and proxied protocol values)");
     }
 
     if (!"PROXY".equals(parts[0])) {
@@ -313,8 +317,8 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
     }
 
     if (protAndFam != HAProxyProxiedProtocol.TCP4 &&
-        protAndFam != HAProxyProxiedProtocol.TCP6 &&
-        protAndFam != HAProxyProxiedProtocol.UNKNOWN) {
+      protAndFam != HAProxyProxiedProtocol.TCP6 &&
+      protAndFam != HAProxyProxiedProtocol.UNKNOWN) {
       throw new HAProxyProtocolException("unsupported v1 proxied protocol: " + parts[1]);
     }
 
@@ -327,8 +331,8 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
     }
 
     return new HAProxyMessage(
-        HAProxyProtocolVersion.V1, HAProxyCommand.PROXY,
-        protAndFam, parts[2], parts[3], parts[4], parts[5]);
+      HAProxyProtocolVersion.V1, HAProxyCommand.PROXY,
+      protAndFam, parts[2], parts[3], parts[4], parts[5]);
   }
 
   /**
@@ -341,7 +345,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Convert ip address bytes to string representation
-   *
    * @param header     buffer containing ip address bytes
    * @param addressLen number of bytes to read (4 bytes for IPv4, 16 bytes for IPv6)
    * @return string representation of the ip address
@@ -367,7 +370,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Convert port to integer
-   *
    * @param value the port
    * @return port as an integer
    * @throws HAProxyProtocolException if port is not a valid integer
@@ -389,7 +391,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Validate an address (IPv4, IPv6, Unix Socket)
-   *
    * @param address    human-readable address
    * @param addrFamily the {@link AddressFamily} to check the address against
    * @throws HAProxyProtocolException if the address is invalid
@@ -431,7 +432,6 @@ public final class HAProxyMessage extends AbstractReferenceCounted {
 
   /**
    * Validate a UDP/TCP port
-   *
    * @param port the UDP/TCP port
    * @throws HAProxyProtocolException if the port is out of range (0-65535 inclusive)
    */

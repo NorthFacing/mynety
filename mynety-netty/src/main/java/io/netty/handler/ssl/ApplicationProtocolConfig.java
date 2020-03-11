@@ -39,7 +39,6 @@ public final class ApplicationProtocolConfig {
 
   /**
    * Create a new instance.
-   *
    * @param protocol           The application protocol functionality to use.
    * @param selectorBehavior   How the peer selecting the protocol should behave.
    * @param selectedBehavior   How the peer being notified of the selected protocol should behave.
@@ -52,7 +51,6 @@ public final class ApplicationProtocolConfig {
 
   /**
    * Create a new instance.
-   *
    * @param protocol           The application protocol functionality to use.
    * @param selectorBehavior   How the peer selecting the protocol should behave.
    * @param selectedBehavior   How the peer being notified of the selected protocol should behave.
@@ -65,15 +63,14 @@ public final class ApplicationProtocolConfig {
 
   /**
    * Create a new instance.
-   *
    * @param protocol           The application protocol functionality to use.
    * @param selectorBehavior   How the peer selecting the protocol should behave.
    * @param selectedBehavior   How the peer being notified of the selected protocol should behave.
    * @param supportedProtocols The order of iteration determines the preference of support for protocols.
    */
   private ApplicationProtocolConfig(
-      Protocol protocol, SelectorFailureBehavior selectorBehavior,
-      SelectedListenerFailureBehavior selectedBehavior, List<String> supportedProtocols) {
+    Protocol protocol, SelectorFailureBehavior selectorBehavior,
+    SelectedListenerFailureBehavior selectedBehavior, List<String> supportedProtocols) {
     this.supportedProtocols = Collections.unmodifiableList(checkNotNull(supportedProtocols, "supportedProtocols"));
     this.protocol = checkNotNull(protocol, "protocol");
     this.selectorBehavior = checkNotNull(selectorBehavior, "selectorBehavior");

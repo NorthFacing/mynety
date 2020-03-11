@@ -41,7 +41,6 @@ public interface SelectStrategy {
   /**
    * The {@link SelectStrategy} can be used to steer the outcome of a potential select
    * call.
-   *
    * @param selectSupplier The supplier with the result of a select result.
    * @param hasTasks       true if tasks are waiting to be processed.
    * @return {@link #SELECT} if the next step should be blocking select {@link #CONTINUE} if

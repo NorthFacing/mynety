@@ -89,15 +89,15 @@ public class HttpMethod implements Comparable<HttpMethod> {
 
   static {
     methodMap = new EnumNameMap<HttpMethod>(
-        new EnumNameMap.Node<HttpMethod>(OPTIONS.toString(), OPTIONS),
-        new EnumNameMap.Node<HttpMethod>(GET.toString(), GET),
-        new EnumNameMap.Node<HttpMethod>(HEAD.toString(), HEAD),
-        new EnumNameMap.Node<HttpMethod>(POST.toString(), POST),
-        new EnumNameMap.Node<HttpMethod>(PUT.toString(), PUT),
-        new EnumNameMap.Node<HttpMethod>(PATCH.toString(), PATCH),
-        new EnumNameMap.Node<HttpMethod>(DELETE.toString(), DELETE),
-        new EnumNameMap.Node<HttpMethod>(TRACE.toString(), TRACE),
-        new EnumNameMap.Node<HttpMethod>(CONNECT.toString(), CONNECT));
+      new EnumNameMap.Node<HttpMethod>(OPTIONS.toString(), OPTIONS),
+      new EnumNameMap.Node<HttpMethod>(GET.toString(), GET),
+      new EnumNameMap.Node<HttpMethod>(HEAD.toString(), HEAD),
+      new EnumNameMap.Node<HttpMethod>(POST.toString(), POST),
+      new EnumNameMap.Node<HttpMethod>(PUT.toString(), PUT),
+      new EnumNameMap.Node<HttpMethod>(PATCH.toString(), PATCH),
+      new EnumNameMap.Node<HttpMethod>(DELETE.toString(), DELETE),
+      new EnumNameMap.Node<HttpMethod>(TRACE.toString(), TRACE),
+      new EnumNameMap.Node<HttpMethod>(CONNECT.toString(), CONNECT));
   }
 
   /**
@@ -191,7 +191,7 @@ public class HttpMethod implements Comparable<HttpMethod> {
         int i = hashCode(node.key) & valuesMask;
         if (values[i] != null) {
           throw new IllegalArgumentException("index " + i + " collision between values: [" +
-              values[i].key + ", " + node.key + ']');
+            values[i].key + ", " + node.key + ']');
         }
         values[i] = node;
       }

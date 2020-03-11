@@ -67,7 +67,6 @@ public abstract class AbstractMemcacheObjectEncoder<M extends MemcacheMessage> e
 
   /**
    * Take the given {@link MemcacheMessage} and encode it into a writable {@link ByteBuf}.
-   *
    * @param ctx the channel handler context.
    * @param msg the message to encode.
    * @return the {@link ByteBuf} representation of the message.
@@ -76,7 +75,6 @@ public abstract class AbstractMemcacheObjectEncoder<M extends MemcacheMessage> e
 
   /**
    * Determine the content length of the given object.
-   *
    * @param msg the object to determine the length of.
    * @return the determined content length.
    */
@@ -95,7 +93,6 @@ public abstract class AbstractMemcacheObjectEncoder<M extends MemcacheMessage> e
 
   /**
    * Encode the content, depending on the object type.
-   *
    * @param msg the object to encode.
    * @return the encoded object.
    */

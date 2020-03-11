@@ -37,25 +37,25 @@ public final class MqttConnectPayload {
    */
   @Deprecated
   public MqttConnectPayload(
-      String clientIdentifier,
-      String willTopic,
-      String willMessage,
-      String userName,
-      String password) {
+    String clientIdentifier,
+    String willTopic,
+    String willMessage,
+    String userName,
+    String password) {
     this(
-        clientIdentifier,
-        willTopic,
-        willMessage.getBytes(CharsetUtil.UTF_8),
-        userName,
-        password.getBytes(CharsetUtil.UTF_8));
+      clientIdentifier,
+      willTopic,
+      willMessage.getBytes(CharsetUtil.UTF_8),
+      userName,
+      password.getBytes(CharsetUtil.UTF_8));
   }
 
   public MqttConnectPayload(
-      String clientIdentifier,
-      String willTopic,
-      byte[] willMessage,
-      String userName,
-      byte[] password) {
+    String clientIdentifier,
+    String willTopic,
+    byte[] willMessage,
+    String userName,
+    byte[] password) {
     this.clientIdentifier = clientIdentifier;
     this.willTopic = willTopic;
     this.willMessage = willMessage;
@@ -102,13 +102,13 @@ public final class MqttConnectPayload {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("clientIdentifier=").append(clientIdentifier)
-        .append(", willTopic=").append(willTopic)
-        .append(", willMessage=").append(Arrays.toString(willMessage))
-        .append(", userName=").append(userName)
-        .append(", password=").append(Arrays.toString(password))
-        .append(']')
-        .toString();
+      .append('[')
+      .append("clientIdentifier=").append(clientIdentifier)
+      .append(", willTopic=").append(willTopic)
+      .append(", willMessage=").append(Arrays.toString(willMessage))
+      .append(", userName=").append(userName)
+      .append(", password=").append(Arrays.toString(password))
+      .append(']')
+      .toString();
   }
 }

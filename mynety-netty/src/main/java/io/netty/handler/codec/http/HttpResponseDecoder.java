@@ -97,26 +97,26 @@ public class HttpResponseDecoder extends HttpObjectDecoder {
    * Creates a new instance with the specified parameters.
    */
   public HttpResponseDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true);
   }
 
   public HttpResponseDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true, validateHeaders);
   }
 
   public HttpResponseDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders,
-      int initialBufferSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders,
+    int initialBufferSize) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true, validateHeaders, initialBufferSize);
   }
 
   @Override
   protected HttpMessage createMessage(String[] initialLine) {
     return new DefaultHttpResponse(
-        HttpVersion.valueOf(initialLine[0]),
-        HttpResponseStatus.valueOf(Integer.parseInt(initialLine[1]), initialLine[2]), validateHeaders);
+      HttpVersion.valueOf(initialLine[0]),
+      HttpResponseStatus.valueOf(Integer.parseInt(initialLine[1]), initialLine[2]), validateHeaders);
   }
 
   @Override

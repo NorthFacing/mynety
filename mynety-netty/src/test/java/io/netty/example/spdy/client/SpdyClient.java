@@ -58,16 +58,16 @@ public final class SpdyClient {
   public static void main(String[] args) throws Exception {
     // Configure SSL.
     final SslContext sslCtx = SslContextBuilder.forClient()
-        .trustManager(InsecureTrustManagerFactory.INSTANCE)
-        .applicationProtocolConfig(new ApplicationProtocolConfig(
-            Protocol.NPN,
-            // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-            SelectorFailureBehavior.NO_ADVERTISE,
-            // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-            SelectedListenerFailureBehavior.ACCEPT,
-            ApplicationProtocolNames.SPDY_3_1,
-            ApplicationProtocolNames.HTTP_1_1))
-        .build();
+      .trustManager(InsecureTrustManagerFactory.INSTANCE)
+      .applicationProtocolConfig(new ApplicationProtocolConfig(
+        Protocol.NPN,
+        // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+        SelectorFailureBehavior.NO_ADVERTISE,
+        // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+        SelectedListenerFailureBehavior.ACCEPT,
+        ApplicationProtocolNames.SPDY_3_1,
+        ApplicationProtocolNames.HTTP_1_1))
+      .build();
 
     HttpResponseClientHandler httpResponseHandler = new HttpResponseClientHandler();
     EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -86,7 +86,7 @@ public final class SpdyClient {
 
       // Create a GET request.
       HttpRequest request = new DefaultFullHttpRequest(
-          HttpVersion.HTTP_1_1, HttpMethod.GET, "", Unpooled.EMPTY_BUFFER);
+        HttpVersion.HTTP_1_1, HttpMethod.GET, "", Unpooled.EMPTY_BUFFER);
       request.headers().set(HttpHeaderNames.HOST, HOST);
       request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
 

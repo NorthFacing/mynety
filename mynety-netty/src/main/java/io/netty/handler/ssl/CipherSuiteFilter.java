@@ -25,7 +25,6 @@ import java.util.Set;
 public interface CipherSuiteFilter {
   /**
    * Filter the requested {@code ciphers} based upon other cipher characteristics.
-   *
    * @param ciphers          The requested ciphers
    * @param defaultCiphers   The default recommended ciphers for the current {@link SSLEngine} as determined by Netty
    * @param supportedCiphers The supported ciphers for the current {@link SSLEngine}

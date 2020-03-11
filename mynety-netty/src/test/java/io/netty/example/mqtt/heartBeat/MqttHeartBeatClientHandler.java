@@ -51,13 +51,13 @@ public class MqttHeartBeatClientHandler extends ChannelInboundHandlerAdapter {
   @Override
   public void channelActive(ChannelHandlerContext ctx) throws Exception {
     MqttFixedHeader connectFixedHeader =
-        new MqttFixedHeader(MqttMessageType.CONNECT, false, MqttQoS.AT_MOST_ONCE, false, 0);
+      new MqttFixedHeader(MqttMessageType.CONNECT, false, MqttQoS.AT_MOST_ONCE, false, 0);
     MqttConnectVariableHeader connectVariableHeader =
-        new MqttConnectVariableHeader(PROTOCOL_NAME_MQTT_3_1_1, PROTOCOL_VERSION_MQTT_3_1_1, true, true, false,
-            0, false, false, 20);
+      new MqttConnectVariableHeader(PROTOCOL_NAME_MQTT_3_1_1, PROTOCOL_VERSION_MQTT_3_1_1, true, true, false,
+        0, false, false, 20);
     MqttConnectPayload connectPayload = new MqttConnectPayload(clientId, null, null, userName, password);
     MqttConnectMessage connectMessage =
-        new MqttConnectMessage(connectFixedHeader, connectVariableHeader, connectPayload);
+      new MqttConnectMessage(connectFixedHeader, connectVariableHeader, connectPayload);
     ctx.writeAndFlush(connectMessage);
     System.out.println("Sent CONNECT");
   }
@@ -66,7 +66,7 @@ public class MqttHeartBeatClientHandler extends ChannelInboundHandlerAdapter {
   public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
     if (evt instanceof IdleStateEvent) {
       MqttFixedHeader pingreqFixedHeader =
-          new MqttFixedHeader(MqttMessageType.PINGREQ, false, MqttQoS.AT_MOST_ONCE, false, 0);
+        new MqttFixedHeader(MqttMessageType.PINGREQ, false, MqttQoS.AT_MOST_ONCE, false, 0);
       MqttMessage pingreqMessage = new MqttMessage(pingreqFixedHeader);
       ctx.writeAndFlush(pingreqMessage);
       System.out.println("Sent PINGREQ");

@@ -16,7 +16,11 @@
 package io.netty.handler.codec.compression;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelPromiseNotifier;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.SuppressJava6Requirement;
@@ -45,7 +49,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
   /**
    * Creates a new zlib encoder with the default compression level ({@code 6})
    * and the default wrapper ({@link ZlibWrapper#ZLIB}).
-   *
    * @throws CompressionException if failed to initialize zlib
    */
   public JdkZlibEncoder() {
@@ -55,7 +58,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
   /**
    * Creates a new zlib encoder with the specified {@code compressionLevel}
    * and the default wrapper ({@link ZlibWrapper#ZLIB}).
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -68,7 +70,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
   /**
    * Creates a new zlib encoder with the default compression level ({@code 6})
    * and the specified wrapper.
-   *
    * @throws CompressionException if failed to initialize zlib
    */
   public JdkZlibEncoder(ZlibWrapper wrapper) {
@@ -78,7 +79,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
   /**
    * Creates a new zlib encoder with the specified {@code compressionLevel}
    * and the specified wrapper.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -87,15 +87,15 @@ public class JdkZlibEncoder extends ZlibEncoder {
   public JdkZlibEncoder(ZlibWrapper wrapper, int compressionLevel) {
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     if (wrapper == null) {
       throw new NullPointerException("wrapper");
     }
     if (wrapper == ZlibWrapper.ZLIB_OR_NONE) {
       throw new IllegalArgumentException(
-          "wrapper '" + ZlibWrapper.ZLIB_OR_NONE + "' is not " +
-              "allowed for compression.");
+        "wrapper '" + ZlibWrapper.ZLIB_OR_NONE + "' is not " +
+          "allowed for compression.");
     }
 
     this.wrapper = wrapper;
@@ -107,7 +107,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
    * and the specified preset dictionary.  The wrapper is always
    * {@link ZlibWrapper#ZLIB} because it is the only format that supports
    * the preset dictionary.
-   *
    * @param dictionary the preset dictionary
    * @throws CompressionException if failed to initialize zlib
    */
@@ -120,7 +119,6 @@ public class JdkZlibEncoder extends ZlibEncoder {
    * and the specified preset dictionary.  The wrapper is always
    * {@link ZlibWrapper#ZLIB} because it is the only format that supports
    * the preset dictionary.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -130,7 +128,7 @@ public class JdkZlibEncoder extends ZlibEncoder {
   public JdkZlibEncoder(int compressionLevel, byte[] dictionary) {
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     if (dictionary == null) {
       throw new NullPointerException("dictionary");
@@ -320,7 +318,7 @@ public class JdkZlibEncoder extends ZlibEncoder {
     do {
       int writerIndex = out.writerIndex();
       numBytes = deflater.deflate(
-          out.array(), out.arrayOffset() + writerIndex, out.writableBytes(), Deflater.SYNC_FLUSH);
+        out.array(), out.arrayOffset() + writerIndex, out.writableBytes(), Deflater.SYNC_FLUSH);
       out.writerIndex(writerIndex + numBytes);
     } while (numBytes > 0);
   }
@@ -330,7 +328,7 @@ public class JdkZlibEncoder extends ZlibEncoder {
     do {
       int writerIndex = out.writerIndex();
       numBytes = deflater.deflate(
-          out.array(), out.arrayOffset() + writerIndex, out.writableBytes());
+        out.array(), out.arrayOffset() + writerIndex, out.writableBytes());
       out.writerIndex(writerIndex + numBytes);
     } while (numBytes > 0);
   }

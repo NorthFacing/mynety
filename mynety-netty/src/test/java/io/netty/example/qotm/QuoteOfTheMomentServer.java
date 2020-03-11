@@ -36,9 +36,9 @@ public final class QuoteOfTheMomentServer {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioDatagramChannel.class)
-          .option(ChannelOption.SO_BROADCAST, true)
-          .handler(new QuoteOfTheMomentServerHandler());
+        .channel(NioDatagramChannel.class)
+        .option(ChannelOption.SO_BROADCAST, true)
+        .handler(new QuoteOfTheMomentServerHandler());
 
       b.bind(PORT).sync().channel().closeFuture().await();
     } finally {

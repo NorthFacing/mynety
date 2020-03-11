@@ -92,7 +92,6 @@ public abstract class AbstractByteBufAllocator implements ByteBufAllocator {
 
   /**
    * Create new instance
-   *
    * @param preferDirect {@code true} if {@link #buffer(int)} should try to allocate a direct buffer rather than
    *                     a heap buffer
    */
@@ -227,8 +226,8 @@ public abstract class AbstractByteBufAllocator implements ByteBufAllocator {
     checkPositiveOrZero(initialCapacity, "initialCapacity");
     if (initialCapacity > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "initialCapacity: %d (expected: not greater than maxCapacity(%d)",
-          initialCapacity, maxCapacity));
+        "initialCapacity: %d (expected: not greater than maxCapacity(%d)",
+        initialCapacity, maxCapacity));
     }
   }
 
@@ -252,8 +251,8 @@ public abstract class AbstractByteBufAllocator implements ByteBufAllocator {
     checkPositiveOrZero(minNewCapacity, "minNewCapacity");
     if (minNewCapacity > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "minNewCapacity: %d (expected: not greater than maxCapacity(%d)",
-          minNewCapacity, maxCapacity));
+        "minNewCapacity: %d (expected: not greater than maxCapacity(%d)",
+        minNewCapacity, maxCapacity));
     }
     final int threshold = CALCULATE_THRESHOLD; // 4 MiB page
 

@@ -38,13 +38,13 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
 
   @Override
   public void readFrame(ChannelHandlerContext ctx, ByteBuf input, final Http2FrameListener listener)
-      throws Http2Exception {
+    throws Http2Exception {
     reader.readFrame(ctx, input, new Http2FrameListener() {
 
       @Override
       public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data,
                             int padding, boolean endOfStream)
-          throws Http2Exception {
+        throws Http2Exception {
         logger.logData(INBOUND, ctx, streamId, data, padding, endOfStream);
         return listener.onDataRead(ctx, streamId, data, padding, endOfStream);
       }
@@ -52,7 +52,7 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
       @Override
       public void onHeadersRead(ChannelHandlerContext ctx, int streamId,
                                 Http2Headers headers, int padding, boolean endStream)
-          throws Http2Exception {
+        throws Http2Exception {
         logger.logHeaders(INBOUND, ctx, streamId, headers, padding, endStream);
         listener.onHeadersRead(ctx, streamId, headers, padding, endStream);
       }
@@ -62,9 +62,9 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
                                 Http2Headers headers, int streamDependency, short weight, boolean exclusive,
                                 int padding, boolean endStream) throws Http2Exception {
         logger.logHeaders(INBOUND, ctx, streamId, headers, streamDependency, weight, exclusive,
-            padding, endStream);
+          padding, endStream);
         listener.onHeadersRead(ctx, streamId, headers, streamDependency, weight, exclusive,
-            padding, endStream);
+          padding, endStream);
       }
 
       @Override
@@ -76,7 +76,7 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
 
       @Override
       public void onRstStreamRead(ChannelHandlerContext ctx, int streamId, long errorCode)
-          throws Http2Exception {
+        throws Http2Exception {
         logger.logRstStream(INBOUND, ctx, streamId, errorCode);
         listener.onRstStreamRead(ctx, streamId, errorCode);
       }
@@ -89,7 +89,7 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
 
       @Override
       public void onSettingsRead(ChannelHandlerContext ctx, Http2Settings settings)
-          throws Http2Exception {
+        throws Http2Exception {
         logger.logSettings(INBOUND, ctx, settings);
         listener.onSettingsRead(ctx, settings);
       }
@@ -122,7 +122,7 @@ public class Http2InboundFrameLogger implements Http2FrameReader {
 
       @Override
       public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-          throws Http2Exception {
+        throws Http2Exception {
         logger.logWindowsUpdate(INBOUND, ctx, streamId, windowSizeIncrement);
         listener.onWindowUpdateRead(ctx, streamId, windowSizeIncrement);
       }

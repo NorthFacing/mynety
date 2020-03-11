@@ -100,11 +100,11 @@ public class MixedAttribute implements Attribute {
       checkSize(attribute.length() + buffer.readableBytes());
       if (attribute.length() + buffer.readableBytes() > limitSize) {
         DiskAttribute diskAttribute = new DiskAttribute(attribute
-            .getName(), attribute.definedLength());
+          .getName(), attribute.definedLength());
         diskAttribute.setMaxSize(maxSize);
         if (((MemoryAttribute) attribute).getByteBuf() != null) {
           diskAttribute.addContent(((MemoryAttribute) attribute)
-              .getByteBuf(), false);
+            .getByteBuf(), false);
         }
         attribute = diskAttribute;
       }

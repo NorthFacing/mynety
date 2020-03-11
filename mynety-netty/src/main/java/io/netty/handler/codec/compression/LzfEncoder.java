@@ -60,7 +60,6 @@ public class LzfEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a new LZF encoder with specified encoding instance.
-   *
    * @param safeInstance If {@code true} encoder will use {@link ChunkEncoder} that only uses standard JDK access methods,
    *                     and should work on all Java platforms and JVMs.
    *                     Otherwise encoder will try to use highly optimized {@link ChunkEncoder} implementation that uses
@@ -73,7 +72,6 @@ public class LzfEncoder extends MessageToByteEncoder<ByteBuf> {
   /**
    * Creates a new LZF encoder with specified total length of encoded chunk. You can configure it to encode
    * your data flow more efficient if you know the average size of messages that you send.
-   *
    * @param totalLength Expected total length of content to compress; only matters for outgoing messages that is smaller
    *                    than maximum chunk size (64k), to optimize encoding hash tables.
    */
@@ -83,7 +81,6 @@ public class LzfEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a new LZF encoder with specified settings.
-   *
    * @param safeInstance If {@code true} encoder will use {@link ChunkEncoder} that only uses standard JDK access methods,
    *                     and should work on all Java platforms and JVMs.
    *                     Otherwise encoder will try to use highly optimized {@link ChunkEncoder} implementation that uses
@@ -95,12 +92,12 @@ public class LzfEncoder extends MessageToByteEncoder<ByteBuf> {
     super(false);
     if (totalLength < MIN_BLOCK_TO_COMPRESS || totalLength > MAX_CHUNK_LEN) {
       throw new IllegalArgumentException("totalLength: " + totalLength +
-          " (expected: " + MIN_BLOCK_TO_COMPRESS + '-' + MAX_CHUNK_LEN + ')');
+        " (expected: " + MIN_BLOCK_TO_COMPRESS + '-' + MAX_CHUNK_LEN + ')');
     }
 
     encoder = safeInstance ?
-        ChunkEncoderFactory.safeNonAllocatingInstance(totalLength)
-        : ChunkEncoderFactory.optimalNonAllocatingInstance(totalLength);
+      ChunkEncoderFactory.safeNonAllocatingInstance(totalLength)
+      : ChunkEncoderFactory.optimalNonAllocatingInstance(totalLength);
 
     recycler = BufferRecycler.instance();
   }
@@ -125,7 +122,7 @@ public class LzfEncoder extends MessageToByteEncoder<ByteBuf> {
     final byte[] output = out.array();
     final int outputPtr = out.arrayOffset() + out.writerIndex();
     final int outputLength = LZFEncoder.appendEncoded(encoder,
-        input, inputPtr, length, output, outputPtr) - outputPtr;
+      input, inputPtr, length, output, outputPtr) - outputPtr;
     out.writerIndex(out.writerIndex() + outputLength);
     in.skipBytes(length);
 

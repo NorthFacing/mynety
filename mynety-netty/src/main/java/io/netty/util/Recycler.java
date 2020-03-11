@@ -33,7 +33,6 @@ import static java.lang.Math.min;
 
 /**
  * Light-weight object pool based on a thread-local stack.
- *
  * @param <T> the type of the pooled object
  */
 public abstract class Recycler<T> {
@@ -62,7 +61,7 @@ public abstract class Recycler<T> {
     // e.g. io.netty.recycler.maxCapacity.writeTask
     //      io.netty.recycler.maxCapacity.outboundBuffer
     int maxCapacityPerThread = SystemPropertyUtil.getInt("io.netty.recycler.maxCapacityPerThread",
-        SystemPropertyUtil.getInt("io.netty.recycler.maxCapacity", DEFAULT_INITIAL_MAX_CAPACITY_PER_THREAD));
+      SystemPropertyUtil.getInt("io.netty.recycler.maxCapacity", DEFAULT_INITIAL_MAX_CAPACITY_PER_THREAD));
     if (maxCapacityPerThread < 0) {
       maxCapacityPerThread = DEFAULT_INITIAL_MAX_CAPACITY_PER_THREAD;
     }
@@ -70,16 +69,16 @@ public abstract class Recycler<T> {
     DEFAULT_MAX_CAPACITY_PER_THREAD = maxCapacityPerThread;
 
     MAX_SHARED_CAPACITY_FACTOR = max(2,
-        SystemPropertyUtil.getInt("io.netty.recycler.maxSharedCapacityFactor",
-            2));
+      SystemPropertyUtil.getInt("io.netty.recycler.maxSharedCapacityFactor",
+        2));
 
     MAX_DELAYED_QUEUES_PER_THREAD = max(0,
-        SystemPropertyUtil.getInt("io.netty.recycler.maxDelayedQueuesPerThread",
-            // We use the same value as default EventLoop number
-            NettyRuntime.availableProcessors() * 2));
+      SystemPropertyUtil.getInt("io.netty.recycler.maxDelayedQueuesPerThread",
+        // We use the same value as default EventLoop number
+        NettyRuntime.availableProcessors() * 2));
 
     LINK_CAPACITY = safeFindNextPositivePowerOfTwo(
-        max(SystemPropertyUtil.getInt("io.netty.recycler.linkCapacity", 16), 16));
+      max(SystemPropertyUtil.getInt("io.netty.recycler.linkCapacity", 16), 16));
 
     // By default we allow one push to a Recycler for each 8th try on handles that were never recycled before.
     // This should help to slowly increase the capacity of the recycler while not be too sensitive to allocation
@@ -112,7 +111,7 @@ public abstract class Recycler<T> {
     @Override
     protected Stack<T> initialValue() {
       return new Stack<T>(Recycler.this, Thread.currentThread(), maxCapacityPerThread, maxSharedCapacityFactor,
-          ratioMask, maxDelayedQueuesPerThread);
+        ratioMask, maxDelayedQueuesPerThread);
     }
 
     @Override
@@ -227,12 +226,12 @@ public abstract class Recycler<T> {
   }
 
   private static final FastThreadLocal<Map<Stack<?>, WeakOrderQueue>> DELAYED_RECYCLED =
-      new FastThreadLocal<Map<Stack<?>, WeakOrderQueue>>() {
-        @Override
-        protected Map<Stack<?>, WeakOrderQueue> initialValue() {
-          return new WeakHashMap<Stack<?>, WeakOrderQueue>();
-        }
-      };
+    new FastThreadLocal<Map<Stack<?>, WeakOrderQueue>>() {
+      @Override
+      protected Map<Stack<?>, WeakOrderQueue> initialValue() {
+        return new WeakHashMap<Stack<?>, WeakOrderQueue>();
+      }
+    };
 
   // a queue that makes only moderate guarantees about visibility: items are seen in the correct order,
   // but we aren't absolutely guaranteed to ever see anything at all, thereby keeping the queue cheap to maintain
@@ -345,7 +344,7 @@ public abstract class Recycler<T> {
     static WeakOrderQueue allocate(Stack<?> stack, Thread thread) {
       // We allocated a Link so reserve the space
       return Head.reserveSpace(stack.availableSharedCapacity, LINK_CAPACITY)
-          ? newQueue(stack, thread) : null;
+        ? newQueue(stack, thread) : null;
     }
 
     void add(DefaultHandle<?> handle) {

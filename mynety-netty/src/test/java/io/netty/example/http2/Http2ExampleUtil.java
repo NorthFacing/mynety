@@ -56,7 +56,6 @@ public final class Http2ExampleUtil {
 
   /**
    * Reads an InputStream into a byte array.
-   *
    * @param input the InputStream.
    * @return a byte array representation of the InputStream.
    * @throws IOException if an I/O exception of some sort happens while reading the InputStream.

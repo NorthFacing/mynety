@@ -15,7 +15,18 @@
  */
 package io.netty.channel.local;
 
-import io.netty.channel.*;
+import io.netty.channel.AbstractChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.EventLoop;
+import io.netty.channel.PreferHeapByteBufAllocator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.SingleThreadEventLoop;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
@@ -40,7 +51,7 @@ public class LocalChannel extends AbstractChannel {
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(LocalChannel.class);
   @SuppressWarnings({"rawtypes"})
   private static final AtomicReferenceFieldUpdater<LocalChannel, Future> FINISH_READ_FUTURE_UPDATER =
-      AtomicReferenceFieldUpdater.newUpdater(LocalChannel.class, Future.class, "finishReadFuture");
+    AtomicReferenceFieldUpdater.newUpdater(LocalChannel.class, Future.class, "finishReadFuture");
   private static final ChannelMetadata METADATA = new ChannelMetadata(false);
   private static final int MAX_READER_STACK_DEPTH = 8;
 
@@ -182,8 +193,8 @@ public class LocalChannel extends AbstractChannel {
   @Override
   protected void doBind(SocketAddress localAddress) throws Exception {
     this.localAddress =
-        LocalChannelRegistry.register(this, this.localAddress,
-            localAddress);
+      LocalChannelRegistry.register(this, this.localAddress,
+        localAddress);
     state = State.BOUND;
   }
 
@@ -239,7 +250,7 @@ public class LocalChannel extends AbstractChannel {
           });
         } catch (Throwable cause) {
           logger.warn("Releasing Inbound Queues for channels {}-{} because exception occurred!",
-              this, peer, cause);
+            this, peer, cause);
           if (peerEventLoop.inEventLoop()) {
             peer.releaseInboundBuffers();
           } else {

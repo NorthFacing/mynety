@@ -16,7 +16,15 @@
 
 package io.netty.bootstrap;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelPromise;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ReflectiveChannelFactory;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.GlobalEventExecutor;
@@ -88,7 +96,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
    */
   public B channel(Class<? extends C> channelClass) {
     return channelFactory(new ReflectiveChannelFactory<C>(
-        ObjectUtil.checkNotNull(channelClass, "channelClass")
+      ObjectUtil.checkNotNull(channelClass, "channelClass")
     ));
   }
 
@@ -323,8 +331,8 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
   abstract void init(Channel channel) throws Exception;
 
   private static void doBind0(
-      final ChannelFuture regFuture, final Channel channel,
-      final SocketAddress localAddress, final ChannelPromise promise) {
+    final ChannelFuture regFuture, final Channel channel,
+    final SocketAddress localAddress, final ChannelPromise promise) {
 
     // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
     // the pipeline in its channelRegistered() implementation.
@@ -350,7 +358,6 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
   /**
    * Returns the configured {@link EventLoopGroup} or {@code null} if non is configured yet.
-   *
    * @deprecated Use {@link #config()} instead.
    */
   @Deprecated
@@ -409,7 +416,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
   }
 
   static void setChannelOptions(
-      Channel channel, Map.Entry<ChannelOption<?>, Object>[] options, InternalLogger logger) {
+    Channel channel, Map.Entry<ChannelOption<?>, Object>[] options, InternalLogger logger) {
     for (Map.Entry<ChannelOption<?>, Object> e : options) {
       setChannelOption(channel, e.getKey(), e.getValue(), logger);
     }
@@ -427,22 +434,22 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
   @SuppressWarnings("unchecked")
   private static void setChannelOption(
-      Channel channel, ChannelOption<?> option, Object value, InternalLogger logger) {
+    Channel channel, ChannelOption<?> option, Object value, InternalLogger logger) {
     try {
       if (!channel.config().setOption((ChannelOption<Object>) option, value)) {
         logger.warn("Unknown channel option '{}' for channel '{}'", option, channel);
       }
     } catch (Throwable t) {
       logger.warn(
-          "Failed to set channel option '{}' with value '{}' for channel '{}'", option, value, channel, t);
+        "Failed to set channel option '{}' with value '{}' for channel '{}'", option, value, channel, t);
     }
   }
 
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append('(').append(config()).append(')');
+      .append(StringUtil.simpleClassName(this))
+      .append('(').append(config()).append(')');
     return buf.toString();
   }
 

@@ -242,23 +242,23 @@ public abstract class HttpContentEncoder extends MessageToMessageCodec<HttpReque
 
   private static boolean isPassthru(HttpVersion version, int code, CharSequence httpMethod) {
     return code < 200 || code == 204 || code == 304 ||
-        (httpMethod == ZERO_LENGTH_HEAD || (httpMethod == ZERO_LENGTH_CONNECT && code == 200)) ||
-        version == HttpVersion.HTTP_1_0;
+      (httpMethod == ZERO_LENGTH_HEAD || (httpMethod == ZERO_LENGTH_CONNECT && code == 200)) ||
+      version == HttpVersion.HTTP_1_0;
   }
 
   private static void ensureHeaders(HttpObject msg) {
     if (!(msg instanceof HttpResponse)) {
       throw new IllegalStateException(
-          "unexpected message type: " +
-              msg.getClass().getName() + " (expected: " + HttpResponse.class.getSimpleName() + ')');
+        "unexpected message type: " +
+          msg.getClass().getName() + " (expected: " + HttpResponse.class.getSimpleName() + ')');
     }
   }
 
   private static void ensureContent(HttpObject msg) {
     if (!(msg instanceof HttpContent)) {
       throw new IllegalStateException(
-          "unexpected message type: " +
-              msg.getClass().getName() + " (expected: " + HttpContent.class.getSimpleName() + ')');
+        "unexpected message type: " +
+          msg.getClass().getName() + " (expected: " + HttpContent.class.getSimpleName() + ')');
     }
   }
 
@@ -286,7 +286,6 @@ public abstract class HttpContentEncoder extends MessageToMessageCodec<HttpReque
 
   /**
    * Prepare to encode the HTTP message content.
-   *
    * @param headers        the headers
    * @param acceptEncoding the value of the {@code "Accept-Encoding"} header
    * @return the result of preparation, which is composed of the determined

@@ -24,7 +24,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 /**
  * A Type-Length Value (TLV vector) that can be added to the PROXY protocol
  * to include additional information like SSL information.
- *
  * @see HAProxySSLTLV
  */
 public class HAProxyTLV extends DefaultByteBufHolder {
@@ -51,7 +50,6 @@ public class HAProxyTLV extends DefaultByteBufHolder {
      * Returns the {@link Type} for a specific byte value as defined in the PROXY protocol 1.5 spec
      * <p>
      * If the byte value is not an official one, it will return {@link Type#OTHER}.
-     *
      * @param byteValue the byte for a type
      * @return the {@link Type} of a TLV
      */
@@ -77,7 +75,6 @@ public class HAProxyTLV extends DefaultByteBufHolder {
 
   /**
    * Creates a new HAProxyTLV
-   *
    * @param type          the {@link Type} of the TLV
    * @param typeByteValue the byteValue of the TLV. This is especially important if non-standard TLVs are used
    * @param content       the raw content of the TLV

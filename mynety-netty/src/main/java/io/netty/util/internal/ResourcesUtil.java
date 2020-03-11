@@ -26,7 +26,6 @@ public final class ResourcesUtil {
 
   /**
    * Returns a {@link File} named {@code fileName} associated with {@link Class} {@code resourceClass} .
-   *
    * @param resourceClass The associated class
    * @param fileName      The file name
    * @return The file named {@code fileName} associated with {@link Class} {@code resourceClass} .

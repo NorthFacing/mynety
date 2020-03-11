@@ -29,8 +29,8 @@ final class DnsRecordResolveContext extends DnsResolveContext<DnsRecord> {
   DnsRecordResolveContext(DnsNameResolver parent, DnsQuestion question, DnsRecord[] additionals,
                           DnsServerAddressStream nameServerAddrs) {
     this(parent, question.name(), question.dnsClass(),
-        new DnsRecordType[]{question.type()},
-        additionals, nameServerAddrs);
+      new DnsRecordType[]{question.type()},
+      additionals, nameServerAddrs);
   }
 
   private DnsRecordResolveContext(DnsNameResolver parent, String hostname,

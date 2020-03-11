@@ -17,8 +17,12 @@ package io.netty.handler.logging;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
-import io.netty.channel.*;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandler.Sharable;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.internal.logging.InternalLogLevel;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -54,7 +58,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
   /**
    * Creates a new instance whose logger name is the fully qualified class
    * name of the instance.
-   *
    * @param level the log level
    */
   public LoggingHandler(LogLevel level) {
@@ -70,7 +73,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
   /**
    * Creates a new instance with the specified logger name and with hex dump
    * enabled.
-   *
    * @param clazz the class type to generate the logger for
    */
   public LoggingHandler(Class<?> clazz) {
@@ -79,7 +81,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
 
   /**
    * Creates a new instance with the specified logger name.
-   *
    * @param clazz the class type to generate the logger for
    * @param level the log level
    */
@@ -98,7 +99,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
 
   /**
    * Creates a new instance with the specified logger name using the default log level.
-   *
    * @param name the name of the class to use for the logger
    */
   public LoggingHandler(String name) {
@@ -107,7 +107,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
 
   /**
    * Creates a new instance with the specified logger name.
-   *
    * @param name  the name of the class to use for the logger
    * @param level the log level
    */
@@ -189,8 +188,8 @@ public class LoggingHandler extends ChannelDuplexHandler {
 
   @Override
   public void connect(
-      ChannelHandlerContext ctx,
-      SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
+    ChannelHandlerContext ctx,
+    SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) throws Exception {
     if (logger.isEnabled(internalLevel)) {
       logger.log(internalLevel, format(ctx, "CONNECT", remoteAddress, localAddress));
     }
@@ -263,21 +262,19 @@ public class LoggingHandler extends ChannelDuplexHandler {
 
   /**
    * Formats an event and returns the formatted message.
-   *
    * @param eventName the name of the event
    */
   protected String format(ChannelHandlerContext ctx, String eventName) {
     String chStr = ctx.channel().toString();
     return new StringBuilder(chStr.length() + 1 + eventName.length())
-        .append(chStr)
-        .append(' ')
-        .append(eventName)
-        .toString();
+      .append(chStr)
+      .append(' ')
+      .append(eventName)
+      .toString();
   }
 
   /**
    * Formats an event and returns the formatted message.
-   *
    * @param eventName the name of the event
    * @param arg       the argument of the event
    */
@@ -294,7 +291,6 @@ public class LoggingHandler extends ChannelDuplexHandler {
   /**
    * Formats an event and returns the formatted message.  This method is currently only used for formatting
    * {@link ChannelOutboundHandler#connect(ChannelHandlerContext, SocketAddress, SocketAddress, ChannelPromise)}.
-   *
    * @param eventName the name of the event
    * @param firstArg  the first argument of the event
    * @param secondArg the second argument of the event
@@ -308,7 +304,7 @@ public class LoggingHandler extends ChannelDuplexHandler {
     String arg1Str = String.valueOf(firstArg);
     String arg2Str = secondArg.toString();
     StringBuilder buf = new StringBuilder(
-        chStr.length() + 1 + eventName.length() + 2 + arg1Str.length() + 2 + arg2Str.length());
+      chStr.length() + 1 + eventName.length() + 2 + arg1Str.length() + 2 + arg2Str.length());
     buf.append(chStr).append(' ').append(eventName).append(": ").append(arg1Str).append(", ").append(arg2Str);
     return buf.toString();
   }
@@ -349,10 +345,10 @@ public class LoggingHandler extends ChannelDuplexHandler {
     } else {
       int rows = length / 16 + (length % 15 == 0 ? 0 : 1) + 4;
       StringBuilder buf = new StringBuilder(
-          chStr.length() + 1 + eventName.length() + 2 + msgStr.length() + 2 + 10 + 1 + 2 + rows * 80);
+        chStr.length() + 1 + eventName.length() + 2 + msgStr.length() + 2 + 10 + 1 + 2 + rows * 80);
 
       buf.append(chStr).append(' ').append(eventName).append(": ")
-          .append(msgStr).append(", ").append(length).append('B').append(NEWLINE);
+        .append(msgStr).append(", ").append(length).append('B').append(NEWLINE);
       appendPrettyHexDump(buf, content);
 
       return buf.toString();

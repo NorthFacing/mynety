@@ -98,7 +98,7 @@ public final class DefaultHttp2UnknownFrame extends DefaultByteBufHolder impleme
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + "(frameType=" + frameType + ", stream=" + stream +
-        ", flags=" + flags + ", content=" + contentToString() + ')';
+      ", flags=" + flags + ", content=" + contentToString() + ')';
   }
 
   @Override
@@ -121,9 +121,9 @@ public final class DefaultHttp2UnknownFrame extends DefaultByteBufHolder impleme
     DefaultHttp2UnknownFrame other = (DefaultHttp2UnknownFrame) o;
     Http2FrameStream otherStream = other.stream();
     return (stream == otherStream || otherStream != null && otherStream.equals(stream))
-        && flags.equals(other.flags())
-        && frameType == other.frameType()
-        && super.equals(other);
+      && flags.equals(other.flags())
+      && frameType == other.frameType()
+      && super.equals(other);
   }
 
   @Override

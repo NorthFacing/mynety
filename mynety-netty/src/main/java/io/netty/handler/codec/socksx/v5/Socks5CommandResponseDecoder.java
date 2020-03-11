@@ -63,7 +63,7 @@ public class Socks5CommandResponseDecoder extends ReplayingDecoder<State> {
           final byte version = in.readByte();
           if (version != SocksVersion.SOCKS5.byteValue()) {
             throw new DecoderException(
-                "unsupported version: " + version + " (expected: " + SocksVersion.SOCKS5.byteValue() + ')');
+              "unsupported version: " + version + " (expected: " + SocksVersion.SOCKS5.byteValue() + ')');
           }
           final Socks5CommandStatus status = Socks5CommandStatus.valueOf(in.readByte());
           in.skipBytes(1); // Reserved
@@ -99,7 +99,7 @@ public class Socks5CommandResponseDecoder extends ReplayingDecoder<State> {
     checkpoint(State.FAILURE);
 
     Socks5Message m = new DefaultSocks5CommandResponse(
-        Socks5CommandStatus.FAILURE, Socks5AddressType.IPv4, null, 0);
+      Socks5CommandStatus.FAILURE, Socks5AddressType.IPv4, null, 0);
     m.setDecoderResult(DecoderResult.failure(cause));
     out.add(m);
   }

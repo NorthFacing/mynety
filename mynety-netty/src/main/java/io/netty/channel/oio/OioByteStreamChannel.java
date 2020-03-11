@@ -31,7 +31,6 @@ import java.nio.channels.WritableByteChannel;
 
 /**
  * Abstract base class for OIO Channels that are based on streams.
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated
@@ -57,7 +56,6 @@ public abstract class OioByteStreamChannel extends AbstractOioByteChannel {
 
   /**
    * Create a new instance
-   *
    * @param parent the parent {@link Channel} which was used to create this instance. This can be null if the
    *               {@link} has no parent as it was created by your self.
    */
@@ -149,7 +147,7 @@ public abstract class OioByteStreamChannel extends AbstractOioByteChannel {
   private static void checkEOF(FileRegion region) throws IOException {
     if (region.transferred() < region.count()) {
       throw new EOFException("Expected to be able to write " + region.count() + " bytes, " +
-          "but only wrote " + region.transferred());
+        "but only wrote " + region.transferred());
     }
   }
 

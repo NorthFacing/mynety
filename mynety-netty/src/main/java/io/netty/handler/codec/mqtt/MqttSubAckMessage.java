@@ -22,9 +22,9 @@ package io.netty.handler.codec.mqtt;
 public final class MqttSubAckMessage extends MqttMessage {
 
   public MqttSubAckMessage(
-      MqttFixedHeader mqttFixedHeader,
-      MqttMessageIdVariableHeader variableHeader,
-      MqttSubAckPayload payload) {
+    MqttFixedHeader mqttFixedHeader,
+    MqttMessageIdVariableHeader variableHeader,
+    MqttSubAckPayload payload) {
     super(mqttFixedHeader, variableHeader, payload);
   }
 

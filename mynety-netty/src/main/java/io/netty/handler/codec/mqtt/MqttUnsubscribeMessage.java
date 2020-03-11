@@ -23,9 +23,9 @@ package io.netty.handler.codec.mqtt;
 public final class MqttUnsubscribeMessage extends MqttMessage {
 
   public MqttUnsubscribeMessage(
-      MqttFixedHeader mqttFixedHeader,
-      MqttMessageIdVariableHeader variableHeader,
-      MqttUnsubscribePayload payload) {
+    MqttFixedHeader mqttFixedHeader,
+    MqttMessageIdVariableHeader variableHeader,
+    MqttUnsubscribePayload payload) {
     super(mqttFixedHeader, variableHeader, payload);
   }
 

@@ -50,7 +50,6 @@ abstract class DeflateEncoder extends WebSocketExtensionEncoder {
 
   /**
    * Constructor
-   *
    * @param compressionLevel       compression level of the compressor.
    * @param windowSize             maximum size of the window compressor buffer.
    * @param noContext              true to disable context takeover.
@@ -119,7 +118,7 @@ abstract class DeflateEncoder extends WebSocketExtensionEncoder {
   private ByteBuf compressContent(ChannelHandlerContext ctx, WebSocketFrame msg) {
     if (encoder == null) {
       encoder = new EmbeddedChannel(ZlibCodecFactory.newZlibEncoder(
-          ZlibWrapper.NONE, compressionLevel, windowSize, 8));
+        ZlibWrapper.NONE, compressionLevel, windowSize, 8));
     }
 
     encoder.writeOutbound(msg.content().retain());

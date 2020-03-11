@@ -25,7 +25,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
  * Builder for immutable {@link DomainNameMapping} instances.
- *
  * @param <V> concrete type of value objects
  */
 public final class DomainNameMappingBuilder<V> {
@@ -35,7 +34,6 @@ public final class DomainNameMappingBuilder<V> {
 
   /**
    * Constructor with default initial capacity of the map holding the mappings
-   *
    * @param defaultValue the default value for {@link DomainNameMapping#map(String)} to return
    *                     when nothing matches the input
    */
@@ -45,7 +43,6 @@ public final class DomainNameMappingBuilder<V> {
 
   /**
    * Constructor with initial capacity of the map holding the mappings
-   *
    * @param initialCapacity initial capacity for the internal map
    * @param defaultValue    the default value for {@link DomainNameMapping#map(String)} to return
    *                        when nothing matches the input
@@ -62,7 +59,6 @@ public final class DomainNameMappingBuilder<V> {
    * <a href="http://en.wikipedia.org/wiki/Wildcard_DNS_record">DNS wildcard</a> is supported as hostname.
    * For example, you can use {@code *.netty.io} to match {@code netty.io} and {@code downloads.netty.io}.
    * </p>
-   *
    * @param hostname the host name (optionally wildcard)
    * @param output   the output value that will be returned by {@link DomainNameMapping#map(String)}
    *                 when the specified host name matches the specified input host name
@@ -75,7 +71,6 @@ public final class DomainNameMappingBuilder<V> {
   /**
    * Creates a new instance of immutable {@link DomainNameMapping}
    * Attempts to add new mappings to the result object will cause {@link UnsupportedOperationException} to be thrown
-   *
    * @return new {@link DomainNameMapping} instance
    */
   public DomainNameMapping<V> build() {
@@ -85,7 +80,6 @@ public final class DomainNameMappingBuilder<V> {
   /**
    * Immutable mapping from domain name pattern to its associated value object.
    * Mapping is represented by two arrays: keys and values. Key domainNamePatterns[i] is associated with values[i].
-   *
    * @param <V> concrete type of value objects
    */
   private static final class ImmutableDomainNameMapping<V> extends DomainNameMapping<V> {
@@ -93,7 +87,7 @@ public final class DomainNameMappingBuilder<V> {
     private static final String REPR_MAP_OPENING = ", map: {";
     private static final String REPR_MAP_CLOSING = "})";
     private static final int REPR_CONST_PART_LENGTH =
-        REPR_HEADER.length() + REPR_MAP_OPENING.length() + REPR_MAP_CLOSING.length();
+      REPR_HEADER.length() + REPR_MAP_OPENING.length() + REPR_MAP_CLOSING.length();
 
     private final String[] domainNamePatterns;
     private final V[] values;
@@ -126,7 +120,7 @@ public final class DomainNameMappingBuilder<V> {
     @Deprecated
     public DomainNameMapping<V> add(String hostname, V output) {
       throw new UnsupportedOperationException(
-          "Immutable DomainNameMapping does not support modification after initial creation");
+        "Immutable DomainNameMapping does not support modification after initial creation");
     }
 
     @Override
@@ -165,7 +159,7 @@ public final class DomainNameMappingBuilder<V> {
       int estimatedBufferSize = estimateBufferSize(defaultValueStr.length(), numberOfMappings, oneMappingLength);
 
       StringBuilder sb = new StringBuilder(estimatedBufferSize)
-          .append(REPR_HEADER).append(defaultValueStr).append(REPR_MAP_OPENING);
+        .append(REPR_HEADER).append(defaultValueStr).append(REPR_MAP_OPENING);
 
       appendMapping(sb, pattern0, value0);
       for (int index = 1; index < numberOfMappings; ++index) {
@@ -179,7 +173,6 @@ public final class DomainNameMappingBuilder<V> {
     /**
      * Estimates the length of string representation of the given instance:
      * est = lengthOfConstantComponents + defaultValueLength + (estimatedMappingLength * numOfMappings) * 1.10
-     *
      * @param defaultValueLength     length of string representation of {@link #defaultValue}
      * @param numberOfMappings       number of mappings the given instance holds,
      *                               e.g. {@link #domainNamePatterns#length}
@@ -190,7 +183,7 @@ public final class DomainNameMappingBuilder<V> {
                                           int numberOfMappings,
                                           int estimatedMappingLength) {
       return REPR_CONST_PART_LENGTH + defaultValueLength
-          + (int) (estimatedMappingLength * numberOfMappings * 1.10);
+        + (int) (estimatedMappingLength * numberOfMappings * 1.10);
     }
 
     private StringBuilder appendMapping(StringBuilder sb, int mappingIndex) {

@@ -111,9 +111,9 @@ public class DefaultStompFrame extends DefaultStompHeadersSubframe implements St
   @Override
   public String toString() {
     return "DefaultStompFrame{" +
-        "command=" + command +
-        ", headers=" + headers +
-        ", content=" + content.toString(CharsetUtil.UTF_8) +
-        '}';
+      "command=" + command +
+      ", headers=" + headers +
+      ", content=" + content.toString(CharsetUtil.UTF_8) +
+      '}';
   }
 }

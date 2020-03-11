@@ -31,12 +31,12 @@ import static io.netty.util.concurrent.ScheduledFutureTask.deadlineNanos;
  */
 public abstract class AbstractScheduledEventExecutor extends AbstractEventExecutor {
   private static final Comparator<ScheduledFutureTask<?>> SCHEDULED_FUTURE_TASK_COMPARATOR =
-      new Comparator<ScheduledFutureTask<?>>() {
-        @Override
-        public int compare(ScheduledFutureTask<?> o1, ScheduledFutureTask<?> o2) {
-          return o1.compareTo(o2);
-        }
-      };
+    new Comparator<ScheduledFutureTask<?>>() {
+      @Override
+      public int compare(ScheduledFutureTask<?> o1, ScheduledFutureTask<?> o2) {
+        return o1.compareTo(o2);
+      }
+    };
 
   PriorityQueue<ScheduledFutureTask<?>> scheduledTaskQueue;
 
@@ -56,7 +56,6 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
   /**
    * Given an arbitrary deadline {@code deadlineNanos}, calculate the number of nano seconds from now
    * {@code deadlineNanos} would expire.
-   *
    * @param deadlineNanos An arbitrary deadline in nano seconds.
    * @return the number of nano seconds from now {@code deadlineNanos} would expire.
    */
@@ -66,7 +65,6 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
 
   /**
    * The initial value used for delay and computations based upon a monatomic time source.
-   *
    * @return initial value used for delay and computations based upon a monatomic time source.
    */
   protected static long initialNanoTime() {
@@ -76,9 +74,9 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
   PriorityQueue<ScheduledFutureTask<?>> scheduledTaskQueue() {
     if (scheduledTaskQueue == null) {
       scheduledTaskQueue = new DefaultPriorityQueue<ScheduledFutureTask<?>>(
-          SCHEDULED_FUTURE_TASK_COMPARATOR,
-          // Use same initial capacity as java.util.PriorityQueue
-          11);
+        SCHEDULED_FUTURE_TASK_COMPARATOR,
+        // Use same initial capacity as java.util.PriorityQueue
+        11);
     }
     return scheduledTaskQueue;
   }
@@ -100,7 +98,7 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
     }
 
     final ScheduledFutureTask<?>[] scheduledTasks =
-        scheduledTaskQueue.toArray(new ScheduledFutureTask<?>[0]);
+      scheduledTaskQueue.toArray(new ScheduledFutureTask<?>[0]);
 
     for (ScheduledFutureTask<?> task : scheduledTasks) {
       task.cancelWithoutRemove(false);
@@ -172,7 +170,7 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
     validateScheduled0(delay, unit);
 
     return schedule(new ScheduledFutureTask<Void>(
-        this, command, deadlineNanos(unit.toNanos(delay))));
+      this, command, deadlineNanos(unit.toNanos(delay))));
   }
 
   @Override
@@ -193,17 +191,17 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
     ObjectUtil.checkNotNull(unit, "unit");
     if (initialDelay < 0) {
       throw new IllegalArgumentException(
-          String.format("initialDelay: %d (expected: >= 0)", initialDelay));
+        String.format("initialDelay: %d (expected: >= 0)", initialDelay));
     }
     if (period <= 0) {
       throw new IllegalArgumentException(
-          String.format("period: %d (expected: > 0)", period));
+        String.format("period: %d (expected: > 0)", period));
     }
     validateScheduled0(initialDelay, unit);
     validateScheduled0(period, unit);
 
     return schedule(new ScheduledFutureTask<Void>(
-        this, command, deadlineNanos(unit.toNanos(initialDelay)), unit.toNanos(period)));
+      this, command, deadlineNanos(unit.toNanos(initialDelay)), unit.toNanos(period)));
   }
 
   @Override
@@ -212,18 +210,18 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
     ObjectUtil.checkNotNull(unit, "unit");
     if (initialDelay < 0) {
       throw new IllegalArgumentException(
-          String.format("initialDelay: %d (expected: >= 0)", initialDelay));
+        String.format("initialDelay: %d (expected: >= 0)", initialDelay));
     }
     if (delay <= 0) {
       throw new IllegalArgumentException(
-          String.format("delay: %d (expected: > 0)", delay));
+        String.format("delay: %d (expected: > 0)", delay));
     }
 
     validateScheduled0(initialDelay, unit);
     validateScheduled0(delay, unit);
 
     return schedule(new ScheduledFutureTask<Void>(
-        this, command, deadlineNanos(unit.toNanos(initialDelay)), -unit.toNanos(delay)));
+      this, command, deadlineNanos(unit.toNanos(initialDelay)), -unit.toNanos(delay)));
   }
 
   @SuppressWarnings("deprecation")
@@ -233,7 +231,6 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
 
   /**
    * Sub-classes may override this to restrict the maximal amount of time someone can use to schedule a task.
-   *
    * @deprecated will be removed in the future.
    */
   @Deprecated
@@ -273,7 +270,6 @@ public abstract class AbstractScheduledEventExecutor extends AbstractEventExecut
    * Execute a {@link Runnable} from outside the event loop thread that is responsible for adding or removing
    * a scheduled action. Note that schedule events which occur on the event loop thread do not interact with this
    * method.
-   *
    * @param runnable      The {@link Runnable} to execute which will add or remove a scheduled action
    * @param isAddition    {@code true} if the {@link Runnable} will add an action, {@code false} if it will remove an
    *                      action

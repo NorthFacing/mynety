@@ -23,7 +23,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public class BinaryMemcacheResponseEncoder
-    extends AbstractBinaryMemcacheEncoder<BinaryMemcacheResponse> {
+  extends AbstractBinaryMemcacheEncoder<BinaryMemcacheResponse> {
 
   @Override
   protected void encodeHeader(ByteBuf buf, BinaryMemcacheResponse msg) {

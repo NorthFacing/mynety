@@ -20,7 +20,6 @@ package io.netty.buffer;
  * recommended to use {@link ByteBuf#slice()} and
  * {@link ByteBuf#slice(int, int)} instead of calling the constructor
  * explicitly.
- *
  * @deprecated Do not use.
  */
 @Deprecated

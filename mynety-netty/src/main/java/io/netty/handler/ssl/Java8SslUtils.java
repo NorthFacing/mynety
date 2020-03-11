@@ -21,7 +21,11 @@ import javax.net.ssl.SNIHostName;
 import javax.net.ssl.SNIMatcher;
 import javax.net.ssl.SNIServerName;
 import javax.net.ssl.SSLParameters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressJava6Requirement(reason = "Usage guarded by java version check")
 final class Java8SslUtils {
@@ -41,7 +45,7 @@ final class Java8SslUtils {
         strings.add(((SNIHostName) serverName).getAsciiName());
       } else {
         throw new IllegalArgumentException("Only " + SNIHostName.class.getName()
-            + " instances are supported, but found: " + serverName);
+          + " instances are supported, but found: " + serverName);
       }
     }
     return strings;

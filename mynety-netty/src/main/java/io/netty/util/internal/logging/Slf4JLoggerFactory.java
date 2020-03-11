@@ -52,6 +52,6 @@ public class Slf4JLoggerFactory extends InternalLoggerFactory {
   // package-private for testing.
   static InternalLogger wrapLogger(Logger logger) {
     return logger instanceof LocationAwareLogger ?
-        new LocationAwareSlf4JLogger((LocationAwareLogger) logger) : new Slf4JLogger(logger);
+      new LocationAwareSlf4JLogger((LocationAwareLogger) logger) : new Slf4JLogger(logger);
   }
 }

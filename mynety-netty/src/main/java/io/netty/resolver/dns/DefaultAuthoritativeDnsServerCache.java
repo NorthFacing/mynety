@@ -25,7 +25,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
-import static io.netty.util.internal.ObjectUtil.*;
+import static io.netty.util.internal.ObjectUtil.checkNotNull;
+import static io.netty.util.internal.ObjectUtil.checkPositive;
+import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 /**
  * Default implementation of {@link AuthoritativeDnsServerCache}, backed by a {@link ConcurrentMap}.
@@ -67,7 +69,6 @@ public class DefaultAuthoritativeDnsServerCache implements AuthoritativeDnsServe
 
   /**
    * Create a cache.
-   *
    * @param minTtl     the minimum TTL
    * @param maxTtl     the maximum TTL
    * @param comparator the {@link Comparator} to order the {@link InetSocketAddress} for a hostname or {@code null}
@@ -78,7 +79,7 @@ public class DefaultAuthoritativeDnsServerCache implements AuthoritativeDnsServe
     this.maxTtl = Math.min(Cache.MAX_SUPPORTED_TTL_SECS, checkPositive(maxTtl, "maxTtl"));
     if (minTtl > maxTtl) {
       throw new IllegalArgumentException(
-          "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
+        "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
     }
     this.comparator = comparator;
   }
@@ -125,6 +126,6 @@ public class DefaultAuthoritativeDnsServerCache implements AuthoritativeDnsServe
   @Override
   public String toString() {
     return "DefaultAuthoritativeDnsServerCache(minTtl=" + minTtl + ", maxTtl=" + maxTtl + ", cached nameservers=" +
-        resolveCache.size() + ')';
+      resolveCache.size() + ')';
   }
 }

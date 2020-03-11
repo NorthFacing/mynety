@@ -114,8 +114,8 @@ class ReadOnlyByteBufferBuf extends AbstractReferenceCountedByteBuf {
   @Override
   protected int _getUnsignedMedium(int index) {
     return (getByte(index) & 0xff) << 16 |
-        (getByte(index + 1) & 0xff) << 8 |
-        getByte(index + 2) & 0xff;
+      (getByte(index + 1) & 0xff) << 8 |
+      getByte(index + 2) & 0xff;
   }
 
   @Override
@@ -127,8 +127,8 @@ class ReadOnlyByteBufferBuf extends AbstractReferenceCountedByteBuf {
   @Override
   protected int _getUnsignedMediumLE(int index) {
     return getByte(index) & 0xff |
-        (getByte(index + 1) & 0xff) << 8 |
-        (getByte(index + 2) & 0xff) << 16;
+      (getByte(index + 1) & 0xff) << 8 |
+      (getByte(index + 2) & 0xff) << 16;
   }
 
   @Override

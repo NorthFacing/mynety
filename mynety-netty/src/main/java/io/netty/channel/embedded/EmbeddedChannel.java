@@ -15,7 +15,23 @@
  */
 package io.netty.channel.embedded;
 
-import io.netty.channel.*;
+import io.netty.channel.AbstractChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.DefaultChannelPipeline;
+import io.netty.channel.EventLoop;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.PlatformDependent;
@@ -70,7 +86,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Create a new instance with the specified ID and an empty pipeline.
-   *
    * @param channelId the {@link ChannelId} that will be used to identify this channel
    */
   public EmbeddedChannel(ChannelId channelId) {
@@ -79,7 +94,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Create a new instance with the pipeline initialized with the specified handlers.
-   *
    * @param handlers the {@link ChannelHandler}s which will be add in the {@link ChannelPipeline}
    */
   public EmbeddedChannel(ChannelHandler... handlers) {
@@ -88,7 +102,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Create a new instance with the pipeline initialized with the specified handlers.
-   *
    * @param hasDisconnect {@code false} if this {@link Channel} will delegate {@link #disconnect()}
    *                      to {@link #close()}, {@link false} otherwise.
    * @param handlers      the {@link ChannelHandler}s which will be add in the {@link ChannelPipeline}
@@ -99,7 +112,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Create a new instance with the pipeline initialized with the specified handlers.
-   *
    * @param register      {@code true} if this {@link Channel} is registered to the {@link EventLoop} in the
    *                      constructor. If {@code false} the user will need to call {@link #register()}.
    * @param hasDisconnect {@code false} if this {@link Channel} will delegate {@link #disconnect()}
@@ -113,7 +125,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Create a new instance with the channel ID set to the given ID and the pipeline
    * initialized with the specified handlers.
-   *
    * @param channelId the {@link ChannelId} that will be used to identify this channel
    * @param handlers  the {@link ChannelHandler}s which will be add in the {@link ChannelPipeline}
    */
@@ -124,7 +135,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Create a new instance with the channel ID set to the given ID and the pipeline
    * initialized with the specified handlers.
-   *
    * @param channelId     the {@link ChannelId} that will be used to identify this channel
    * @param hasDisconnect {@code false} if this {@link Channel} will delegate {@link #disconnect()}
    *                      to {@link #close()}, {@link false} otherwise.
@@ -137,7 +147,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Create a new instance with the channel ID set to the given ID and the pipeline
    * initialized with the specified handlers.
-   *
    * @param channelId     the {@link ChannelId} that will be used to identify this channel
    * @param register      {@code true} if this {@link Channel} is registered to the {@link EventLoop} in the
    *                      constructor. If {@code false} the user will need to call {@link #register()}.
@@ -153,7 +162,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Create a new instance with the channel ID set to the given ID and the pipeline
    * initialized with the specified handlers.
-   *
    * @param parent        the parent {@link Channel} of this {@link EmbeddedChannel}.
    * @param channelId     the {@link ChannelId} that will be used to identify this channel
    * @param register      {@code true} if this {@link Channel} is registered to the {@link EventLoop} in the
@@ -173,7 +181,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Create a new instance with the channel ID set to the given ID and the pipeline
    * initialized with the specified handlers.
-   *
    * @param channelId     the {@link ChannelId} that will be used to identify this channel
    * @param hasDisconnect {@code false} if this {@link Channel} will delegate {@link #disconnect()}
    *                      to {@link #close()}, {@link false} otherwise.
@@ -312,7 +319,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Write messages to the inbound of this {@link Channel}.
-   *
    * @param msgs the messages to be written
    * @return {@code true} if the write operation did add something to the inbound buffer
    */
@@ -334,7 +340,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Writes one message to the inbound of this {@link Channel} and does not flush it. This
    * method is conceptually equivalent to {@link #write(Object)}.
-   *
    * @see #writeOneOutbound(Object)
    */
   public ChannelFuture writeOneInbound(Object msg) {
@@ -344,7 +349,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Writes one message to the inbound of this {@link Channel} and does not flush it. This
    * method is conceptually equivalent to {@link #write(Object, ChannelPromise)}.
-   *
    * @see #writeOneOutbound(Object, ChannelPromise)
    */
   public ChannelFuture writeOneInbound(Object msg, ChannelPromise promise) {
@@ -356,7 +360,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Flushes the inbound of this {@link Channel}. This method is conceptually equivalent to {@link #flush()}.
-   *
    * @see #flushOutbound()
    */
   public EmbeddedChannel flushInbound() {
@@ -375,7 +378,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Write messages to the outbound of this {@link Channel}.
-   *
    * @param msgs the messages to be written
    * @return bufferReadable   returns {@code true} if the write operation did add something to the outbound buffer
    */
@@ -417,7 +419,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Writes one message to the outbound of this {@link Channel} and does not flush it. This
    * method is conceptually equivalent to {@link #write(Object)}.
-   *
    * @see #writeOneInbound(Object)
    */
   public ChannelFuture writeOneOutbound(Object msg) {
@@ -427,7 +428,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Writes one message to the outbound of this {@link Channel} and does not flush it. This
    * method is conceptually equivalent to {@link #write(Object, ChannelPromise)}.
-   *
    * @see #writeOneInbound(Object, ChannelPromise)
    */
   public ChannelFuture writeOneOutbound(Object msg, ChannelPromise promise) {
@@ -439,7 +439,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Flushes the outbound of this {@link Channel}. This method is conceptually equivalent to {@link #flush()}.
-   *
    * @see #flushInbound()
    */
   public EmbeddedChannel flushOutbound() {
@@ -460,7 +459,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Mark this {@link Channel} as finished. Any further try to write data to it will fail.
-   *
    * @return bufferReadable returns {@code true} if any of the used buffers has something left to read
    */
   public boolean finish() {
@@ -470,7 +468,6 @@ public class EmbeddedChannel extends AbstractChannel {
   /**
    * Mark this {@link Channel} as finished and release all pending message in the inbound and outbound buffer.
    * Any further try to write data to it will fail.
-   *
    * @return bufferReadable returns {@code true} if any of the used buffers has something left to read
    */
   public boolean finishAndReleaseAll() {
@@ -479,7 +476,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Mark this {@link Channel} as finished. Any further try to write data to it will fail.
-   *
    * @param releaseAll if {@code true} all pending message in the inbound and outbound buffer are released.
    * @return bufferReadable returns {@code true} if any of the used buffers has something left to read
    */
@@ -614,8 +610,8 @@ public class EmbeddedChannel extends AbstractChannel {
       lastException = cause;
     } else {
       logger.warn(
-          "More than one exception was raised. " +
-              "Will report only the first one and log others.", cause);
+        "More than one exception was raised. " +
+          "Will report only the first one and log others.", cause);
     }
   }
 
@@ -736,7 +732,6 @@ public class EmbeddedChannel extends AbstractChannel {
 
   /**
    * Called for each outbound message.
-   *
    * @see #doWrite(ChannelOutboundBuffer)
    */
   protected void handleOutboundMessage(Object msg) {

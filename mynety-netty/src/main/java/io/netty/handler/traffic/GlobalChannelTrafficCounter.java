@@ -61,8 +61,8 @@ public class GlobalChannelTrafficCounter extends TrafficCounter {
      * @param counter               The parent TrafficCounter that we need to reset the statistics for.
      */
     MixedTrafficMonitoringTask(
-        GlobalChannelTrafficShapingHandler trafficShapingHandler,
-        TrafficCounter counter) {
+      GlobalChannelTrafficShapingHandler trafficShapingHandler,
+      TrafficCounter counter) {
       trafficShapingHandler1 = trafficShapingHandler;
       this.counter = counter;
     }
@@ -95,7 +95,7 @@ public class GlobalChannelTrafficCounter extends TrafficCounter {
       monitorActive = true;
       monitor = new MixedTrafficMonitoringTask((GlobalChannelTrafficShapingHandler) trafficShapingHandler, this);
       scheduledFuture =
-          executor.scheduleAtFixedRate(monitor, 0, localCheckInterval, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(monitor, 0, localCheckInterval, TimeUnit.MILLISECONDS);
     }
   }
 
@@ -118,7 +118,7 @@ public class GlobalChannelTrafficCounter extends TrafficCounter {
   @Override
   public void resetCumulativeTime() {
     for (PerChannel perChannel :
-        ((GlobalChannelTrafficShapingHandler) trafficShapingHandler).channelQueues.values()) {
+      ((GlobalChannelTrafficShapingHandler) trafficShapingHandler).channelQueues.values()) {
       perChannel.channelTrafficCounter.resetCumulativeTime();
     }
     super.resetCumulativeTime();

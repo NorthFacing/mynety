@@ -24,7 +24,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public final class HttpToHttp2ConnectionHandlerBuilder extends
-    AbstractHttp2ConnectionHandlerBuilder<HttpToHttp2ConnectionHandler, HttpToHttp2ConnectionHandlerBuilder> {
+  AbstractHttp2ConnectionHandlerBuilder<HttpToHttp2ConnectionHandler, HttpToHttp2ConnectionHandlerBuilder> {
 
   @Override
   public HttpToHttp2ConnectionHandlerBuilder validateHeaders(boolean validateHeaders) {
@@ -69,13 +69,13 @@ public final class HttpToHttp2ConnectionHandlerBuilder extends
 
   @Override
   public HttpToHttp2ConnectionHandlerBuilder encoderEnforceMaxConcurrentStreams(
-      boolean encoderEnforceMaxConcurrentStreams) {
+    boolean encoderEnforceMaxConcurrentStreams) {
     return super.encoderEnforceMaxConcurrentStreams(encoderEnforceMaxConcurrentStreams);
   }
 
   @Override
   public HttpToHttp2ConnectionHandlerBuilder headerSensitivityDetector(
-      SensitivityDetector headerSensitivityDetector) {
+    SensitivityDetector headerSensitivityDetector) {
     return super.headerSensitivityDetector(headerSensitivityDetector);
   }
 
@@ -99,6 +99,6 @@ public final class HttpToHttp2ConnectionHandlerBuilder extends
   protected HttpToHttp2ConnectionHandler build(Http2ConnectionDecoder decoder, Http2ConnectionEncoder encoder,
                                                Http2Settings initialSettings) {
     return new HttpToHttp2ConnectionHandler(decoder, encoder, initialSettings, isValidateHeaders(),
-        decoupleCloseAndGoAway());
+      decoupleCloseAndGoAway());
   }
 }

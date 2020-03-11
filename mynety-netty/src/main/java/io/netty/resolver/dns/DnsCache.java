@@ -30,14 +30,12 @@ public interface DnsCache {
 
   /**
    * Clears all the resolved addresses cached by this resolver.
-   *
    * @see #clear(String)
    */
   void clear();
 
   /**
    * Clears the resolved addresses of the specified host name from the cache of this resolver.
-   *
    * @return {@code true} if and only if there was an entry for the specified host name in the cache and
    * it has been removed by this method
    */
@@ -45,7 +43,6 @@ public interface DnsCache {
 
   /**
    * Return the cached entries for the given hostname.
-   *
    * @param hostname    the hostname
    * @param additionals the additional records
    * @return the cached entries
@@ -54,7 +51,6 @@ public interface DnsCache {
 
   /**
    * Create a new {@link DnsCacheEntry} and cache a resolved address for a given hostname.
-   *
    * @param hostname    the hostname
    * @param additionals the additional records
    * @param address     the resolved address
@@ -68,7 +64,6 @@ public interface DnsCache {
   /**
    * Cache the resolution failure for a given hostname.
    * Be aware this <strong>won't</strong> be called with timeout / cancel / transport exceptions.
-   *
    * @param hostname    the hostname
    * @param additionals the additional records
    * @param cause       the resolution failure

@@ -24,7 +24,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 /**
  * {@link GenericFutureListener} implementation which takes other {@link Promise}s
  * and notifies them on completion.
- *
  * @param <V> the type of value returned by the future
  * @param <F> the type of future
  */
@@ -36,7 +35,6 @@ public class PromiseNotifier<V, F extends Future<V>> implements GenericFutureLis
 
   /**
    * Create a new instance.
-   *
    * @param promises the {@link Promise}s to notify once this {@link GenericFutureListener} is notified.
    */
   @SafeVarargs
@@ -46,7 +44,6 @@ public class PromiseNotifier<V, F extends Future<V>> implements GenericFutureLis
 
   /**
    * Create a new instance.
-   *
    * @param logNotifyFailure {@code true} if logging should be done in case notification fails.
    * @param promises         the {@link Promise}s to notify once this {@link GenericFutureListener} is notified.
    */

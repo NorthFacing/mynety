@@ -30,7 +30,6 @@ public class JZlibDecoder extends ZlibDecoder {
 
   /**
    * Creates a new instance with the default wrapper ({@link ZlibWrapper#ZLIB}).
-   *
    * @throws DecompressionException if failed to initialize zlib
    */
   public JZlibDecoder() {
@@ -39,7 +38,6 @@ public class JZlibDecoder extends ZlibDecoder {
 
   /**
    * Creates a new instance with the specified wrapper.
-   *
    * @throws DecompressionException if failed to initialize zlib
    */
   public JZlibDecoder(ZlibWrapper wrapper) {
@@ -57,7 +55,6 @@ public class JZlibDecoder extends ZlibDecoder {
    * Creates a new instance with the specified preset dictionary. The wrapper
    * is always {@link ZlibWrapper#ZLIB} because it is the only format that
    * supports the preset dictionary.
-   *
    * @throws DecompressionException if failed to initialize zlib
    */
   public JZlibDecoder(byte[] dictionary) {

@@ -88,7 +88,6 @@ final class OpenSslPrivateKey extends AbstractReferenceCounted implements Privat
    * NOTE: This is a JDK8 interface/method. Due to backwards compatibility
    * reasons it's not possible to slap the {@code @Override} annotation onto
    * this method.
-   *
    * @see Destroyable#destroy()
    */
   @Override
@@ -100,7 +99,6 @@ final class OpenSslPrivateKey extends AbstractReferenceCounted implements Privat
    * NOTE: This is a JDK8 interface/method. Due to backwards compatibility
    * reasons it's not possible to slap the {@code @Override} annotation onto
    * this method.
-   *
    * @see Destroyable#isDestroyed()
    */
   @Override
@@ -128,7 +126,7 @@ final class OpenSslPrivateKey extends AbstractReferenceCounted implements Privat
     OpenSslPrivateKeyMaterial(long certificateChain, X509Certificate[] x509CertificateChain) {
       this.certificateChain = certificateChain;
       this.x509CertificateChain = x509CertificateChain == null ?
-          EmptyArrays.EMPTY_X509_CERTIFICATES : x509CertificateChain;
+        EmptyArrays.EMPTY_X509_CERTIFICATES : x509CertificateChain;
       OpenSslPrivateKey.this.retain();
     }
 

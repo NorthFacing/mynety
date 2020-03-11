@@ -15,7 +15,9 @@
  */
 package io.netty.handler.codec.http.cookie;
 
-import static io.netty.handler.codec.http.cookie.CookieUtil.*;
+import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieNameOctet;
+import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieValueOctet;
+import static io.netty.handler.codec.http.cookie.CookieUtil.unwrapValue;
 
 /**
  * Parent of Client and Server side cookie encoders
@@ -43,7 +45,7 @@ public abstract class CookieEncoder {
 
       if ((pos = firstInvalidCookieValueOctet(unwrappedValue)) >= 0) {
         throw new IllegalArgumentException("Cookie value contains an invalid char: " +
-            unwrappedValue.charAt(pos));
+          unwrappedValue.charAt(pos));
       }
     }
   }

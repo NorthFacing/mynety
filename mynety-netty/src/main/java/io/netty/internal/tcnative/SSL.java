@@ -120,7 +120,6 @@ public final class SSL {
    * <p>
    * This function needs to be called once for the
    * lifetime of JVM. See {@link Library#initialize(String, String)}
-   *
    * @param engine Support for external a Crypto Device ("engine"),
    *               usually a hardware accelerator card for crypto operations.
    * @return APR status code
@@ -129,7 +128,6 @@ public final class SSL {
 
   /**
    * Initialize new in-memory BIO that is located in the secure heap.
-   *
    * @return New BIO handle
    * @throws Exception if an error happened.
    */
@@ -137,7 +135,6 @@ public final class SSL {
 
   /**
    * Return last SSL error string
-   *
    * @return the last SSL error string.
    */
   public static native String getLastError();
@@ -166,7 +163,6 @@ public final class SSL {
 
   /**
    * SSL_new
-   *
    * @param ctx    Server or Client context to use.
    * @param server if true configure SSL instance to use accept handshake routines
    *               if false configure SSL instance to use connect handshake routines
@@ -176,7 +172,6 @@ public final class SSL {
 
   /**
    * SSL_get_error
-   *
    * @param ssl SSL pointer (SSL *)
    * @param ret TLS/SSL I/O return value
    * @return the error code
@@ -185,7 +180,6 @@ public final class SSL {
 
   /**
    * BIO_write
-   *
    * @param bioAddress  The address of a {@code BIO*}.
    * @param wbufAddress The address of a native {@code char*}.
    * @param wlen        The length to write starting at {@code wbufAddress}.
@@ -199,7 +193,6 @@ public final class SSL {
    * {@link ByteBuffer}. Because it is a special BIO it requires special usage such that
    * {@link #bioSetByteBuffer(long, long, int, boolean)} and {@link #bioClearByteBuffer(long)} are called in order to provide
    * to supply data to SSL, and also to ensure the internal SSL buffering mechanism is expecting write at the appropriate times.
-   *
    * @param ssl                      the SSL instance (SSL *)
    * @param nonApplicationBufferSize The size of the internal buffer for write operations that are not
    *                                 initiated directly by the application attempting to encrypt data.
@@ -214,7 +207,6 @@ public final class SSL {
    * data from.
    * <p>
    * After you are done buffering data you should call {@link #bioClearByteBuffer(long)}.
-   *
    * @param bio            {@code BIO*}.
    * @param bufferAddress  The memory address (typically from a direct {@link ByteBuffer}) which will be used
    *                       to either write encrypted data to, or read encrypted data from by OpenSSL's internal BIO pair.
@@ -227,7 +219,6 @@ public final class SSL {
   /**
    * After you are done buffering data from {@link #bioSetByteBuffer(long, long, int, boolean)}, this will ensure the
    * internal SSL write buffers are ready to capture data which may unexpectedly happen (e.g. handshake, renegotiation, etc..).
-   *
    * @param bio {@code BIO*}.
    */
   public static native void bioClearByteBuffer(long bio);
@@ -237,7 +228,6 @@ public final class SSL {
    * <p>
    * This does the same thing as {@code BIO_flush} for a {@code BIO*} of type {@link #bioNewByteBuffer(long, int)} but
    * returns the number of bytes that were flushed.
-   *
    * @param bio {@code BIO*}.
    * @return The number of bytes that were flushed.
    */
@@ -245,7 +235,6 @@ public final class SSL {
 
   /**
    * Get the remaining length of the {@link ByteBuffer} set by {@link #bioSetByteBuffer(long, long, int, boolean)}.
-   *
    * @param bio {@code BIO*}.
    * @return The remaining length of the {@link ByteBuffer} set by {@link #bioSetByteBuffer(long, long, int, boolean)}.
    */
@@ -254,7 +243,6 @@ public final class SSL {
   /**
    * Get the amount of data pending in buffer used for non-application writes.
    * This value will not exceed the value configured in {@link #bioNewByteBuffer(long, int)}.
-   *
    * @param bio {@code BIO*}.
    * @return the amount of data pending in buffer used for non-application writes.
    */
@@ -263,7 +251,6 @@ public final class SSL {
   /**
    * The number of bytes pending in SSL which can be read immediately.
    * See <a href="https://www.openssl.org/docs/man1.0.1/ssl/SSL_pending.html">SSL_pending</a>.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return The number of bytes pending in SSL which can be read immediately.
    */
@@ -271,7 +258,6 @@ public final class SSL {
 
   /**
    * SSL_write
-   *
    * @param ssl  the SSL instance (SSL *)
    * @param wbuf the memory address of the buffer
    * @param wlen the length
@@ -281,7 +267,6 @@ public final class SSL {
 
   /**
    * SSL_read
-   *
    * @param ssl  the SSL instance (SSL *)
    * @param rbuf the memory address of the buffer
    * @param rlen the length
@@ -291,7 +276,6 @@ public final class SSL {
 
   /**
    * SSL_get_shutdown
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the return code of {@code SSL_get_shutdown}
    */
@@ -299,7 +283,6 @@ public final class SSL {
 
   /**
    * SSL_set_shutdown
-   *
    * @param ssl  the SSL instance (SSL *)
    * @param mode the mode to use
    */
@@ -307,21 +290,18 @@ public final class SSL {
 
   /**
    * SSL_free
-   *
    * @param ssl the SSL instance (SSL *)
    */
   public static native void freeSSL(long ssl);
 
   /**
    * BIO_free
-   *
    * @param bio the BIO
    */
   public static native void freeBIO(long bio);
 
   /**
    * SSL_shutdown
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the return code of {@code SSL_shutdown}
    */
@@ -329,14 +309,12 @@ public final class SSL {
 
   /**
    * Get the error number representing the last error OpenSSL encountered on this thread.
-   *
    * @return the last error code for the calling thread.
    */
   public static native int getLastErrorNumber();
 
   /**
    * SSL_get_cipher
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the name of the current cipher.
    */
@@ -344,7 +322,6 @@ public final class SSL {
 
   /**
    * SSL_get_version
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the version.
    */
@@ -352,7 +329,6 @@ public final class SSL {
 
   /**
    * SSL_do_handshake
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the return code of {@code SSL_do_handshake}.
    */
@@ -360,7 +336,6 @@ public final class SSL {
 
   /**
    * SSL_in_init
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the return code of {@code SSL_in_init}.
    */
@@ -368,7 +343,6 @@ public final class SSL {
 
   /**
    * SSL_get0_next_proto_negotiated
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the name of the negotiated proto
    */
@@ -380,7 +354,6 @@ public final class SSL {
 
   /**
    * SSL_get0_alpn_selected
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the name of the selected ALPN protocol
    */
@@ -388,7 +361,6 @@ public final class SSL {
 
   /**
    * Get the peer certificate chain or {@code null} if none was send.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the chain or {@code null} if none was send
    */
@@ -396,7 +368,6 @@ public final class SSL {
 
   /**
    * Get the peer certificate or {@code null} if non was send.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the peer certificate or {@code null} if none was send
    */
@@ -404,7 +375,6 @@ public final class SSL {
 
   /**
    * Get the error string representing for the given {@code errorNumber}.
-   *
    * @param errorNumber the error number / code
    * @return the error string
    */
@@ -412,7 +382,6 @@ public final class SSL {
 
   /**
    * SSL_get_time
-   *
    * @param ssl the SSL instance (SSL *)
    * @return returns the time at which the session ssl was established. The time is given in seconds since the Epoch
    */
@@ -420,7 +389,6 @@ public final class SSL {
 
   /**
    * SSL_get_timeout
-   *
    * @param ssl the SSL instance (SSL *)
    * @return returns the timeout for the session ssl The time is given in seconds since the Epoch
    */
@@ -428,7 +396,6 @@ public final class SSL {
 
   /**
    * SSL_set_timeout
-   *
    * @param ssl     the SSL instance (SSL *)
    * @param seconds timeout in seconds
    * @return returns the timeout for the session ssl before this call. The time is given in seconds since the Epoch
@@ -461,7 +428,6 @@ public final class SSL {
    * certificate can be self-signed or has to be signed by a CA which is directly
    * known to the server (i.e. the CA's certificate is under
    * {@code setCACertificatePath}, etc.
-   *
    * @param ssl   the SSL instance (SSL *)
    * @param level Type of Client Certificate verification.
    * @param depth Maximum depth of CA Certificates in Client Certificate
@@ -471,7 +437,6 @@ public final class SSL {
 
   /**
    * Set OpenSSL Option.
-   *
    * @param ssl     the SSL instance (SSL *)
    * @param options See SSL.SSL_OP_* for option flags.
    */
@@ -479,7 +444,6 @@ public final class SSL {
 
   /**
    * Clear OpenSSL Option.
-   *
    * @param ssl     the SSL instance (SSL *)
    * @param options See SSL.SSL_OP_* for option flags.
    */
@@ -487,7 +451,6 @@ public final class SSL {
 
   /**
    * Get OpenSSL Option.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return options  See SSL.SSL_OP_* for option flags.
    */
@@ -495,7 +458,6 @@ public final class SSL {
 
   /**
    * Call SSL_set_mode
-   *
    * @param ssl  the SSL instance (SSL *).
    * @param mode the mode
    * @return the set mode.
@@ -504,7 +466,6 @@ public final class SSL {
 
   /**
    * Call SSL_get_mode
-   *
    * @param ssl the SSL instance (SSL *).
    * @return the mode.
    */
@@ -513,7 +474,6 @@ public final class SSL {
   /**
    * Get the maximum overhead, in bytes, of wrapping (a.k.a sealing) a record with ssl.
    * See <a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html#SSL_max_seal_overhead">SSL_max_seal_overhead</a>.
-   *
    * @param ssl the SSL instance (SSL *).
    * @return Maximum overhead, in bytes, of wrapping (a.k.a sealing) a record with ssl.
    */
@@ -521,7 +481,6 @@ public final class SSL {
 
   /**
    * Returns all Returns the cipher suites that are available for negotiation in an SSL handshake.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return ciphers
    */
@@ -538,7 +497,6 @@ public final class SSL {
    * connection is established. In per-directory context it forces a SSL
    * renegotiation with the reconfigured Cipher Suite after the HTTP request
    * was read but before the HTTP response is sent.
-   *
    * @param ssl     the SSL instance (SSL *)
    * @param ciphers an SSL cipher specification
    * @return {@code true} if successful
@@ -547,7 +505,7 @@ public final class SSL {
    */
   @Deprecated
   public static boolean setCipherSuites(long ssl, String ciphers)
-      throws Exception {
+    throws Exception {
     return setCipherSuites(ssl, ciphers, false);
   }
 
@@ -562,7 +520,6 @@ public final class SSL {
    * connection is established. In per-directory context it forces a SSL
    * renegotiation with the reconfigured Cipher Suite after the HTTP request
    * was read but before the HTTP response is sent.
-   *
    * @param ssl     the SSL instance (SSL *)
    * @param ciphers an SSL cipher specification
    * @param tlsv13  {@code true} if the ciphers are for TLSv1.3
@@ -570,11 +527,10 @@ public final class SSL {
    * @throws Exception if an error happened
    */
   public static native boolean setCipherSuites(long ssl, String ciphers, boolean tlsv13)
-      throws Exception;
+    throws Exception;
 
   /**
    * Returns the ID of the session as byte array representation.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the session as byte array representation obtained via SSL_SESSION_get_id.
    */
@@ -582,7 +538,6 @@ public final class SSL {
 
   /**
    * Returns the number of handshakes done for this SSL instance. This also includes renegations.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the number of handshakes done for this SSL instance.
    */
@@ -595,7 +550,6 @@ public final class SSL {
 
   /**
    * Call SSL_set_tlsext_host_name
-   *
    * @param ssl      the SSL instance (SSL *)
    * @param hostname the hostname
    */
@@ -614,7 +568,6 @@ public final class SSL {
    * Explicitly control <a href="https://wiki.openssl.org/index.php/Hostname_validation">hostname validation</a>
    * <a href="https://www.openssl.org/docs/man1.0.2/crypto/X509_check_host.html">see X509_check_host for X509_CHECK_FLAG* definitions</a>.
    * Values are defined as a bitmask of {@code X509_CHECK_FLAG*} values.
-   *
    * @param ssl      the SSL instance (SSL*).
    * @param flags    a bitmask of {@code X509_CHECK_FLAG*} values.
    * @param hostname the hostname which is expected for validation.
@@ -623,7 +576,6 @@ public final class SSL {
 
   /**
    * Return the methods used for authentication.
-   *
    * @param ssl the SSL instance (SSL*)
    * @return the methods
    */
@@ -644,7 +596,6 @@ public final class SSL {
    * coupled RSA+DSA certificate pair, this will work only if actually both
    * certificates use the same certificate chain. Otherwsie the browsers will be
    * confused in this situation.
-   *
    * @param ssl       Server or Client to use.
    * @param bio       BIO of PEM-encoded Server CA Certificates.
    * @param skipfirst Skip first certificate if chain file is inside
@@ -669,7 +620,6 @@ public final class SSL {
    * to point at the key file.  Keep in mind that if
    * you've both a RSA and a DSA private key you can configure
    * both in parallel (to also allow the use of DSA ciphers, etc.)
-   *
    * @param ssl      Server or Client to use.
    * @param certBio  Certificate BIO.
    * @param keyBio   Private Key BIO to use if not in cert.
@@ -680,7 +630,7 @@ public final class SSL {
    */
   @Deprecated
   public static native void setCertificateBio(
-      long ssl, long certBio, long keyBio, String password) throws Exception;
+    long ssl, long certBio, long keyBio, String password) throws Exception;
 
   /**
    * Load a private key from the used OpenSSL ENGINE via the
@@ -691,7 +641,6 @@ public final class SSL {
    * <p>
    * If the ownership is not transferred you need to call {@link #freePrivateKey(long)} once the key is not used
    * anymore to prevent memory leaks.
-   *
    * @param keyId    the id of the key.
    * @param password the password to use or {@code null} if none.
    * @return {@code EVP_PKEY} pointer
@@ -708,7 +657,6 @@ public final class SSL {
    * {@link CertificateRequestedCallback} the ownership goes over to OpenSsl / Tcnative and so calling
    * {@link #freePrivateKey(long)} should <strong>NOT</strong> be done in this case. Otherwise you may
    * need to call {@link #freePrivateKey(long)} to decrement the reference count and free memory.
-   *
    * @param privateKeyBio the pointer to the {@code BIO} that contains the private key
    * @param password      the password or {@code null} if no password is needed
    * @return {@code EVP_PKEY} pointer
@@ -718,7 +666,6 @@ public final class SSL {
 
   /**
    * Free private key ({@code EVP_PKEY} pointer).
-   *
    * @param privateKey {@code EVP_PKEY} pointer
    */
   public static native void freePrivateKey(long privateKey);
@@ -732,7 +679,6 @@ public final class SSL {
    * {@link CertificateRequestedCallback} the ownership goes over to OpenSsl / Tcnative and so calling
    * {@link #freeX509Chain(long)} should <strong>NOT</strong> be done in this case. Otherwise you may
    * need to call {@link #freeX509Chain(long)} to decrement the reference count and free memory.
-   *
    * @param x509ChainBio the pointer to the {@code BIO} that contains the X509 chain
    * @return {@code STACK_OF(X509)} pointer
    * @throws Exception if an error happened
@@ -741,7 +687,6 @@ public final class SSL {
 
   /**
    * Free x509 chain ({@code STACK_OF(X509)} pointer).
-   *
    * @param x509Chain {@code STACK_OF(X509)} pointer
    */
   public static native void freeX509Chain(long x509Chain);
@@ -762,7 +707,6 @@ public final class SSL {
    * {@link #parseX509Chain(long)} and {@link #parsePrivateKey(long, String)}. It's important to note that the caller
    * of the method is responsible to free the passed in chain and key in any case as this method will increment the
    * reference count of the chain and key.
-   *
    * @deprecated use {@link #setKeyMaterial(long, long, long)}
    */
   @Deprecated
@@ -783,7 +727,6 @@ public final class SSL {
    * {@link #parseX509Chain(long)} and {@link #parsePrivateKey(long, String)}. It's important to note that the caller
    * of the method is responsible to free the passed in chain and key in any case as this method will increment the
    * reference count of the chain and key.
-   *
    * @deprecated use {@link #setKeyMaterial(long, long, long)}
    */
   @Deprecated
@@ -797,7 +740,6 @@ public final class SSL {
    *
    * <p><a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_set_tlsext_status_type.html">SSL_set_tlsext_status_type</a>
    * <p><a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html">Search for OCSP</a>
-   *
    * @param ssl the SSL instance (SSL *)
    */
   public static native void setOcspResponse(long ssl, byte[] response);
@@ -810,14 +752,12 @@ public final class SSL {
    *
    * <p><a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_set_tlsext_status_type.html">SSL_set_tlsext_status_type</a>
    * <p><a href="https://commondatastorage.googleapis.com/chromium-boringssl-docs/ssl.h.html">Search for OCSP</a>
-   *
    * @param ssl the SSL instance (SSL *)
    */
   public static native byte[] getOcspResponse(long ssl);
 
   /**
    * Set the FIPS mode to use. See <a href="https://wiki.openssl.org/index.php/FIPS_mode_set()"> man FIPS_mode_set</a>.
-   *
    * @param mode the mode to use.
    * @throws Exception throws if setting the fips mode failed.
    */
@@ -825,7 +765,6 @@ public final class SSL {
 
   /**
    * Return the SNI hostname that was sent as part of the SSL Hello.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the SNI hostname or {@code null} if none was used.
    */
@@ -835,7 +774,6 @@ public final class SSL {
    * Return the signature algorithms that the remote peer supports or {@code null} if none are supported.
    * See <a href="https://www.openssl.org/docs/man1.1.0/ssl/SSL_get_sigalgs.html"> man SSL_get_sigalgs</a> for more details.
    * The returned names are generated using {@code OBJ_nid2ln} with the {@code psignhash} as parameter.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the signature algorithms or {@code null}.
    */
@@ -845,7 +783,6 @@ public final class SSL {
    * Returns the master key used for the current ssl session.
    * This should be used extremely sparingly as leaking this key defeats the whole purpose of encryption
    * especially forward secrecy. This exists here strictly for debugging purposes.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the master key used for the ssl session
    */
@@ -855,7 +792,6 @@ public final class SSL {
    * Extracts the random value sent from the server to the client during the initial SSL/TLS handshake.
    * This is needed to extract the HMAC & keys from the master key according to the TLS PRF.
    * <b>This is not a random number generator.</b>
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the random server value used for the ssl session
    */
@@ -865,7 +801,6 @@ public final class SSL {
    * Extracts the random value sent from the client to the server during the initial SSL/TLS handshake.
    * This is needed to extract the HMAC & keys from the master key according to the TLS PRF.
    * <b>This is not a random number generator.</b>
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the random client value used for the ssl session
    */
@@ -874,7 +809,6 @@ public final class SSL {
   /**
    * Return the {@link Runnable} thats needs to be run as an operation returned {@link #SSL_ERROR_WANT_X509_LOOKUP}.
    * After the task was run we should retry the operations that returned {@link #SSL_ERROR_WANT_X509_LOOKUP}.
-   *
    * @param ssl the SSL instance (SSL *)
    * @return the task to run.
    */

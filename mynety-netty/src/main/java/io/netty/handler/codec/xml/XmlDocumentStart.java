@@ -99,10 +99,10 @@ public class XmlDocumentStart {
   @Override
   public String toString() {
     return "XmlDocumentStart{" +
-        "encoding='" + encoding + '\'' +
-        ", version='" + version + '\'' +
-        ", standalone=" + standalone +
-        ", encodingScheme='" + encodingScheme + '\'' +
-        '}';
+      "encoding='" + encoding + '\'' +
+      ", version='" + version + '\'' +
+      ", standalone=" + standalone +
+      ", encodingScheme='" + encodingScheme + '\'' +
+      '}';
   }
 }

@@ -16,13 +16,24 @@
 package io.netty.handler.codec.http.websocketx.extensions.compression;
 
 import io.netty.handler.codec.compression.ZlibCodecFactory;
-import io.netty.handler.codec.http.websocketx.extensions.*;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtension;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtensionHandshaker;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionData;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionDecoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionEncoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionFilterProvider;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.*;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.CLIENT_MAX_WINDOW;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.CLIENT_NO_CONTEXT;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.MAX_WINDOW_SIZE;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.MIN_WINDOW_SIZE;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.PERMESSAGE_DEFLATE_EXTENSION;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.SERVER_MAX_WINDOW;
+import static io.netty.handler.codec.http.websocketx.extensions.compression.PerMessageDeflateServerExtensionHandshaker.SERVER_NO_CONTEXT;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -47,7 +58,6 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel          Compression level between 0 and 9 (default is 6).
    * @param allowClientWindowSize     allows WebSocket server to customize the client inflater window size
    *                                  (default is false).
@@ -61,12 +71,11 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
                                                     boolean allowClientWindowSize, int requestedServerWindowSize,
                                                     boolean allowClientNoContext, boolean requestedServerNoContext) {
     this(compressionLevel, allowClientWindowSize, requestedServerWindowSize,
-        allowClientNoContext, requestedServerNoContext, WebSocketExtensionFilterProvider.DEFAULT);
+      allowClientNoContext, requestedServerNoContext, WebSocketExtensionFilterProvider.DEFAULT);
   }
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel          Compression level between 0 and 9 (default is 6).
    * @param allowClientWindowSize     allows WebSocket server to customize the client inflater window size
    *                                  (default is false).
@@ -84,11 +93,11 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
 
     if (requestedServerWindowSize > MAX_WINDOW_SIZE || requestedServerWindowSize < MIN_WINDOW_SIZE) {
       throw new IllegalArgumentException(
-          "requestedServerWindowSize: " + requestedServerWindowSize + " (expected: 8-15)");
+        "requestedServerWindowSize: " + requestedServerWindowSize + " (expected: 8-15)");
     }
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     this.compressionLevel = compressionLevel;
     this.allowClientWindowSize = allowClientWindowSize;
@@ -129,7 +138,7 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
     boolean clientNoContext = false;
 
     Iterator<Entry<String, String>> parametersIterator =
-        extensionData.parameters().entrySet().iterator();
+      extensionData.parameters().entrySet().iterator();
     while (succeed && parametersIterator.hasNext()) {
       Entry<String, String> parameter = parametersIterator.next();
 
@@ -167,13 +176,13 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
     }
 
     if ((requestedServerNoContext && !serverNoContext) ||
-        requestedServerWindowSize != serverWindowSize) {
+      requestedServerWindowSize != serverWindowSize) {
       succeed = false;
     }
 
     if (succeed) {
       return new PermessageDeflateExtension(serverNoContext, serverWindowSize,
-          clientNoContext, clientWindowSize, extensionFilterProvider);
+        clientNoContext, clientWindowSize, extensionFilterProvider);
     } else {
       return null;
     }
@@ -205,7 +214,7 @@ public final class PerMessageDeflateClientExtensionHandshaker implements WebSock
     @Override
     public WebSocketExtensionEncoder newExtensionEncoder() {
       return new PerMessageDeflateEncoder(compressionLevel, clientWindowSize, clientNoContext,
-          extensionFilterProvider.encoderFilter());
+        extensionFilterProvider.encoderFilter());
     }
 
     @Override

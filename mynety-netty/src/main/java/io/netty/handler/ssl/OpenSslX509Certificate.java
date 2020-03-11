@@ -20,8 +20,19 @@ import io.netty.util.internal.SuppressJava6Requirement;
 import javax.security.auth.x500.X500Principal;
 import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
-import java.security.*;
-import java.security.cert.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Principal;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -74,7 +85,7 @@ final class OpenSslX509Certificate extends X509Certificate {
   // No @Override annotation as it was only introduced in Java8.
   @SuppressJava6Requirement(reason = "Can only be called from Java8 as class is package-private")
   public void verify(PublicKey key, Provider sigProvider)
-      throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+    throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
     unwrap().verify(key, sigProvider);
   }
 
@@ -160,15 +171,15 @@ final class OpenSslX509Certificate extends X509Certificate {
 
   @Override
   public void verify(PublicKey key)
-      throws CertificateException, NoSuchAlgorithmException,
-      InvalidKeyException, NoSuchProviderException, SignatureException {
+    throws CertificateException, NoSuchAlgorithmException,
+    InvalidKeyException, NoSuchProviderException, SignatureException {
     unwrap().verify(key);
   }
 
   @Override
   public void verify(PublicKey key, String sigProvider)
-      throws CertificateException, NoSuchAlgorithmException, InvalidKeyException,
-      NoSuchProviderException, SignatureException {
+    throws CertificateException, NoSuchAlgorithmException, InvalidKeyException,
+    NoSuchProviderException, SignatureException {
     unwrap().verify(key, sigProvider);
   }
 
@@ -207,7 +218,7 @@ final class OpenSslX509Certificate extends X509Certificate {
     if (wrapped == null) {
       try {
         wrapped = this.wrapped = (X509Certificate) SslContext.X509_CERT_FACTORY.generateCertificate(
-            new ByteArrayInputStream(bytes));
+          new ByteArrayInputStream(bytes));
       } catch (CertificateException e) {
         throw new IllegalStateException(e);
       }

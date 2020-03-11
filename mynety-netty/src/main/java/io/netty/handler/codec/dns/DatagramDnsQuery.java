@@ -26,33 +26,31 @@ import java.net.SocketAddress;
  */
 @UnstableApi
 public class DatagramDnsQuery extends DefaultDnsQuery
-    implements AddressedEnvelope<DatagramDnsQuery, InetSocketAddress> {
+  implements AddressedEnvelope<DatagramDnsQuery, InetSocketAddress> {
 
   private final InetSocketAddress sender;
   private final InetSocketAddress recipient;
 
   /**
    * Creates a new instance with the {@link DnsOpCode#QUERY} {@code opCode}.
-   *
    * @param sender    the address of the sender
    * @param recipient the address of the recipient
    * @param id        the {@code ID} of the DNS query
    */
   public DatagramDnsQuery(
-      InetSocketAddress sender, InetSocketAddress recipient, int id) {
+    InetSocketAddress sender, InetSocketAddress recipient, int id) {
     this(sender, recipient, id, DnsOpCode.QUERY);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param sender    the address of the sender
    * @param recipient the address of the recipient
    * @param id        the {@code ID} of the DNS query
    * @param opCode    the {@code opCode} of the DNS query
    */
   public DatagramDnsQuery(
-      InetSocketAddress sender, InetSocketAddress recipient, int id, DnsOpCode opCode) {
+    InetSocketAddress sender, InetSocketAddress recipient, int id, DnsOpCode opCode) {
     super(id, opCode);
 
     if (recipient == null && sender == null) {

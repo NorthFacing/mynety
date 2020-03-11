@@ -30,7 +30,6 @@ public final class ConstantTimeUtils {
    *     int v1 = 500;
    *     boolean equals = (equalsConstantTime(l1, l2) & equalsConstantTime(l3, l4)) != 0;
    * </pre>
-   *
    * @param x the first value.
    * @param y the second value.
    * @return {@code 0} if not equal. {@code 1} if equal.
@@ -56,7 +55,6 @@ public final class ConstantTimeUtils {
    *     long v1 = 500;
    *     boolean equals = (equalsConstantTime(l1, l2) & equalsConstantTime(l3, l4)) != 0;
    * </pre>
-   *
    * @param x the first value.
    * @param y the second value.
    * @return {@code 0} if not equal. {@code 1} if equal.
@@ -85,7 +83,6 @@ public final class ConstantTimeUtils {
    *     boolean equals = (equalsConstantTime(s1, 0, s2, 0, s1.length) &
    *                       equalsConstantTime(s3, 0, s4, 0, s3.length)) != 0;
    * </pre>
-   *
    * @param bytes1    the first byte array.
    * @param startPos1 the position (inclusive) to start comparing in {@code bytes1}.
    * @param bytes2    the second byte array.
@@ -116,7 +113,6 @@ public final class ConstantTimeUtils {
    *     String s4 = "goo";
    *     boolean equals = (equalsConstantTime(s1, s2) & equalsConstantTime(s3, s4)) != 0;
    * </pre>
-   *
    * @param s1 the first value.
    * @param s2 the second value.
    * @return {@code 0} if not equal. {@code 1} if equal.

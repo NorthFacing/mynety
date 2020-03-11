@@ -20,22 +20,22 @@ final class Lz4Constants {
    * Magic number of LZ4 block.
    */
   static final long MAGIC_NUMBER = (long) 'L' << 56 |
-      (long) 'Z' << 48 |
-      (long) '4' << 40 |
-      (long) 'B' << 32 |
-      'l' << 24 |
-      'o' << 16 |
-      'c' << 8 |
-      'k';
+    (long) 'Z' << 48 |
+    (long) '4' << 40 |
+    (long) 'B' << 32 |
+    'l' << 24 |
+    'o' << 16 |
+    'c' << 8 |
+    'k';
 
   /**
    * Full length of LZ4 block header.
    */
   static final int HEADER_LENGTH = 8 +  // magic number
-      1 +  // token
-      4 +  // compressed length
-      4 +  // decompressed length
-      4;   // checksum
+    1 +  // token
+    4 +  // compressed length
+    4 +  // decompressed length
+    4;   // checksum
 
   /**
    * Offsets of header's parts.

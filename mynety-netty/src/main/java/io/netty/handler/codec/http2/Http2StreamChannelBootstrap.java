@@ -15,7 +15,13 @@
  */
 package io.netty.handler.codec.http2;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.Future;
@@ -98,7 +104,6 @@ public final class Http2StreamChannelBootstrap {
 
   /**
    * Open a new {@link Http2StreamChannel} to use.
-   *
    * @return the {@link Future} that will be notified once the channel was opened successfully or it failed.
    */
   public Future<Http2StreamChannel> open() {
@@ -107,7 +112,6 @@ public final class Http2StreamChannelBootstrap {
 
   /**
    * Open a new {@link Http2StreamChannel} to use and notifies the given {@link Promise}.
-   *
    * @return the {@link Future} that will be notified once the channel was opened successfully or it failed.
    */
   @SuppressWarnings("deprecation")
@@ -146,8 +150,8 @@ public final class Http2StreamChannelBootstrap {
     if (ctx == null) {
       if (channel.isActive()) {
         throw new IllegalStateException(StringUtil.simpleClassName(Http2MultiplexCodec.class) + " or "
-            + StringUtil.simpleClassName(Http2MultiplexHandler.class)
-            + " must be in the ChannelPipeline of Channel " + channel);
+          + StringUtil.simpleClassName(Http2MultiplexHandler.class)
+          + " must be in the ChannelPipeline of Channel " + channel);
       } else {
         throw new ClosedChannelException();
       }
@@ -219,7 +223,7 @@ public final class Http2StreamChannelBootstrap {
   }
 
   private static void setChannelOptions(
-      Channel channel, Map<ChannelOption<?>, Object> options) {
+    Channel channel, Map<ChannelOption<?>, Object> options) {
     for (Map.Entry<ChannelOption<?>, Object> e : options.entrySet()) {
       setChannelOption(channel, e.getKey(), e.getValue());
     }
@@ -227,14 +231,14 @@ public final class Http2StreamChannelBootstrap {
 
   @SuppressWarnings("unchecked")
   private static void setChannelOption(
-      Channel channel, ChannelOption<?> option, Object value) {
+    Channel channel, ChannelOption<?> option, Object value) {
     try {
       if (!channel.config().setOption((ChannelOption<Object>) option, value)) {
         logger.warn("Unknown channel option '{}' for channel '{}'", option, channel);
       }
     } catch (Throwable t) {
       logger.warn(
-          "Failed to set channel option '{}' with value '{}' for channel '{}'", option, value, channel, t);
+        "Failed to set channel option '{}' with value '{}' for channel '{}'", option, value, channel, t);
     }
   }
 }

@@ -49,9 +49,9 @@ public final class FactorialServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new FactorialServerInitializer(sslCtx));
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new FactorialServerInitializer(sslCtx));
 
       b.bind(PORT).sync().channel().closeFuture().sync();
     } finally {

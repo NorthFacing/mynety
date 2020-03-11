@@ -86,19 +86,17 @@ public abstract class SslMasterKeyHandler extends ChannelInboundHandlerAdapter {
 
   /**
    * Ensure that SSLSessionImpl is available.
-   *
    * @throws UnsatisfiedLinkError if unavailable
    */
   public static void ensureSunSslEngineAvailability() {
     if (UNAVAILABILITY_CAUSE != null) {
       throw new IllegalStateException(
-          "Failed to find SSLSessionImpl on classpath", UNAVAILABILITY_CAUSE);
+        "Failed to find SSLSessionImpl on classpath", UNAVAILABILITY_CAUSE);
     }
   }
 
   /**
    * Returns the cause of unavailability.
-   *
    * @return the cause if unavailable. {@code null} if available.
    */
   public static Throwable sunSslEngineUnavailabilityCause() {
@@ -113,7 +111,6 @@ public abstract class SslMasterKeyHandler extends ChannelInboundHandlerAdapter {
 
   /**
    * Consume the master key for the session and the sessionId
-   *
    * @param masterKey A 48-byte secret shared between the client and server.
    * @param session   The current TLS session
    */
@@ -137,7 +134,7 @@ public abstract class SslMasterKeyHandler extends ChannelInboundHandlerAdapter {
             secretKey = (SecretKey) SSL_SESSIONIMPL_MASTER_SECRET_FIELD.get(sslSession);
           } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("Failed to access the field 'masterSecret' " +
-                "via reflection.", e);
+              "via reflection.", e);
           }
           accept(secretKey, sslSession);
         } else if (OpenSsl.isAvailable() && engine instanceof ReferenceCountedOpenSslEngine) {
@@ -171,7 +168,7 @@ public abstract class SslMasterKeyHandler extends ChannelInboundHandlerAdapter {
   private static final class WiresharkSslMasterKeyHandler extends SslMasterKeyHandler {
 
     private static final InternalLogger wireshark_logger =
-        InternalLoggerFactory.getInstance("io.netty.wireshark");
+      InternalLoggerFactory.getInstance("io.netty.wireshark");
 
     private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
@@ -182,8 +179,8 @@ public abstract class SslMasterKeyHandler extends ChannelInboundHandlerAdapter {
       }
       final byte[] sessionId = session.getId();
       wireshark_logger.warn("RSA Session-ID:{} Master-Key:{}",
-          ByteBufUtil.hexDump(sessionId).toLowerCase(),
-          ByteBufUtil.hexDump(masterKey.getEncoded()).toLowerCase());
+        ByteBufUtil.hexDump(sessionId).toLowerCase(),
+        ByteBufUtil.hexDump(masterKey.getEncoded()).toLowerCase());
     }
   }
 

@@ -42,9 +42,9 @@ import static io.netty.util.CharsetUtil.UTF_8;
 public final class FallbackRequestHandler extends SimpleChannelInboundHandler<HttpRequest> {
 
   private static final ByteBuf response = unreleasableBuffer(copiedBuffer("<!DOCTYPE html>"
-      + "<html><body><h2>To view the example you need a browser that supports HTTP/2 ("
-      + Http2CodecUtil.TLS_UPGRADE_PROTOCOL_NAME
-      + ")</h2></body></html>", UTF_8)).asReadOnly();
+    + "<html><body><h2>To view the example you need a browser that supports HTTP/2 ("
+    + Http2CodecUtil.TLS_UPGRADE_PROTOCOL_NAME
+    + ")</h2></body></html>", UTF_8)).asReadOnly();
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, HttpRequest req) throws Exception {

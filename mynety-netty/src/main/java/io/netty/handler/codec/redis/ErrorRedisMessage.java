@@ -25,7 +25,6 @@ public final class ErrorRedisMessage extends AbstractStringRedisMessage {
 
   /**
    * Creates a {@link ErrorRedisMessage} from {@code content}.
-   *
    * @param content the message content, must not be {@code null}.
    */
   public ErrorRedisMessage(String content) {

@@ -19,7 +19,14 @@ import io.netty.util.AsciiString;
 import io.netty.util.internal.UnstableApi;
 
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static io.netty.handler.codec.CharSequenceValueConverter.INSTANCE;
 import static io.netty.handler.codec.http.DefaultHttpHeaders.HttpNameValidator;
@@ -41,7 +48,6 @@ public final class ReadOnlyHttpHeaders extends HttpHeaders {
 
   /**
    * Create a new instance.
-   *
    * @param validateHeaders {@code true} to validate the contents of each header name.
    * @param nameValuePairs  An array of the structure {@code [<name,value>,<name,value>,...]}.
    *                        A copy will <strong>NOT</strong> be made of this array. If the contents of this array
@@ -144,7 +150,7 @@ public final class ReadOnlyHttpHeaders extends HttpHeaders {
     List<Map.Entry<String, String>> entries = new ArrayList<Map.Entry<String, String>>(size());
     for (int i = 0; i < nameValuePairs.length; i += 2) {
       entries.add(new SimpleImmutableEntry<String, String>(nameValuePairs[i].toString(),
-          nameValuePairs[i + 1].toString()));
+        nameValuePairs[i + 1].toString()));
     }
     return entries;
   }
@@ -164,14 +170,14 @@ public final class ReadOnlyHttpHeaders extends HttpHeaders {
     if (ignoreCase) {
       for (int i = 0; i < nameValuePairs.length; i += 2) {
         if (contentEqualsIgnoreCase(nameValuePairs[i], name) &&
-            contentEqualsIgnoreCase(nameValuePairs[i + 1], value)) {
+          contentEqualsIgnoreCase(nameValuePairs[i + 1], value)) {
           return true;
         }
       }
     } else {
       for (int i = 0; i < nameValuePairs.length; i += 2) {
         if (contentEqualsIgnoreCase(nameValuePairs[i], name) &&
-            contentEquals(nameValuePairs[i + 1], value)) {
+          contentEquals(nameValuePairs[i + 1], value)) {
           return true;
         }
       }
@@ -272,7 +278,7 @@ public final class ReadOnlyHttpHeaders extends HttpHeaders {
   }
 
   private final class ReadOnlyIterator implements Map.Entry<CharSequence, CharSequence>,
-      Iterator<Map.Entry<CharSequence, CharSequence>> {
+    Iterator<Map.Entry<CharSequence, CharSequence>> {
     private CharSequence key;
     private CharSequence value;
     private int nextNameIndex;
@@ -320,7 +326,7 @@ public final class ReadOnlyHttpHeaders extends HttpHeaders {
   }
 
   private final class ReadOnlyStringIterator implements Map.Entry<String, String>,
-      Iterator<Map.Entry<String, String>> {
+    Iterator<Map.Entry<String, String>> {
     private String key;
     private String value;
     private int nextNameIndex;

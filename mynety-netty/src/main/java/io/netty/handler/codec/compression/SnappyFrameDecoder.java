@@ -65,7 +65,6 @@ public class SnappyFrameDecoder extends ByteToMessageDecoder {
   /**
    * Creates a new snappy-framed decoder with validation of checksums
    * as specified.
-   *
    * @param validateChecksums If true, the checksum field will be validated against the actual
    *                          uncompressed data, and if the checksums do not match, a suitable
    *                          {@link DecompressionException} will be thrown
@@ -134,7 +133,7 @@ public class SnappyFrameDecoder extends ByteToMessageDecoder {
           // return an error, as we must assume that we cannot decode the stream
           // correctly
           throw new DecompressionException(
-              "Found reserved unskippable chunk type: 0x" + Integer.toHexString(chunkTypeVal));
+            "Found reserved unskippable chunk type: 0x" + Integer.toHexString(chunkTypeVal));
         case UNCOMPRESSED_DATA:
           if (!started) {
             throw new DecompressionException("Received UNCOMPRESSED_DATA tag before STREAM_IDENTIFIER");
@@ -200,13 +199,12 @@ public class SnappyFrameDecoder extends ByteToMessageDecoder {
   private static void checkByte(byte actual, byte expect) {
     if (actual != expect) {
       throw new DecompressionException("Unexpected stream identifier contents. Mismatched snappy " +
-          "protocol version?");
+        "protocol version?");
     }
   }
 
   /**
    * Decodes the chunk type from the type tag byte.
-   *
    * @param type The tag byte extracted from the stream
    * @return The appropriate {@link ChunkType}, defaulting to {@link ChunkType#RESERVED_UNSKIPPABLE}
    */

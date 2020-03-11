@@ -28,7 +28,6 @@ public final class IntegerRedisMessage implements RedisMessage {
 
   /**
    * Creates a {@link IntegerRedisMessage} for the given {@code content}.
-   *
    * @param value the message content.
    */
   public IntegerRedisMessage(long value) {
@@ -37,7 +36,6 @@ public final class IntegerRedisMessage implements RedisMessage {
 
   /**
    * Get long value of this {@link IntegerRedisMessage}.
-   *
    * @return long value
    */
   public long value() {
@@ -47,9 +45,9 @@ public final class IntegerRedisMessage implements RedisMessage {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("value=")
-        .append(value)
-        .append(']').toString();
+      .append('[')
+      .append("value=")
+      .append(value)
+      .append(']').toString();
   }
 }

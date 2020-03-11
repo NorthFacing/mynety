@@ -26,7 +26,7 @@ import io.netty.util.internal.UnstableApi;
 public class Http2EventAdapter implements Http2Connection.Listener, Http2FrameListener {
   @Override
   public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data, int padding, boolean endOfStream)
-      throws Http2Exception {
+    throws Http2Exception {
     return data.readableBytes() + padding;
   }
 
@@ -72,12 +72,12 @@ public class Http2EventAdapter implements Http2Connection.Listener, Http2FrameLi
 
   @Override
   public void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override
   public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override

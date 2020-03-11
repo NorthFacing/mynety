@@ -19,8 +19,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
-import io.netty.channel.*;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.EventLoop;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.channel.socket.SocketChannelConfig;
@@ -33,7 +43,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.AlreadyConnectedException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.ConnectionPendingException;
+import java.nio.channels.NotYetConnectedException;
+import java.nio.channels.UnresolvedAddressException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -236,7 +250,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
       return ((EpollDomainSocketChannelConfig) config).isAllowHalfClosure();
     }
     return config instanceof SocketChannelConfig &&
-        ((SocketChannelConfig) config).isAllowHalfClosure();
+      ((SocketChannelConfig) config).isAllowHalfClosure();
   }
 
   private Runnable clearEpollInTask;
@@ -358,7 +372,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
       }
     } else {
       final ByteBuffer nioBuf = buf.nioBufferCount() == 1 ?
-          buf.internalNioBuffer(buf.readerIndex(), buf.readableBytes()) : buf.nioBuffer();
+        buf.internalNioBuffer(buf.readerIndex(), buf.readableBytes()) : buf.nioBuffer();
       int localFlushedAmount = socket.write(nioBuf, nioBuf.position(), nioBuf.limit());
       if (localFlushedAmount > 0) {
         nioBuf.position(nioBuf.position() + localFlushedAmount);
@@ -485,7 +499,6 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
 
     /**
      * Create a new {@link EpollRecvByteAllocatorHandle} instance.
-     *
      * @param handle The handle to wrap with EPOLL specific logic.
      */
     EpollRecvByteAllocatorHandle newEpollHandle(RecvByteBufAllocator.ExtendedHandle handle) {
@@ -523,7 +536,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
 
     @Override
     public void connect(
-        final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
+      final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
       if (!promise.setUncancellable() || !ensureOpen(promise)) {
         return;
       }
@@ -548,7 +561,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
               public void run() {
                 ChannelPromise connectPromise = AbstractEpollChannel.this.connectPromise;
                 ConnectTimeoutException cause =
-                    new ConnectTimeoutException("connection timed out: " + remoteAddress);
+                  new ConnectTimeoutException("connection timed out: " + remoteAddress);
                 if (connectPromise != null && connectPromise.tryFailure(cause)) {
                   close(voidPromise());
                 }
@@ -676,7 +689,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
     }
 
     InetSocketAddress remoteSocketAddr = remoteAddress instanceof InetSocketAddress
-        ? (InetSocketAddress) remoteAddress : null;
+      ? (InetSocketAddress) remoteAddress : null;
     if (remoteSocketAddr != null) {
       checkResolvable(remoteSocketAddr);
     }
@@ -695,7 +708,7 @@ abstract class AbstractEpollChannel extends AbstractChannel implements UnixChann
     boolean connected = doConnect0(remoteAddress);
     if (connected) {
       remote = remoteSocketAddr == null ?
-          remoteAddress : computeRemoteAddr(remoteSocketAddr, socket.remoteAddress());
+        remoteAddress : computeRemoteAddr(remoteSocketAddr, socket.remoteAddress());
     }
     // We always need to set the localAddress even if not connected yet as the bind already took place.
     //

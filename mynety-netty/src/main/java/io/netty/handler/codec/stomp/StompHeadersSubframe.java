@@ -17,7 +17,6 @@ package io.netty.handler.codec.stomp;
 
 /**
  * An interface that defines a {@link StompFrame}'s command and headers.
- *
  * @see StompCommand
  * @see StompHeaders
  */

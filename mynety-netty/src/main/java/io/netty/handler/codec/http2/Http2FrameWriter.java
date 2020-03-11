@@ -47,7 +47,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a HEADERS frame to the remote endpoint.
-   *
    * @param ctx       the context to use for writing.
    * @param streamId  the stream for which to send the frame.
    * @param headers   the headers to be sent.
@@ -69,7 +68,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a HEADERS frame with priority specified to the remote endpoint.
-   *
    * @param ctx              the context to use for writing.
    * @param streamId         the stream for which to send the frame.
    * @param headers          the headers to be sent.
@@ -96,7 +94,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a PRIORITY frame to the remote endpoint.
-   *
    * @param ctx              the context to use for writing.
    * @param streamId         the stream for which to send the frame.
    * @param streamDependency the stream on which this stream should depend, or 0 if it should
@@ -111,7 +108,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a RST_STREAM frame to the remote endpoint.
-   *
    * @param ctx       the context to use for writing.
    * @param streamId  the stream for which to send the frame.
    * @param errorCode the error code indicating the nature of the failure.
@@ -123,7 +119,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a SETTINGS frame to the remote endpoint.
-   *
    * @param ctx      the context to use for writing.
    * @param settings the settings to be sent.
    * @param promise  the promise for the write.
@@ -134,7 +129,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a SETTINGS acknowledgment to the remote endpoint.
-   *
    * @param ctx     the context to use for writing.
    * @param promise the promise for the write.
    * @return the future for the write.
@@ -143,7 +137,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a PING frame to the remote endpoint.
-   *
    * @param ctx     the context to use for writing.
    * @param ack     indicates whether this is an ack of a PING frame previously received from the
    *                remote endpoint.
@@ -156,7 +149,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a PUSH_PROMISE frame to the remote endpoint.
-   *
    * @param ctx              the context to use for writing.
    * @param streamId         the stream for which to send the frame.
    * @param promisedStreamId the ID of the promised stream.
@@ -178,7 +170,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a GO_AWAY frame to the remote endpoint.
-   *
    * @param ctx          the context to use for writing.
    * @param lastStreamId the last known stream of this endpoint.
    * @param errorCode    the error code, if the connection was abnormally terminated.
@@ -191,7 +182,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Writes a WINDOW_UPDATE frame to the remote endpoint.
-   *
    * @param ctx                 the context to use for writing.
    * @param streamId            the stream for which to send the frame.
    * @param windowSizeIncrement the number of bytes by which the local inbound flow control window
@@ -204,7 +194,6 @@ public interface Http2FrameWriter extends Http2DataWriter, Closeable {
 
   /**
    * Generic write method for any HTTP/2 frame. This allows writing of non-standard frames.
-   *
    * @param ctx       the context to use for writing.
    * @param frameType the frame type identifier.
    * @param streamId  the stream for which to send the frame.

@@ -86,7 +86,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Sharable
 public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHandler {
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(GlobalChannelTrafficShapingHandler.class);
+    InternalLoggerFactory.getInstance(GlobalChannelTrafficShapingHandler.class);
   /**
    * All queues per channel
    */
@@ -162,7 +162,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * Create a new instance.
-   *
    * @param executor          the {@link ScheduledExecutorService} to use for the {@link TrafficCounter}.
    * @param writeGlobalLimit  0 or a limit in bytes/s
    * @param readGlobalLimit   0 or a limit in bytes/s
@@ -184,7 +183,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * Create a new instance.
-   *
    * @param executor          the {@link ScheduledExecutorService} to use for the {@link TrafficCounter}.
    * @param writeGlobalLimit  0 or a limit in bytes/s
    * @param readGlobalLimit   0 or a limit in bytes/s
@@ -205,7 +203,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * Create a new instance.
-   *
    * @param executor          the {@link ScheduledExecutorService} to use for the {@link TrafficCounter}.
    * @param writeGlobalLimit  0 or a limit in bytes/s
    * @param readGlobalLimit   0 or a limit in bytes/s
@@ -223,7 +220,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * Create a new instance.
-   *
    * @param executor      the {@link ScheduledExecutorService} to use for the {@link TrafficCounter}.
    * @param checkInterval The delay between two computations of performances for
    *                      channels or 0 if no stats are to be computed.
@@ -235,7 +231,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * Create a new instance.
-   *
    * @param executor the {@link ScheduledExecutorService} to use for the {@link TrafficCounter}.
    */
   public GlobalChannelTrafficShapingHandler(ScheduledExecutorService executor) {
@@ -356,7 +351,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
    * changed, but only applied to new traffics.<br>
    * So the expected usage of this method is to be used not too often,
    * accordingly to the traffic shaping configuration.
-   *
    * @param maxGlobalWriteSize the maximum Global Write Size allowed in the buffer
    *                           globally for all channels before write suspended is set.
    */
@@ -440,7 +434,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
       perChannel.messagesQueue = new ArrayDeque<ToSend>();
       // Don't start it since managed through the Global one
       perChannel.channelTrafficCounter = new TrafficCounter(this, null, "ChannelTC" +
-          ctx.channel().hashCode(), checkInterval);
+        ctx.channel().hashCode(), checkInterval);
       perChannel.queueSize = 0L;
       perChannel.lastReadTimestamp = TrafficCounter.milliSecondFromNano();
       perChannel.lastWriteTimestamp = perChannel.lastReadTimestamp;
@@ -527,7 +521,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
         ChannelConfig config = channel.config();
         if (logger.isDebugEnabled()) {
           logger.debug("Read Suspend: " + wait + ':' + config.isAutoRead() + ':'
-              + isHandlerActive(ctx));
+            + isHandlerActive(ctx));
         }
         if (config.isAutoRead() && isHandlerActive(ctx)) {
           config.setAutoRead(false);
@@ -543,7 +537,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
           ctx.executor().schedule(reopenTask, wait, TimeUnit.MILLISECONDS);
           if (logger.isDebugEnabled()) {
             logger.debug("Suspend final status => " + config.isAutoRead() + ':'
-                + isHandlerActive(ctx) + " will reopened at: " + wait);
+              + isHandlerActive(ctx) + " will reopened at: " + wait);
           }
         }
       }
@@ -597,7 +591,6 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   /**
    * To allow for instance doAccounting to use the TrafficCounter per channel.
-   *
    * @return the list of TrafficCounters that exists at the time of the call.
    */
   public Collection<TrafficCounter> channelTrafficCounters() {
@@ -633,7 +626,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
 
   @Override
   public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise)
-      throws Exception {
+    throws Exception {
     long size = calculateSize(msg);
     long now = TrafficCounter.milliSecondFromNano();
     if (size > 0) {
@@ -664,7 +657,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
       if (wait >= MINIMAL_WAIT) {
         if (logger.isDebugEnabled()) {
           logger.debug("Write suspend: " + wait + ':' + ctx.channel().config().isAutoRead() + ':'
-              + isHandlerActive(ctx));
+            + isHandlerActive(ctx));
         }
         submitWrite(ctx, msg, size, wait, now, promise);
         return;
@@ -751,7 +744,7 @@ public class GlobalChannelTrafficShapingHandler extends AbstractTrafficShapingHa
   @Override
   public String toString() {
     return new StringBuilder(340).append(super.toString())
-        .append(" Write Channel Limit: ").append(writeChannelLimit)
-        .append(" Read Channel Limit: ").append(readChannelLimit).toString();
+      .append(" Write Channel Limit: ").append(writeChannelLimit)
+      .append(" Read Channel Limit: ").append(readChannelLimit).toString();
   }
 }

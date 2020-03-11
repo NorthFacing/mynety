@@ -27,14 +27,13 @@ import io.netty.util.concurrent.GenericFutureListener;
  * constructor explicitly.
  */
 public class DefaultChannelProgressivePromise
-    extends DefaultProgressivePromise<Void> implements ChannelProgressivePromise, FlushCheckpoint {
+  extends DefaultProgressivePromise<Void> implements ChannelProgressivePromise, FlushCheckpoint {
 
   private final Channel channel;
   private long checkpoint;
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   public DefaultChannelProgressivePromise(Channel channel) {
@@ -43,7 +42,6 @@ public class DefaultChannelProgressivePromise
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   public DefaultChannelProgressivePromise(Channel channel, EventExecutor executor) {
@@ -114,7 +112,7 @@ public class DefaultChannelProgressivePromise
 
   @Override
   public ChannelProgressivePromise removeListeners(
-      GenericFutureListener<? extends Future<? super Void>>... listeners) {
+    GenericFutureListener<? extends Future<? super Void>>... listeners) {
     super.removeListeners(listeners);
     return this;
   }

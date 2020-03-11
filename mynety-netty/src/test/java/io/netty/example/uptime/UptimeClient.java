@@ -46,14 +46,14 @@ public final class UptimeClient {
   public static void main(String[] args) throws Exception {
     EventLoopGroup group = new NioEventLoopGroup();
     bs.group(group)
-        .channel(NioSocketChannel.class)
-        .remoteAddress(HOST, PORT)
-        .handler(new ChannelInitializer<SocketChannel>() {
-          @Override
-          protected void initChannel(SocketChannel ch) throws Exception {
-            ch.pipeline().addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0), handler);
-          }
-        });
+      .channel(NioSocketChannel.class)
+      .remoteAddress(HOST, PORT)
+      .handler(new ChannelInitializer<SocketChannel>() {
+        @Override
+        protected void initChannel(SocketChannel ch) throws Exception {
+          ch.pipeline().addLast(new IdleStateHandler(READ_TIMEOUT, 0, 0), handler);
+        }
+      });
     bs.connect();
   }
 

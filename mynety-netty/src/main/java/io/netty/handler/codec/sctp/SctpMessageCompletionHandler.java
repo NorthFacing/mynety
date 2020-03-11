@@ -57,10 +57,10 @@ public class SctpMessageCompletionHandler extends MessageToMessageDecoder<SctpMe
     } else if (isComplete && frag.isReadable()) {
       //last message to complete
       SctpMessage assembledMsg = new SctpMessage(
-          protocolIdentifier,
-          streamIdentifier,
-          isUnordered,
-          Unpooled.wrappedBuffer(frag, byteBuf));
+        protocolIdentifier,
+        streamIdentifier,
+        isUnordered,
+        Unpooled.wrappedBuffer(frag, byteBuf));
       out.add(assembledMsg);
     } else {
       //first incomplete message

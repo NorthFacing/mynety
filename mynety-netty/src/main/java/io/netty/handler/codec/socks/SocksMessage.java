@@ -20,7 +20,6 @@ import io.netty.buffer.ByteBuf;
 /**
  * An abstract class that defines a SocksMessage, providing common properties for
  * {@link SocksRequest} and {@link SocksResponse}.
- *
  * @see SocksRequest
  * @see SocksResponse
  */
@@ -38,7 +37,6 @@ public abstract class SocksMessage {
 
   /**
    * Returns the {@link SocksMessageType} of this {@link SocksMessage}
-   *
    * @return The {@link SocksMessageType} of this {@link SocksMessage}
    */
   public SocksMessageType type() {
@@ -47,7 +45,6 @@ public abstract class SocksMessage {
 
   /**
    * Returns the {@link SocksProtocolVersion} of this {@link SocksMessage}
-   *
    * @return The {@link SocksProtocolVersion} of this {@link SocksMessage}
    */
   public SocksProtocolVersion protocolVersion() {

@@ -33,7 +33,6 @@ import java.util.List;
  * {@link HttpResponse} res = ...;
  * res.setHeader("Set-Cookie", {@link ServerCookieEncoder}.encode("JSESSIONID", "1234"));
  * </pre>
- *
  * @see ServerCookieDecoder
  * @deprecated Use {@link io.netty.handler.codec.http.cookie.ServerCookieEncoder} instead
  */
@@ -42,7 +41,6 @@ public final class ServerCookieEncoder {
 
   /**
    * Encodes the specified cookie name-value pair into a Set-Cookie header value.
-   *
    * @param name  the cookie name
    * @param value the cookie value
    * @return a single Set-Cookie header value
@@ -54,7 +52,6 @@ public final class ServerCookieEncoder {
 
   /**
    * Encodes the specified cookie into a Set-Cookie header value.
-   *
    * @param cookie the cookie
    * @return a single Set-Cookie header value
    */
@@ -65,7 +62,6 @@ public final class ServerCookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */
@@ -76,7 +72,6 @@ public final class ServerCookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */
@@ -87,7 +82,6 @@ public final class ServerCookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */

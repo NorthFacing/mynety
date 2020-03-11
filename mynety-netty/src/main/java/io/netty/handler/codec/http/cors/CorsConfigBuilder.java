@@ -18,7 +18,14 @@ package io.netty.handler.codec.http.cors;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -28,7 +35,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Creates a Builder instance with it's origin set to '*'.
-   *
    * @return Builder to support method chaining.
    */
   public static CorsConfigBuilder forAnyOrigin() {
@@ -37,7 +43,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Creates a {@link CorsConfigBuilder} instance with the specified origin.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public static CorsConfigBuilder forOrigin(final String origin) {
@@ -49,7 +54,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Creates a {@link CorsConfigBuilder} instance with the specified origins.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public static CorsConfigBuilder forOrigins(final String... origins) {
@@ -71,7 +75,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Creates a new Builder instance with the origin passed in.
-   *
    * @param origins the origin to be used for this builder.
    */
   CorsConfigBuilder(final String... origins) {
@@ -92,7 +95,6 @@ public final class CorsConfigBuilder {
    * Web browsers may set the 'Origin' request header to 'null' if a resource is loaded
    * from the local file system. Calling this method will enable a successful CORS response
    * with a {@code "null"} value for the CORS response header 'Access-Control-Allow-Origin'.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public CorsConfigBuilder allowNullOrigin() {
@@ -102,7 +104,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Disables CORS support.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public CorsConfigBuilder disable() {
@@ -131,7 +132,6 @@ public final class CorsConfigBuilder {
    * <p>
    * To expose other headers they need to be specified which is what this method enables by
    * adding the headers to the CORS 'Access-Control-Expose-Headers' response header.
-   *
    * @param headers the values to be added to the 'Access-Control-Expose-Headers' response header
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -161,7 +161,6 @@ public final class CorsConfigBuilder {
    * <p>
    * To expose other headers they need to be specified which is what this method enables by
    * adding the headers to the CORS 'Access-Control-Expose-Headers' response header.
-   *
    * @param headers the values to be added to the 'Access-Control-Expose-Headers' response header
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -184,7 +183,6 @@ public final class CorsConfigBuilder {
    * </pre>
    * The default value for 'withCredentials' is false in which case no cookies are sent.
    * Setting this to true will included cookies in cross origin requests.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public CorsConfigBuilder allowCredentials() {
@@ -197,7 +195,6 @@ public final class CorsConfigBuilder {
    * This setting will set the CORS 'Access-Control-Max-Age' response header and enables the
    * caching of the preflight response for the specified time. During this time no preflight
    * request will be made.
-   *
    * @param max the maximum time, in seconds, that the preflight response may be cached.
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -209,7 +206,6 @@ public final class CorsConfigBuilder {
   /**
    * Specifies the allowed set of HTTP Request Methods that should be returned in the
    * CORS 'Access-Control-Request-Method' response header.
-   *
    * @param methods the {@link HttpMethod}s that should be allowed.
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -230,7 +226,6 @@ public final class CorsConfigBuilder {
    * preflight request. The server will then decide if it allows this header to be sent for the
    * real request (remember that a preflight is not the real request but a request asking the server
    * if it allow a request).
-   *
    * @param headers the headers to be added to the preflight 'Access-Control-Allow-Headers' response header.
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -251,7 +246,6 @@ public final class CorsConfigBuilder {
    * preflight request. The server will then decide if it allows this header to be sent for the
    * real request (remember that a preflight is not the real request but a request asking the server
    * if it allow a request).
-   *
    * @param headers the headers to be added to the preflight 'Access-Control-Allow-Headers' response header.
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
@@ -267,7 +261,6 @@ public final class CorsConfigBuilder {
    * <p>
    * An intermediary like a load balancer might require that a CORS preflight request
    * have certain headers set. This enables such headers to be added.
-   *
    * @param name   the name of the HTTP header.
    * @param values the values for the HTTP header.
    * @return {@link CorsConfigBuilder} to support method chaining.
@@ -286,7 +279,6 @@ public final class CorsConfigBuilder {
    * <p>
    * An intermediary like a load balancer might require that a CORS preflight request
    * have certain headers set. This enables such headers to be added.
-   *
    * @param name  the name of the HTTP header.
    * @param value the values for the HTTP header.
    * @param <T>   the type of values that the Iterable contains.
@@ -306,7 +298,6 @@ public final class CorsConfigBuilder {
    * Some values must be dynamically created when the HTTP response is created, for
    * example the 'Date' response header. This can be accomplished by using a Callable
    * which will have its 'call' method invoked when the HTTP response is created.
-   *
    * @param name           the name of the HTTP header.
    * @param valueGenerator a Callable which will be invoked at HTTP response creation.
    * @param <T>            the type of the value that the Callable can return.
@@ -319,7 +310,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Specifies that no preflight response headers should be added to a preflight response.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public CorsConfigBuilder noPreflightResponseHeaders() {
@@ -334,7 +324,6 @@ public final class CorsConfigBuilder {
    * CORS headers are set after a request is processed. This may not always be desired
    * and this setting will check that the Origin is valid and if it is not valid no
    * further processing will take place, and an error will be returned to the calling client.
-   *
    * @return {@link CorsConfigBuilder} to support method chaining.
    */
   public CorsConfigBuilder shortCircuit() {
@@ -344,7 +333,6 @@ public final class CorsConfigBuilder {
 
   /**
    * Builds a {@link CorsConfig} with settings specified by previous method calls.
-   *
    * @return {@link CorsConfig} the configured CorsConfig instance.
    */
   public CorsConfig build() {
@@ -366,7 +354,6 @@ public final class CorsConfigBuilder {
 
     /**
      * Sole constructor.
-     *
      * @param value the value that will be returned when the call method is invoked.
      */
     private ConstantValueGenerator(final Object value) {

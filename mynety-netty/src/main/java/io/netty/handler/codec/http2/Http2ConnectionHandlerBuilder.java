@@ -24,7 +24,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public final class Http2ConnectionHandlerBuilder
-    extends AbstractHttp2ConnectionHandlerBuilder<Http2ConnectionHandler, Http2ConnectionHandlerBuilder> {
+  extends AbstractHttp2ConnectionHandlerBuilder<Http2ConnectionHandler, Http2ConnectionHandlerBuilder> {
 
   @Override
   public Http2ConnectionHandlerBuilder validateHeaders(boolean validateHeaders) {
@@ -73,7 +73,7 @@ public final class Http2ConnectionHandlerBuilder
 
   @Override
   public Http2ConnectionHandlerBuilder encoderEnforceMaxConcurrentStreams(
-      boolean encoderEnforceMaxConcurrentStreams) {
+    boolean encoderEnforceMaxConcurrentStreams) {
     return super.encoderEnforceMaxConcurrentStreams(encoderEnforceMaxConcurrentStreams);
   }
 

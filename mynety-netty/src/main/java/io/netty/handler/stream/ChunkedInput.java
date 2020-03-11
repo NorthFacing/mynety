@@ -55,7 +55,6 @@ public interface ChunkedInput<B> {
    * Fetches a chunked data from the stream. Once this method returns the last chunk
    * and thus the stream has reached at its end, any subsequent {@link #isEndOfInput()}
    * call must return {@code true}.
-   *
    * @param allocator {@link ByteBufAllocator} if buffer allocation is necessary.
    * @return the fetched chunk.
    * {@code null} if there is no data left in the stream.
@@ -67,7 +66,6 @@ public interface ChunkedInput<B> {
 
   /**
    * Returns the length of the input.
-   *
    * @return the length of the input if the length of the input is known.
    * a negative value if the length of the input is unknown.
    */

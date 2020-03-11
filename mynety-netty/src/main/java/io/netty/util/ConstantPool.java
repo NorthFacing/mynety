@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A pool of {@link Constant}s.
- *
  * @param <T> the type of the constant
  */
 public abstract class ConstantPool<T extends Constant<T>> {
@@ -52,7 +51,6 @@ public abstract class ConstantPool<T extends Constant<T>> {
    * If there's no such {@link Constant}, a new one will be created and returned.
    * Once created, the subsequent calls with the same {@code name} will always return the previously created one
    * (i.e. singleton.)
-   *
    * @param name the name of the {@link Constant}
    */
   public T valueOf(String name) {
@@ -62,7 +60,6 @@ public abstract class ConstantPool<T extends Constant<T>> {
 
   /**
    * Get existing constant by name or creates new one if not exists. Threadsafe
-   *
    * @param name the name of the {@link Constant}
    */
   private T getOrCreate(String name) {
@@ -97,7 +94,6 @@ public abstract class ConstantPool<T extends Constant<T>> {
 
   /**
    * Creates constant by name or throws exception. Threadsafe
-   *
    * @param name the name of the {@link Constant}
    */
   private T createOrThrow(String name) {

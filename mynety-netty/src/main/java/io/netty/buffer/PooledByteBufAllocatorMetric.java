@@ -108,15 +108,15 @@ public final class PooledByteBufAllocatorMetric implements ByteBufAllocatorMetri
   public String toString() {
     StringBuilder sb = new StringBuilder(256);
     sb.append(StringUtil.simpleClassName(this))
-        .append("(usedHeapMemory: ").append(usedHeapMemory())
-        .append("; usedDirectMemory: ").append(usedDirectMemory())
-        .append("; numHeapArenas: ").append(numHeapArenas())
-        .append("; numDirectArenas: ").append(numDirectArenas())
-        .append("; tinyCacheSize: ").append(tinyCacheSize())
-        .append("; smallCacheSize: ").append(smallCacheSize())
-        .append("; normalCacheSize: ").append(normalCacheSize())
-        .append("; numThreadLocalCaches: ").append(numThreadLocalCaches())
-        .append("; chunkSize: ").append(chunkSize()).append(')');
+      .append("(usedHeapMemory: ").append(usedHeapMemory())
+      .append("; usedDirectMemory: ").append(usedDirectMemory())
+      .append("; numHeapArenas: ").append(numHeapArenas())
+      .append("; numDirectArenas: ").append(numDirectArenas())
+      .append("; tinyCacheSize: ").append(tinyCacheSize())
+      .append("; smallCacheSize: ").append(smallCacheSize())
+      .append("; normalCacheSize: ").append(normalCacheSize())
+      .append("; numThreadLocalCaches: ").append(numThreadLocalCaches())
+      .append("; chunkSize: ").append(chunkSize()).append(')');
     return sb.toString();
   }
 }

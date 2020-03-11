@@ -65,11 +65,11 @@ final class SpdySession {
   }
 
   void acceptStream(
-      int streamId, byte priority, boolean remoteSideClosed, boolean localSideClosed,
-      int sendWindowSize, int receiveWindowSize, boolean remote) {
+    int streamId, byte priority, boolean remoteSideClosed, boolean localSideClosed,
+    int sendWindowSize, int receiveWindowSize, boolean remote) {
     if (!remoteSideClosed || !localSideClosed) {
       StreamState state = activeStreams.put(streamId, new StreamState(
-          priority, remoteSideClosed, localSideClosed, sendWindowSize, receiveWindowSize));
+        priority, remoteSideClosed, localSideClosed, sendWindowSize, receiveWindowSize));
       if (state == null) {
         if (remote) {
           activeRemoteStreams.incrementAndGet();
@@ -242,8 +242,8 @@ final class SpdySession {
     private final Queue<PendingWrite> pendingWriteQueue = new ConcurrentLinkedQueue<PendingWrite>();
 
     StreamState(
-        byte priority, boolean remoteSideClosed, boolean localSideClosed,
-        int sendWindowSize, int receiveWindowSize) {
+      byte priority, boolean remoteSideClosed, boolean localSideClosed,
+      int sendWindowSize, int receiveWindowSize) {
       this.priority = priority;
       this.remoteSideClosed = remoteSideClosed;
       this.localSideClosed = localSideClosed;

@@ -115,7 +115,6 @@ public interface Http2Stream {
 
   /**
    * Associates the application-defined data with this stream.
-   *
    * @return The value that was previously associated with {@code key}, or {@code null} if there was none.
    */
   <V> V setProperty(Http2Connection.PropertyKey key, V value);
@@ -134,7 +133,6 @@ public interface Http2Stream {
    * Indicates that headers have been sent to the remote endpoint on this stream. The first call to this method would
    * be for the initial headers (see {@link #isHeadersSent()}} and the second call would indicate the trailers
    * (see {@link #isTrailersReceived()}).
-   *
    * @param isInformational {@code true} if the headers contain an informational status code (for responses only).
    */
   Http2Stream headersSent(boolean isInformational);
@@ -153,7 +151,6 @@ public interface Http2Stream {
    * Indicates that headers have been received. The first call to this method would be for the initial headers
    * (see {@link #isHeadersReceived()}} and the second call would indicate the trailers
    * (see {@link #isTrailersReceived()}).
-   *
    * @param isInformational {@code true} if the headers contain an informational status code (for responses only).
    */
   Http2Stream headersReceived(boolean isInformational);

@@ -45,7 +45,6 @@ public final class SslContextBuilder {
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param keyCertChainFile an X.509 certificate chain file in PEM format
    * @param keyFile          a PKCS#8 private key file in PEM format
    * @see #keyManager(File, File)
@@ -56,7 +55,6 @@ public final class SslContextBuilder {
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param keyCertChainInputStream an input stream for an X.509 certificate chain in PEM format
    * @param keyInputStream          an input stream for a PKCS#8 private key in PEM format
    * @see #keyManager(InputStream, InputStream)
@@ -67,7 +65,6 @@ public final class SslContextBuilder {
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param key          a PKCS#8 private key
    * @param keyCertChain the X.509 certificate chain
    * @see #keyManager(PrivateKey, X509Certificate[])
@@ -78,7 +75,6 @@ public final class SslContextBuilder {
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param keyCertChainFile an X.509 certificate chain file in PEM format
    * @param keyFile          a PKCS#8 private key file in PEM format
    * @param keyPassword      the password of the {@code keyFile}, or {@code null} if it's not
@@ -86,13 +82,12 @@ public final class SslContextBuilder {
    * @see #keyManager(File, File, String)
    */
   public static SslContextBuilder forServer(
-      File keyCertChainFile, File keyFile, String keyPassword) {
+    File keyCertChainFile, File keyFile, String keyPassword) {
     return new SslContextBuilder(true).keyManager(keyCertChainFile, keyFile, keyPassword);
   }
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param keyCertChainInputStream an input stream for an X.509 certificate chain in PEM format
    * @param keyInputStream          an input stream for a PKCS#8 private key in PEM format
    * @param keyPassword             the password of the {@code keyFile}, or {@code null} if it's not
@@ -100,13 +95,12 @@ public final class SslContextBuilder {
    * @see #keyManager(InputStream, InputStream, String)
    */
   public static SslContextBuilder forServer(
-      InputStream keyCertChainInputStream, InputStream keyInputStream, String keyPassword) {
+    InputStream keyCertChainInputStream, InputStream keyInputStream, String keyPassword) {
     return new SslContextBuilder(true).keyManager(keyCertChainInputStream, keyInputStream, keyPassword);
   }
 
   /**
    * Creates a builder for new server-side {@link SslContext}.
-   *
    * @param key          a PKCS#8 private key
    * @param keyCertChain the X.509 certificate chain
    * @param keyPassword  the password of the {@code keyFile}, or {@code null} if it's not
@@ -114,7 +108,7 @@ public final class SslContextBuilder {
    * @see #keyManager(File, File, String)
    */
   public static SslContextBuilder forServer(
-      PrivateKey key, String keyPassword, X509Certificate... keyCertChain) {
+    PrivateKey key, String keyPassword, X509Certificate... keyCertChain) {
     return new SslContextBuilder(true).keyManager(key, keyPassword, keyCertChain);
   }
 
@@ -123,7 +117,6 @@ public final class SslContextBuilder {
    * <p>
    * If you use {@link SslProvider#OPENSSL} or {@link SslProvider#OPENSSL_REFCNT} consider using
    * {@link OpenSslX509KeyManagerFactory} or {@link OpenSslCachingX509KeyManagerFactory}.
-   *
    * @param keyManagerFactory non-{@code null} factory for server's private key
    * @see #keyManager(KeyManagerFactory)
    */
@@ -189,7 +182,7 @@ public final class SslContextBuilder {
       return trustManager(SslContext.toX509Certificates(trustCertCollectionFile));
     } catch (Exception e) {
       throw new IllegalArgumentException("File does not contain valid certificates: "
-          + trustCertCollectionFile, e);
+        + trustCertCollectionFile, e);
     }
   }
 
@@ -226,7 +219,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChainFile} and {@code keyFile} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param keyCertChainFile an X.509 certificate chain file in PEM format
    * @param keyFile          a PKCS#8 private key file in PEM format
    */
@@ -237,7 +229,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChainInputStream} and {@code keyInputStream} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param keyCertChainInputStream an input stream for an X.509 certificate chain in PEM format
    * @param keyInputStream          an input stream for a PKCS#8 private key in PEM format
    */
@@ -248,7 +239,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChain} and {@code key} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param key          a PKCS#8 private key
    * @param keyCertChain an X.509 certificate chain
    */
@@ -259,7 +249,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChainFile} and {@code keyFile} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param keyCertChainFile an X.509 certificate chain file in PEM format
    * @param keyFile          a PKCS#8 private key file in PEM format
    * @param keyPassword      the password of the {@code keyFile}, or {@code null} if it's not
@@ -284,7 +273,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChainInputStream} and {@code keyInputStream} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param keyCertChainInputStream an input stream for an X.509 certificate chain in PEM format
    * @param keyInputStream          an input stream for a PKCS#8 private key in PEM format
    * @param keyPassword             the password of the {@code keyInputStream}, or {@code null} if it's not
@@ -310,7 +298,6 @@ public final class SslContextBuilder {
   /**
    * Identifying certificate for this host. {@code keyCertChain} and {@code key} may
    * be {@code null} for client contexts, which disables mutual authentication.
-   *
    * @param key          a PKCS#8 private key file
    * @param keyPassword  the password of the {@code key}, or {@code null} if it's not
    *                     password-protected
@@ -418,7 +405,6 @@ public final class SslContextBuilder {
 
   /**
    * The TLS protocol versions to enable.
-   *
    * @param protocols The protocols to enable, or {@code null} to enable the default protocols.
    * @see SSLEngine#setEnabledCipherSuites(String[])
    */
@@ -438,7 +424,6 @@ public final class SslContextBuilder {
   /**
    * Enables OCSP stapling. Please note that not all {@link SslProvider} implementations support OCSP
    * stapling and an exception will be thrown upon {@link #build()}.
-   *
    * @see OpenSsl#isOcspSupported()
    */
   @UnstableApi
@@ -455,13 +440,13 @@ public final class SslContextBuilder {
   public SslContext build() throws SSLException {
     if (forServer) {
       return SslContext.newServerContextInternal(provider, sslContextProvider, trustCertCollection,
-          trustManagerFactory, keyCertChain, key, keyPassword, keyManagerFactory,
-          ciphers, cipherFilter, apn, sessionCacheSize, sessionTimeout, clientAuth, protocols, startTls,
-          enableOcsp, keyStoreType);
+        trustManagerFactory, keyCertChain, key, keyPassword, keyManagerFactory,
+        ciphers, cipherFilter, apn, sessionCacheSize, sessionTimeout, clientAuth, protocols, startTls,
+        enableOcsp, keyStoreType);
     } else {
       return SslContext.newClientContextInternal(provider, sslContextProvider, trustCertCollection,
-          trustManagerFactory, keyCertChain, key, keyPassword, keyManagerFactory,
-          ciphers, cipherFilter, apn, protocols, sessionCacheSize, sessionTimeout, enableOcsp, keyStoreType);
+        trustManagerFactory, keyCertChain, key, keyPassword, keyManagerFactory,
+        ciphers, cipherFilter, apn, protocols, sessionCacheSize, sessionTimeout, enableOcsp, keyStoreType);
     }
   }
 }

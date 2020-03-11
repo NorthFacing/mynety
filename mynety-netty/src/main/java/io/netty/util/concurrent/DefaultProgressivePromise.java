@@ -22,7 +22,6 @@ public class DefaultProgressivePromise<V> extends DefaultPromise<V> implements P
    * Creates a new instance.
    * <p>
    * It is preferable to use {@link EventExecutor#newProgressivePromise()} to create a new progressive promise
-   *
    * @param executor the {@link EventExecutor} which is used to notify the promise when it progresses or it is complete
    */
   public DefaultProgressivePromise(EventExecutor executor) {
@@ -41,7 +40,7 @@ public class DefaultProgressivePromise<V> extends DefaultPromise<V> implements P
       }
     } else if (progress < 0 || progress > total) {
       throw new IllegalArgumentException(
-          "progress: " + progress + " (expected: 0 <= progress <= total (" + total + "))");
+        "progress: " + progress + " (expected: 0 <= progress <= total (" + total + "))");
     }
 
     if (isDone()) {

@@ -27,7 +27,7 @@ final class SpdyHeaderBlockZlibDecoder extends SpdyHeaderBlockRawDecoder {
 
   private static final int DEFAULT_BUFFER_CAPACITY = 4096;
   private static final SpdyProtocolException INVALID_HEADER_BLOCK =
-      new SpdyProtocolException("Invalid Header Block");
+    new SpdyProtocolException("Invalid Header Block");
 
   private final Inflater decompressor = new Inflater();
 

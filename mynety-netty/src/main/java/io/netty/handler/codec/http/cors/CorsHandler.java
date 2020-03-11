@@ -15,8 +15,18 @@
  */
 package io.netty.handler.codec.http.cors;
 
-import io.netty.channel.*;
-import io.netty.handler.codec.http.*;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
@@ -57,7 +67,6 @@ public class CorsHandler extends ChannelDuplexHandler {
   /**
    * Creates a new instance with the specified config list. If more than one
    * config matches a certain origin, the first in the List will be used.
-   *
    * @param configList     List of {@link CorsConfig}
    * @param isShortCircuit Same as {@link CorsConfig#shortCircuit} but applicable to all supplied configs.
    */
@@ -104,7 +113,6 @@ public class CorsHandler extends ChannelDuplexHandler {
   /**
    * This is a non CORS specification feature which enables the setting of preflight
    * response headers that might be required by intermediaries.
-   *
    * @param response the HttpResponse to which the preflight response headers should be added.
    */
   private void setPreflightHeaders(final HttpResponse response) {
@@ -174,7 +182,7 @@ public class CorsHandler extends ChannelDuplexHandler {
 
   private void setAllowCredentials(final HttpResponse response) {
     if (config.isCredentialsAllowed()
-        && !response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN).equals(ANY_ORIGIN)) {
+      && !response.headers().get(HttpHeaderNames.ACCESS_CONTROL_ALLOW_ORIGIN).equals(ANY_ORIGIN)) {
       response.headers().set(HttpHeaderNames.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
     }
   }
@@ -182,8 +190,8 @@ public class CorsHandler extends ChannelDuplexHandler {
   private static boolean isPreflightRequest(final HttpRequest request) {
     final HttpHeaders headers = request.headers();
     return OPTIONS.equals(request.method()) &&
-        headers.contains(HttpHeaderNames.ORIGIN) &&
-        headers.contains(HttpHeaderNames.ACCESS_CONTROL_REQUEST_METHOD);
+      headers.contains(HttpHeaderNames.ORIGIN) &&
+      headers.contains(HttpHeaderNames.ACCESS_CONTROL_REQUEST_METHOD);
   }
 
   private void setExposeHeaders(final HttpResponse response) {
@@ -206,7 +214,7 @@ public class CorsHandler extends ChannelDuplexHandler {
 
   @Override
   public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise)
-      throws Exception {
+    throws Exception {
     if (config != null && config.isCorsSupportEnabled() && msg instanceof HttpResponse) {
       final HttpResponse response = (HttpResponse) msg;
       if (setOrigin(response)) {
@@ -219,16 +227,16 @@ public class CorsHandler extends ChannelDuplexHandler {
 
   private static void forbidden(final ChannelHandlerContext ctx, final HttpRequest request) {
     HttpResponse response = new DefaultFullHttpResponse(
-        request.protocolVersion(), FORBIDDEN, ctx.alloc().buffer(0));
+      request.protocolVersion(), FORBIDDEN, ctx.alloc().buffer(0));
     response.headers().set(HttpHeaderNames.CONTENT_LENGTH, HttpHeaderValues.ZERO);
     release(request);
     respond(ctx, request, response);
   }
 
   private static void respond(
-      final ChannelHandlerContext ctx,
-      final HttpRequest request,
-      final HttpResponse response) {
+    final ChannelHandlerContext ctx,
+    final HttpRequest request,
+    final HttpResponse response) {
 
     final boolean keepAlive = HttpUtil.isKeepAlive(request);
 

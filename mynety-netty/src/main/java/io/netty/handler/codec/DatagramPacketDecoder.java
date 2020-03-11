@@ -40,7 +40,6 @@ public class DatagramPacketDecoder extends MessageToMessageDecoder<DatagramPacke
 
   /**
    * Create a {@link DatagramPacket} decoder using the specified {@link ByteBuf} decoder.
-   *
    * @param decoder the specified {@link ByteBuf} decoder
    */
   public DatagramPacketDecoder(MessageToMessageDecoder<ByteBuf> decoder) {

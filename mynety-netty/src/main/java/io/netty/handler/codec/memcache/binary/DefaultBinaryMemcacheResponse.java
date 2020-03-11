@@ -40,7 +40,6 @@ public class DefaultBinaryMemcacheResponse extends AbstractBinaryMemcacheMessage
 
   /**
    * Create a new {@link DefaultBinaryMemcacheResponse} with the header and key.
-   *
    * @param key the key to use.
    */
   public DefaultBinaryMemcacheResponse(ByteBuf key) {
@@ -49,7 +48,6 @@ public class DefaultBinaryMemcacheResponse extends AbstractBinaryMemcacheMessage
 
   /**
    * Create a new {@link DefaultBinaryMemcacheResponse} with the header, key and extras.
-   *
    * @param key    the key to use.
    * @param extras the extras to use.
    */
@@ -95,7 +93,6 @@ public class DefaultBinaryMemcacheResponse extends AbstractBinaryMemcacheMessage
 
   /**
    * Copies special metadata hold by this instance to the provided instance
-   *
    * @param dst The instance where to copy the metadata of this instance to
    */
   void copyMeta(DefaultBinaryMemcacheResponse dst) {

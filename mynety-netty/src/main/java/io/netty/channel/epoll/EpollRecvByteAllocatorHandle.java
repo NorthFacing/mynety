@@ -24,7 +24,7 @@ import io.netty.util.UncheckedBooleanSupplier;
 
 class EpollRecvByteAllocatorHandle extends DelegatingHandle implements ExtendedHandle {
   private final PreferredDirectByteBufAllocator preferredDirectByteBufAllocator =
-      new PreferredDirectByteBufAllocator();
+    new PreferredDirectByteBufAllocator();
   private final UncheckedBooleanSupplier defaultMaybeMoreDataSupplier = new UncheckedBooleanSupplier() {
     @Override
     public boolean get() {
@@ -57,7 +57,7 @@ class EpollRecvByteAllocatorHandle extends DelegatingHandle implements ExtendedH
      * It is assumed RDHUP is handled externally by checking {@link #isReceivedRdHup()}.
      */
     return (isEdgeTriggered && lastBytesRead() > 0) ||
-        (!isEdgeTriggered && lastBytesRead() == attemptedBytesRead());
+      (!isEdgeTriggered && lastBytesRead() == attemptedBytesRead());
   }
 
   final void edgeTriggered(boolean edgeTriggered) {

@@ -24,7 +24,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  */
 @UnstableApi
 public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
-    T extends InboundHttp2ToHttpAdapter, B extends AbstractInboundHttp2ToHttpAdapterBuilder<T, B>> {
+  T extends InboundHttp2ToHttpAdapter, B extends AbstractInboundHttp2ToHttpAdapterBuilder<T, B>> {
 
   private final Http2Connection connection;
   private int maxContentLength;
@@ -33,7 +33,6 @@ public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
 
   /**
    * Creates a new {@link InboundHttp2ToHttpAdapter} builder for the specified {@link Http2Connection}.
-   *
    * @param connection the object which will provide connection notification events
    *                   for the current connection
    */
@@ -62,7 +61,6 @@ public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
 
   /**
    * Specifies the maximum length of the message content.
-   *
    * @param maxContentLength the maximum length of the message content. If the length of the message content
    *                         exceeds this value, a {@link TooLongFrameException} will be raised
    * @return {@link AbstractInboundHttp2ToHttpAdapterBuilder} the builder for the {@link InboundHttp2ToHttpAdapter}
@@ -81,7 +79,6 @@ public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
 
   /**
    * Specifies whether validation of HTTP headers should be performed.
-   *
    * @param validate <ul>
    *                 <li>{@code true} to validate HTTP headers in the http-codec</li>
    *                 <li>{@code false} not to validate HTTP headers in the http-codec</li>
@@ -102,7 +99,6 @@ public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
 
   /**
    * Specifies whether a read settings frame should be propagated along the channel pipeline.
-   *
    * @param propagate if {@code true} read settings will be passed along the pipeline. This can be useful
    *                  to clients that need hold off sending data until they have received the settings.
    * @return {@link AbstractInboundHttp2ToHttpAdapterBuilder} the builder for the {@link InboundHttp2ToHttpAdapter}
@@ -119,7 +115,7 @@ public abstract class AbstractInboundHttp2ToHttpAdapterBuilder<
     final T instance;
     try {
       instance = build(connection(), maxContentLength(),
-          isValidateHttpHeaders(), isPropagateSettings());
+        isValidateHttpHeaders(), isPropagateSettings());
     } catch (Throwable t) {
       throw new IllegalStateException("failed to create a new InboundHttp2ToHttpAdapter", t);
     }

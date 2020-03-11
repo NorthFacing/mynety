@@ -28,7 +28,6 @@ public final class FailedFuture<V> extends CompleteFuture<V> {
 
   /**
    * Creates a new instance.
-   *
    * @param executor the {@link EventExecutor} associated with this future
    * @param cause    the cause of failure
    */

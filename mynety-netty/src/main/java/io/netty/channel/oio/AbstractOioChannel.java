@@ -15,13 +15,16 @@
  */
 package io.netty.channel.oio;
 
-import io.netty.channel.*;
+import io.netty.channel.AbstractChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
+import io.netty.channel.ThreadPerChannelEventLoop;
 
 import java.net.SocketAddress;
 
 /**
  * Abstract base class for {@link Channel} implementations that use Old-Blocking-IO
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated
@@ -58,8 +61,8 @@ public abstract class AbstractOioChannel extends AbstractChannel {
   private final class DefaultOioUnsafe extends AbstractUnsafe {
     @Override
     public void connect(
-        final SocketAddress remoteAddress,
-        final SocketAddress localAddress, final ChannelPromise promise) {
+      final SocketAddress remoteAddress,
+      final SocketAddress localAddress, final ChannelPromise promise) {
       if (!promise.setUncancellable() || !ensureOpen(promise)) {
         return;
       }
@@ -92,7 +95,7 @@ public abstract class AbstractOioChannel extends AbstractChannel {
    * Connect to the remote peer using the given localAddress if one is specified or {@code null} otherwise.
    */
   protected abstract void doConnect(
-      SocketAddress remoteAddress, SocketAddress localAddress) throws Exception;
+    SocketAddress remoteAddress, SocketAddress localAddress) throws Exception;
 
   @Override
   protected void doBeginRead() throws Exception {

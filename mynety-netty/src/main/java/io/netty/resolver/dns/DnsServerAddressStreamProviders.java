@@ -32,31 +32,31 @@ public final class DnsServerAddressStreamProviders {
   // TODO(scott): how is this done on Windows? This may require a JNI call to GetNetworkParams
   // https://msdn.microsoft.com/en-us/library/aa365968(VS.85).aspx.
   private static final DnsServerAddressStreamProvider DEFAULT_DNS_SERVER_ADDRESS_STREAM_PROVIDER =
-      new DnsServerAddressStreamProvider() {
-        private volatile DnsServerAddressStreamProvider currentProvider = provider();
-        private final AtomicLong lastRefresh = new AtomicLong(System.nanoTime());
+    new DnsServerAddressStreamProvider() {
+      private volatile DnsServerAddressStreamProvider currentProvider = provider();
+      private final AtomicLong lastRefresh = new AtomicLong(System.nanoTime());
 
-        @Override
-        public DnsServerAddressStream nameServerAddressStream(String hostname) {
-          long last = lastRefresh.get();
-          DnsServerAddressStreamProvider current = currentProvider;
-          if (System.nanoTime() - last > REFRESH_INTERVAL) {
-            // This is slightly racy which means it will be possible still use the old configuration for a small
-            // amount of time, but that's ok.
-            if (lastRefresh.compareAndSet(last, System.nanoTime())) {
-              current = currentProvider = provider();
-            }
+      @Override
+      public DnsServerAddressStream nameServerAddressStream(String hostname) {
+        long last = lastRefresh.get();
+        DnsServerAddressStreamProvider current = currentProvider;
+        if (System.nanoTime() - last > REFRESH_INTERVAL) {
+          // This is slightly racy which means it will be possible still use the old configuration for a small
+          // amount of time, but that's ok.
+          if (lastRefresh.compareAndSet(last, System.nanoTime())) {
+            current = currentProvider = provider();
           }
-          return current.nameServerAddressStream(hostname);
         }
+        return current.nameServerAddressStream(hostname);
+      }
 
-        private DnsServerAddressStreamProvider provider() {
-          // If on windows just use the DefaultDnsServerAddressStreamProvider.INSTANCE as otherwise
-          // we will log some error which may be confusing.
-          return PlatformDependent.isWindows() ? DefaultDnsServerAddressStreamProvider.INSTANCE :
-              UnixResolverDnsServerAddressStreamProvider.parseSilently();
-        }
-      };
+      private DnsServerAddressStreamProvider provider() {
+        // If on windows just use the DefaultDnsServerAddressStreamProvider.INSTANCE as otherwise
+        // we will log some error which may be confusing.
+        return PlatformDependent.isWindows() ? DefaultDnsServerAddressStreamProvider.INSTANCE :
+          UnixResolverDnsServerAddressStreamProvider.parseSilently();
+      }
+    };
 
   private DnsServerAddressStreamProviders() {
   }
@@ -65,7 +65,6 @@ public final class DnsServerAddressStreamProviders {
    * A {@link DnsServerAddressStreamProvider} which inherits the DNS servers from your local host's configuration.
    * <p>
    * Note that only macOS and Linux are currently supported.
-   *
    * @return A {@link DnsServerAddressStreamProvider} which inherits the DNS servers from your local host's
    * configuration.
    */

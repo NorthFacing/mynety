@@ -59,7 +59,6 @@ final class WebSocketUtil {
 
   /**
    * Performs a MD5 hash on the specified data
-   *
    * @param data The data to hash
    * @return The hashed data
    */
@@ -70,7 +69,6 @@ final class WebSocketUtil {
 
   /**
    * Performs a SHA-1 hash on the specified data
-   *
    * @param data The data to hash
    * @return The hashed data
    */
@@ -87,7 +85,6 @@ final class WebSocketUtil {
 
   /**
    * Performs base64 encoding on the specified data
-   *
    * @param data The data to encode
    * @return An encoded string containing the data
    */
@@ -105,7 +102,6 @@ final class WebSocketUtil {
 
   /**
    * Creates an arbitrary number of random bytes
-   *
    * @param size the number of random bytes to create
    * @return An array of random bytes
    */
@@ -117,7 +113,6 @@ final class WebSocketUtil {
 
   /**
    * Generates a pseudo-random number
-   *
    * @param minimum The minimum allowable value
    * @param maximum The maximum allowable value
    * @return A pseudo-random number

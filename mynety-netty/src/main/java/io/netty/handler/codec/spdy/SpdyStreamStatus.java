@@ -24,67 +24,67 @@ public class SpdyStreamStatus implements Comparable<SpdyStreamStatus> {
    * 1 Protocol Error
    */
   public static final SpdyStreamStatus PROTOCOL_ERROR =
-      new SpdyStreamStatus(1, "PROTOCOL_ERROR");
+    new SpdyStreamStatus(1, "PROTOCOL_ERROR");
 
   /**
    * 2 Invalid Stream
    */
   public static final SpdyStreamStatus INVALID_STREAM =
-      new SpdyStreamStatus(2, "INVALID_STREAM");
+    new SpdyStreamStatus(2, "INVALID_STREAM");
 
   /**
    * 3 Refused Stream
    */
   public static final SpdyStreamStatus REFUSED_STREAM =
-      new SpdyStreamStatus(3, "REFUSED_STREAM");
+    new SpdyStreamStatus(3, "REFUSED_STREAM");
 
   /**
    * 4 Unsupported Version
    */
   public static final SpdyStreamStatus UNSUPPORTED_VERSION =
-      new SpdyStreamStatus(4, "UNSUPPORTED_VERSION");
+    new SpdyStreamStatus(4, "UNSUPPORTED_VERSION");
 
   /**
    * 5 Cancel
    */
   public static final SpdyStreamStatus CANCEL =
-      new SpdyStreamStatus(5, "CANCEL");
+    new SpdyStreamStatus(5, "CANCEL");
 
   /**
    * 6 Internal Error
    */
   public static final SpdyStreamStatus INTERNAL_ERROR =
-      new SpdyStreamStatus(6, "INTERNAL_ERROR");
+    new SpdyStreamStatus(6, "INTERNAL_ERROR");
 
   /**
    * 7 Flow Control Error
    */
   public static final SpdyStreamStatus FLOW_CONTROL_ERROR =
-      new SpdyStreamStatus(7, "FLOW_CONTROL_ERROR");
+    new SpdyStreamStatus(7, "FLOW_CONTROL_ERROR");
 
   /**
    * 8 Stream In Use
    */
   public static final SpdyStreamStatus STREAM_IN_USE =
-      new SpdyStreamStatus(8, "STREAM_IN_USE");
+    new SpdyStreamStatus(8, "STREAM_IN_USE");
 
   /**
    * 9 Stream Already Closed
    */
   public static final SpdyStreamStatus STREAM_ALREADY_CLOSED =
-      new SpdyStreamStatus(9, "STREAM_ALREADY_CLOSED");
+    new SpdyStreamStatus(9, "STREAM_ALREADY_CLOSED");
 
   /**
    * 10 Invalid Credentials
    */
   public static final SpdyStreamStatus INVALID_CREDENTIALS =
-      new SpdyStreamStatus(10, "INVALID_CREDENTIALS");
+    new SpdyStreamStatus(10, "INVALID_CREDENTIALS");
 
   /**
    * 11 Frame Too Large
    */
   public static final SpdyStreamStatus FRAME_TOO_LARGE =
-      new SpdyStreamStatus(11, "FRAME_TOO_LARGE");
+    new SpdyStreamStatus(11, "FRAME_TOO_LARGE");
 
   /**
    * Returns the {@link SpdyStreamStatus} represented by the specified code.
@@ -94,7 +94,7 @@ public class SpdyStreamStatus implements Comparable<SpdyStreamStatus> {
   public static SpdyStreamStatus valueOf(int code) {
     if (code == 0) {
       throw new IllegalArgumentException(
-          "0 is not a valid status code for a RST_STREAM");
+        "0 is not a valid status code for a RST_STREAM");
     }
 
     switch (code) {
@@ -136,7 +136,7 @@ public class SpdyStreamStatus implements Comparable<SpdyStreamStatus> {
   public SpdyStreamStatus(int code, String statusPhrase) {
     if (code == 0) {
       throw new IllegalArgumentException(
-          "0 is not a valid status code for a RST_STREAM");
+        "0 is not a valid status code for a RST_STREAM");
     }
 
     if (statusPhrase == null) {

@@ -29,7 +29,6 @@ public class DefaultSpdyDataFrame extends DefaultSpdyStreamFrame implements Spdy
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    */
   public DefaultSpdyDataFrame(int streamId) {
@@ -38,7 +37,6 @@ public class DefaultSpdyDataFrame extends DefaultSpdyStreamFrame implements Spdy
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    * @param data     the payload of the frame. Can not exceed {@link SpdyCodecUtil#SPDY_MAX_LENGTH}
    */
@@ -53,7 +51,7 @@ public class DefaultSpdyDataFrame extends DefaultSpdyStreamFrame implements Spdy
   private static ByteBuf validate(ByteBuf data) {
     if (data.readableBytes() > SpdyCodecUtil.SPDY_MAX_LENGTH) {
       throw new IllegalArgumentException("data payload cannot exceed "
-          + SpdyCodecUtil.SPDY_MAX_LENGTH + " bytes");
+        + SpdyCodecUtil.SPDY_MAX_LENGTH + " bytes");
     }
     return data;
   }
@@ -142,15 +140,15 @@ public class DefaultSpdyDataFrame extends DefaultSpdyStreamFrame implements Spdy
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append("(last: ")
-        .append(isLast())
-        .append(')')
-        .append(StringUtil.NEWLINE)
-        .append("--> Stream-ID = ")
-        .append(streamId())
-        .append(StringUtil.NEWLINE)
-        .append("--> Size = ");
+      .append(StringUtil.simpleClassName(this))
+      .append("(last: ")
+      .append(isLast())
+      .append(')')
+      .append(StringUtil.NEWLINE)
+      .append("--> Stream-ID = ")
+      .append(streamId())
+      .append(StringUtil.NEWLINE)
+      .append("--> Size = ");
     if (refCnt() == 0) {
       buf.append("(freed)");
     } else {

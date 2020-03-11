@@ -42,10 +42,10 @@ public class MqttMessage {
   }
 
   public MqttMessage(
-      MqttFixedHeader mqttFixedHeader,
-      Object variableHeader,
-      Object payload,
-      DecoderResult decoderResult) {
+    MqttFixedHeader mqttFixedHeader,
+    Object variableHeader,
+    Object payload,
+    DecoderResult decoderResult) {
     this.mqttFixedHeader = mqttFixedHeader;
     this.variableHeader = variableHeader;
     this.payload = payload;
@@ -71,11 +71,11 @@ public class MqttMessage {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("fixedHeader=").append(fixedHeader() != null ? fixedHeader().toString() : "")
-        .append(", variableHeader=").append(variableHeader() != null ? variableHeader.toString() : "")
-        .append(", payload=").append(payload() != null ? payload.toString() : "")
-        .append(']')
-        .toString();
+      .append('[')
+      .append("fixedHeader=").append(fixedHeader() != null ? fixedHeader().toString() : "")
+      .append(", variableHeader=").append(variableHeader() != null ? variableHeader.toString() : "")
+      .append(", payload=").append(payload() != null ? payload.toString() : "")
+      .append(']')
+      .toString();
   }
 }

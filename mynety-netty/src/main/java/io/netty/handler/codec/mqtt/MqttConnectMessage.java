@@ -22,9 +22,9 @@ package io.netty.handler.codec.mqtt;
 public final class MqttConnectMessage extends MqttMessage {
 
   public MqttConnectMessage(
-      MqttFixedHeader mqttFixedHeader,
-      MqttConnectVariableHeader variableHeader,
-      MqttConnectPayload payload) {
+    MqttFixedHeader mqttFixedHeader,
+    MqttConnectVariableHeader variableHeader,
+    MqttConnectPayload payload) {
     super(mqttFixedHeader, variableHeader, payload);
   }
 

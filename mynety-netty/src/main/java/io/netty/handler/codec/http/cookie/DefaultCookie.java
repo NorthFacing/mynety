@@ -198,7 +198,6 @@ public class DefaultCookie implements Cookie {
   /**
    * Validate a cookie attribute value, throws a {@link IllegalArgumentException} otherwise.
    * Only intended to be used by {@link io.netty.handler.codec.http.DefaultCookie}.
-   *
    * @param name  attribute name
    * @param value attribute value
    * @return the trimmed, validated attribute value
@@ -212,21 +211,21 @@ public class DefaultCookie implements Cookie {
   @Override
   public String toString() {
     StringBuilder buf = stringBuilder()
-        .append(name())
-        .append('=')
-        .append(value());
+      .append(name())
+      .append('=')
+      .append(value());
     if (domain() != null) {
       buf.append(", domain=")
-          .append(domain());
+        .append(domain());
     }
     if (path() != null) {
       buf.append(", path=")
-          .append(path());
+        .append(path());
     }
     if (maxAge() >= 0) {
       buf.append(", maxAge=")
-          .append(maxAge())
-          .append('s');
+        .append(maxAge())
+        .append('s');
     }
     if (isSecure()) {
       buf.append(", secure");

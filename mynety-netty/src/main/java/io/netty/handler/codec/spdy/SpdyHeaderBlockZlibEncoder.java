@@ -35,7 +35,7 @@ class SpdyHeaderBlockZlibEncoder extends SpdyHeaderBlockRawEncoder {
     super(spdyVersion);
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     compressor = new Deflater(compressionLevel);
     compressor.setDictionary(SPDY_DICT);

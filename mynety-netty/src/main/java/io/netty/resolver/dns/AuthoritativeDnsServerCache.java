@@ -30,7 +30,6 @@ public interface AuthoritativeDnsServerCache {
    * Returns the cached nameservers that should be used to resolve the given hostname. The returned
    * {@link DnsServerAddressStream} may contain unresolved {@link InetSocketAddress}es that will be resolved
    * when needed while resolving other domain names.
-   *
    * @param hostname the hostname
    * @return the cached entries or an {@code null} if none.
    */
@@ -38,7 +37,6 @@ public interface AuthoritativeDnsServerCache {
 
   /**
    * Caches a nameserver that should be used to resolve the given hostname.
-   *
    * @param hostname    the hostname
    * @param address     the nameserver address (which may be unresolved).
    * @param originalTtl the TTL as returned by the DNS server
@@ -48,14 +46,12 @@ public interface AuthoritativeDnsServerCache {
 
   /**
    * Clears all cached nameservers.
-   *
    * @see #clear(String)
    */
   void clear();
 
   /**
    * Clears the cached nameservers for the specified hostname.
-   *
    * @return {@code true} if and only if there was an entry for the specified host name in the cache and
    * it has been removed by this method
    */

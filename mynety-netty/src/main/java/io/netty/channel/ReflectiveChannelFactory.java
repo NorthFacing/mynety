@@ -34,7 +34,7 @@ public class ReflectiveChannelFactory<T extends Channel> implements ChannelFacto
       this.constructor = clazz.getConstructor();
     } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException("Class " + StringUtil.simpleClassName(clazz) +
-          " does not have a public non-arg constructor", e);
+        " does not have a public non-arg constructor", e);
     }
   }
 
@@ -50,6 +50,6 @@ public class ReflectiveChannelFactory<T extends Channel> implements ChannelFacto
   @Override
   public String toString() {
     return StringUtil.simpleClassName(ReflectiveChannelFactory.class) +
-        '(' + StringUtil.simpleClassName(constructor.getDeclaringClass()) + ".class)";
+      '(' + StringUtil.simpleClassName(constructor.getDeclaringClass()) + ".class)";
   }
 }

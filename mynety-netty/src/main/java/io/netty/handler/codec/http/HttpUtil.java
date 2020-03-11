@@ -45,7 +45,7 @@ public final class HttpUtil {
    */
   public static boolean isOriginForm(URI uri) {
     return uri.getScheme() == null && uri.getSchemeSpecificPart() == null &&
-        uri.getHost() == null && uri.getAuthority() == null;
+      uri.getHost() == null && uri.getAuthority() == null;
   }
 
   /**
@@ -54,9 +54,9 @@ public final class HttpUtil {
    */
   public static boolean isAsteriskForm(URI uri) {
     return "*".equals(uri.getPath()) &&
-        uri.getScheme() == null && uri.getSchemeSpecificPart() == null &&
-        uri.getHost() == null && uri.getAuthority() == null && uri.getQuery() == null &&
-        uri.getFragment() == null;
+      uri.getScheme() == null && uri.getSchemeSpecificPart() == null &&
+      uri.getHost() == null && uri.getAuthority() == null && uri.getQuery() == null &&
+      uri.getFragment() == null;
   }
 
   /**
@@ -68,8 +68,8 @@ public final class HttpUtil {
    */
   public static boolean isKeepAlive(HttpMessage message) {
     return !message.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true) &&
-        (message.protocolVersion().isKeepAliveDefault() ||
-            message.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true));
+      (message.protocolVersion().isKeepAliveDefault() ||
+        message.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true));
   }
 
   /**
@@ -90,7 +90,6 @@ public final class HttpUtil {
    *     <li>remove otherwise.</li>
    *     </ul></li>
    * </ul>
-   *
    * @see #setKeepAlive(HttpHeaders, HttpVersion, boolean)
    */
   public static void setKeepAlive(HttpMessage message, boolean keepAlive) {
@@ -137,7 +136,6 @@ public final class HttpUtil {
    * not retrieved from {@link HttpContent#content()} but from the
    * {@code "Content-Length"} header, and thus they are independent from each
    * other.
-   *
    * @return the content length
    * @throws NumberFormatException if the message does not have the {@code "Content-Length"} header
    *                               or its value is not a number
@@ -163,7 +161,6 @@ public final class HttpUtil {
    * Returns the length of the content or the specified default value if the message does not have the {@code
    * "Content-Length" header}. Please note that this value is not retrieved from {@link HttpContent#content()} but
    * from the {@code "Content-Length"} header, and thus they are independent from each other.
-   *
    * @param message      the message
    * @param defaultValue the default value
    * @return the content length or the specified default value
@@ -188,7 +185,6 @@ public final class HttpUtil {
 
   /**
    * Get an {@code int} representation of {@link #getContentLength(HttpMessage, long)}.
-   *
    * @return the content length or {@code defaultValue} if this message does
    * not have the {@code "Content-Length"} header or its value is not
    * a number. Not to exceed the boundaries of integer.
@@ -207,15 +203,15 @@ public final class HttpUtil {
     if (message instanceof HttpRequest) {
       HttpRequest req = (HttpRequest) message;
       if (HttpMethod.GET.equals(req.method()) &&
-          h.contains(HttpHeaderNames.SEC_WEBSOCKET_KEY1) &&
-          h.contains(HttpHeaderNames.SEC_WEBSOCKET_KEY2)) {
+        h.contains(HttpHeaderNames.SEC_WEBSOCKET_KEY1) &&
+        h.contains(HttpHeaderNames.SEC_WEBSOCKET_KEY2)) {
         return 8;
       }
     } else if (message instanceof HttpResponse) {
       HttpResponse res = (HttpResponse) message;
       if (res.status().code() == 101 &&
-          h.contains(HttpHeaderNames.SEC_WEBSOCKET_ORIGIN) &&
-          h.contains(HttpHeaderNames.SEC_WEBSOCKET_LOCATION)) {
+        h.contains(HttpHeaderNames.SEC_WEBSOCKET_ORIGIN) &&
+        h.contains(HttpHeaderNames.SEC_WEBSOCKET_LOCATION)) {
         return 16;
       }
     }
@@ -239,22 +235,20 @@ public final class HttpUtil {
    * Returns {@code true} if and only if the specified message contains an expect header and the only expectation
    * present is the 100-continue expectation. Note that this method returns {@code false} if the expect header is
    * not valid for the message (e.g., the message is a response, or the version on the message is HTTP/1.0).
-   *
    * @param message the message
    * @return {@code true} if and only if the expectation 100-continue is present and it is the only expectation
    * present
    */
   public static boolean is100ContinueExpected(HttpMessage message) {
     return isExpectHeaderValid(message)
-        // unquoted tokens in the expect header are case-insensitive, thus 100-continue is case insensitive
-        && message.headers().contains(HttpHeaderNames.EXPECT, HttpHeaderValues.CONTINUE, true);
+      // unquoted tokens in the expect header are case-insensitive, thus 100-continue is case insensitive
+      && message.headers().contains(HttpHeaderNames.EXPECT, HttpHeaderValues.CONTINUE, true);
   }
 
   /**
    * Returns {@code true} if the specified message contains an expect header specifying an expectation that is not
    * supported. Note that this method returns {@code false} if the expect header is not valid for the message
    * (e.g., the message is a response, or the version on the message is HTTP/1.0).
-   *
    * @param message the message
    * @return {@code true} if and only if an expectation is present that is not supported
    */
@@ -274,7 +268,7 @@ public final class HttpUtil {
      * that expectation."
      */
     return message instanceof HttpRequest &&
-        message.protocolVersion().compareTo(HttpVersion.HTTP_1_1) >= 0;
+      message.protocolVersion().compareTo(HttpVersion.HTTP_1_1) >= 0;
   }
 
   /**
@@ -294,7 +288,6 @@ public final class HttpUtil {
 
   /**
    * Checks to see if the transfer encoding in a specified {@link HttpMessage} is chunked
-   *
    * @param message The message to check
    * @return True if transfer encoding is chunked, otherwise false
    */
@@ -305,7 +298,6 @@ public final class HttpUtil {
   /**
    * Set the {@link HttpHeaderNames#TRANSFER_ENCODING} to either include {@link HttpHeaderValues#CHUNKED} if
    * {@code chunked} is {@code true}, or remove {@link HttpHeaderValues#CHUNKED} if {@code chunked} is {@code false}.
-   *
    * @param m       The message which contains the headers to modify.
    * @param chunked if {@code true} then include {@link HttpHeaderValues#CHUNKED} in the headers. otherwise remove
    *                {@link HttpHeaderValues#CHUNKED} from the headers.
@@ -337,7 +329,6 @@ public final class HttpUtil {
 
   /**
    * Fetch charset from message's Content-Type header.
-   *
    * @param message entity to fetch Content-Type header from
    * @return the charset from message's Content-Type header or {@link CharsetUtil#ISO_8859_1}
    * if charset is not presented or unparsable
@@ -348,7 +339,6 @@ public final class HttpUtil {
 
   /**
    * Fetch charset from Content-Type header value.
-   *
    * @param contentTypeValue Content-Type header value to parse
    * @return the charset from message's Content-Type header or {@link CharsetUtil#ISO_8859_1}
    * if charset is not presented or unparsable
@@ -363,7 +353,6 @@ public final class HttpUtil {
 
   /**
    * Fetch charset from message's Content-Type header.
-   *
    * @param message        entity to fetch Content-Type header from
    * @param defaultCharset result to use in case of empty, incorrect or doesn't contain required part header value
    * @return the charset from message's Content-Type header or {@code defaultCharset}
@@ -380,7 +369,6 @@ public final class HttpUtil {
 
   /**
    * Fetch charset from Content-Type header value.
-   *
    * @param contentTypeValue Content-Type header value to parse
    * @param defaultCharset   result to use in case of empty, incorrect or doesn't contain required part header value
    * @return the charset from message's Content-Type header or {@code defaultCharset}
@@ -407,7 +395,6 @@ public final class HttpUtil {
    * <p>
    * A lot of sites/possibly clients have charset="CHARSET", for example charset="utf-8". Or "utf8" instead of "utf-8"
    * This is not according to standard, but this method provide an ability to catch desired mistakes manually in code
-   *
    * @param message entity to fetch Content-Type header from
    * @return the {@code CharSequence} with charset from message's Content-Type header
    * or {@code null} if charset is not presented
@@ -423,7 +410,6 @@ public final class HttpUtil {
    * <p>
    * A lot of sites/possibly clients have charset="CHARSET", for example charset="utf-8". Or "utf8" instead of "utf-8"
    * This is not according to standard, but this method provide an ability to catch desired mistakes manually in code
-   *
    * @return the {@code CharSequence} with charset from message's Content-Type header
    * or {@code null} if charset is not presented
    */
@@ -441,7 +427,6 @@ public final class HttpUtil {
    * <p>
    * A lot of sites/possibly clients have charset="CHARSET", for example charset="utf-8". Or "utf8" instead of "utf-8"
    * This is not according to standard, but this method provide an ability to catch desired mistakes manually in code
-   *
    * @param contentTypeValue Content-Type header value to parse
    * @return the {@code CharSequence} with charset from message's Content-Type header
    * or {@code null} if charset is not presented
@@ -473,7 +458,6 @@ public final class HttpUtil {
 
   /**
    * Fetch MIME type part from message's Content-Type header as a char sequence.
-   *
    * @param message entity to fetch Content-Type header from
    * @return the MIME type as a {@code CharSequence} from message's Content-Type header
    * or {@code null} if content-type header or MIME type part of this header are not presented
@@ -493,7 +477,6 @@ public final class HttpUtil {
 
   /**
    * Fetch MIME type part from Content-Type header value as a char sequence.
-   *
    * @param contentTypeValue Content-Type header value to parse
    * @return the MIME type as a {@code CharSequence} from message's Content-Type header
    * or {@code null} if content-type header or MIME type part of this header are not presented
@@ -519,7 +502,6 @@ public final class HttpUtil {
   /**
    * Formats the host string of an address so it can be used for computing an HTTP component
    * such as a URL or a Host header
-   *
    * @param addr the address
    * @return the formatted String
    */

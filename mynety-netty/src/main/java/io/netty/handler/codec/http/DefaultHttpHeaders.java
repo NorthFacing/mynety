@@ -15,14 +15,26 @@
  */
 package io.netty.handler.codec.http;
 
-import io.netty.handler.codec.*;
+import io.netty.handler.codec.CharSequenceValueConverter;
+import io.netty.handler.codec.DateFormatter;
+import io.netty.handler.codec.DefaultHeaders;
 import io.netty.handler.codec.DefaultHeaders.NameValidator;
+import io.netty.handler.codec.DefaultHeadersImpl;
+import io.netty.handler.codec.HeadersUtils;
+import io.netty.handler.codec.ValueConverter;
 import io.netty.util.AsciiString;
 import io.netty.util.ByteProcessor;
 import io.netty.util.internal.PlatformDependent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static io.netty.util.AsciiString.CASE_INSENSITIVE_HASHER;
 import static io.netty.util.AsciiString.CASE_SENSITIVE_HASHER;
@@ -75,7 +87,6 @@ public class DefaultHttpHeaders extends HttpHeaders {
    * </a>.
    * When disabling this validation, it is the responsibility of the caller to ensure that the values supplied
    * do not contain a non-url-escaped carriage return (CR) and/or line feed (LF) characters.
-   *
    * @param validate Should Netty validate Header values to ensure they aren't malicious.
    */
   public DefaultHttpHeaders(boolean validate) {
@@ -84,8 +95,8 @@ public class DefaultHttpHeaders extends HttpHeaders {
 
   protected DefaultHttpHeaders(boolean validate, NameValidator<CharSequence> nameValidator) {
     this(new DefaultHeadersImpl<CharSequence, CharSequence>(CASE_INSENSITIVE_HASHER,
-        valueConverter(validate),
-        nameValidator));
+      valueConverter(validate),
+      nameValidator));
   }
 
   protected DefaultHttpHeaders(DefaultHeaders<CharSequence, CharSequence, ?> headers) {
@@ -258,7 +269,7 @@ public class DefaultHttpHeaders extends HttpHeaders {
       return Collections.emptyList();
     }
     List<Entry<String, String>> entriesConverted = new ArrayList<Entry<String, String>>(
-        headers.size());
+      headers.size());
     for (Entry<String, String> entry : this) {
       entriesConverted.add(entry);
     }
@@ -340,7 +351,7 @@ public class DefaultHttpHeaders extends HttpHeaders {
   @Override
   public boolean equals(Object o) {
     return o instanceof DefaultHttpHeaders
-        && headers.equals(((DefaultHttpHeaders) o).headers, CASE_SENSITIVE_HASHER);
+      && headers.equals(((DefaultHttpHeaders) o).headers, CASE_SENSITIVE_HASHER);
   }
 
   @Override
@@ -367,8 +378,8 @@ public class DefaultHttpHeaders extends HttpHeaders {
       case ';':
       case '=':
         throw new IllegalArgumentException(
-            "a header name cannot contain the following prohibited characters: =,;: \\t\\r\\n\\v\\f: " +
-                value);
+          "a header name cannot contain the following prohibited characters: =,;: \\t\\r\\n\\v\\f: " +
+            value);
       default:
         // Check to see if the character is not an ASCII character, or invalid
         if (value < 0) {
@@ -391,13 +402,13 @@ public class DefaultHttpHeaders extends HttpHeaders {
       case ';':
       case '=':
         throw new IllegalArgumentException(
-            "a header name cannot contain the following prohibited characters: =,;: \\t\\r\\n\\v\\f: " +
-                value);
+          "a header name cannot contain the following prohibited characters: =,;: \\t\\r\\n\\v\\f: " +
+            value);
       default:
         // Check to see if the character is not an ASCII character, or invalid
         if (value > 127) {
           throw new IllegalArgumentException("a header name cannot contain non-ASCII character: " +
-              value);
+            value);
         }
     }
   }

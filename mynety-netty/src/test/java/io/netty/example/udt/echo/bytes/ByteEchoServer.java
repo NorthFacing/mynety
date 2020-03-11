@@ -47,18 +47,18 @@ public final class ByteEchoServer {
     try {
       final ServerBootstrap boot = new ServerBootstrap();
       boot.group(acceptGroup, connectGroup)
-          .channelFactory(NioUdtProvider.BYTE_ACCEPTOR)
-          .option(ChannelOption.SO_BACKLOG, 10)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new ChannelInitializer<UdtChannel>() {
-            @Override
-            public void initChannel(final UdtChannel ch)
-                throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new ByteEchoServerHandler());
-            }
-          });
+        .channelFactory(NioUdtProvider.BYTE_ACCEPTOR)
+        .option(ChannelOption.SO_BACKLOG, 10)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<UdtChannel>() {
+          @Override
+          public void initChannel(final UdtChannel ch)
+            throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new ByteEchoServerHandler());
+          }
+        });
       // Start the server.
       final ChannelFuture future = boot.bind(PORT).sync();
       // Wait until the server socket is closed.

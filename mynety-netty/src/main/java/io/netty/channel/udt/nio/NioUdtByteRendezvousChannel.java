@@ -19,7 +19,6 @@ import com.barchart.udt.TypeUDT;
 
 /**
  * Byte Channel Rendezvous for UDT Streams.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated

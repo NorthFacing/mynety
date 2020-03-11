@@ -45,7 +45,6 @@ public interface Http2GoAwayFrame extends Http2Frame, ByteBufHolder {
 
   /**
    * Sets the number of IDs to reserve for the receiver to use while GOAWAY is in transit.
-   *
    * @return {@code this}
    * @see #extraStreamIds
    */

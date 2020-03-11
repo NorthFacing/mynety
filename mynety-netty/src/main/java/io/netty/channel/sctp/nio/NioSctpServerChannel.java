@@ -17,7 +17,11 @@ package io.netty.channel.sctp.nio;
 
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpServerChannel;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.nio.AbstractNioMessageChannel;
 import io.netty.channel.sctp.DefaultSctpServerChannelConfig;
 import io.netty.channel.sctp.SctpServerChannelConfig;
@@ -27,7 +31,11 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link io.netty.channel.sctp.SctpServerChannel} implementation which use non-blocking mode to accept new
@@ -37,7 +45,7 @@ import java.util.*;
  * to understand what you need to do to use it. Also this feature is only supported on Java 7+.
  */
 public class NioSctpServerChannel extends AbstractNioMessageChannel
-    implements io.netty.channel.sctp.SctpServerChannel {
+  implements io.netty.channel.sctp.SctpServerChannel {
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
 
   private static SctpServerChannel newSocket() {
@@ -45,7 +53,7 @@ public class NioSctpServerChannel extends AbstractNioMessageChannel
       return SctpServerChannel.open();
     } catch (IOException e) {
       throw new ChannelException(
-          "Failed to open a server socket.", e);
+        "Failed to open a server socket.", e);
     }
   }
 
@@ -189,7 +197,7 @@ public class NioSctpServerChannel extends AbstractNioMessageChannel
   // Unnecessary stuff
   @Override
   protected boolean doConnect(
-      SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+    SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
     throw new UnsupportedOperationException();
   }
 

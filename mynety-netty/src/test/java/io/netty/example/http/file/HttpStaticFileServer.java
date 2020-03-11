@@ -38,7 +38,7 @@ public final class HttpStaticFileServer {
     if (SSL) {
       SelfSignedCertificate ssc = new SelfSignedCertificate();
       sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-          .sslProvider(SslProvider.JDK).build();
+        .sslProvider(SslProvider.JDK).build();
     } else {
       sslCtx = null;
     }
@@ -48,14 +48,14 @@ public final class HttpStaticFileServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new HttpStaticFileServerInitializer(sslCtx));
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new HttpStaticFileServerInitializer(sslCtx));
 
       Channel ch = b.bind(PORT).sync().channel();
 
       System.err.println("Open your web browser and navigate to " +
-          (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+        (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
 
       ch.closeFuture().sync();
     } finally {

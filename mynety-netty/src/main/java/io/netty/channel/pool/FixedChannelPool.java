@@ -17,7 +17,11 @@ package io.netty.channel.pool;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.GlobalEventExecutor;
+import io.netty.util.concurrent.Promise;
 import io.netty.util.internal.ObjectUtil;
 
 import java.nio.channels.ClosedChannelException;
@@ -62,7 +66,6 @@ public class FixedChannelPool extends SimpleChannelPool {
 
   /**
    * Creates a new instance using the {@link ChannelHealthChecker#ACTIVE}.
-   *
    * @param bootstrap      the {@link Bootstrap} that is used for connections
    * @param handler        the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param maxConnections the number of maximal active connections, once this is reached new tries to acquire
@@ -75,7 +78,6 @@ public class FixedChannelPool extends SimpleChannelPool {
 
   /**
    * Creates a new instance using the {@link ChannelHealthChecker#ACTIVE}.
-   *
    * @param bootstrap          the {@link Bootstrap} that is used for connections
    * @param handler            the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param maxConnections     the number of maximal active connections, once this is reached new tries to
@@ -91,7 +93,6 @@ public class FixedChannelPool extends SimpleChannelPool {
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap            the {@link Bootstrap} that is used for connections
    * @param handler              the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck          the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -116,7 +117,6 @@ public class FixedChannelPool extends SimpleChannelPool {
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap            the {@link Bootstrap} that is used for connections
    * @param handler              the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck          the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -139,12 +139,11 @@ public class FixedChannelPool extends SimpleChannelPool {
                           final long acquireTimeoutMillis,
                           int maxConnections, int maxPendingAcquires, final boolean releaseHealthCheck) {
     this(bootstrap, handler, healthCheck, action, acquireTimeoutMillis, maxConnections, maxPendingAcquires,
-        releaseHealthCheck, true);
+      releaseHealthCheck, true);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap            the {@link Bootstrap} that is used for connections
    * @param handler              the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck          the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -191,7 +190,7 @@ public class FixedChannelPool extends SimpleChannelPool {
             public void onTimeout(AcquireTask task) {
               // Fail the promise as we timed out.
               task.promise.setFailure(new TimeoutException(
-                  "Acquire operation took longer then configured maximum time") {
+                "Acquire operation took longer then configured maximum time") {
                 @Override
                 public synchronized Throwable fillInStackTrace() {
                   return this;
@@ -450,7 +449,6 @@ public class FixedChannelPool extends SimpleChannelPool {
 
   /**
    * Closes the pool in an async manner.
-   *
    * @return Future which represents completion of the close task
    */
   public Future<Void> closeAsync() {

@@ -55,7 +55,7 @@ abstract class AbstractPooledDerivedByteBuf extends AbstractReferenceCountedByte
   }
 
   final <U extends AbstractPooledDerivedByteBuf> U init(
-      AbstractByteBuf unwrapped, ByteBuf wrapped, int readerIndex, int writerIndex, int maxCapacity) {
+    AbstractByteBuf unwrapped, ByteBuf wrapped, int readerIndex, int writerIndex, int maxCapacity) {
     wrapped.retain(); // Retain up front to ensure the parent is accessible before doing more work.
     parent = wrapped;
     rootParent = unwrapped;
@@ -279,7 +279,7 @@ abstract class AbstractPooledDerivedByteBuf extends AbstractReferenceCountedByte
     public ByteBuf duplicate() {
       ensureAccessible();
       return new PooledNonRetainedDuplicateByteBuf(referenceCountDelegate, unwrap())
-          .setIndex(idx(readerIndex()), idx(writerIndex()));
+        .setIndex(idx(readerIndex()), idx(writerIndex()));
     }
 
     @Override

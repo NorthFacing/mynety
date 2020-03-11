@@ -232,7 +232,7 @@ final class PoolSubpage<T> implements PoolSubpageMetric {
     }
 
     return "(" + memoryMapIdx + ": " + (maxNumElems - numAvail) + '/' + maxNumElems +
-        ", offset: " + runOffset + ", length: " + pageSize + ", elemSize: " + elemSize + ')';
+      ", offset: " + runOffset + ", length: " + pageSize + ", elemSize: " + elemSize + ')';
   }
 
   @Override

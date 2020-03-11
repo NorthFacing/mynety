@@ -30,17 +30,17 @@ public final class Html {
   public static final byte[] FOOTER = "</body></html>".getBytes(UTF_8);
 
   public static final byte[] HEADER = ("<!DOCTYPE html><html><head lang=\"en\"><title>Netty HTTP/2 Example</title>"
-      + "<style>body {background:#DDD;} div#netty { line-height:0;}</style>"
-      + "<link rel=\"shortcut icon\" href=\"about:blank\">"
-      + "<meta charset=\"UTF-8\"></head><body>A grid of 200 tiled images is shown below. Compare:"
-      + "<p>[<a href='https://" + url(Http2Server.PORT) + "?latency=0'>HTTP/2, 0 latency</a>] [<a href='http://"
-      + url(HttpServer.PORT) + "?latency=0'>HTTP/1, 0 latency</a>]<br/>" + "[<a href='https://"
-      + url(Http2Server.PORT) + "?latency=30'>HTTP/2, 30ms latency</a>] [<a href='http://" + url(HttpServer.PORT)
-      + "?latency=30'>HTTP/1, 30ms latency</a>]<br/>" + "[<a href='https://" + url(Http2Server.PORT)
-      + "?latency=200'>HTTP/2, 200ms latency</a>] [<a href='http://" + url(HttpServer.PORT)
-      + "?latency=200'>HTTP/1, 200ms latency</a>]<br/>" + "[<a href='https://" + url(Http2Server.PORT)
-      + "?latency=1000'>HTTP/2, 1s latency</a>] [<a href='http://" + url(HttpServer.PORT)
-      + "?latency=1000'>HTTP/1, " + "1s latency</a>]<br/>").getBytes(UTF_8);
+    + "<style>body {background:#DDD;} div#netty { line-height:0;}</style>"
+    + "<link rel=\"shortcut icon\" href=\"about:blank\">"
+    + "<meta charset=\"UTF-8\"></head><body>A grid of 200 tiled images is shown below. Compare:"
+    + "<p>[<a href='https://" + url(Http2Server.PORT) + "?latency=0'>HTTP/2, 0 latency</a>] [<a href='http://"
+    + url(HttpServer.PORT) + "?latency=0'>HTTP/1, 0 latency</a>]<br/>" + "[<a href='https://"
+    + url(Http2Server.PORT) + "?latency=30'>HTTP/2, 30ms latency</a>] [<a href='http://" + url(HttpServer.PORT)
+    + "?latency=30'>HTTP/1, 30ms latency</a>]<br/>" + "[<a href='https://" + url(Http2Server.PORT)
+    + "?latency=200'>HTTP/2, 200ms latency</a>] [<a href='http://" + url(HttpServer.PORT)
+    + "?latency=200'>HTTP/1, 200ms latency</a>]<br/>" + "[<a href='https://" + url(Http2Server.PORT)
+    + "?latency=1000'>HTTP/2, 1s latency</a>] [<a href='http://" + url(HttpServer.PORT)
+    + "?latency=1000'>HTTP/1, " + "1s latency</a>]<br/>").getBytes(UTF_8);
 
   private static final int IMAGES_X_AXIS = 20;
 
@@ -61,11 +61,11 @@ public final class Html {
     for (int y = 0; y < IMAGES_Y_AXIS; y++) {
       for (int x = 0; x < IMAGES_X_AXIS; x++) {
         sb.append("<img width=30 height=29 src='/http2?x=")
-            .append(x)
-            .append("&y=").append(y)
-            .append("&cachebust=").append(r)
-            .append("&latency=").append(latency)
-            .append("'>");
+          .append(x)
+          .append("&y=").append(y)
+          .append("&cachebust=").append(r)
+          .append("&latency=").append(latency)
+          .append("'>");
       }
       sb.append("<br/>\r\n");
     }

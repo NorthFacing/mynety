@@ -26,7 +26,6 @@ public class UnpooledUnsafeHeapByteBuf extends UnpooledHeapByteBuf {
 
   /**
    * Creates a new heap buffer with a newly allocated byte array.
-   *
    * @param initialCapacity the initial capacity of the underlying byte array
    * @param maxCapacity     the max capacity of the underlying byte array
    */

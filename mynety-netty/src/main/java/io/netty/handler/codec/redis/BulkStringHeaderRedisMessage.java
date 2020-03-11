@@ -27,7 +27,6 @@ public class BulkStringHeaderRedisMessage implements RedisMessage {
 
   /**
    * Creates a {@link BulkStringHeaderRedisMessage}.
-   *
    * @param bulkStringLength follow content length.
    */
   public BulkStringHeaderRedisMessage(int bulkStringLength) {
@@ -46,7 +45,6 @@ public class BulkStringHeaderRedisMessage implements RedisMessage {
 
   /**
    * Returns whether the content of this message is {@code null}.
-   *
    * @return indicates whether the content of this message is {@code null}.
    */
   public boolean isNull() {

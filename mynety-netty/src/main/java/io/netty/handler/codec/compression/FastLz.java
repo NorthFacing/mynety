@@ -76,7 +76,6 @@ final class FastLz {
 
   /**
    * The output buffer must be at least 6% larger than the input buffer and can not be smaller than 66 bytes.
-   *
    * @param inputLength length of input buffer
    * @return Maximum output buffer length
    */
@@ -166,7 +165,7 @@ final class FastLz {
       if (level == LEVEL_2) {
         //if(ip[0] == ip[-1] && FASTLZ_READU16(ip-1)==FASTLZ_READU16(ip+1))
         if (input[inOffset + ip] == input[inOffset + ip - 1] &&
-            readU16(input, inOffset + ip - 1) == readU16(input, inOffset + ip + 1)) {
+          readU16(input, inOffset + ip - 1) == readU16(input, inOffset + ip + 1)) {
           distance = 1;
           ip += 3;
           ref = anchor + (3 - 1);
@@ -195,10 +194,10 @@ final class FastLz {
 
         /* is this a match? check the first 3 bytes */
         if (distance == 0
-            || (level == LEVEL_1 ? distance >= MAX_DISTANCE : distance >= MAX_FARDISTANCE)
-            || input[inOffset + ref++] != input[inOffset + ip++]
-            || input[inOffset + ref++] != input[inOffset + ip++]
-            || input[inOffset + ref++] != input[inOffset + ip++]) {
+          || (level == LEVEL_1 ? distance >= MAX_DISTANCE : distance >= MAX_FARDISTANCE)
+          || input[inOffset + ref++] != input[inOffset + ip++]
+          || input[inOffset + ref++] != input[inOffset + ip++]
+          || input[inOffset + ref++] != input[inOffset + ip++]) {
           /*
            * goto literal;
            */
@@ -216,7 +215,7 @@ final class FastLz {
           /* far, needs at least 5-byte match */
           if (distance >= MAX_DISTANCE) {
             if (input[inOffset + ip++] != input[inOffset + ref++]
-                || input[inOffset + ip++] != input[inOffset + ref++]) {
+              || input[inOffset + ip++] != input[inOffset + ref++]) {
               /*
                * goto literal;
                */
@@ -429,7 +428,7 @@ final class FastLz {
     final int level = (input[inOffset] >> 5) + 1;
     if (level != LEVEL_1 && level != LEVEL_2) {
       throw new DecompressionException(String.format(
-          "invalid level: %d (expected: %d or %d)", level, LEVEL_1, LEVEL_2
+        "invalid level: %d (expected: %d or %d)", level, LEVEL_1, LEVEL_2
       ));
     }
 

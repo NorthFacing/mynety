@@ -36,14 +36,13 @@ public final class WriteBufferWaterMark {
   private static final int DEFAULT_HIGH_WATER_MARK = 64 * 1024;
 
   public static final WriteBufferWaterMark DEFAULT =
-      new WriteBufferWaterMark(DEFAULT_LOW_WATER_MARK, DEFAULT_HIGH_WATER_MARK, false);
+    new WriteBufferWaterMark(DEFAULT_LOW_WATER_MARK, DEFAULT_HIGH_WATER_MARK, false);
 
   private final int low;
   private final int high;
 
   /**
    * Create a new instance.
-   *
    * @param low  low water mark for write buffer.
    * @param high high water mark for write buffer
    */
@@ -59,9 +58,9 @@ public final class WriteBufferWaterMark {
       checkPositiveOrZero(low, "low");
       if (high < low) {
         throw new IllegalArgumentException(
-            "write buffer's high water mark cannot be less than " +
-                " low water mark (" + low + "): " +
-                high);
+          "write buffer's high water mark cannot be less than " +
+            " low water mark (" + low + "): " +
+            high);
       }
     }
     this.low = low;
@@ -85,11 +84,11 @@ public final class WriteBufferWaterMark {
   @Override
   public String toString() {
     StringBuilder builder = new StringBuilder(55)
-        .append("WriteBufferWaterMark(low: ")
-        .append(low)
-        .append(", high: ")
-        .append(high)
-        .append(")");
+      .append("WriteBufferWaterMark(low: ")
+      .append(low)
+      .append(", high: ")
+      .append(high)
+      .append(")");
     return builder.toString();
   }
 

@@ -33,7 +33,6 @@ public abstract class AbstractStringRedisMessage implements RedisMessage {
 
   /**
    * Get string content of this {@link AbstractStringRedisMessage}.
-   *
    * @return content of this message.
    */
   public final String content() {
@@ -43,10 +42,10 @@ public abstract class AbstractStringRedisMessage implements RedisMessage {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("content=")
-        .append(content)
-        .append(']').toString();
+      .append('[')
+      .append("content=")
+      .append(content)
+      .append(']').toString();
   }
 
 }

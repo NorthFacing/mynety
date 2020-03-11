@@ -31,7 +31,6 @@ import static java.util.Collections.singletonMap;
 
 /**
  * Converts a Java cipher suite string to an OpenSSL cipher suite string and vice versa.
- *
  * @see <a href="http://en.wikipedia.org/wiki/Cipher_suite">Wikipedia page about cipher suite</a>
  */
 final class CipherSuiteConverter {
@@ -52,7 +51,7 @@ final class CipherSuiteConverter {
    * 2) D is always a single word.
    */
   private static final Pattern JAVA_CIPHERSUITE_PATTERN =
-      Pattern.compile("^(?:TLS|SSL)_((?:(?!_WITH_).)+)_WITH_(.*)_(.*)$");
+    Pattern.compile("^(?:TLS|SSL)_((?:(?!_WITH_).)+)_WITH_(.*)_(.*)$");
 
   /**
    * A-B-C, where:
@@ -67,18 +66,18 @@ final class CipherSuiteConverter {
    * 2) C is always a single word
    */
   private static final Pattern OPENSSL_CIPHERSUITE_PATTERN =
-      // Be very careful not to break the indentation while editing.
-      Pattern.compile(
-          "^(?:(" + // BEGIN handshake algorithm
-              "(?:(?:EXP-)?" +
-              "(?:" +
-              "(?:DHE|EDH|ECDH|ECDHE|SRP|RSA)-(?:DSS|RSA|ECDSA|PSK)|" +
-              "(?:ADH|AECDH|KRB5|PSK|SRP)" +
-              ')' +
-              ")|" +
-              "EXP" +
-              ")-)?" +  // END handshake algorithm
-              "(.*)-(.*)$");
+    // Be very careful not to break the indentation while editing.
+    Pattern.compile(
+      "^(?:(" + // BEGIN handshake algorithm
+        "(?:(?:EXP-)?" +
+        "(?:" +
+        "(?:DHE|EDH|ECDH|ECDHE|SRP|RSA)-(?:DSS|RSA|ECDSA|PSK)|" +
+        "(?:ADH|AECDH|KRB5|PSK|SRP)" +
+        ')' +
+        ")|" +
+        "EXP" +
+        ")-)?" +  // END handshake algorithm
+        "(.*)-(.*)$");
 
   private static final Pattern JAVA_AES_CBC_PATTERN = Pattern.compile("^(AES)_([0-9]+)_CBC$");
   private static final Pattern JAVA_AES_PATTERN = Pattern.compile("^(AES)_([0-9]+)_(.*)$");
@@ -147,7 +146,6 @@ final class CipherSuiteConverter {
 
   /**
    * Converts the specified Java cipher suite to its corresponding OpenSSL cipher suite name.
-   *
    * @return {@code null} if the conversion has failed
    */
   static String toOpenSsl(String javaCipherSuite, boolean boringSSL) {
@@ -275,7 +273,6 @@ final class CipherSuiteConverter {
 
   /**
    * Convert from OpenSSL cipher suite name convention to java cipher suite name convention.
-   *
    * @param openSslCipherSuite An OpenSSL cipher suite name.
    * @param protocol           The cryptographic protocol (i.e. SSL, TLS, ...).
    * @return The translated cipher suite name according to java conventions. This will not be {@code null}.

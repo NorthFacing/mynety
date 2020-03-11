@@ -34,7 +34,6 @@ class PerMessageDeflateEncoder extends DeflateEncoder {
 
   /**
    * Constructor
-   *
    * @param compressionLevel compression level of the compressor.
    * @param windowSize       maximum size of the window compressor buffer.
    * @param noContext        true to disable context takeover.
@@ -45,7 +44,6 @@ class PerMessageDeflateEncoder extends DeflateEncoder {
 
   /**
    * Constructor
-   *
    * @param compressionLevel       compression level of the compressor.
    * @param windowSize             maximum size of the window compressor buffer.
    * @param noContext              true to disable context takeover.
@@ -71,14 +69,14 @@ class PerMessageDeflateEncoder extends DeflateEncoder {
     }
 
     return ((wsFrame instanceof TextWebSocketFrame || wsFrame instanceof BinaryWebSocketFrame) &&
-        (wsFrame.rsv() & WebSocketExtension.RSV1) == 0) ||
-        (wsFrame instanceof ContinuationWebSocketFrame && compressing);
+      (wsFrame.rsv() & WebSocketExtension.RSV1) == 0) ||
+      (wsFrame instanceof ContinuationWebSocketFrame && compressing);
   }
 
   @Override
   protected int rsv(WebSocketFrame msg) {
     return msg instanceof TextWebSocketFrame || msg instanceof BinaryWebSocketFrame ?
-        msg.rsv() | WebSocketExtension.RSV1 : msg.rsv();
+      msg.rsv() | WebSocketExtension.RSV1 : msg.rsv();
   }
 
   @Override

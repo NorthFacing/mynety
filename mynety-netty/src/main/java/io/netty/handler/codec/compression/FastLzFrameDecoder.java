@@ -24,7 +24,10 @@ import java.util.List;
 import java.util.zip.Adler32;
 import java.util.zip.Checksum;
 
-import static io.netty.handler.codec.compression.FastLz.*;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_TYPE_COMPRESSED;
+import static io.netty.handler.codec.compression.FastLz.BLOCK_WITH_CHECKSUM;
+import static io.netty.handler.codec.compression.FastLz.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.FastLz.decompress;
 
 /**
  * Uncompresses a {@link ByteBuf} encoded by {@link FastLzFrameEncoder} using the FastLZ algorithm.
@@ -84,7 +87,6 @@ public class FastLzFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a FastLZ decoder with calculation of checksums as specified.
-   *
    * @param validateChecksums If true, the checksum field will be validated against the actual
    *                          uncompressed data, and if the checksums do not match, a suitable
    *                          {@link DecompressionException} will be thrown.
@@ -97,7 +99,6 @@ public class FastLzFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a FastLZ decoder with specified checksum calculator.
-   *
    * @param checksum the {@link Checksum} instance to use to check data for integrity.
    *                 You may set {@code null} if you do not want to validate checksum of each block.
    */
@@ -173,11 +174,11 @@ public class FastLzFrameDecoder extends ByteToMessageDecoder {
               }
 
               final int decompressedBytes = decompress(input, inputPtr, chunkLength,
-                  output, outputPtr, originalLength);
+                output, outputPtr, originalLength);
               if (originalLength != decompressedBytes) {
                 throw new DecompressionException(String.format(
-                    "stream corrupted: originalLength(%d) and actual length(%d) mismatch",
-                    originalLength, decompressedBytes));
+                  "stream corrupted: originalLength(%d) and actual length(%d) mismatch",
+                  originalLength, decompressedBytes));
               }
             } else {
               in.getBytes(idx, output, outputPtr, chunkLength);
@@ -190,8 +191,8 @@ public class FastLzFrameDecoder extends ByteToMessageDecoder {
               final int checksumResult = (int) checksum.getValue();
               if (checksumResult != currentChecksum) {
                 throw new DecompressionException(String.format(
-                    "stream corrupted: mismatching checksum: %d (expected: %d)",
-                    checksumResult, currentChecksum));
+                  "stream corrupted: mismatching checksum: %d (expected: %d)",
+                  checksumResult, currentChecksum));
               }
             }
 

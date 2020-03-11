@@ -19,7 +19,10 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 
-import static io.netty.handler.codec.http.HttpHeaderValues.*;
+import static io.netty.handler.codec.http.HttpHeaderValues.DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.GZIP;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_GZIP;
 
 /**
  * Decompresses an {@link HttpMessage} and an {@link HttpContent} compressed in
@@ -39,7 +42,6 @@ public class HttpContentDecompressor extends HttpContentDecoder {
 
   /**
    * Create a new {@link HttpContentDecompressor}.
-   *
    * @param strict if {@code true} use strict handling of deflate if used, otherwise handle it in a
    *               more lenient fashion.
    */
@@ -50,16 +52,16 @@ public class HttpContentDecompressor extends HttpContentDecoder {
   @Override
   protected EmbeddedChannel newContentDecoder(String contentEncoding) throws Exception {
     if (GZIP.contentEqualsIgnoreCase(contentEncoding) ||
-        X_GZIP.contentEqualsIgnoreCase(contentEncoding)) {
+      X_GZIP.contentEqualsIgnoreCase(contentEncoding)) {
       return new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-          ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
+        ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
     }
     if (DEFLATE.contentEqualsIgnoreCase(contentEncoding) ||
-        X_DEFLATE.contentEqualsIgnoreCase(contentEncoding)) {
+      X_DEFLATE.contentEqualsIgnoreCase(contentEncoding)) {
       final ZlibWrapper wrapper = strict ? ZlibWrapper.ZLIB : ZlibWrapper.ZLIB_OR_NONE;
       // To be strict, 'deflate' means ZLIB, but some servers were not implemented correctly.
       return new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-          ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(wrapper));
+        ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(wrapper));
     }
 
     // 'identity' or unsupported

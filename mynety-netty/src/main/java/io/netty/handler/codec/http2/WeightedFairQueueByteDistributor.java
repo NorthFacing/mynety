@@ -17,7 +17,13 @@ package io.netty.handler.codec.http2;
 import io.netty.util.collection.IntCollections;
 import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
-import io.netty.util.internal.*;
+import io.netty.util.internal.DefaultPriorityQueue;
+import io.netty.util.internal.EmptyPriorityQueue;
+import io.netty.util.internal.MathUtil;
+import io.netty.util.internal.PriorityQueue;
+import io.netty.util.internal.PriorityQueueNode;
+import io.netty.util.internal.SystemPropertyUtil;
+import io.netty.util.internal.UnstableApi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +31,10 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.CONNECTION_STREAM_ID;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_MIN_ALLOCATION_CHUNK;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_PRIORITY_WEIGHT;
+import static io.netty.handler.codec.http2.Http2CodecUtil.streamableBytes;
 import static io.netty.handler.codec.http2.Http2Error.INTERNAL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
@@ -58,7 +67,7 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
    * Visible only for testing!
    */
   static final int INITIAL_CHILDREN_MAP_SIZE =
-      max(1, SystemPropertyUtil.getInt("io.netty.http2.childrenMapSize", 2));
+    max(1, SystemPropertyUtil.getInt("io.netty.http2.childrenMapSize", 2));
   /**
    * FireFox currently uses 5 streams to establish QoS classes.
    */
@@ -183,7 +192,7 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
   @Override
   public void updateStreamableBytes(StreamState state) {
     state(state.stream()).updateStreamableBytes(streamableBytes(state),
-        state.hasFrame() && state.windowSize() >= 0);
+      state.hasFrame() && state.windowSize() >= 0);
   }
 
   @Override
@@ -263,14 +272,13 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
       // connectionState will never be active, so go right to its children.
       maxBytes -= distributeToChildren(maxBytes, writer, connectionState);
     } while (connectionState.activeCountForTree != 0 &&
-        (maxBytes > 0 || oldIsActiveCountForTree != connectionState.activeCountForTree));
+      (maxBytes > 0 || oldIsActiveCountForTree != connectionState.activeCountForTree));
 
     return connectionState.activeCountForTree != 0;
   }
 
   /**
    * Sets the amount of bytes that will be allocated to each stream. Defaults to 1KiB.
-   *
    * @param allocationQuantum the amount of bytes that will be allocated to each stream. Must be &gt; 0.
    */
   public void allocationQuantum(int allocationQuantum) {
@@ -312,14 +320,14 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
     childState.setDistributing();
     try {
       assert nextChildState == null || nextChildState.pseudoTimeToWrite >= childState.pseudoTimeToWrite :
-          "nextChildState[" + nextChildState.streamId + "].pseudoTime(" + nextChildState.pseudoTimeToWrite +
-              ") < " + " childState[" + childState.streamId + "].pseudoTime(" + childState.pseudoTimeToWrite + ")";
+        "nextChildState[" + nextChildState.streamId + "].pseudoTime(" + nextChildState.pseudoTimeToWrite +
+          ") < " + " childState[" + childState.streamId + "].pseudoTime(" + childState.pseudoTimeToWrite + ")";
       int nsent = distribute(nextChildState == null ? maxBytes :
-              min(maxBytes, (int) min((nextChildState.pseudoTimeToWrite - childState.pseudoTimeToWrite) *
-                  childState.weight / oldTotalQueuedWeights + allocationQuantum, MAX_VALUE)
-              ),
-          writer,
-          childState);
+          min(maxBytes, (int) min((nextChildState.pseudoTimeToWrite - childState.pseudoTimeToWrite) *
+            childState.weight / oldTotalQueuedWeights + allocationQuantum, MAX_VALUE)
+          ),
+        writer,
+        childState);
       state.pseudoTime += nsent;
       childState.updatePseudoTime(state, nsent, oldTotalQueuedWeights);
       return nsent;
@@ -350,7 +358,7 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
     State parent = state(parentId);
     State child;
     return parent.children.containsKey(childId) &&
-        (child = state(childId)).parent == parent && child.weight == weight;
+      (child = state(childId)).parent == parent && child.weight == weight;
   }
 
   /**
@@ -363,7 +371,6 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
 
   /**
    * Notify all listeners of the priority tree change events (in ascending order)
-   *
    * @param events The events (top down order) which have changed
    */
   void notifyParentChanged(List<ParentChangedEvent> events) {
@@ -556,7 +563,6 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
     /**
      * Remove all children with the exception of {@code streamToRetain}.
      * This method is intended to be used to support an exclusive priority dependency operation.
-     *
      * @return The map of children prior to this operation, excluding {@code streamToRetain} if present.
      */
     private IntObjectMap<State> removeAllChildrenExcept(State stateToRetain) {
@@ -606,10 +612,10 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
       activeCountForTree += increment;
       if (parent != null) {
         assert activeCountForTree != increment ||
-            pseudoTimeQueueIndex == INDEX_NOT_IN_QUEUE ||
-            parent.pseudoTimeQueue.containsTyped(this) :
-            "State[" + streamId + "].activeCountForTree changed from 0 to " + increment + " is in a " +
-                "pseudoTimeQueue, but not in parent[ " + parent.streamId + "]'s pseudoTimeQueue";
+          pseudoTimeQueueIndex == INDEX_NOT_IN_QUEUE ||
+          parent.pseudoTimeQueue.containsTyped(this) :
+          "State[" + streamId + "].activeCountForTree changed from 0 to " + increment + " is in a " +
+            "pseudoTimeQueue, but not in parent[ " + parent.streamId + "]'s pseudoTimeQueue";
         if (activeCountForTree == 0) {
           parent.removePseudoTimeQueue(this);
         } else if (activeCountForTree == increment && !isDistributing()) {
@@ -747,15 +753,15 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
 
     private void toString(StringBuilder sb) {
       sb.append("{streamId ").append(streamId)
-          .append(" streamableBytes ").append(streamableBytes)
-          .append(" activeCountForTree ").append(activeCountForTree)
-          .append(" pseudoTimeQueueIndex ").append(pseudoTimeQueueIndex)
-          .append(" pseudoTimeToWrite ").append(pseudoTimeToWrite)
-          .append(" pseudoTime ").append(pseudoTime)
-          .append(" flags ").append(flags)
-          .append(" pseudoTimeQueue.size() ").append(pseudoTimeQueue.size())
-          .append(" stateOnlyQueueIndex ").append(stateOnlyQueueIndex)
-          .append(" parent.streamId ").append(parent == null ? -1 : parent.streamId).append("} [");
+        .append(" streamableBytes ").append(streamableBytes)
+        .append(" activeCountForTree ").append(activeCountForTree)
+        .append(" pseudoTimeQueueIndex ").append(pseudoTimeQueueIndex)
+        .append(" pseudoTimeToWrite ").append(pseudoTimeToWrite)
+        .append(" pseudoTime ").append(pseudoTime)
+        .append(" flags ").append(flags)
+        .append(" pseudoTimeQueue.size() ").append(pseudoTimeQueue.size())
+        .append(" stateOnlyQueueIndex ").append(stateOnlyQueueIndex)
+        .append(" parent.streamId ").append(parent == null ? -1 : parent.streamId).append("} [");
 
       if (!pseudoTimeQueue.isEmpty()) {
         for (State s : pseudoTimeQueue) {
@@ -778,7 +784,6 @@ public final class WeightedFairQueueByteDistributor implements StreamByteDistrib
 
     /**
      * Create a new instance.
-     *
      * @param state     The state who has had a parent change.
      * @param oldParent The previous parent.
      */

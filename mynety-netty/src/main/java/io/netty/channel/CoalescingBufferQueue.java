@@ -52,7 +52,6 @@ public final class CoalescingBufferQueue extends AbstractCoalescingBufferQueue {
    * Remove a {@link ByteBuf} from the queue with the specified number of bytes. Any added buffer who's bytes are
    * fully consumed during removal will have it's promise completed when the passed aggregate {@link ChannelPromise}
    * completes.
-   *
    * @param bytes            the maximum number of readable bytes in the returned {@link ByteBuf}, if {@code bytes} is greater
    *                         than {@link #readableBytes} then a buffer of length {@link #readableBytes} is returned.
    * @param aggregatePromise used to aggregate the promises and listeners for the constituent buffers.

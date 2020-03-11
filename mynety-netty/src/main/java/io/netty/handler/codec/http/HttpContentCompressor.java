@@ -46,7 +46,6 @@ public class HttpContentCompressor extends HttpContentEncoder {
   /**
    * Creates a new handler with the specified compression level, default
    * window size (<tt>15</tt>) and default memory level (<tt>8</tt>).
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -58,7 +57,6 @@ public class HttpContentCompressor extends HttpContentEncoder {
   /**
    * Creates a new handler with the specified compression level, window size,
    * and memory level..
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -78,7 +76,6 @@ public class HttpContentCompressor extends HttpContentEncoder {
   /**
    * Creates a new handler with the specified compression level, window size,
    * and memory level..
-   *
    * @param compressionLevel     {@code 1} yields the fastest compression and {@code 9} yields the
    *                             best compression.  {@code 0} means no compression.  The default
    *                             compression level is {@code 6}.
@@ -97,20 +94,20 @@ public class HttpContentCompressor extends HttpContentEncoder {
   public HttpContentCompressor(int compressionLevel, int windowBits, int memLevel, int contentSizeThreshold) {
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel +
-              " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel +
+          " (expected: 0-9)");
     }
     if (windowBits < 9 || windowBits > 15) {
       throw new IllegalArgumentException(
-          "windowBits: " + windowBits + " (expected: 9-15)");
+        "windowBits: " + windowBits + " (expected: 9-15)");
     }
     if (memLevel < 1 || memLevel > 9) {
       throw new IllegalArgumentException(
-          "memLevel: " + memLevel + " (expected: 1-9)");
+        "memLevel: " + memLevel + " (expected: 1-9)");
     }
     if (contentSizeThreshold < 0) {
       throw new IllegalArgumentException(
-          "contentSizeThreshold: " + contentSizeThreshold + " (expected: non negative number)");
+        "contentSizeThreshold: " + contentSizeThreshold + " (expected: non negative number)");
     }
     this.compressionLevel = compressionLevel;
     this.windowBits = windowBits;
@@ -127,7 +124,7 @@ public class HttpContentCompressor extends HttpContentEncoder {
   protected Result beginEncode(HttpResponse headers, String acceptEncoding) throws Exception {
     if (this.contentSizeThreshold > 0) {
       if (headers instanceof HttpContent &&
-          ((HttpContent) headers).content().readableBytes() < contentSizeThreshold) {
+        ((HttpContent) headers).content().readableBytes() < contentSizeThreshold) {
         return null;
       }
     }
@@ -157,10 +154,10 @@ public class HttpContentCompressor extends HttpContentEncoder {
     }
 
     return new Result(
-        targetContentEncoding,
-        new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-            ctx.channel().config(), ZlibCodecFactory.newZlibEncoder(
-            wrapper, compressionLevel, windowBits, memLevel)));
+      targetContentEncoding,
+      new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
+        ctx.channel().config(), ZlibCodecFactory.newZlibEncoder(
+        wrapper, compressionLevel, windowBits, memLevel)));
   }
 
   @SuppressWarnings("FloatingPointEquality")

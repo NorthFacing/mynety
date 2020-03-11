@@ -16,7 +16,11 @@
 package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.ServerSocketChannelConfig;
 
 import java.io.IOException;
@@ -24,7 +28,7 @@ import java.net.InetAddress;
 import java.util.Map;
 
 public final class EpollServerSocketChannelConfig extends EpollServerChannelConfig
-    implements ServerSocketChannelConfig {
+  implements ServerSocketChannelConfig {
 
   EpollServerSocketChannelConfig(EpollServerSocketChannel channel) {
     super(channel);
@@ -38,7 +42,7 @@ public final class EpollServerSocketChannelConfig extends EpollServerChannelConf
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(super.getOptions(), EpollChannelOption.SO_REUSEPORT, EpollChannelOption.IP_FREEBIND,
-        EpollChannelOption.IP_TRANSPARENT, EpollChannelOption.TCP_DEFER_ACCEPT);
+      EpollChannelOption.IP_TRANSPARENT, EpollChannelOption.TCP_DEFER_ACCEPT);
   }
 
   @SuppressWarnings("unchecked")

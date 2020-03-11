@@ -15,9 +15,16 @@
  */
 package io.netty.handler.codec.http;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 
-import static io.netty.handler.codec.http.HttpUtil.*;
+import static io.netty.handler.codec.http.HttpUtil.isContentLengthSet;
+import static io.netty.handler.codec.http.HttpUtil.isKeepAlive;
+import static io.netty.handler.codec.http.HttpUtil.isTransferEncodingChunked;
+import static io.netty.handler.codec.http.HttpUtil.setKeepAlive;
 
 /**
  * HttpServerKeepAliveHandler helps close persistent connections when appropriate.
@@ -102,13 +109,12 @@ public class HttpServerKeepAliveHandler extends ChannelDuplexHandler {
    *     <li>See <a href="https://tools.ietf.org/html/rfc7230#section-3.3.2"/></li>
    *     <li>See <a href="https://tools.ietf.org/html/rfc7230#section-3.3.3"/></li>
    * </ul>
-   *
    * @param response The HttpResponse to check
    * @return true if the response has a self defined message length.
    */
   private static boolean isSelfDefinedMessageLength(HttpResponse response) {
     return isContentLengthSet(response) || isTransferEncodingChunked(response) || isMultipart(response) ||
-        isInformational(response) || response.status().code() == HttpResponseStatus.NO_CONTENT.code();
+      isInformational(response) || response.status().code() == HttpResponseStatus.NO_CONTENT.code();
   }
 
   private static boolean isInformational(HttpResponse response) {
@@ -118,6 +124,6 @@ public class HttpServerKeepAliveHandler extends ChannelDuplexHandler {
   private static boolean isMultipart(HttpResponse response) {
     String contentType = response.headers().get(HttpHeaderNames.CONTENT_TYPE);
     return contentType != null &&
-        contentType.regionMatches(true, 0, MULTIPART_PREFIX, 0, MULTIPART_PREFIX.length());
+      contentType.regionMatches(true, 0, MULTIPART_PREFIX, 0, MULTIPART_PREFIX.length());
   }
 }

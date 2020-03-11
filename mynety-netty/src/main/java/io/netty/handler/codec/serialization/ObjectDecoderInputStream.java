@@ -15,14 +15,19 @@
  */
 package io.netty.handler.codec.serialization;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.StreamCorruptedException;
 
 /**
  * An {@link ObjectInput} which is interoperable with {@link ObjectEncoder}
  * and {@link ObjectEncoderOutputStream}.
  */
 public class ObjectDecoderInputStream extends InputStream implements
-    ObjectInput {
+  ObjectInput {
 
   private final DataInputStream in;
   private final int maxObjectSize;
@@ -30,7 +35,6 @@ public class ObjectDecoderInputStream extends InputStream implements
 
   /**
    * Creates a new {@link ObjectInput}.
-   *
    * @param in the {@link InputStream} where the serialized form will be
    *           read from
    */
@@ -40,7 +44,6 @@ public class ObjectDecoderInputStream extends InputStream implements
 
   /**
    * Creates a new {@link ObjectInput}.
-   *
    * @param in          the {@link InputStream} where the serialized form will be
    *                    read from
    * @param classLoader the {@link ClassLoader} which will load the class of the
@@ -52,7 +55,6 @@ public class ObjectDecoderInputStream extends InputStream implements
 
   /**
    * Creates a new {@link ObjectInput}.
-   *
    * @param in            the {@link InputStream} where the serialized form will be
    *                      read from
    * @param maxObjectSize the maximum byte length of the serialized object.  if the length
@@ -65,7 +67,6 @@ public class ObjectDecoderInputStream extends InputStream implements
 
   /**
    * Creates a new {@link ObjectInput}.
-   *
    * @param in            the {@link InputStream} where the serialized form will be
    *                      read from
    * @param classLoader   the {@link ClassLoader} which will load the class of the
@@ -98,7 +99,7 @@ public class ObjectDecoderInputStream extends InputStream implements
     }
     if (dataLen > maxObjectSize) {
       throw new StreamCorruptedException(
-          "data length too big: " + dataLen + " (max: " + maxObjectSize + ')');
+        "data length too big: " + dataLen + " (max: " + maxObjectSize + ')');
     }
 
     return new CompactObjectInputStream(in, classResolver).readObject();

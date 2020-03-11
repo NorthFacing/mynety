@@ -50,20 +50,20 @@ public abstract class MsgEchoPeerBase {
     // Configure the peer.
     final ThreadFactory connectFactory = new DefaultThreadFactory("rendezvous");
     final NioEventLoopGroup connectGroup = new NioEventLoopGroup(1,
-        connectFactory, NioUdtProvider.MESSAGE_PROVIDER);
+      connectFactory, NioUdtProvider.MESSAGE_PROVIDER);
     try {
       final Bootstrap boot = new Bootstrap();
       boot.group(connectGroup)
-          .channelFactory(NioUdtProvider.MESSAGE_RENDEZVOUS)
-          .handler(new ChannelInitializer<UdtChannel>() {
-            @Override
-            public void initChannel(final UdtChannel ch)
-                throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new MsgEchoPeerHandler(messageSize));
-            }
-          });
+        .channelFactory(NioUdtProvider.MESSAGE_RENDEZVOUS)
+        .handler(new ChannelInitializer<UdtChannel>() {
+          @Override
+          public void initChannel(final UdtChannel ch)
+            throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new MsgEchoPeerHandler(messageSize));
+          }
+        });
       // Start the peer.
       final ChannelFuture f = boot.connect(peer, self).sync();
       // Wait until the connection is closed.

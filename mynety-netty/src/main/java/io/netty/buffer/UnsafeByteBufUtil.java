@@ -58,23 +58,23 @@ final class UnsafeByteBufUtil {
   static int getUnsignedMedium(long address) {
     if (UNALIGNED) {
       return (PlatformDependent.getByte(address) & 0xff) << 16 |
-          (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(address + 1)
-              : Short.reverseBytes(PlatformDependent.getShort(address + 1))) & 0xffff;
+        (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(address + 1)
+          : Short.reverseBytes(PlatformDependent.getShort(address + 1))) & 0xffff;
     }
     return (PlatformDependent.getByte(address) & 0xff) << 16 |
-        (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
-        PlatformDependent.getByte(address + 2) & 0xff;
+      (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
+      PlatformDependent.getByte(address + 2) & 0xff;
   }
 
   static int getUnsignedMediumLE(long address) {
     if (UNALIGNED) {
       return (PlatformDependent.getByte(address) & 0xff) |
-          ((BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(PlatformDependent.getShort(address + 1))
-              : PlatformDependent.getShort(address + 1)) & 0xffff) << 8;
+        ((BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(PlatformDependent.getShort(address + 1))
+          : PlatformDependent.getShort(address + 1)) & 0xffff) << 8;
     }
     return PlatformDependent.getByte(address) & 0xff |
-        (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
-        (PlatformDependent.getByte(address + 2) & 0xff) << 16;
+      (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
+      (PlatformDependent.getByte(address + 2) & 0xff) << 16;
   }
 
   static int getInt(long address) {
@@ -83,9 +83,9 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? v : Integer.reverseBytes(v);
     }
     return PlatformDependent.getByte(address) << 24 |
-        (PlatformDependent.getByte(address + 1) & 0xff) << 16 |
-        (PlatformDependent.getByte(address + 2) & 0xff) << 8 |
-        PlatformDependent.getByte(address + 3) & 0xff;
+      (PlatformDependent.getByte(address + 1) & 0xff) << 16 |
+      (PlatformDependent.getByte(address + 2) & 0xff) << 8 |
+      PlatformDependent.getByte(address + 3) & 0xff;
   }
 
   static int getIntLE(long address) {
@@ -94,9 +94,9 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? Integer.reverseBytes(v) : v;
     }
     return PlatformDependent.getByte(address) & 0xff |
-        (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
-        (PlatformDependent.getByte(address + 2) & 0xff) << 16 |
-        PlatformDependent.getByte(address + 3) << 24;
+      (PlatformDependent.getByte(address + 1) & 0xff) << 8 |
+      (PlatformDependent.getByte(address + 2) & 0xff) << 16 |
+      PlatformDependent.getByte(address + 3) << 24;
   }
 
   static long getLong(long address) {
@@ -105,13 +105,13 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? v : Long.reverseBytes(v);
     }
     return ((long) PlatformDependent.getByte(address)) << 56 |
-        (PlatformDependent.getByte(address + 1) & 0xffL) << 48 |
-        (PlatformDependent.getByte(address + 2) & 0xffL) << 40 |
-        (PlatformDependent.getByte(address + 3) & 0xffL) << 32 |
-        (PlatformDependent.getByte(address + 4) & 0xffL) << 24 |
-        (PlatformDependent.getByte(address + 5) & 0xffL) << 16 |
-        (PlatformDependent.getByte(address + 6) & 0xffL) << 8 |
-        (PlatformDependent.getByte(address + 7)) & 0xffL;
+      (PlatformDependent.getByte(address + 1) & 0xffL) << 48 |
+      (PlatformDependent.getByte(address + 2) & 0xffL) << 40 |
+      (PlatformDependent.getByte(address + 3) & 0xffL) << 32 |
+      (PlatformDependent.getByte(address + 4) & 0xffL) << 24 |
+      (PlatformDependent.getByte(address + 5) & 0xffL) << 16 |
+      (PlatformDependent.getByte(address + 6) & 0xffL) << 8 |
+      (PlatformDependent.getByte(address + 7)) & 0xffL;
   }
 
   static long getLongLE(long address) {
@@ -120,13 +120,13 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? Long.reverseBytes(v) : v;
     }
     return (PlatformDependent.getByte(address)) & 0xffL |
-        (PlatformDependent.getByte(address + 1) & 0xffL) << 8 |
-        (PlatformDependent.getByte(address + 2) & 0xffL) << 16 |
-        (PlatformDependent.getByte(address + 3) & 0xffL) << 24 |
-        (PlatformDependent.getByte(address + 4) & 0xffL) << 32 |
-        (PlatformDependent.getByte(address + 5) & 0xffL) << 40 |
-        (PlatformDependent.getByte(address + 6) & 0xffL) << 48 |
-        ((long) PlatformDependent.getByte(address + 7)) << 56;
+      (PlatformDependent.getByte(address + 1) & 0xffL) << 8 |
+      (PlatformDependent.getByte(address + 2) & 0xffL) << 16 |
+      (PlatformDependent.getByte(address + 3) & 0xffL) << 24 |
+      (PlatformDependent.getByte(address + 4) & 0xffL) << 32 |
+      (PlatformDependent.getByte(address + 5) & 0xffL) << 40 |
+      (PlatformDependent.getByte(address + 6) & 0xffL) << 48 |
+      ((long) PlatformDependent.getByte(address + 7)) << 56;
   }
 
   static void setByte(long address, int value) {
@@ -136,7 +136,7 @@ final class UnsafeByteBufUtil {
   static void setShort(long address, int value) {
     if (UNALIGNED) {
       PlatformDependent.putShort(
-          address, BIG_ENDIAN_NATIVE_ORDER ? (short) value : Short.reverseBytes((short) value));
+        address, BIG_ENDIAN_NATIVE_ORDER ? (short) value : Short.reverseBytes((short) value));
     } else {
       PlatformDependent.putByte(address, (byte) (value >>> 8));
       PlatformDependent.putByte(address + 1, (byte) value);
@@ -146,7 +146,7 @@ final class UnsafeByteBufUtil {
   static void setShortLE(long address, int value) {
     if (UNALIGNED) {
       PlatformDependent.putShort(
-          address, BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) value) : (short) value);
+        address, BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) value) : (short) value);
     } else {
       PlatformDependent.putByte(address, (byte) value);
       PlatformDependent.putByte(address + 1, (byte) (value >>> 8));
@@ -157,7 +157,7 @@ final class UnsafeByteBufUtil {
     PlatformDependent.putByte(address, (byte) (value >>> 16));
     if (UNALIGNED) {
       PlatformDependent.putShort(address + 1, BIG_ENDIAN_NATIVE_ORDER ? (short) value
-          : Short.reverseBytes((short) value));
+        : Short.reverseBytes((short) value));
     } else {
       PlatformDependent.putByte(address + 1, (byte) (value >>> 8));
       PlatformDependent.putByte(address + 2, (byte) value);
@@ -168,7 +168,7 @@ final class UnsafeByteBufUtil {
     PlatformDependent.putByte(address, (byte) value);
     if (UNALIGNED) {
       PlatformDependent.putShort(address + 1, BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) (value >>> 8))
-          : (short) (value >>> 8));
+        : (short) (value >>> 8));
     } else {
       PlatformDependent.putByte(address + 1, (byte) (value >>> 8));
       PlatformDependent.putByte(address + 2, (byte) (value >>> 16));
@@ -237,7 +237,7 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? v : Short.reverseBytes(v);
     }
     return (short) (PlatformDependent.getByte(array, index) << 8 |
-        PlatformDependent.getByte(array, index + 1) & 0xff);
+      PlatformDependent.getByte(array, index + 1) & 0xff);
   }
 
   static short getShortLE(byte[] array, int index) {
@@ -246,30 +246,30 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(v) : v;
     }
     return (short) (PlatformDependent.getByte(array, index) & 0xff |
-        PlatformDependent.getByte(array, index + 1) << 8);
+      PlatformDependent.getByte(array, index + 1) << 8);
   }
 
   static int getUnsignedMedium(byte[] array, int index) {
     if (UNALIGNED) {
       return (PlatformDependent.getByte(array, index) & 0xff) << 16 |
-          (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(array, index + 1)
-              : Short.reverseBytes(PlatformDependent.getShort(array, index + 1)))
-              & 0xffff;
+        (BIG_ENDIAN_NATIVE_ORDER ? PlatformDependent.getShort(array, index + 1)
+          : Short.reverseBytes(PlatformDependent.getShort(array, index + 1)))
+          & 0xffff;
     }
     return (PlatformDependent.getByte(array, index) & 0xff) << 16 |
-        (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
-        PlatformDependent.getByte(array, index + 2) & 0xff;
+      (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
+      PlatformDependent.getByte(array, index + 2) & 0xff;
   }
 
   static int getUnsignedMediumLE(byte[] array, int index) {
     if (UNALIGNED) {
       return (PlatformDependent.getByte(array, index) & 0xff) |
-          ((BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(PlatformDependent.getShort(array, index + 1))
-              : PlatformDependent.getShort(array, index + 1)) & 0xffff) << 8;
+        ((BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes(PlatformDependent.getShort(array, index + 1))
+          : PlatformDependent.getShort(array, index + 1)) & 0xffff) << 8;
     }
     return PlatformDependent.getByte(array, index) & 0xff |
-        (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
-        (PlatformDependent.getByte(array, index + 2) & 0xff) << 16;
+      (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
+      (PlatformDependent.getByte(array, index + 2) & 0xff) << 16;
   }
 
   static int getInt(byte[] array, int index) {
@@ -278,9 +278,9 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? v : Integer.reverseBytes(v);
     }
     return PlatformDependent.getByte(array, index) << 24 |
-        (PlatformDependent.getByte(array, index + 1) & 0xff) << 16 |
-        (PlatformDependent.getByte(array, index + 2) & 0xff) << 8 |
-        PlatformDependent.getByte(array, index + 3) & 0xff;
+      (PlatformDependent.getByte(array, index + 1) & 0xff) << 16 |
+      (PlatformDependent.getByte(array, index + 2) & 0xff) << 8 |
+      PlatformDependent.getByte(array, index + 3) & 0xff;
   }
 
   static int getIntLE(byte[] array, int index) {
@@ -289,9 +289,9 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? Integer.reverseBytes(v) : v;
     }
     return PlatformDependent.getByte(array, index) & 0xff |
-        (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
-        (PlatformDependent.getByte(array, index + 2) & 0xff) << 16 |
-        PlatformDependent.getByte(array, index + 3) << 24;
+      (PlatformDependent.getByte(array, index + 1) & 0xff) << 8 |
+      (PlatformDependent.getByte(array, index + 2) & 0xff) << 16 |
+      PlatformDependent.getByte(array, index + 3) << 24;
   }
 
   static long getLong(byte[] array, int index) {
@@ -300,13 +300,13 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? v : Long.reverseBytes(v);
     }
     return ((long) PlatformDependent.getByte(array, index)) << 56 |
-        (PlatformDependent.getByte(array, index + 1) & 0xffL) << 48 |
-        (PlatformDependent.getByte(array, index + 2) & 0xffL) << 40 |
-        (PlatformDependent.getByte(array, index + 3) & 0xffL) << 32 |
-        (PlatformDependent.getByte(array, index + 4) & 0xffL) << 24 |
-        (PlatformDependent.getByte(array, index + 5) & 0xffL) << 16 |
-        (PlatformDependent.getByte(array, index + 6) & 0xffL) << 8 |
-        (PlatformDependent.getByte(array, index + 7)) & 0xffL;
+      (PlatformDependent.getByte(array, index + 1) & 0xffL) << 48 |
+      (PlatformDependent.getByte(array, index + 2) & 0xffL) << 40 |
+      (PlatformDependent.getByte(array, index + 3) & 0xffL) << 32 |
+      (PlatformDependent.getByte(array, index + 4) & 0xffL) << 24 |
+      (PlatformDependent.getByte(array, index + 5) & 0xffL) << 16 |
+      (PlatformDependent.getByte(array, index + 6) & 0xffL) << 8 |
+      (PlatformDependent.getByte(array, index + 7)) & 0xffL;
   }
 
   static long getLongLE(byte[] array, int index) {
@@ -315,13 +315,13 @@ final class UnsafeByteBufUtil {
       return BIG_ENDIAN_NATIVE_ORDER ? Long.reverseBytes(v) : v;
     }
     return PlatformDependent.getByte(array, index) & 0xffL |
-        (PlatformDependent.getByte(array, index + 1) & 0xffL) << 8 |
-        (PlatformDependent.getByte(array, index + 2) & 0xffL) << 16 |
-        (PlatformDependent.getByte(array, index + 3) & 0xffL) << 24 |
-        (PlatformDependent.getByte(array, index + 4) & 0xffL) << 32 |
-        (PlatformDependent.getByte(array, index + 5) & 0xffL) << 40 |
-        (PlatformDependent.getByte(array, index + 6) & 0xffL) << 48 |
-        ((long) PlatformDependent.getByte(array, index + 7)) << 56;
+      (PlatformDependent.getByte(array, index + 1) & 0xffL) << 8 |
+      (PlatformDependent.getByte(array, index + 2) & 0xffL) << 16 |
+      (PlatformDependent.getByte(array, index + 3) & 0xffL) << 24 |
+      (PlatformDependent.getByte(array, index + 4) & 0xffL) << 32 |
+      (PlatformDependent.getByte(array, index + 5) & 0xffL) << 40 |
+      (PlatformDependent.getByte(array, index + 6) & 0xffL) << 48 |
+      ((long) PlatformDependent.getByte(array, index + 7)) << 56;
   }
 
   static void setByte(byte[] array, int index, int value) {
@@ -331,7 +331,7 @@ final class UnsafeByteBufUtil {
   static void setShort(byte[] array, int index, int value) {
     if (UNALIGNED) {
       PlatformDependent.putShort(array, index,
-          BIG_ENDIAN_NATIVE_ORDER ? (short) value : Short.reverseBytes((short) value));
+        BIG_ENDIAN_NATIVE_ORDER ? (short) value : Short.reverseBytes((short) value));
     } else {
       PlatformDependent.putByte(array, index, (byte) (value >>> 8));
       PlatformDependent.putByte(array, index + 1, (byte) value);
@@ -341,7 +341,7 @@ final class UnsafeByteBufUtil {
   static void setShortLE(byte[] array, int index, int value) {
     if (UNALIGNED) {
       PlatformDependent.putShort(array, index,
-          BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) value) : (short) value);
+        BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) value) : (short) value);
     } else {
       PlatformDependent.putByte(array, index, (byte) value);
       PlatformDependent.putByte(array, index + 1, (byte) (value >>> 8));
@@ -352,8 +352,8 @@ final class UnsafeByteBufUtil {
     PlatformDependent.putByte(array, index, (byte) (value >>> 16));
     if (UNALIGNED) {
       PlatformDependent.putShort(array, index + 1,
-          BIG_ENDIAN_NATIVE_ORDER ? (short) value
-              : Short.reverseBytes((short) value));
+        BIG_ENDIAN_NATIVE_ORDER ? (short) value
+          : Short.reverseBytes((short) value));
     } else {
       PlatformDependent.putByte(array, index + 1, (byte) (value >>> 8));
       PlatformDependent.putByte(array, index + 2, (byte) value);
@@ -364,8 +364,8 @@ final class UnsafeByteBufUtil {
     PlatformDependent.putByte(array, index, (byte) value);
     if (UNALIGNED) {
       PlatformDependent.putShort(array, index + 1,
-          BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) (value >>> 8))
-              : (short) (value >>> 8));
+        BIG_ENDIAN_NATIVE_ORDER ? Short.reverseBytes((short) (value >>> 8))
+          : (short) (value >>> 8));
     } else {
       PlatformDependent.putByte(array, index + 1, (byte) (value >>> 8));
       PlatformDependent.putByte(array, index + 2, (byte) (value >>> 16));
@@ -601,7 +601,7 @@ final class UnsafeByteBufUtil {
   }
 
   private static void getBytes(long inAddr, byte[] in, int inOffset, int inLen, OutputStream out, int outLen)
-      throws IOException {
+    throws IOException {
     do {
       int len = Math.min(inLen, outLen);
       PlatformDependent.copyMemory(inAddr, in, inOffset, len);
@@ -620,7 +620,7 @@ final class UnsafeByteBufUtil {
   }
 
   static UnpooledUnsafeDirectByteBuf newUnsafeDirectByteBuf(
-      ByteBufAllocator alloc, int initialCapacity, int maxCapacity) {
+    ByteBufAllocator alloc, int initialCapacity, int maxCapacity) {
     if (PlatformDependent.useDirectBufferNoCleaner()) {
       return new UnpooledUnsafeNoCleanerDirectByteBuf(alloc, initialCapacity, maxCapacity);
     }

@@ -16,7 +16,13 @@
 
 package io.netty.handler.proxy;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.PendingWriteQueue;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.DefaultPromise;
 import io.netty.util.concurrent.EventExecutor;
@@ -163,8 +169,8 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
 
   @Override
   public final void connect(
-      ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress,
-      ChannelPromise promise) throws Exception {
+    ChannelHandlerContext ctx, SocketAddress remoteAddress, SocketAddress localAddress,
+    ChannelPromise promise) throws Exception {
 
     if (destinationAddress != null) {
       promise.setFailure(new ConnectionPendingException());
@@ -208,7 +214,6 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
 
   /**
    * Returns a new message that is sent at first time when the connection to the proxy server has been established.
-   *
    * @return the initial message, or {@code null} if the proxy server is expected to send the first message instead
    */
   protected abstract Object newInitialMessage(ChannelHandlerContext ctx) throws Exception;
@@ -268,7 +273,6 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
 
   /**
    * Handles the message received from the proxy server.
-   *
    * @return {@code true} if the connection to the destination has been established,
    * {@code false} if the connection to the destination has not been established and more messages are
    * expected from the proxy server
@@ -285,7 +289,7 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
       removedCodec &= safeRemoveEncoder();
 
       ctx.fireUserEventTriggered(
-          new ProxyConnectionEvent(protocol(), authScheme(), proxyAddress, destinationAddress));
+        new ProxyConnectionEvent(protocol(), authScheme(), proxyAddress, destinationAddress));
 
       removedCodec &= safeRemoveDecoder();
 
@@ -299,7 +303,7 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
       } else {
         // We are at inconsistent state because we failed to remove all codec handlers.
         Exception cause = new ProxyConnectException(
-            "failed to remove all codec handlers added by the proxy handler; bug?");
+          "failed to remove all codec handlers added by the proxy handler; bug?");
         failPendingWritesAndClose(cause);
       }
     }
@@ -335,7 +339,7 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
 
       if (!(cause instanceof ProxyConnectException)) {
         cause = new ProxyConnectException(
-            exceptionMessage(cause.toString()), cause);
+          exceptionMessage(cause.toString()), cause);
       }
 
       safeRemoveDecoder();
@@ -368,13 +372,13 @@ public abstract class ProxyHandler extends ChannelDuplexHandler {
     }
 
     StringBuilder buf = new StringBuilder(128 + msg.length())
-        .append(protocol())
-        .append(", ")
-        .append(authScheme())
-        .append(", ")
-        .append(proxyAddress)
-        .append(" => ")
-        .append(destinationAddress);
+      .append(protocol())
+      .append(", ")
+      .append(authScheme())
+      .append(", ")
+      .append(proxyAddress)
+      .append(" => ")
+      .append(destinationAddress);
     if (!msg.isEmpty()) {
       buf.append(", ").append(msg);
     }

@@ -172,7 +172,7 @@ final class NativeDatagramPacketArray {
         address = Inet6Address.getByAddress(null, addr, scopeId);
       }
       return new DatagramPacket(buffer.writerIndex(count),
-          localAddress, new InetSocketAddress(address, port));
+        localAddress, new InetSocketAddress(address, port));
     }
   }
 }

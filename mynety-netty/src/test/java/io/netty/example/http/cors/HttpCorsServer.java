@@ -90,9 +90,9 @@ public final class HttpCorsServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new HttpCorsServerInitializer(sslCtx));
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new HttpCorsServerInitializer(sslCtx));
 
       b.bind(PORT).sync().channel().closeFuture().sync();
     } finally {

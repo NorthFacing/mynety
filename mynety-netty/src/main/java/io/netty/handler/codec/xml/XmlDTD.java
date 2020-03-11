@@ -56,8 +56,8 @@ public class XmlDTD {
   @Override
   public String toString() {
     return "XmlDTD{" +
-        "text='" + text + '\'' +
-        '}';
+      "text='" + text + '\'' +
+      '}';
   }
 
 }

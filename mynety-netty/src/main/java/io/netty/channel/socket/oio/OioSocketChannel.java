@@ -16,7 +16,13 @@
 package io.netty.channel.socket.oio;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.EventLoop;
 import io.netty.channel.oio.OioByteStreamChannel;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
@@ -33,7 +39,6 @@ import java.net.SocketTimeoutException;
 
 /**
  * A {@link SocketChannel} which is using Old-Blocking-IO
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated
@@ -53,7 +58,6 @@ public class OioSocketChannel extends OioByteStreamChannel implements SocketChan
 
   /**
    * Create a new instance from the given {@link Socket}
-   *
    * @param socket the {@link Socket} which is used by this instance
    */
   public OioSocketChannel(Socket socket) {
@@ -62,7 +66,6 @@ public class OioSocketChannel extends OioByteStreamChannel implements SocketChan
 
   /**
    * Create a new instance from the given {@link Socket}
-   *
    * @param parent the parent {@link Channel} which was used to create this instance. This can be null if the
    *               {@link} has no parent as it was created by your self.
    * @param socket the {@link Socket} which is used by this instance
@@ -252,7 +255,7 @@ public class OioSocketChannel extends OioByteStreamChannel implements SocketChan
     if (shutdownOutputCause != null) {
       if (shutdownInputCause != null) {
         logger.debug("Exception suppressed because a previous exception occurred.",
-            shutdownInputCause);
+          shutdownInputCause);
       }
       promise.setFailure(shutdownOutputCause);
     } else if (shutdownInputCause != null) {

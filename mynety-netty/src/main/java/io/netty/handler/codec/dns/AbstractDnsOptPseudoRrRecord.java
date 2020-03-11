@@ -63,16 +63,16 @@ public abstract class AbstractDnsOptPseudoRrRecord extends AbstractDnsRecord imp
 
   final StringBuilder toStringBuilder() {
     return new StringBuilder(64)
-        .append(StringUtil.simpleClassName(this))
-        .append('(')
-        .append("OPT flags:")
-        .append(flags())
-        .append(" version:")
-        .append(version())
-        .append(" extendedRecode:")
-        .append(extendedRcode())
-        .append(" udp:")
-        .append(dnsClass())
-        .append(')');
+      .append(StringUtil.simpleClassName(this))
+      .append('(')
+      .append("OPT flags:")
+      .append(flags())
+      .append(" version:")
+      .append(version())
+      .append(" extendedRecode:")
+      .append(extendedRcode())
+      .append(" udp:")
+      .append(dnsClass())
+      .append(')');
   }
 }

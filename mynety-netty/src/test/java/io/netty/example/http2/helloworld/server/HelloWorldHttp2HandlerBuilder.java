@@ -25,7 +25,7 @@ import io.netty.handler.codec.http2.Http2Settings;
 import static io.netty.handler.logging.LogLevel.INFO;
 
 public final class HelloWorldHttp2HandlerBuilder
-    extends AbstractHttp2ConnectionHandlerBuilder<HelloWorldHttp2Handler, HelloWorldHttp2HandlerBuilder> {
+  extends AbstractHttp2ConnectionHandlerBuilder<HelloWorldHttp2Handler, HelloWorldHttp2HandlerBuilder> {
 
   private static final Http2FrameLogger logger = new Http2FrameLogger(INFO, HelloWorldHttp2Handler.class);
 

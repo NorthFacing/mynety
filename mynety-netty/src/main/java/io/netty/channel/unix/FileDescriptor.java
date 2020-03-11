@@ -35,14 +35,14 @@ import static java.lang.Math.min;
 public class FileDescriptor {
 
   private static final AtomicIntegerFieldUpdater<FileDescriptor> stateUpdater =
-      AtomicIntegerFieldUpdater.newUpdater(FileDescriptor.class, "state");
+    AtomicIntegerFieldUpdater.newUpdater(FileDescriptor.class, "state");
 
   private static final int STATE_CLOSED_MASK = 1;
   private static final int STATE_INPUT_SHUTDOWN_MASK = 1 << 1;
   private static final int STATE_OUTPUT_SHUTDOWN_MASK = 1 << 2;
   private static final int STATE_ALL_MASK = STATE_CLOSED_MASK |
-      STATE_INPUT_SHUTDOWN_MASK |
-      STATE_OUTPUT_SHUTDOWN_MASK;
+    STATE_INPUT_SHUTDOWN_MASK |
+    STATE_OUTPUT_SHUTDOWN_MASK;
 
   /**
    * Bit map = [Output Shutdown | Input Shutdown | Closed]
@@ -146,8 +146,8 @@ public class FileDescriptor {
   @Override
   public String toString() {
     return "FileDescriptor{" +
-        "fd=" + fd +
-        '}';
+      "fd=" + fd +
+      '}';
   }
 
   @Override

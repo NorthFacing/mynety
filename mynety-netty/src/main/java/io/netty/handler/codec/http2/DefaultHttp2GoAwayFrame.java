@@ -35,7 +35,6 @@ public final class DefaultHttp2GoAwayFrame extends DefaultByteBufHolder implemen
 
   /**
    * Equivalent to {@code new DefaultHttp2GoAwayFrame(error.code())}.
-   *
    * @param error non-{@code null} reason for the go away
    */
   public DefaultHttp2GoAwayFrame(Http2Error error) {
@@ -44,7 +43,6 @@ public final class DefaultHttp2GoAwayFrame extends DefaultByteBufHolder implemen
 
   /**
    * Equivalent to {@code new DefaultHttp2GoAwayFrame(content, Unpooled.EMPTY_BUFFER)}.
-   *
    * @param errorCode reason for the go away
    */
   public DefaultHttp2GoAwayFrame(long errorCode) {
@@ -61,7 +59,6 @@ public final class DefaultHttp2GoAwayFrame extends DefaultByteBufHolder implemen
 
   /**
    * Construct a new GOAWAY message.
-   *
    * @param errorCode reason for the go away
    * @param content   non-{@code null} debug data
    */
@@ -172,6 +169,6 @@ public final class DefaultHttp2GoAwayFrame extends DefaultByteBufHolder implemen
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + "(errorCode=" + errorCode + ", content=" + content()
-        + ", extraStreamIds=" + extraStreamIds + ", lastStreamId=" + lastStreamId + ')';
+      + ", extraStreamIds=" + extraStreamIds + ", lastStreamId=" + lastStreamId + ')';
   }
 }

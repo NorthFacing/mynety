@@ -81,7 +81,7 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
       try {
         final ByteBuf buffer;
         if (cumulation.writerIndex() > cumulation.maxCapacity() - in.readableBytes()
-            || cumulation.refCnt() > 1 || cumulation.isReadOnly()) {
+          || cumulation.refCnt() > 1 || cumulation.isReadOnly()) {
           // Expand cumulation (by replace it) when either there is not more room in the buffer
           // or if the refCnt is greater then 1 which may happen when the user use slice().retain() or
           // duplicate().retain() or if its read-only.
@@ -414,7 +414,6 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
   /**
    * Called once data should be decoded from the given {@link ByteBuf}. This method will call
    * {@link #decode(ChannelHandlerContext, ByteBuf, List)} as long as decoding should take place.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
    * @param in  the {@link ByteBuf} from which to read data
    * @param out the {@link List} to which decoded messages should be added
@@ -460,8 +459,8 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
 
         if (oldInputLength == in.readableBytes()) {
           throw new DecoderException(
-              StringUtil.simpleClassName(getClass()) +
-                  ".decode() did not read anything but decoded a message.");
+            StringUtil.simpleClassName(getClass()) +
+              ".decode() did not read anything but decoded a message.");
         }
 
         if (isSingleDecode()) {
@@ -479,7 +478,6 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
    * Decode the from one {@link ByteBuf} to an other. This method will be called till either the input
    * {@link ByteBuf} has nothing to read when return from this method or till nothing was read from the input
    * {@link ByteBuf}.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
    * @param in  the {@link ByteBuf} from which to read data
    * @param out the {@link List} to which decoded messages should be added
@@ -491,14 +489,13 @@ public abstract class ByteToMessageDecoder extends ChannelInboundHandlerAdapter 
    * Decode the from one {@link ByteBuf} to an other. This method will be called till either the input
    * {@link ByteBuf} has nothing to read when return from this method or till nothing was read from the input
    * {@link ByteBuf}.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
    * @param in  the {@link ByteBuf} from which to read data
    * @param out the {@link List} to which decoded messages should be added
    * @throws Exception is thrown if an error occurs
    */
   final void decodeRemovalReentryProtection(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)
-      throws Exception {
+    throws Exception {
     decodeState = STATE_CALLING_CHILD_DECODE;
     try {
       decode(ctx, in, out);

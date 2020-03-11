@@ -18,7 +18,22 @@ package io.netty.handler.proxy;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.socksx.v5.*;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5CommandRequest;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5InitialRequest;
+import io.netty.handler.codec.socksx.v5.DefaultSocks5PasswordAuthRequest;
+import io.netty.handler.codec.socksx.v5.Socks5AddressType;
+import io.netty.handler.codec.socksx.v5.Socks5AuthMethod;
+import io.netty.handler.codec.socksx.v5.Socks5ClientEncoder;
+import io.netty.handler.codec.socksx.v5.Socks5CommandResponse;
+import io.netty.handler.codec.socksx.v5.Socks5CommandResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5CommandStatus;
+import io.netty.handler.codec.socksx.v5.Socks5CommandType;
+import io.netty.handler.codec.socksx.v5.Socks5InitialRequest;
+import io.netty.handler.codec.socksx.v5.Socks5InitialResponse;
+import io.netty.handler.codec.socksx.v5.Socks5InitialResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponse;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthResponseDecoder;
+import io.netty.handler.codec.socksx.v5.Socks5PasswordAuthStatus;
 import io.netty.util.NetUtil;
 import io.netty.util.internal.StringUtil;
 
@@ -33,10 +48,10 @@ public final class Socks5ProxyHandler extends ProxyHandler {
   private static final String AUTH_PASSWORD = "password";
 
   private static final Socks5InitialRequest INIT_REQUEST_NO_AUTH =
-      new DefaultSocks5InitialRequest(Collections.singletonList(Socks5AuthMethod.NO_AUTH));
+    new DefaultSocks5InitialRequest(Collections.singletonList(Socks5AuthMethod.NO_AUTH));
 
   private static final Socks5InitialRequest INIT_REQUEST_PASSWORD =
-      new DefaultSocks5InitialRequest(Arrays.asList(Socks5AuthMethod.NO_AUTH, Socks5AuthMethod.PASSWORD));
+    new DefaultSocks5InitialRequest(Arrays.asList(Socks5AuthMethod.NO_AUTH, Socks5AuthMethod.PASSWORD));
 
   private final String username;
   private final String password;
@@ -127,7 +142,7 @@ public final class Socks5ProxyHandler extends ProxyHandler {
         // In case of password authentication, send an authentication request.
         ctx.pipeline().replace(decoderName, decoderName, new Socks5PasswordAuthResponseDecoder());
         sendToProxyServer(new DefaultSocks5PasswordAuthRequest(
-            username != null ? username : "", password != null ? password : ""));
+          username != null ? username : "", password != null ? password : ""));
       } else {
         // Should never reach here.
         throw new Error();
@@ -181,7 +196,7 @@ public final class Socks5ProxyHandler extends ProxyHandler {
         addrType = Socks5AddressType.IPv6;
       } else {
         throw new ProxyConnectException(
-            exceptionMessage("unknown address type: " + StringUtil.simpleClassName(rhost)));
+          exceptionMessage("unknown address type: " + StringUtil.simpleClassName(rhost)));
       }
     }
 

@@ -24,10 +24,17 @@ import io.netty.util.AsciiString;
 import io.netty.util.CharsetUtil;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import static io.netty.util.AsciiString.*;
+import static io.netty.util.AsciiString.contentEquals;
+import static io.netty.util.AsciiString.contentEqualsIgnoreCase;
+import static io.netty.util.AsciiString.trim;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -364,7 +371,7 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
      * {@code "application/x-www-form-urlencoded"}
      */
     public static final String APPLICATION_X_WWW_FORM_URLENCODED =
-        "application/x-www-form-urlencoded";
+      "application/x-www-form-urlencoded";
     /**
      * {@code "base64"}
      */
@@ -1146,7 +1153,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the value of a header with the specified name.  If there are
    * more than one values for the specified name, the first value is returned.
-   *
    * @param name The name of the header to search
    * @return The first header value or {@code null} if there is no such header
    * @see #getAsString(CharSequence)
@@ -1158,7 +1164,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the value of a header with the specified name.  If there are
    * more than one values for the specified name, the first value is returned.
-   *
    * @param name The name of the header to search
    * @return The first header value or {@code defaultValue} if there is no such header
    */
@@ -1173,7 +1178,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the integer value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name the name of the header to search
    * @return the first header value if the header is found and its value is an integer. {@code null} if there's no
    * such header or its value is not an integer.
@@ -1183,7 +1187,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the integer value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name         the name of the header to search
    * @param defaultValue the default value
    * @return the first header value if the header is found and its value is an integer. {@code defaultValue} if
@@ -1194,7 +1197,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the short value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name the name of the header to search
    * @return the first header value if the header is found and its value is a short. {@code null} if there's no
    * such header or its value is not a short.
@@ -1204,7 +1206,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the short value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name         the name of the header to search
    * @param defaultValue the default value
    * @return the first header value if the header is found and its value is a short. {@code defaultValue} if
@@ -1215,7 +1216,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the date value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name the name of the header to search
    * @return the first header value if the header is found and its value is a date. {@code null} if there's no
    * such header or its value is not a date.
@@ -1225,7 +1225,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
   /**
    * Returns the date value of a header with the specified name. If there are more than one values for the
    * specified name, the first value is returned.
-   *
    * @param name         the name of the header to search
    * @param defaultValue the default value
    * @return the first header value if the header is found and its value is a date. {@code defaultValue} if
@@ -1240,7 +1239,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Returns the values of headers with the specified name
-   *
    * @param name The name of the headers to search
    * @return A {@link List} of header values which will be empty if no values
    * are found
@@ -1254,7 +1252,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    * Returns a new {@link List} that contains all headers in this object.  Note that modifying the
    * returned {@link List} will not affect the state of this object.  If you intend to enumerate over the header
    * entries only, use {@link #iterator()} instead, which has much less overhead.
-   *
    * @see #iteratorCharSequence()
    */
   public abstract List<Map.Entry<String, String>> entries();
@@ -1279,7 +1276,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Equivalent to {@link #getAll(String)} but it is possible that no intermediate list is generated.
-   *
    * @param name the name of the header to retrieve
    * @return an {@link Iterator} of header values corresponding to {@code name}.
    */
@@ -1289,7 +1285,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Equivalent to {@link #getAll(String)} but it is possible that no intermediate list is generated.
-   *
    * @param name the name of the header to retrieve
    * @return an {@link Iterator} of header values corresponding to {@code name}.
    */
@@ -1299,7 +1294,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Checks to see if there is a header with the specified name
-   *
    * @param name The name of the header to search for
    * @return True if at least one header is found
    */
@@ -1336,7 +1330,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    * into a {@link String} by {@link Object#toString()}, except in the cases
    * of {@link Date} and {@link Calendar}, which are formatted to the date
    * format defined in <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>.
-   *
    * @param name  The name of the header being added
    * @param value The value of the header being added
    * @return {@code this}
@@ -1362,7 +1355,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    *     headers.add(name, v);
    * }
    * </pre>
-   *
    * @param name   The name of the headers being set
    * @param values The values of the headers being set
    * @return {@code this}
@@ -1373,7 +1365,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Adds all header entries of the specified {@code headers}.
-   *
    * @return {@code this}
    */
   public HttpHeaders add(HttpHeaders headers) {
@@ -1388,7 +1379,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Add the {@code name} to {@code value}.
-   *
    * @param name  The name to modify
    * @param value The value
    * @return {@code this}
@@ -1397,7 +1387,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Add the {@code name} to {@code value}.
-   *
    * @param name  The name to modify
    * @param value The value
    * @return {@code this}
@@ -1417,7 +1406,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    * {@link String} by {@link Object#toString()}, except for {@link Date}
    * and {@link Calendar}, which are formatted to the date format defined in
    * <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1">RFC2616</a>.
-   *
    * @param name  The name of the header being set
    * @param value The value of the header being set
    * @return {@code this}
@@ -1445,7 +1433,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    *     headers.add(name, v);
    * }
    * </pre>
-   *
    * @param name   The name of the headers being set
    * @param values The values of the headers being set
    * @return {@code this}
@@ -1456,7 +1443,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Cleans the current header entries and copies all header entries of the specified {@code headers}.
-   *
    * @return {@code this}
    */
   public HttpHeaders set(HttpHeaders headers) {
@@ -1476,7 +1462,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Retains all current headers but calls {@link #set(String, Object)} for each entry in {@code headers}
-   *
    * @param headers The headers used to {@link #set(String, Object)} values in this instance
    * @return {@code this}
    */
@@ -1495,7 +1480,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Set the {@code name} to {@code value}. This will remove all previous values associated with {@code name}.
-   *
    * @param name  The name to modify
    * @param value The value
    * @return {@code this}
@@ -1504,7 +1488,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Set the {@code name} to {@code value}. This will remove all previous values associated with {@code name}.
-   *
    * @param name  The name to modify
    * @param value The value
    * @return {@code this}
@@ -1518,7 +1501,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Removes the header with the specified name.
-   *
    * @param name The name of the header to remove
    * @return {@code this}
    */
@@ -1528,7 +1510,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * Removes all headers from this {@link HttpMessage}.
-   *
    * @return {@code this}
    */
   public abstract HttpHeaders clear();
@@ -1559,7 +1540,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    * This also handles multiple values that are separated with a {@code ,}.
    * <p>
    * If {@code ignoreCase} is {@code true} then a case insensitive compare is done on the value.
-   *
    * @param name       the name of the header to find
    * @param value      the value of the header to find
    * @param ignoreCase {@code true} then a case insensitive compare is run to compare values.
@@ -1623,7 +1603,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * {@link Headers#get(Object)} and convert the result to a {@link String}.
-   *
    * @param name the name of the header to retrieve
    * @return the first header value if the header is found. {@code null} if there's no such header.
    */
@@ -1633,7 +1612,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
 
   /**
    * {@link Headers#getAll(Object)} and convert each element of {@link List} to a {@link String}.
-   *
    * @param name the name of the header to retrieve
    * @return a {@link List} of header values or an empty {@link List} if no values are found.
    */
@@ -1652,7 +1630,6 @@ public abstract class HttpHeaders implements Iterable<Map.Entry<String, String>>
    * Returns {@code true} if a header with the {@code name} and {@code value} exists, {@code false} otherwise.
    * <p>
    * If {@code ignoreCase} is {@code true} then a case insensitive compare is done on the value.
-   *
    * @param name       the name of the header to find
    * @param value      the value of the header to find
    * @param ignoreCase {@code true} then a case insensitive compare is run to compare values.

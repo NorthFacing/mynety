@@ -46,7 +46,6 @@ public class MarshallingDecoder extends LengthFieldBasedFrameDecoder {
 
   /**
    * Creates a new decoder with the specified maximum object size.
-   *
    * @param maxObjectSize the maximum byte length of the serialized object.
    *                      if the length of the received object is greater
    *                      than this value, {@link TooLongFrameException}

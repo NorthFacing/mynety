@@ -48,7 +48,6 @@ public class ChunkedNioStream implements ChunkedInput<ByteBuf> {
 
   /**
    * Creates a new instance that fetches data from the specified channel.
-   *
    * @param chunkSize the number of bytes to fetch on each
    *                  {@link #readChunk(ChannelHandlerContext)} call
    */
@@ -58,7 +57,7 @@ public class ChunkedNioStream implements ChunkedInput<ByteBuf> {
     }
     if (chunkSize <= 0) {
       throw new IllegalArgumentException("chunkSize: " + chunkSize +
-          " (expected: a positive integer)");
+        " (expected: a positive integer)");
     }
     this.in = in;
     offset = 0;

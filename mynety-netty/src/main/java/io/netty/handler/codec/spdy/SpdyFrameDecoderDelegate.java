@@ -32,7 +32,7 @@ public interface SpdyFrameDecoderDelegate {
    * The Name/Value Header Block is not included. See readHeaderBlock().
    */
   void readSynStreamFrame(
-      int streamId, int associatedToStreamId, byte priority, boolean last, boolean unidirectional);
+    int streamId, int associatedToStreamId, byte priority, boolean last, boolean unidirectional);
 
   /**
    * Called when a SYN_REPLY frame is received.

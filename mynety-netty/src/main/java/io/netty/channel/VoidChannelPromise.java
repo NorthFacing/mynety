@@ -31,7 +31,6 @@ public final class VoidChannelPromise extends AbstractFuture<Void> implements Ch
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   public VoidChannelPromise(final Channel channel, boolean fireException) {
@@ -182,7 +181,6 @@ public final class VoidChannelPromise extends AbstractFuture<Void> implements Ch
 
   /**
    * {@inheritDoc}
-   *
    * @param mayInterruptIfRunning this value has no effect in this implementation.
    */
   @Override

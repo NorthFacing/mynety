@@ -34,7 +34,6 @@ public abstract class ResourceLeakDetectorFactory {
 
   /**
    * Get the singleton instance of this factory class.
-   *
    * @return the current {@link ResourceLeakDetectorFactory}
    */
   public static ResourceLeakDetectorFactory instance() {
@@ -45,7 +44,6 @@ public abstract class ResourceLeakDetectorFactory {
    * Set the factory's singleton instance. This has to be called before the static initializer of the
    * {@link ResourceLeakDetector} is called by all the callers of this factory. That is, before initializing a
    * Netty Bootstrap.
-   *
    * @param factory the instance that will become the current {@link ResourceLeakDetectorFactory}'s singleton
    */
   public static void setResourceLeakDetectorFactory(ResourceLeakDetectorFactory factory) {
@@ -54,7 +52,6 @@ public abstract class ResourceLeakDetectorFactory {
 
   /**
    * Returns a new instance of a {@link ResourceLeakDetector} with the given resource class.
-   *
    * @param resource the resource class used to initialize the {@link ResourceLeakDetector}
    * @param <T>      the type of the resource class
    * @return a new instance of {@link ResourceLeakDetector}
@@ -75,11 +72,10 @@ public abstract class ResourceLeakDetectorFactory {
    */
   @Deprecated
   public abstract <T> ResourceLeakDetector<T> newResourceLeakDetector(
-      Class<T> resource, int samplingInterval, long maxActive);
+    Class<T> resource, int samplingInterval, long maxActive);
 
   /**
    * Returns a new instance of a {@link ResourceLeakDetector} with the given resource class.
-   *
    * @param resource         the resource class used to initialize the {@link ResourceLeakDetector}
    * @param samplingInterval the interval on which sampling takes place
    * @param <T>              the type of the resource class
@@ -116,7 +112,7 @@ public abstract class ResourceLeakDetectorFactory {
     private static Constructor<?> obsoleteCustomClassConstructor(String customLeakDetector) {
       try {
         final Class<?> detectorClass = Class.forName(customLeakDetector, true,
-            PlatformDependent.getSystemClassLoader());
+          PlatformDependent.getSystemClassLoader());
 
         if (ResourceLeakDetector.class.isAssignableFrom(detectorClass)) {
           return detectorClass.getConstructor(Class.class, int.class, long.class);
@@ -125,7 +121,7 @@ public abstract class ResourceLeakDetectorFactory {
         }
       } catch (Throwable t) {
         logger.error("Could not load custom resource leak detector class provided: {}",
-            customLeakDetector, t);
+          customLeakDetector, t);
       }
       return null;
     }
@@ -133,7 +129,7 @@ public abstract class ResourceLeakDetectorFactory {
     private static Constructor<?> customClassConstructor(String customLeakDetector) {
       try {
         final Class<?> detectorClass = Class.forName(customLeakDetector, true,
-            PlatformDependent.getSystemClassLoader());
+          PlatformDependent.getSystemClassLoader());
 
         if (ResourceLeakDetector.class.isAssignableFrom(detectorClass)) {
           return detectorClass.getConstructor(Class.class, int.class);
@@ -142,7 +138,7 @@ public abstract class ResourceLeakDetectorFactory {
         }
       } catch (Throwable t) {
         logger.error("Could not load custom resource leak detector class provided: {}",
-            customLeakDetector, t);
+          customLeakDetector, t);
       }
       return null;
     }
@@ -155,20 +151,20 @@ public abstract class ResourceLeakDetectorFactory {
         try {
           @SuppressWarnings("unchecked")
           ResourceLeakDetector<T> leakDetector =
-              (ResourceLeakDetector<T>) obsoleteCustomClassConstructor.newInstance(
-                  resource, samplingInterval, maxActive);
+            (ResourceLeakDetector<T>) obsoleteCustomClassConstructor.newInstance(
+              resource, samplingInterval, maxActive);
           logger.debug("Loaded custom ResourceLeakDetector: {}",
-              obsoleteCustomClassConstructor.getDeclaringClass().getName());
+            obsoleteCustomClassConstructor.getDeclaringClass().getName());
           return leakDetector;
         } catch (Throwable t) {
           logger.error(
-              "Could not load custom resource leak detector provided: {} with the given resource: {}",
-              obsoleteCustomClassConstructor.getDeclaringClass().getName(), resource, t);
+            "Could not load custom resource leak detector provided: {} with the given resource: {}",
+            obsoleteCustomClassConstructor.getDeclaringClass().getName(), resource, t);
         }
       }
 
       ResourceLeakDetector<T> resourceLeakDetector = new ResourceLeakDetector<T>(resource, samplingInterval,
-          maxActive);
+        maxActive);
       logger.debug("Loaded default ResourceLeakDetector: {}", resourceLeakDetector);
       return resourceLeakDetector;
     }
@@ -179,14 +175,14 @@ public abstract class ResourceLeakDetectorFactory {
         try {
           @SuppressWarnings("unchecked")
           ResourceLeakDetector<T> leakDetector =
-              (ResourceLeakDetector<T>) customClassConstructor.newInstance(resource, samplingInterval);
+            (ResourceLeakDetector<T>) customClassConstructor.newInstance(resource, samplingInterval);
           logger.debug("Loaded custom ResourceLeakDetector: {}",
-              customClassConstructor.getDeclaringClass().getName());
+            customClassConstructor.getDeclaringClass().getName());
           return leakDetector;
         } catch (Throwable t) {
           logger.error(
-              "Could not load custom resource leak detector provided: {} with the given resource: {}",
-              customClassConstructor.getDeclaringClass().getName(), resource, t);
+            "Could not load custom resource leak detector provided: {} with the given resource: {}",
+            customClassConstructor.getDeclaringClass().getName(), resource, t);
         }
       }
 

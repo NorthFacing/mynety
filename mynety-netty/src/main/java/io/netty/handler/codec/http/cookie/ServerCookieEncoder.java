@@ -19,9 +19,19 @@ import io.netty.handler.codec.DateFormatter;
 import io.netty.handler.codec.http.HttpConstants;
 import io.netty.handler.codec.http.HttpResponse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import static io.netty.handler.codec.http.cookie.CookieUtil.*;
+import static io.netty.handler.codec.http.cookie.CookieUtil.add;
+import static io.netty.handler.codec.http.cookie.CookieUtil.addQuoted;
+import static io.netty.handler.codec.http.cookie.CookieUtil.stringBuilder;
+import static io.netty.handler.codec.http.cookie.CookieUtil.stripTrailingSeparator;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -37,7 +47,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * {@link HttpResponse} res = ...;
  * res.setHeader("Set-Cookie", {@link ServerCookieEncoder}.encode("JSESSIONID", "1234"));
  * </pre>
- *
  * @see ServerCookieDecoder
  */
 public final class ServerCookieEncoder extends CookieEncoder {
@@ -62,7 +71,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookie name-value pair into a Set-Cookie header value.
-   *
    * @param name  the cookie name
    * @param value the cookie value
    * @return a single Set-Cookie header value
@@ -73,7 +81,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookie into a Set-Cookie header value.
-   *
    * @param cookie the cookie
    * @return a single Set-Cookie header value
    */
@@ -120,7 +127,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Deduplicate a list of encoded cookies by keeping only the last instance with a given name.
-   *
    * @param encoded         The list of encoded cookies.
    * @param nameToLastIndex A map from cookie name to index of last cookie instance.
    * @return The encoded list with all but the last instance of a named cookie.
@@ -141,7 +147,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */
@@ -165,7 +170,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */
@@ -189,7 +193,6 @@ public final class ServerCookieEncoder extends CookieEncoder {
 
   /**
    * Batch encodes cookies into Set-Cookie header values.
-   *
    * @param cookies a bunch of cookies
    * @return the corresponding bunch of Set-Cookie headers
    */

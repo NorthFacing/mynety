@@ -24,8 +24,8 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public abstract class AbstractBinaryMemcacheMessage
-    extends AbstractMemcacheObject
-    implements BinaryMemcacheMessage {
+  extends AbstractMemcacheObject
+  implements BinaryMemcacheMessage {
 
   /**
    * Contains the optional key.
@@ -48,7 +48,6 @@ public abstract class AbstractBinaryMemcacheMessage
 
   /**
    * Create a new instance with all properties set.
-   *
    * @param key    the message key.
    * @param extras the message extras.
    */
@@ -158,7 +157,6 @@ public abstract class AbstractBinaryMemcacheMessage
    * Set the extras length of the message.
    * <p/>
    * This may be 0, since the extras content is optional.
-   *
    * @param extrasLength the extras length.
    */
   BinaryMemcacheMessage setExtrasLength(byte extrasLength) {
@@ -175,7 +173,6 @@ public abstract class AbstractBinaryMemcacheMessage
    * Set the key length of the message.
    * <p/>
    * This may be 0, since the key is optional.
-   *
    * @param keyLength the key length to use.
    */
   BinaryMemcacheMessage setKeyLength(short keyLength) {
@@ -235,7 +232,6 @@ public abstract class AbstractBinaryMemcacheMessage
 
   /**
    * Copies special metadata hold by this instance to the provided instance
-   *
    * @param dst The instance where to copy the metadata of this instance to
    */
   void copyMeta(AbstractBinaryMemcacheMessage dst) {

@@ -27,7 +27,6 @@ public abstract class CompleteFuture<V> extends AbstractFuture<V> {
 
   /**
    * Creates a new instance.
-   *
    * @param executor the {@link EventExecutor} associated with this future
    */
   protected CompleteFuture(EventExecutor executor) {
@@ -142,7 +141,6 @@ public abstract class CompleteFuture<V> extends AbstractFuture<V> {
 
   /**
    * {@inheritDoc}
-   *
    * @param mayInterruptIfRunning this value has no effect in this implementation.
    */
   @Override

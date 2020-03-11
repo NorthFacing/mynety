@@ -68,7 +68,6 @@ public class DefaultDnsCache implements DnsCache {
 
   /**
    * Create a cache.
-   *
    * @param minTtl      the minimum TTL
    * @param maxTtl      the maximum TTL
    * @param negativeTtl the TTL for failed queries
@@ -78,14 +77,13 @@ public class DefaultDnsCache implements DnsCache {
     this.maxTtl = Math.min(Cache.MAX_SUPPORTED_TTL_SECS, checkPositiveOrZero(maxTtl, "maxTtl"));
     if (minTtl > maxTtl) {
       throw new IllegalArgumentException(
-          "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
+        "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
     }
     this.negativeTtl = checkPositiveOrZero(negativeTtl, "negativeTtl");
   }
 
   /**
    * Returns the minimum TTL of the cached DNS resource records (in seconds).
-   *
    * @see #maxTtl()
    */
   public int minTtl() {
@@ -94,7 +92,6 @@ public class DefaultDnsCache implements DnsCache {
 
   /**
    * Returns the maximum TTL of the cached DNS resource records (in seconds).
-   *
    * @see #minTtl()
    */
   public int maxTtl() {
@@ -166,12 +163,12 @@ public class DefaultDnsCache implements DnsCache {
   @Override
   public String toString() {
     return new StringBuilder()
-        .append("DefaultDnsCache(minTtl=")
-        .append(minTtl).append(", maxTtl=")
-        .append(maxTtl).append(", negativeTtl=")
-        .append(negativeTtl).append(", cached resolved hostname=")
-        .append(resolveCache.size()).append(')')
-        .toString();
+      .append("DefaultDnsCache(minTtl=")
+      .append(minTtl).append(", maxTtl=")
+      .append(maxTtl).append(", negativeTtl=")
+      .append(negativeTtl).append(", cached resolved hostname=")
+      .append(resolveCache.size()).append(')')
+      .toString();
   }
 
   private static final class DefaultDnsCacheEntry implements DnsCacheEntry {

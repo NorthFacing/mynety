@@ -19,7 +19,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderResult;
-import io.netty.handler.codec.memcache.*;
+import io.netty.handler.codec.memcache.AbstractMemcacheObjectDecoder;
+import io.netty.handler.codec.memcache.DefaultLastMemcacheContent;
+import io.netty.handler.codec.memcache.DefaultMemcacheContent;
+import io.netty.handler.codec.memcache.LastMemcacheContent;
+import io.netty.handler.codec.memcache.MemcacheContent;
 import io.netty.util.internal.UnstableApi;
 
 import java.util.List;
@@ -33,7 +37,7 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
  */
 @UnstableApi
 public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMessage>
-    extends AbstractMemcacheObjectDecoder {
+  extends AbstractMemcacheObjectDecoder {
 
   public static final int DEFAULT_MAX_CHUNK_SIZE = 8192;
 
@@ -53,7 +57,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * Create a new {@link AbstractBinaryMemcacheDecoder} with custom settings.
-   *
    * @param chunkSize the maximum chunk size of the payload.
    */
   protected AbstractBinaryMemcacheDecoder(int chunkSize) {
@@ -116,8 +119,8 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
       case READ_CONTENT:
         try {
           int valueLength = currentMessage.totalBodyLength()
-              - currentMessage.keyLength()
-              - currentMessage.extrasLength();
+            - currentMessage.keyLength()
+            - currentMessage.extrasLength();
           int toRead = in.readableBytes();
           if (valueLength > 0) {
             if (toRead == 0) {
@@ -168,7 +171,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * Helper method to create a message indicating a invalid decoding result.
-   *
    * @param cause the cause of the decoding failure.
    * @return a valid message indicating failure.
    */
@@ -181,7 +183,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * Helper method to create a content chunk indicating a invalid decoding result.
-   *
    * @param cause the cause of the decoding failure.
    * @return a valid content chunk indicating failure.
    */
@@ -194,7 +195,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * When the channel goes inactive, release all frames to prevent data leaks.
-   *
    * @param ctx handler context
    * @throws Exception
    */
@@ -218,7 +218,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * Decode and return the parsed {@link BinaryMemcacheMessage}.
-   *
    * @param in the incoming buffer.
    * @return the decoded header.
    */
@@ -226,7 +225,6 @@ public abstract class AbstractBinaryMemcacheDecoder<M extends BinaryMemcacheMess
 
   /**
    * Helper method to create a upstream message when the incoming parsing did fail.
-   *
    * @return a message indicating a decoding failure.
    */
   protected abstract M buildInvalidMessage();

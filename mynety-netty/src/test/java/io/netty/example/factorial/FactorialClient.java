@@ -40,7 +40,7 @@ public final class FactorialClient {
     final SslContext sslCtx;
     if (SSL) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -49,15 +49,15 @@ public final class FactorialClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new FactorialClientInitializer(sslCtx));
+        .channel(NioSocketChannel.class)
+        .handler(new FactorialClientInitializer(sslCtx));
 
       // Make a new connection.
       ChannelFuture f = b.connect(HOST, PORT).sync();
 
       // Get the handler instance to retrieve the answer.
       FactorialClientHandler handler =
-          (FactorialClientHandler) f.channel().pipeline().last();
+        (FactorialClientHandler) f.channel().pipeline().last();
 
       // Print out the answer.
       System.err.format("Factorial of %,d is: %,d", COUNT, handler.getFactorial());

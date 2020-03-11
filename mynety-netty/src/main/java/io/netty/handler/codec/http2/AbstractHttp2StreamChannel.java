@@ -16,7 +16,25 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelProgressivePromise;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.DefaultChannelPipeline;
+import io.netty.channel.EventLoop;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.VoidChannelPromise;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.handler.codec.http2.Http2FrameCodec.DefaultHttp2FrameStream;
 import io.netty.util.DefaultAttributeMap;
 import io.netty.util.ReferenceCountUtil;
@@ -42,7 +60,7 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
     @Override
     public boolean visit(Http2FrameStream stream) {
       final AbstractHttp2StreamChannel childChannel = (AbstractHttp2StreamChannel)
-          ((DefaultHttp2FrameStream) stream).attachment;
+        ((DefaultHttp2FrameStream) stream).attachment;
       childChannel.trySetWritable();
       return true;
     }
@@ -69,9 +87,9 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
       @Override
       public int size(Object msg) {
         return msg instanceof Http2DataFrame ?
-            // Guard against overflow.
-            (int) min(Integer.MAX_VALUE, ((Http2DataFrame) msg).initialFlowControlledBytes() +
-                (long) MIN_HTTP2_FRAME_SIZE) : MIN_HTTP2_FRAME_SIZE;
+          // Guard against overflow.
+          (int) min(Integer.MAX_VALUE, ((Http2DataFrame) msg).initialFlowControlledBytes() +
+            (long) MIN_HTTP2_FRAME_SIZE) : MIN_HTTP2_FRAME_SIZE;
       }
     };
 
@@ -82,10 +100,10 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
   }
 
   private static final AtomicLongFieldUpdater<AbstractHttp2StreamChannel> TOTAL_PENDING_SIZE_UPDATER =
-      AtomicLongFieldUpdater.newUpdater(AbstractHttp2StreamChannel.class, "totalPendingSize");
+    AtomicLongFieldUpdater.newUpdater(AbstractHttp2StreamChannel.class, "totalPendingSize");
 
   private static final AtomicIntegerFieldUpdater<AbstractHttp2StreamChannel> UNWRITABLE_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(AbstractHttp2StreamChannel.class, "unwritable");
+    AtomicIntegerFieldUpdater.newUpdater(AbstractHttp2StreamChannel.class, "unwritable");
 
   private static void windowUpdateFrameWriteComplete(ChannelFuture future, Channel streamChannel) {
     Throwable cause = future.cause();
@@ -566,7 +584,7 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
 
   private final class Http2ChannelUnsafe implements Unsafe {
     private final VoidChannelPromise unsafeVoidPromise =
-        new VoidChannelPromise(AbstractHttp2StreamChannel.this, false);
+      new VoidChannelPromise(AbstractHttp2StreamChannel.this, false);
     @SuppressWarnings("deprecation")
     private RecvByteBufAllocator.Handle recvHandle;
     private boolean writeDoneAndNoFlush;
@@ -800,7 +818,7 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
         do {
           doRead0((Http2Frame) message, allocHandle);
         } while ((readEOS || (continueReading = allocHandle.continueReading()))
-            && (message = pollQueuedMessage()) != null);
+          && (message = pollQueuedMessage()) != null);
 
         if (continueReading && isParentReadInProgress() && !readEOS) {
           // Currently the parent and child channel are on the same EventLoop thread. If the parent is
@@ -895,8 +913,8 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
       }
 
       if (!isActive() ||
-          // Once the outbound side was closed we should not allow header / data frames
-          outboundClosed && (msg instanceof Http2HeadersFrame || msg instanceof Http2DataFrame)) {
+        // Once the outbound side was closed we should not allow header / data frames
+        outboundClosed && (msg instanceof Http2HeadersFrame || msg instanceof Http2DataFrame)) {
         ReferenceCountUtil.release(msg);
         promise.setFailure(new ClosedChannelException());
         return;
@@ -909,8 +927,8 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
             if (!(frame instanceof Http2HeadersFrame)) {
               ReferenceCountUtil.release(frame);
               promise.setFailure(
-                  new IllegalArgumentException("The first frame must be a headers frame. Was: "
-                      + frame.name()));
+                new IllegalArgumentException("The first frame must be a headers frame. Was: "
+                  + frame.name()));
               return;
             }
             firstFrameWritten = true;
@@ -935,8 +953,8 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
           String msgStr = msg.toString();
           ReferenceCountUtil.release(msg);
           promise.setFailure(new IllegalArgumentException(
-              "Message must be an " + StringUtil.simpleClassName(Http2StreamFrame.class) +
-                  ": " + msgStr));
+            "Message must be an " + StringUtil.simpleClassName(Http2StreamFrame.class) +
+              ": " + msgStr));
           return;
         }
 
@@ -1005,7 +1023,7 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
         String msgString = frame.toString();
         ReferenceCountUtil.release(frame);
         throw new IllegalArgumentException(
-            "Stream " + frame.stream() + " must not be set on the frame: " + msgString);
+          "Stream " + frame.stream() + " must not be set on the frame: " + msgString);
       }
       return frame;
     }
@@ -1063,7 +1081,7 @@ abstract class AbstractHttp2StreamChannel extends DefaultAttributeMap implements
     public ChannelConfig setRecvByteBufAllocator(RecvByteBufAllocator allocator) {
       if (!(allocator.newHandle() instanceof RecvByteBufAllocator.ExtendedHandle)) {
         throw new IllegalArgumentException("allocator.newHandle() must return an object of type: " +
-            RecvByteBufAllocator.ExtendedHandle.class);
+          RecvByteBufAllocator.ExtendedHandle.class);
       }
       super.setRecvByteBufAllocator(allocator);
       return this;

@@ -35,9 +35,25 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import static io.netty.handler.ssl.SslUtils.*;
+import static io.netty.handler.ssl.SslUtils.DEFAULT_CIPHER_SUITES;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V2;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V2_HELLO;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_SSL_V3;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_1;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_2;
+import static io.netty.handler.ssl.SslUtils.PROTOCOL_TLS_V1_3;
+import static io.netty.handler.ssl.SslUtils.TLSV13_CIPHERS;
+import static io.netty.handler.ssl.SslUtils.TLSV13_CIPHER_SUITES;
+import static io.netty.handler.ssl.SslUtils.addIfSupported;
+import static io.netty.handler.ssl.SslUtils.isTLSv13Cipher;
+import static io.netty.handler.ssl.SslUtils.useFallbackCiphersIfDefaultIsEmpty;
 
 /**
  * Tells if <a href="https://netty.io/wiki/forked-tomcat-native.html">{@code netty-tcnative}</a> and its OpenSSL support
@@ -61,56 +77,56 @@ public final class OpenSsl {
 
   // self-signed certificate for netty.io and the matching private-key
   private static final String CERT = "-----BEGIN CERTIFICATE-----\n" +
-      "MIICrjCCAZagAwIBAgIIdSvQPv1QAZQwDQYJKoZIhvcNAQELBQAwFjEUMBIGA1UEAxMLZXhhbXBs\n" +
-      "ZS5jb20wIBcNMTgwNDA2MjIwNjU5WhgPOTk5OTEyMzEyMzU5NTlaMBYxFDASBgNVBAMTC2V4YW1w\n" +
-      "bGUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAggbWsmDQ6zNzRZ5AW8E3eoGl\n" +
-      "qWvOBDb5Fs1oBRrVQHuYmVAoaqwDzXYJ0LOwa293AgWEQ1jpcbZ2hpoYQzqEZBTLnFhMrhRFlH6K\n" +
-      "bJND8Y33kZ/iSVBBDuGbdSbJShlM+4WwQ9IAso4MZ4vW3S1iv5fGGpLgbtXRmBf/RU8omN0Gijlv\n" +
-      "WlLWHWijLN8xQtySFuBQ7ssW8RcKAary3pUm6UUQB+Co6lnfti0Tzag8PgjhAJq2Z3wbsGRnP2YS\n" +
-      "vYoaK6qzmHXRYlp/PxrjBAZAmkLJs4YTm/XFF+fkeYx4i9zqHbyone5yerRibsHaXZWLnUL+rFoe\n" +
-      "MdKvr0VS3sGmhQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQADQi441pKmXf9FvUV5EHU4v8nJT9Iq\n" +
-      "yqwsKwXnr7AsUlDGHBD7jGrjAXnG5rGxuNKBQ35wRxJATKrUtyaquFUL6H8O6aGQehiFTk6zmPbe\n" +
-      "12Gu44vqqTgIUxnv3JQJiox8S2hMxsSddpeCmSdvmalvD6WG4NthH6B9ZaBEiep1+0s0RUaBYn73\n" +
-      "I7CCUaAtbjfR6pcJjrFk5ei7uwdQZFSJtkP2z8r7zfeANJddAKFlkaMWn7u+OIVuB4XPooWicObk\n" +
-      "NAHFtP65bocUYnDpTVdiyvn8DdqyZ/EO8n1bBKBzuSLplk2msW4pdgaFgY7Vw/0wzcFXfUXmL1uy\n" +
-      "G8sQD/wx\n" +
-      "-----END CERTIFICATE-----";
+    "MIICrjCCAZagAwIBAgIIdSvQPv1QAZQwDQYJKoZIhvcNAQELBQAwFjEUMBIGA1UEAxMLZXhhbXBs\n" +
+    "ZS5jb20wIBcNMTgwNDA2MjIwNjU5WhgPOTk5OTEyMzEyMzU5NTlaMBYxFDASBgNVBAMTC2V4YW1w\n" +
+    "bGUuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAggbWsmDQ6zNzRZ5AW8E3eoGl\n" +
+    "qWvOBDb5Fs1oBRrVQHuYmVAoaqwDzXYJ0LOwa293AgWEQ1jpcbZ2hpoYQzqEZBTLnFhMrhRFlH6K\n" +
+    "bJND8Y33kZ/iSVBBDuGbdSbJShlM+4WwQ9IAso4MZ4vW3S1iv5fGGpLgbtXRmBf/RU8omN0Gijlv\n" +
+    "WlLWHWijLN8xQtySFuBQ7ssW8RcKAary3pUm6UUQB+Co6lnfti0Tzag8PgjhAJq2Z3wbsGRnP2YS\n" +
+    "vYoaK6qzmHXRYlp/PxrjBAZAmkLJs4YTm/XFF+fkeYx4i9zqHbyone5yerRibsHaXZWLnUL+rFoe\n" +
+    "MdKvr0VS3sGmhQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQADQi441pKmXf9FvUV5EHU4v8nJT9Iq\n" +
+    "yqwsKwXnr7AsUlDGHBD7jGrjAXnG5rGxuNKBQ35wRxJATKrUtyaquFUL6H8O6aGQehiFTk6zmPbe\n" +
+    "12Gu44vqqTgIUxnv3JQJiox8S2hMxsSddpeCmSdvmalvD6WG4NthH6B9ZaBEiep1+0s0RUaBYn73\n" +
+    "I7CCUaAtbjfR6pcJjrFk5ei7uwdQZFSJtkP2z8r7zfeANJddAKFlkaMWn7u+OIVuB4XPooWicObk\n" +
+    "NAHFtP65bocUYnDpTVdiyvn8DdqyZ/EO8n1bBKBzuSLplk2msW4pdgaFgY7Vw/0wzcFXfUXmL1uy\n" +
+    "G8sQD/wx\n" +
+    "-----END CERTIFICATE-----";
 
   private static final String KEY = "-----BEGIN PRIVATE KEY-----\n" +
-      "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCCBtayYNDrM3NFnkBbwTd6gaWp\n" +
-      "a84ENvkWzWgFGtVAe5iZUChqrAPNdgnQs7Brb3cCBYRDWOlxtnaGmhhDOoRkFMucWEyuFEWUfops\n" +
-      "k0PxjfeRn+JJUEEO4Zt1JslKGUz7hbBD0gCyjgxni9bdLWK/l8YakuBu1dGYF/9FTyiY3QaKOW9a\n" +
-      "UtYdaKMs3zFC3JIW4FDuyxbxFwoBqvLelSbpRRAH4KjqWd+2LRPNqDw+COEAmrZnfBuwZGc/ZhK9\n" +
-      "ihorqrOYddFiWn8/GuMEBkCaQsmzhhOb9cUX5+R5jHiL3OodvKid7nJ6tGJuwdpdlYudQv6sWh4x\n" +
-      "0q+vRVLewaaFAgMBAAECggEAP8tPJvFtTxhNJAkCloHz0D0vpDHqQBMgntlkgayqmBqLwhyb18pR\n" +
-      "i0qwgh7HHc7wWqOOQuSqlEnrWRrdcI6TSe8R/sErzfTQNoznKWIPYcI/hskk4sdnQ//Yn9/Jvnsv\n" +
-      "U/BBjOTJxtD+sQbhAl80JcA3R+5sArURQkfzzHOL/YMqzAsn5hTzp7HZCxUqBk3KaHRxV7NefeOE\n" +
-      "xlZuWSmxYWfbFIs4kx19/1t7h8CHQWezw+G60G2VBtSBBxDnhBWvqG6R/wpzJ3nEhPLLY9T+XIHe\n" +
-      "ipzdMOOOUZorfIg7M+pyYPji+ZIZxIpY5OjrOzXHciAjRtr5Y7l99K1CG1LguQKBgQDrQfIMxxtZ\n" +
-      "vxU/1cRmUV9l7pt5bjV5R6byXq178LxPKVYNjdZ840Q0/OpZEVqaT1xKVi35ohP1QfNjxPLlHD+K\n" +
-      "iDAR9z6zkwjIrbwPCnb5kuXy4lpwPcmmmkva25fI7qlpHtbcuQdoBdCfr/KkKaUCMPyY89LCXgEw\n" +
-      "5KTDj64UywKBgQCNfbO+eZLGzhiHhtNJurresCsIGWlInv322gL8CSfBMYl6eNfUTZvUDdFhPISL\n" +
-      "UljKWzXDrjw0ujFSPR0XhUGtiq89H+HUTuPPYv25gVXO+HTgBFZEPl4PpA+BUsSVZy0NddneyqLk\n" +
-      "42Wey9omY9Q8WsdNQS5cbUvy0uG6WFoX7wKBgQDZ1jpW8pa0x2bZsQsm4vo+3G5CRnZlUp+XlWt2\n" +
-      "dDcp5dC0xD1zbs1dc0NcLeGDOTDv9FSl7hok42iHXXq8AygjEm/QcuwwQ1nC2HxmQP5holAiUs4D\n" +
-      "WHM8PWs3wFYPzE459EBoKTxeaeP/uWAn+he8q7d5uWvSZlEcANs/6e77eQKBgD21Ar0hfFfj7mK8\n" +
-      "9E0FeRZBsqK3omkfnhcYgZC11Xa2SgT1yvs2Va2n0RcdM5kncr3eBZav2GYOhhAdwyBM55XuE/sO\n" +
-      "eokDVutNeuZ6d5fqV96TRaRBpvgfTvvRwxZ9hvKF4Vz+9wfn/JvCwANaKmegF6ejs7pvmF3whq2k\n" +
-      "drZVAoGAX5YxQ5XMTD0QbMAl7/6qp6S58xNoVdfCkmkj1ZLKaHKIjS/benkKGlySVQVPexPfnkZx\n" +
-      "p/Vv9yyphBoudiTBS9Uog66ueLYZqpgxlM/6OhYg86Gm3U2ycvMxYjBM1NFiyze21AqAhI+HX+Ot\n" +
-      "mraV2/guSgDgZAhukRZzeQ2RucI=\n" +
-      "-----END PRIVATE KEY-----";
+    "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCCBtayYNDrM3NFnkBbwTd6gaWp\n" +
+    "a84ENvkWzWgFGtVAe5iZUChqrAPNdgnQs7Brb3cCBYRDWOlxtnaGmhhDOoRkFMucWEyuFEWUfops\n" +
+    "k0PxjfeRn+JJUEEO4Zt1JslKGUz7hbBD0gCyjgxni9bdLWK/l8YakuBu1dGYF/9FTyiY3QaKOW9a\n" +
+    "UtYdaKMs3zFC3JIW4FDuyxbxFwoBqvLelSbpRRAH4KjqWd+2LRPNqDw+COEAmrZnfBuwZGc/ZhK9\n" +
+    "ihorqrOYddFiWn8/GuMEBkCaQsmzhhOb9cUX5+R5jHiL3OodvKid7nJ6tGJuwdpdlYudQv6sWh4x\n" +
+    "0q+vRVLewaaFAgMBAAECggEAP8tPJvFtTxhNJAkCloHz0D0vpDHqQBMgntlkgayqmBqLwhyb18pR\n" +
+    "i0qwgh7HHc7wWqOOQuSqlEnrWRrdcI6TSe8R/sErzfTQNoznKWIPYcI/hskk4sdnQ//Yn9/Jvnsv\n" +
+    "U/BBjOTJxtD+sQbhAl80JcA3R+5sArURQkfzzHOL/YMqzAsn5hTzp7HZCxUqBk3KaHRxV7NefeOE\n" +
+    "xlZuWSmxYWfbFIs4kx19/1t7h8CHQWezw+G60G2VBtSBBxDnhBWvqG6R/wpzJ3nEhPLLY9T+XIHe\n" +
+    "ipzdMOOOUZorfIg7M+pyYPji+ZIZxIpY5OjrOzXHciAjRtr5Y7l99K1CG1LguQKBgQDrQfIMxxtZ\n" +
+    "vxU/1cRmUV9l7pt5bjV5R6byXq178LxPKVYNjdZ840Q0/OpZEVqaT1xKVi35ohP1QfNjxPLlHD+K\n" +
+    "iDAR9z6zkwjIrbwPCnb5kuXy4lpwPcmmmkva25fI7qlpHtbcuQdoBdCfr/KkKaUCMPyY89LCXgEw\n" +
+    "5KTDj64UywKBgQCNfbO+eZLGzhiHhtNJurresCsIGWlInv322gL8CSfBMYl6eNfUTZvUDdFhPISL\n" +
+    "UljKWzXDrjw0ujFSPR0XhUGtiq89H+HUTuPPYv25gVXO+HTgBFZEPl4PpA+BUsSVZy0NddneyqLk\n" +
+    "42Wey9omY9Q8WsdNQS5cbUvy0uG6WFoX7wKBgQDZ1jpW8pa0x2bZsQsm4vo+3G5CRnZlUp+XlWt2\n" +
+    "dDcp5dC0xD1zbs1dc0NcLeGDOTDv9FSl7hok42iHXXq8AygjEm/QcuwwQ1nC2HxmQP5holAiUs4D\n" +
+    "WHM8PWs3wFYPzE459EBoKTxeaeP/uWAn+he8q7d5uWvSZlEcANs/6e77eQKBgD21Ar0hfFfj7mK8\n" +
+    "9E0FeRZBsqK3omkfnhcYgZC11Xa2SgT1yvs2Va2n0RcdM5kncr3eBZav2GYOhhAdwyBM55XuE/sO\n" +
+    "eokDVutNeuZ6d5fqV96TRaRBpvgfTvvRwxZ9hvKF4Vz+9wfn/JvCwANaKmegF6ejs7pvmF3whq2k\n" +
+    "drZVAoGAX5YxQ5XMTD0QbMAl7/6qp6S58xNoVdfCkmkj1ZLKaHKIjS/benkKGlySVQVPexPfnkZx\n" +
+    "p/Vv9yyphBoudiTBS9Uog66ueLYZqpgxlM/6OhYg86Gm3U2ycvMxYjBM1NFiyze21AqAhI+HX+Ot\n" +
+    "mraV2/guSgDgZAhukRZzeQ2RucI=\n" +
+    "-----END PRIVATE KEY-----";
 
   static {
     Throwable cause = null;
 
     if (SystemPropertyUtil.getBoolean("io.netty.handler.ssl.noOpenSsl", false)) {
       cause = new UnsupportedOperationException(
-          "OpenSSL was explicit disabled with -Dio.netty.handler.ssl.noOpenSsl=true");
+        "OpenSSL was explicit disabled with -Dio.netty.handler.ssl.noOpenSsl=true");
 
       logger.debug(
-          "netty-tcnative explicit disabled; " +
-              OpenSslEngine.class.getSimpleName() + " will be unavailable.", cause);
+        "netty-tcnative explicit disabled; " +
+          OpenSslEngine.class.getSimpleName() + " will be unavailable.", cause);
     } else {
       // Test if netty-tcnative is in the classpath first.
       try {
@@ -118,8 +134,8 @@ public final class OpenSsl {
       } catch (ClassNotFoundException t) {
         cause = t;
         logger.debug(
-            "netty-tcnative not in the classpath; " +
-                OpenSslEngine.class.getSimpleName() + " will be unavailable.");
+          "netty-tcnative not in the classpath; " +
+            OpenSslEngine.class.getSimpleName() + " will be unavailable.");
       }
 
       // If in the classpath, try to load the native library and initialize netty-tcnative.
@@ -130,10 +146,10 @@ public final class OpenSsl {
         } catch (Throwable t) {
           cause = t;
           logger.debug(
-              "Failed to load netty-tcnative; " +
-                  OpenSslEngine.class.getSimpleName() + " will be unavailable, unless the " +
-                  "application has already loaded the symbols by some other means. " +
-                  "See https://netty.io/wiki/forked-tomcat-native.html for more information.", t);
+            "Failed to load netty-tcnative; " +
+              OpenSslEngine.class.getSimpleName() + " will be unavailable, unless the " +
+              "application has already loaded the symbols by some other means. " +
+              "See https://netty.io/wiki/forked-tomcat-native.html for more information.", t);
         }
 
         try {
@@ -154,9 +170,9 @@ public final class OpenSsl {
             cause = t;
           }
           logger.debug(
-              "Failed to initialize netty-tcnative; " +
-                  OpenSslEngine.class.getSimpleName() + " will be unavailable. " +
-                  "See https://netty.io/wiki/forked-tomcat-native.html for more information.", t);
+            "Failed to initialize netty-tcnative; " +
+              OpenSslEngine.class.getSimpleName() + " will be unavailable. " +
+              "See https://netty.io/wiki/forked-tomcat-native.html for more information.", t);
         }
       }
     }
@@ -209,8 +225,8 @@ public final class OpenSsl {
             for (String c : SSL.getCiphers(ssl)) {
               // Filter out bad input.
               if (c == null || c.isEmpty() || availableOpenSslCipherSuites.contains(c) ||
-                  // Filter out TLSv1.3 ciphers if not supported.
-                  !tlsv13Supported && isTLSv13Cipher(c)) {
+                // Filter out TLSv1.3 ciphers if not supported.
+                !tlsv13Supported && isTLSv13Cipher(c)) {
                 continue;
               }
               availableOpenSslCipherSuites.add(c);
@@ -219,12 +235,12 @@ public final class OpenSsl {
               // Currently BoringSSL does not include these when calling SSL.getCiphers() even when these
               // are supported.
               Collections.addAll(availableOpenSslCipherSuites,
-                  "TLS_AES_128_GCM_SHA256",
-                  "TLS_AES_256_GCM_SHA384",
-                  "TLS_CHACHA20_POLY1305_SHA256",
-                  "AEAD-AES128-GCM-SHA256",
-                  "AEAD-AES256-GCM-SHA384",
-                  "AEAD-CHACHA20-POLY1305-SHA256");
+                "TLS_AES_128_GCM_SHA256",
+                "TLS_AES_256_GCM_SHA384",
+                "TLS_CHACHA20_POLY1305_SHA256",
+                "AEAD-AES128-GCM-SHA256",
+                "AEAD-AES256-GCM-SHA384",
+                "AEAD-CHACHA20-POLY1305-SHA256");
             }
 
             PemEncoded privateKey = PemPrivateKey.valueOf(KEY.getBytes(CharsetUtil.US_ASCII));
@@ -238,29 +254,29 @@ public final class OpenSsl {
               cert = SSL.parseX509Chain(certBio);
 
               keyBio = ReferenceCountedOpenSslContext.toBIO(
-                  UnpooledByteBufAllocator.DEFAULT, privateKey.retain());
+                UnpooledByteBufAllocator.DEFAULT, privateKey.retain());
               key = SSL.parsePrivateKey(keyBio, null);
 
               SSL.setKeyMaterial(ssl, cert, key);
               supportsKeyManagerFactory = true;
               try {
                 boolean propertySet = SystemPropertyUtil.contains(
-                    "io.netty.handler.ssl.openssl.useKeyManagerFactory");
+                  "io.netty.handler.ssl.openssl.useKeyManagerFactory");
                 if (!IS_BORINGSSL) {
                   useKeyManagerFactory = SystemPropertyUtil.getBoolean(
-                      "io.netty.handler.ssl.openssl.useKeyManagerFactory", true);
+                    "io.netty.handler.ssl.openssl.useKeyManagerFactory", true);
 
                   if (propertySet) {
                     logger.info("System property " +
-                        "'io.netty.handler.ssl.openssl.useKeyManagerFactory'" +
-                        " is deprecated and so will be ignored in the future");
+                      "'io.netty.handler.ssl.openssl.useKeyManagerFactory'" +
+                      " is deprecated and so will be ignored in the future");
                   }
                 } else {
                   useKeyManagerFactory = true;
                   if (propertySet) {
                     logger.info("System property " +
-                        "'io.netty.handler.ssl.openssl.useKeyManagerFactory'" +
-                        " is deprecated and will be ignored when using BoringSSL");
+                      "'io.netty.handler.ssl.openssl.useKeyManagerFactory'" +
+                      " is deprecated and will be ignored when using BoringSSL");
                   }
                 }
               } catch (Throwable ignore) {
@@ -294,7 +310,7 @@ public final class OpenSsl {
       }
       AVAILABLE_OPENSSL_CIPHER_SUITES = Collections.unmodifiableSet(availableOpenSslCipherSuites);
       final Set<String> availableJavaCipherSuites = new LinkedHashSet<String>(
-          AVAILABLE_OPENSSL_CIPHER_SUITES.size() * 2);
+        AVAILABLE_OPENSSL_CIPHER_SUITES.size() * 2);
       for (String cipher : AVAILABLE_OPENSSL_CIPHER_SUITES) {
         // Included converted but also openssl cipher name
         if (!isTLSv13Cipher(cipher)) {
@@ -315,7 +331,7 @@ public final class OpenSsl {
       AVAILABLE_JAVA_CIPHER_SUITES = Collections.unmodifiableSet(availableJavaCipherSuites);
 
       final Set<String> availableCipherSuites = new LinkedHashSet<String>(
-          AVAILABLE_OPENSSL_CIPHER_SUITES.size() + AVAILABLE_JAVA_CIPHER_SUITES.size());
+        AVAILABLE_OPENSSL_CIPHER_SUITES.size() + AVAILABLE_JAVA_CIPHER_SUITES.size());
       availableCipherSuites.addAll(AVAILABLE_OPENSSL_CIPHER_SUITES);
       availableCipherSuites.addAll(AVAILABLE_JAVA_CIPHER_SUITES);
 
@@ -376,7 +392,7 @@ public final class OpenSsl {
    */
   static X509Certificate selfSignedCertificate() throws CertificateException {
     return (X509Certificate) SslContext.X509_CERT_FACTORY.generateCertificate(
-        new ByteArrayInputStream(CERT.getBytes(CharsetUtil.US_ASCII))
+      new ByteArrayInputStream(CERT.getBytes(CharsetUtil.US_ASCII))
     );
   }
 
@@ -429,7 +445,6 @@ public final class OpenSsl {
   /**
    * Returns {@code true} if the used version of openssl supports
    * <a href="https://tools.ietf.org/html/rfc7301">ALPN</a>.
-   *
    * @deprecated use {@link SslProvider#isAlpnSupported(SslProvider)} with {@link SslProvider#OPENSSL}.
    */
   @Deprecated
@@ -463,20 +478,18 @@ public final class OpenSsl {
   /**
    * Ensure that <a href="https://netty.io/wiki/forked-tomcat-native.html">{@code netty-tcnative}</a> and
    * its OpenSSL support are available.
-   *
    * @throws UnsatisfiedLinkError if unavailable
    */
   public static void ensureAvailability() {
     if (UNAVAILABILITY_CAUSE != null) {
       throw (Error) new UnsatisfiedLinkError(
-          "failed to load the required native library").initCause(UNAVAILABILITY_CAUSE);
+        "failed to load the required native library").initCause(UNAVAILABILITY_CAUSE);
     }
   }
 
   /**
    * Returns the cause of unavailability of
    * <a href="https://netty.io/wiki/forked-tomcat-native.html">{@code netty-tcnative}</a> and its OpenSSL support.
-   *
    * @return the cause if unavailable. {@code null} if available.
    */
   public static Throwable unavailabilityCause() {
@@ -528,7 +541,6 @@ public final class OpenSsl {
 
   /**
    * Always returns {@code true} if {@link #isAvailable()} returns {@code true}.
-   *
    * @deprecated Will be removed because hostname validation is always done by a
    * {@link javax.net.ssl.TrustManager} implementation.
    */
@@ -577,7 +589,7 @@ public final class OpenSsl {
     libNames.add(staticLibName);
 
     NativeLibraryLoader.loadFirstAvailable(SSL.class.getClassLoader(),
-        libNames.toArray(new String[0]));
+      libNames.toArray(new String[0]));
   }
 
   private static boolean initializeTcNative(String engine) throws Exception {

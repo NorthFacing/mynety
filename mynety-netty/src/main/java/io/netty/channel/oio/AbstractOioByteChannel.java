@@ -17,7 +17,15 @@ package io.netty.channel.oio;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.FileRegion;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.util.internal.StringUtil;
@@ -26,15 +34,14 @@ import java.io.IOException;
 
 /**
  * Abstract base class for OIO which reads and writes bytes from/to a Socket
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 public abstract class AbstractOioByteChannel extends AbstractOioChannel {
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false);
   private static final String EXPECTED_TYPES =
-      " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
-          StringUtil.simpleClassName(FileRegion.class) + ')';
+    " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
+      StringUtil.simpleClassName(FileRegion.class) + ')';
 
   /**
    * @see AbstractOioByteChannel#AbstractOioByteChannel(Channel)
@@ -50,14 +57,12 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
 
   /**
    * Determine if the input side of this channel is shutdown.
-   *
    * @return {@code true} if the input side of this channel is shutdown.
    */
   protected abstract boolean isInputShutdown();
 
   /**
    * Shutdown the input side of this channel.
-   *
    * @return A channel future that will complete when the shutdown is complete.
    */
   protected abstract ChannelFuture shutdownInput();
@@ -213,7 +218,7 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
         in.remove();
       } else {
         in.remove(new UnsupportedOperationException(
-            "unsupported message type: " + StringUtil.simpleClassName(msg)));
+          "unsupported message type: " + StringUtil.simpleClassName(msg)));
       }
     }
   }
@@ -225,7 +230,7 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
   }
 
   /**
@@ -235,7 +240,6 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
 
   /**
    * Read bytes from the underlying Socket.
-   *
    * @param buf the {@link ByteBuf} into which the read bytes will be written
    * @return amount       the number of bytes read. This may return a negative amount if the underlying
    * Socket was closed
@@ -245,7 +249,6 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
 
   /**
    * Write the data which is hold by the {@link ByteBuf} to the underlying Socket.
-   *
    * @param buf the {@link ByteBuf} which holds the data to transfer
    * @throws Exception is thrown if an error occurred
    */
@@ -253,7 +256,6 @@ public abstract class AbstractOioByteChannel extends AbstractOioChannel {
 
   /**
    * Write the data which is hold by the {@link FileRegion} to the underlying Socket.
-   *
    * @param region the {@link FileRegion} which holds the data to transfer
    * @throws Exception is thrown if an error occurred
    */

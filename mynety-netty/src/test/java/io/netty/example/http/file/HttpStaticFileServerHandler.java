@@ -205,13 +205,13 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     ChannelFuture lastContentFuture;
     if (ctx.pipeline().get(SslHandler.class) == null) {
       sendFileFuture =
-          ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
+        ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
       // Write the end marker.
       lastContentFuture = ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT);
     } else {
       sendFileFuture =
-          ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)),
-              ctx.newProgressivePromise());
+        ctx.writeAndFlush(new HttpChunkedInput(new ChunkedFile(raf, 0, fileLength, 8192)),
+          ctx.newProgressivePromise());
       // HttpChunkedInput will write the end marker (LastHttpContent) for us.
       lastContentFuture = sendFileFuture;
     }
@@ -267,9 +267,9 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     // Simplistic dumb security check.
     // You will have to do something serious in the production environment.
     if (uri.contains(File.separator + '.') ||
-        uri.contains('.' + File.separator) ||
-        uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
-        INSECURE_URI.matcher(uri).matches()) {
+      uri.contains('.' + File.separator) ||
+      uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
+      INSECURE_URI.matcher(uri).matches()) {
       return null;
     }
 
@@ -281,18 +281,18 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
   private void sendListing(ChannelHandlerContext ctx, File dir, String dirPath) {
     StringBuilder buf = new StringBuilder()
-        .append("<!DOCTYPE html>\r\n")
-        .append("<html><head><meta charset='utf-8' /><title>")
-        .append("Listing of: ")
-        .append(dirPath)
-        .append("</title></head><body>\r\n")
+      .append("<!DOCTYPE html>\r\n")
+      .append("<html><head><meta charset='utf-8' /><title>")
+      .append("Listing of: ")
+      .append(dirPath)
+      .append("</title></head><body>\r\n")
 
-        .append("<h3>Listing of: ")
-        .append(dirPath)
-        .append("</h3>\r\n")
+      .append("<h3>Listing of: ")
+      .append(dirPath)
+      .append("</h3>\r\n")
 
-        .append("<ul>")
-        .append("<li><a href=\"../\">..</a></li>\r\n");
+      .append("<ul>")
+      .append("<li><a href=\"../\">..</a></li>\r\n");
 
     for (File f : dir.listFiles()) {
       if (f.isHidden() || !f.canRead()) {
@@ -305,10 +305,10 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
       }
 
       buf.append("<li><a href=\"")
-          .append(name)
-          .append("\">")
-          .append(name)
-          .append("</a></li>\r\n");
+        .append(name)
+        .append("\">")
+        .append(name)
+        .append("</a></li>\r\n");
     }
 
     buf.append("</ul></body></html>\r\n");
@@ -331,7 +331,7 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
   private void sendError(ChannelHandlerContext ctx, HttpResponseStatus status) {
     FullHttpResponse response = new DefaultFullHttpResponse(
-        HTTP_1_1, status, Unpooled.copiedBuffer("Failure: " + status + "\r\n", CharsetUtil.UTF_8));
+      HTTP_1_1, status, Unpooled.copiedBuffer("Failure: " + status + "\r\n", CharsetUtil.UTF_8));
     response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
 
     this.sendAndCleanupConnection(ctx, response);
@@ -339,7 +339,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
   /**
    * When file timestamp is the same as what the browser is sending up, send a "304 Not Modified"
-   *
    * @param ctx Context
    */
   private void sendNotModified(ChannelHandlerContext ctx) {
@@ -375,7 +374,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
   /**
    * Sets the Date header for the HTTP response
-   *
    * @param response HTTP response
    */
   private static void setDateHeader(FullHttpResponse response) {
@@ -388,7 +386,6 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
 
   /**
    * Sets the Date and Cache headers for the HTTP Response
-   *
    * @param response    HTTP response
    * @param fileToCache file to extract content type
    */
@@ -405,12 +402,11 @@ public class HttpStaticFileServerHandler extends SimpleChannelInboundHandler<Ful
     response.headers().set(HttpHeaderNames.EXPIRES, dateFormatter.format(time.getTime()));
     response.headers().set(HttpHeaderNames.CACHE_CONTROL, "private, max-age=" + HTTP_CACHE_SECONDS);
     response.headers().set(
-        HttpHeaderNames.LAST_MODIFIED, dateFormatter.format(new Date(fileToCache.lastModified())));
+      HttpHeaderNames.LAST_MODIFIED, dateFormatter.format(new Date(fileToCache.lastModified())));
   }
 
   /**
    * Sets the content type header for the HTTP Response
-   *
    * @param response HTTP response
    * @param file     file to extract content type
    */

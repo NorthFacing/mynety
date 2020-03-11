@@ -45,20 +45,20 @@ public final class ByteEchoClient {
     // Configure the client.
     final ThreadFactory connectFactory = new DefaultThreadFactory("connect");
     final NioEventLoopGroup connectGroup = new NioEventLoopGroup(1,
-        connectFactory, NioUdtProvider.BYTE_PROVIDER);
+      connectFactory, NioUdtProvider.BYTE_PROVIDER);
     try {
       final Bootstrap boot = new Bootstrap();
       boot.group(connectGroup)
-          .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
-          .handler(new ChannelInitializer<UdtChannel>() {
-            @Override
-            public void initChannel(final UdtChannel ch)
-                throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new ByteEchoClientHandler());
-            }
-          });
+        .channelFactory(NioUdtProvider.BYTE_CONNECTOR)
+        .handler(new ChannelInitializer<UdtChannel>() {
+          @Override
+          public void initChannel(final UdtChannel ch)
+            throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new ByteEchoClientHandler());
+          }
+        });
       // Start the client.
       final ChannelFuture f = boot.connect(HOST, PORT).sync();
       // Wait until the connection is closed.

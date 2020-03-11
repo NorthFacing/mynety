@@ -35,7 +35,6 @@ public interface SSLPrivateKeyMethod {
 
   /**
    * Sign the input with given EC key and returns the signed bytes.
-   *
    * @param ssl                the SSL instance
    * @param signatureAlgorithm the algorithm to use for signing
    * @param input              the input itself
@@ -46,7 +45,6 @@ public interface SSLPrivateKeyMethod {
 
   /**
    * Decrypts the input with the given RSA key and returns the decrypted bytes.
-   *
    * @param ssl   the SSL instance
    * @param input the input which should be decrypted
    * @return the decrypted data

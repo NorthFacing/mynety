@@ -15,7 +15,12 @@
  */
 package io.netty.handler.address;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 
 import java.net.NetworkInterface;
 import java.net.SocketAddress;
@@ -60,7 +65,7 @@ public abstract class DynamicAddressConnectHandler extends ChannelOutboundHandle
    * By default, this method returns the given {@code localAddress}.
    */
   protected SocketAddress localAddress(
-      @SuppressWarnings("unused") SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+    @SuppressWarnings("unused") SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
     return localAddress;
   }
 
@@ -71,7 +76,7 @@ public abstract class DynamicAddressConnectHandler extends ChannelOutboundHandle
    * By default, this method returns the given {@code remoteAddress}.
    */
   protected SocketAddress remoteAddress(
-      SocketAddress remoteAddress, @SuppressWarnings("unused") SocketAddress localAddress) throws Exception {
+    SocketAddress remoteAddress, @SuppressWarnings("unused") SocketAddress localAddress) throws Exception {
     return remoteAddress;
   }
 }

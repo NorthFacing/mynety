@@ -15,7 +15,13 @@
  */
 package io.netty.bootstrap;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopGroup;
 import io.netty.resolver.AddressResolver;
 import io.netty.resolver.AddressResolverGroup;
 import io.netty.resolver.DefaultAddressResolverGroup;
@@ -47,7 +53,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
 
   @SuppressWarnings("unchecked")
   private volatile AddressResolverGroup<SocketAddress> resolver =
-      (AddressResolverGroup<SocketAddress>) DEFAULT_RESOLVER;
+    (AddressResolverGroup<SocketAddress>) DEFAULT_RESOLVER;
   private volatile SocketAddress remoteAddress;
 
   public Bootstrap() {
@@ -61,7 +67,6 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
 
   /**
    * Sets the {@link NameResolver} which will resolve the address of the unresolved named address.
-   *
    * @param resolver the {@link NameResolver} for this {@code Bootstrap}; may be {@code null}, in which case a default
    *                 resolver will be used
    * @see io.netty.resolver.DefaultAddressResolverGroup
@@ -226,7 +231,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
   }
 
   private static void doConnect(
-      final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise connectPromise) {
+    final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise connectPromise) {
 
     // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
     // the pipeline in its channelRegistered() implementation.

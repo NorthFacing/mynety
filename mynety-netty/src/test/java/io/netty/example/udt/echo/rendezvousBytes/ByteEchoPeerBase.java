@@ -52,19 +52,19 @@ public class ByteEchoPeerBase {
   public void run() throws Exception {
     final ThreadFactory connectFactory = new DefaultThreadFactory("rendezvous");
     final NioEventLoopGroup connectGroup = new NioEventLoopGroup(1,
-        connectFactory, NioUdtProvider.BYTE_PROVIDER);
+      connectFactory, NioUdtProvider.BYTE_PROVIDER);
     try {
       final Bootstrap bootstrap = new Bootstrap();
       bootstrap.group(connectGroup)
-          .channelFactory(NioUdtProvider.BYTE_RENDEZVOUS)
-          .handler(new ChannelInitializer<UdtChannel>() {
-            @Override
-            protected void initChannel(UdtChannel ch) throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new ByteEchoPeerHandler(messageSize));
-            }
-          });
+        .channelFactory(NioUdtProvider.BYTE_RENDEZVOUS)
+        .handler(new ChannelInitializer<UdtChannel>() {
+          @Override
+          protected void initChannel(UdtChannel ch) throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new ByteEchoPeerHandler(messageSize));
+          }
+        });
       final ChannelFuture future = bootstrap.connect(peerAddress, myAddress).sync();
       future.channel().closeFuture().sync();
     } finally {

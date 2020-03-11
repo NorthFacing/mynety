@@ -44,7 +44,6 @@ public class SniHandler extends AbstractSniHandler<SslContext> {
   /**
    * Creates a SNI detection handler with configured {@link SslContext}
    * maintained by {@link Mapping}
-   *
    * @param mapping the mapping of domain name to {@link SslContext}
    */
   public SniHandler(Mapping<? super String, ? extends SslContext> mapping) {
@@ -54,7 +53,6 @@ public class SniHandler extends AbstractSniHandler<SslContext> {
   /**
    * Creates a SNI detection handler with configured {@link SslContext}
    * maintained by {@link DomainNameMapping}
-   *
    * @param mapping the mapping of domain name to {@link SslContext}
    */
   public SniHandler(DomainNameMapping<? extends SslContext> mapping) {
@@ -64,7 +62,6 @@ public class SniHandler extends AbstractSniHandler<SslContext> {
   /**
    * Creates a SNI detection handler with configured {@link SslContext}
    * maintained by {@link AsyncMapping}
-   *
    * @param mapping the mapping of domain name to {@link SslContext}
    */
   @SuppressWarnings("unchecked")
@@ -89,7 +86,6 @@ public class SniHandler extends AbstractSniHandler<SslContext> {
   /**
    * The default implementation will simply call {@link AsyncMapping#map(Object, Promise)} but
    * users can override this method to implement custom behavior.
-   *
    * @see AsyncMapping#map(Object, Promise)
    */
   @Override

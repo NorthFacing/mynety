@@ -38,7 +38,6 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
   /**
    * Create a new instance.
-   *
    * @param nThreads      the number of threads that will be used by this instance.
    * @param threadFactory the ThreadFactory to use, or {@code null} if the default should be used.
    * @param args          arguments which will passed to each {@link #newChild(Executor, Object...)} call
@@ -49,7 +48,6 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
   /**
    * Create a new instance.
-   *
    * @param nThreads the number of threads that will be used by this instance.
    * @param executor the Executor to use, or {@code null} if the default should be used.
    * @param args     arguments which will passed to each {@link #newChild(Executor, Object...)} call
@@ -60,7 +58,6 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
   /**
    * Create a new instance.
-   *
    * @param nThreads       the number of threads that will be used by this instance.
    * @param executor       the Executor to use, or {@code null} if the default should be used.
    * @param chooserFactory the {@link EventExecutorChooserFactory} to use.
@@ -209,7 +206,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
 
   @Override
   public boolean awaitTermination(long timeout, TimeUnit unit)
-      throws InterruptedException {
+    throws InterruptedException {
     long deadline = System.nanoTime() + unit.toNanos(timeout);
     loop:
     for (EventExecutor l : children) {

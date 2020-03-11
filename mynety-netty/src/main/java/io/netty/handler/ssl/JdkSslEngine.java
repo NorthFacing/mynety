@@ -17,8 +17,12 @@ package io.netty.handler.ssl;
 
 import io.netty.util.internal.SuppressJava6Requirement;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSession;
 import java.nio.ByteBuffer;
 
 class JdkSslEngine extends SSLEngine implements ApplicationProtocolAccessor {

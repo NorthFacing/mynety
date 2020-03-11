@@ -66,7 +66,7 @@ public final class HttpSnoopClient {
     final SslContext sslCtx;
     if (ssl) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -76,25 +76,25 @@ public final class HttpSnoopClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new HttpSnoopClientInitializer(sslCtx));
+        .channel(NioSocketChannel.class)
+        .handler(new HttpSnoopClientInitializer(sslCtx));
 
       // Make the connection attempt.
       Channel ch = b.connect(host, port).sync().channel();
 
       // Prepare the HTTP request.
       HttpRequest request = new DefaultFullHttpRequest(
-          HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath(), Unpooled.EMPTY_BUFFER);
+        HttpVersion.HTTP_1_1, HttpMethod.GET, uri.getRawPath(), Unpooled.EMPTY_BUFFER);
       request.headers().set(HttpHeaderNames.HOST, host);
       request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
       request.headers().set(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);
 
       // Set some example cookies.
       request.headers().set(
-          HttpHeaderNames.COOKIE,
-          ClientCookieEncoder.STRICT.encode(
-              new DefaultCookie("my-cookie", "foo"),
-              new DefaultCookie("another-cookie", "bar")));
+        HttpHeaderNames.COOKIE,
+        ClientCookieEncoder.STRICT.encode(
+          new DefaultCookie("my-cookie", "foo"),
+          new DefaultCookie("another-cookie", "bar")));
 
       // Send the HTTP request.
       ch.writeAndFlush(request);

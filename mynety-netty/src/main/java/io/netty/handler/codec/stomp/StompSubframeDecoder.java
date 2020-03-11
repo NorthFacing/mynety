@@ -310,7 +310,7 @@ public class StompSubframeDecoder extends ReplayingDecoder<State> {
   private void invalidHeader(String key, String value) {
     String line = key != null ? key + ":" + value : value;
     throw new IllegalArgumentException("a header value or name contains a prohibited character ':'"
-        + ", " + line);
+      + ", " + line);
   }
 
   private void invalidLineLength() {

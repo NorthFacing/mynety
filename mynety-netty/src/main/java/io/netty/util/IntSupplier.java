@@ -22,7 +22,6 @@ public interface IntSupplier {
 
   /**
    * Gets a result.
-   *
    * @return a result
    */
   int get() throws Exception;

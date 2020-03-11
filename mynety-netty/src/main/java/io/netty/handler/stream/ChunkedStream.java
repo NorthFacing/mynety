@@ -50,7 +50,6 @@ public class ChunkedStream implements ChunkedInput<ByteBuf> {
 
   /**
    * Creates a new instance that fetches data from the specified stream.
-   *
    * @param chunkSize the number of bytes to fetch on each
    *                  {@link #readChunk(ChannelHandlerContext)} call
    */
@@ -60,8 +59,8 @@ public class ChunkedStream implements ChunkedInput<ByteBuf> {
     }
     if (chunkSize <= 0) {
       throw new IllegalArgumentException(
-          "chunkSize: " + chunkSize +
-              " (expected: a positive integer)");
+        "chunkSize: " + chunkSize +
+          " (expected: a positive integer)");
     }
 
     if (in instanceof PushbackInputStream) {

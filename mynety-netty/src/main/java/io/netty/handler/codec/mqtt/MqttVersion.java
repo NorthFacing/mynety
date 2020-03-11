@@ -53,7 +53,7 @@ public enum MqttVersion {
           return mv;
         } else {
           throw new MqttUnacceptableProtocolVersionException(protocolName + " and " +
-              protocolLevel + " are not match");
+            protocolLevel + " are not match");
         }
       }
     }

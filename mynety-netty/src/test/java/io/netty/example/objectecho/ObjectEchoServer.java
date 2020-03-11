@@ -55,21 +55,21 @@ public final class ObjectEchoServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel ch) throws Exception {
-              ChannelPipeline p = ch.pipeline();
-              if (sslCtx != null) {
-                p.addLast(sslCtx.newHandler(ch.alloc()));
-              }
-              p.addLast(
-                  new ObjectEncoder(),
-                  new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                  new ObjectEchoServerHandler());
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          public void initChannel(SocketChannel ch) throws Exception {
+            ChannelPipeline p = ch.pipeline();
+            if (sslCtx != null) {
+              p.addLast(sslCtx.newHandler(ch.alloc()));
             }
-          });
+            p.addLast(
+              new ObjectEncoder(),
+              new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+              new ObjectEchoServerHandler());
+          }
+        });
 
       // Bind and start to accept incoming connections.
       b.bind(PORT).sync().channel().closeFuture().sync();

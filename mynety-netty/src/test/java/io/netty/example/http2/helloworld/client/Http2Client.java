@@ -69,20 +69,20 @@ public final class Http2Client {
     if (SSL) {
       SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
       sslCtx = SslContextBuilder.forClient()
-          .sslProvider(provider)
-          /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
-           * Please refer to the HTTP/2 specification for cipher requirements. */
-          .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-          .trustManager(InsecureTrustManagerFactory.INSTANCE)
-          .applicationProtocolConfig(new ApplicationProtocolConfig(
-              Protocol.ALPN,
-              // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-              SelectorFailureBehavior.NO_ADVERTISE,
-              // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-              SelectedListenerFailureBehavior.ACCEPT,
-              ApplicationProtocolNames.HTTP_2,
-              ApplicationProtocolNames.HTTP_1_1))
-          .build();
+        .sslProvider(provider)
+        /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
+         * Please refer to the HTTP/2 specification for cipher requirements. */
+        .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+        .trustManager(InsecureTrustManagerFactory.INSTANCE)
+        .applicationProtocolConfig(new ApplicationProtocolConfig(
+          Protocol.ALPN,
+          // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+          SelectorFailureBehavior.NO_ADVERTISE,
+          // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+          SelectedListenerFailureBehavior.ACCEPT,
+          ApplicationProtocolNames.HTTP_2,
+          ApplicationProtocolNames.HTTP_1_1))
+        .build();
     } else {
       sslCtx = null;
     }
@@ -125,7 +125,7 @@ public final class Http2Client {
       if (URL2 != null) {
         // Create a simple POST request with a body.
         FullHttpRequest request = new DefaultFullHttpRequest(HTTP_1_1, POST, URL2,
-            wrappedBuffer(URL2DATA.getBytes(CharsetUtil.UTF_8)));
+          wrappedBuffer(URL2DATA.getBytes(CharsetUtil.UTF_8)));
         request.headers().add(HttpHeaderNames.HOST, hostName);
         request.headers().add(HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), scheme.name());
         request.headers().add(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.GZIP);

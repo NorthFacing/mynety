@@ -29,7 +29,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.netty.handler.codec.base64.Base64Dialect.URL_SAFE;
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.HTTP_UPGRADE_PROTOCOL_NAME;
+import static io.netty.handler.codec.http2.Http2CodecUtil.HTTP_UPGRADE_SETTINGS_HEADER;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTING_ENTRY_LENGTH;
 import static io.netty.util.CharsetUtil.UTF_8;
 import static io.netty.util.ReferenceCountUtil.release;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
@@ -58,7 +60,6 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
   /**
    * Creates the codec using a default name for the connection handler when adding to the
    * pipeline.
-   *
    * @param connectionHandler the HTTP/2 connection handler
    */
   public Http2ClientUpgradeCodec(Http2ConnectionHandler connectionHandler) {
@@ -68,7 +69,6 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
   /**
    * Creates the codec using a default name for the connection handler when adding to the
    * pipeline.
-   *
    * @param connectionHandler     the HTTP/2 connection handler
    * @param http2MultiplexHandler the Http2 Multiplexer handler to work with Http2FrameCodec
    */
@@ -79,7 +79,6 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
 
   /**
    * Creates the codec providing an upgrade to the given handler for HTTP/2.
-   *
    * @param handlerName       the name of the HTTP/2 connection handler to be used in the pipeline,
    *                          or {@code null} to auto-generate the name
    * @param connectionHandler the HTTP/2 connection handler
@@ -90,7 +89,6 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
 
   /**
    * Creates the codec providing an upgrade to the given handler for HTTP/2.
-   *
    * @param handlerName       the name of the HTTP/2 connection handler to be used in the pipeline,
    *                          or {@code null} to auto-generate the name
    * @param connectionHandler the HTTP/2 connection handler
@@ -101,7 +99,7 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
   }
 
   private Http2ClientUpgradeCodec(String handlerName, Http2ConnectionHandler connectionHandler, ChannelHandler
-      upgradeToHandler, Http2MultiplexHandler http2MultiplexHandler) {
+    upgradeToHandler, Http2MultiplexHandler http2MultiplexHandler) {
     this.handlerName = handlerName;
     this.connectionHandler = checkNotNull(connectionHandler, "connectionHandler");
     this.upgradeToHandler = checkNotNull(upgradeToHandler, "upgradeToHandler");
@@ -124,7 +122,7 @@ public class Http2ClientUpgradeCodec implements HttpClientUpgradeHandler.Upgrade
 
   @Override
   public void upgradeTo(ChannelHandlerContext ctx, FullHttpResponse upgradeResponse)
-      throws Exception {
+    throws Exception {
     try {
       // Add the handler to the pipeline.
       ctx.pipeline().addAfter(ctx.name(), handlerName, upgradeToHandler);

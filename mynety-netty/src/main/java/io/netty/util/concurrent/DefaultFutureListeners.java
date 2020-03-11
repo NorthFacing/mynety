@@ -25,7 +25,7 @@ final class DefaultFutureListeners {
 
   @SuppressWarnings("unchecked")
   DefaultFutureListeners(
-      GenericFutureListener<? extends Future<?>> first, GenericFutureListener<? extends Future<?>> second) {
+    GenericFutureListener<? extends Future<?>> first, GenericFutureListener<? extends Future<?>> second) {
     listeners = new GenericFutureListener[2];
     listeners[0] = first;
     listeners[1] = second;

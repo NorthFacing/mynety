@@ -28,9 +28,9 @@ import java.net.SocketAddress;
 import static io.netty.channel.epoll.LinuxSocket.newSocketDomain;
 
 public final class EpollServerDomainSocketChannel extends AbstractEpollServerChannel
-    implements ServerDomainSocketChannel {
+  implements ServerDomainSocketChannel {
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(
-      EpollServerDomainSocketChannel.class);
+    EpollServerDomainSocketChannel.class);
 
   private final EpollServerChannelConfig config = new EpollServerChannelConfig(this);
   private volatile DomainSocketAddress local;

@@ -309,9 +309,9 @@ public class DnsRecordType implements Comparable<DnsRecordType> {
 
   static {
     DnsRecordType[] all = {
-        A, NS, CNAME, SOA, PTR, MX, TXT, RP, AFSDB, SIG, KEY, AAAA, LOC, SRV, NAPTR, KX, CERT, DNAME, OPT, APL,
-        DS, SSHFP, IPSECKEY, RRSIG, NSEC, DNSKEY, DHCID, NSEC3, NSEC3PARAM, TLSA, HIP, SPF, TKEY, TSIG, IXFR,
-        AXFR, ANY, CAA, TA, DLV
+      A, NS, CNAME, SOA, PTR, MX, TXT, RP, AFSDB, SIG, KEY, AAAA, LOC, SRV, NAPTR, KX, CERT, DNAME, OPT, APL,
+      DS, SSHFP, IPSECKEY, RRSIG, NSEC, DNSKEY, DHCID, NSEC3, NSEC3PARAM, TLSA, HIP, SPF, TKEY, TSIG, IXFR,
+      AXFR, ANY, CAA, TA, DLV
     };
 
     final StringBuilder expected = new StringBuilder(512);
@@ -322,9 +322,9 @@ public class DnsRecordType implements Comparable<DnsRecordType> {
       BY_TYPE.put(type.intValue(), type);
 
       expected.append(type.name())
-          .append('(')
-          .append(type.intValue())
-          .append("), ");
+        .append('(')
+        .append(type.intValue())
+        .append("), ");
     }
 
     expected.setLength(expected.length() - 2);

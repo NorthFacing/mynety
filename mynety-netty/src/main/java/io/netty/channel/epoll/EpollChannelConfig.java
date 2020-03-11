@@ -16,7 +16,11 @@
 package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 
 import java.util.Map;
 
@@ -83,7 +87,7 @@ public class EpollChannelConfig extends DefaultChannelConfig {
   public EpollChannelConfig setRecvByteBufAllocator(RecvByteBufAllocator allocator) {
     if (!(allocator.newHandle() instanceof RecvByteBufAllocator.ExtendedHandle)) {
       throw new IllegalArgumentException("allocator.newHandle() must return an object of type: " +
-          RecvByteBufAllocator.ExtendedHandle.class);
+        RecvByteBufAllocator.ExtendedHandle.class);
     }
     super.setRecvByteBufAllocator(allocator);
     return this;
@@ -129,7 +133,7 @@ public class EpollChannelConfig extends DefaultChannelConfig {
    */
   public EpollMode getEpollMode() {
     return ((AbstractEpollChannel) channel).isFlagSet(Native.EPOLLET)
-        ? EpollMode.EDGE_TRIGGERED : EpollMode.LEVEL_TRIGGERED;
+      ? EpollMode.EDGE_TRIGGERED : EpollMode.LEVEL_TRIGGERED;
   }
 
   /**

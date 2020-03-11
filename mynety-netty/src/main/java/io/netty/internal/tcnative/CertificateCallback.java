@@ -41,7 +41,6 @@ public interface CertificateCallback {
    * Called during cert selection. If a certificate chain / key should be used
    * {@link SSL#setKeyMaterial(long, long, long)} must be called from this callback after
    * all preparations / validations were completed.
-   *
    * @param ssl                      the SSL instance
    * @param keyTypeBytes             an array of the key types on client-mode or {@code null} on server-mode.
    * @param asn1DerEncodedPrincipals the principals or {@code null}.

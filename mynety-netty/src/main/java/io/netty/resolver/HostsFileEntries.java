@@ -33,9 +33,9 @@ public final class HostsFileEntries {
    * Empty entries
    */
   static final HostsFileEntries EMPTY =
-      new HostsFileEntries(
-          Collections.<String, Inet4Address>emptyMap(),
-          Collections.<String, Inet6Address>emptyMap());
+    new HostsFileEntries(
+      Collections.<String, Inet4Address>emptyMap(),
+      Collections.<String, Inet6Address>emptyMap());
 
   private final Map<String, Inet4Address> inet4Entries;
   private final Map<String, Inet6Address> inet6Entries;
@@ -47,7 +47,6 @@ public final class HostsFileEntries {
 
   /**
    * The IPv4 entries
-   *
    * @return the IPv4 entries
    */
   public Map<String, Inet4Address> inet4Entries() {
@@ -56,7 +55,6 @@ public final class HostsFileEntries {
 
   /**
    * The IPv6 entries
-   *
    * @return the IPv6 entries
    */
   public Map<String, Inet6Address> inet6Entries() {

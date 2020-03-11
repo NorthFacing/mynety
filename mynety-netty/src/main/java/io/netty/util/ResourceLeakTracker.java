@@ -32,7 +32,6 @@ public interface ResourceLeakTracker<T> {
   /**
    * Close the leak so that {@link ResourceLeakTracker} does not warn about leaked resources.
    * After this method is called a leak associated with this ResourceLeakTracker should not be reported.
-   *
    * @return {@code true} if called first time, {@code false} if called already
    */
   boolean close(T trackedObject);

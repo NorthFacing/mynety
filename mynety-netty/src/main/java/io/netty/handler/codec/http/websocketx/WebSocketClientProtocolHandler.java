@@ -75,7 +75,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param version               Version of web socket specification to use to connect to the server
@@ -94,12 +93,11 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         int maxFramePayloadLength, boolean handleCloseFrames,
                                         boolean performMasking, boolean allowMaskMismatch) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders,
-        maxFramePayloadLength, handleCloseFrames, performMasking, allowMaskMismatch, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      maxFramePayloadLength, handleCloseFrames, performMasking, allowMaskMismatch, DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   /**
    * Base constructor
-   *
    * @param webSocketURL           URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                               sent to this URL.
    * @param version                Version of web socket specification to use to connect to the server
@@ -120,14 +118,13 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         int maxFramePayloadLength, boolean handleCloseFrames, boolean performMasking,
                                         boolean allowMaskMismatch, long handshakeTimeoutMillis) {
     this(WebSocketClientHandshakerFactory.newHandshaker(webSocketURL, version, subprotocol,
-        allowExtensions, customHeaders, maxFramePayloadLength,
-        performMasking, allowMaskMismatch),
-        handleCloseFrames, handshakeTimeoutMillis);
+      allowExtensions, customHeaders, maxFramePayloadLength,
+      performMasking, allowMaskMismatch),
+      handleCloseFrames, handshakeTimeoutMillis);
   }
 
   /**
    * Base constructor
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param version               Version of web socket specification to use to connect to the server
@@ -140,12 +137,11 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         boolean allowExtensions, HttpHeaders customHeaders,
                                         int maxFramePayloadLength, boolean handleCloseFrames) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders, maxFramePayloadLength,
-        handleCloseFrames, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      handleCloseFrames, DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   /**
    * Base constructor
-   *
    * @param webSocketURL           URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                               sent to this URL.
    * @param version                Version of web socket specification to use to connect to the server
@@ -160,12 +156,11 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         boolean allowExtensions, HttpHeaders customHeaders, int maxFramePayloadLength,
                                         boolean handleCloseFrames, long handshakeTimeoutMillis) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders, maxFramePayloadLength,
-        handleCloseFrames, true, false, handshakeTimeoutMillis);
+      handleCloseFrames, true, false, handshakeTimeoutMillis);
   }
 
   /**
    * Base constructor
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param version               Version of web socket specification to use to connect to the server
@@ -177,12 +172,11 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         boolean allowExtensions, HttpHeaders customHeaders,
                                         int maxFramePayloadLength) {
     this(webSocketURL, version, subprotocol,
-        allowExtensions, customHeaders, maxFramePayloadLength, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      allowExtensions, customHeaders, maxFramePayloadLength, DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   /**
    * Base constructor
-   *
    * @param webSocketURL           URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                               sent to this URL.
    * @param version                Version of web socket specification to use to connect to the server
@@ -196,12 +190,11 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
                                         boolean allowExtensions, HttpHeaders customHeaders,
                                         int maxFramePayloadLength, long handshakeTimeoutMillis) {
     this(webSocketURL, version, subprotocol,
-        allowExtensions, customHeaders, maxFramePayloadLength, true, handshakeTimeoutMillis);
+      allowExtensions, customHeaders, maxFramePayloadLength, true, handshakeTimeoutMillis);
   }
 
   /**
    * Base constructor
-   *
    * @param handshaker        The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                          was established to the remote peer.
    * @param handleCloseFrames {@code true} if close frames should not be forwarded and just close the channel
@@ -212,7 +205,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param handshaker             The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                               was established to the remote peer.
    * @param handleCloseFrames      {@code true} if close frames should not be forwarded and just close the channel
@@ -226,7 +218,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param handshaker        The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                          was established to the remote peer.
    * @param handleCloseFrames {@code true} if close frames should not be forwarded and just close the channel
@@ -239,7 +230,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param handshaker             The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                               was established to the remote peer.
    * @param handleCloseFrames      {@code true} if close frames should not be forwarded and just close the channel
@@ -257,7 +247,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param handshaker The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                   was established to the remote peer.
    */
@@ -267,7 +256,6 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
 
   /**
    * Base constructor
-   *
    * @param handshaker             The {@link WebSocketClientHandshaker} which will be used to issue the handshake once the connection
    *                               was established to the remote peer.
    * @param handshakeTimeoutMillis Handshake timeout in mills, when handshake timeout, will trigger user
@@ -292,12 +280,12 @@ public class WebSocketClientProtocolHandler extends WebSocketProtocolHandler {
     if (cp.get(WebSocketClientProtocolHandshakeHandler.class) == null) {
       // Add the WebSocketClientProtocolHandshakeHandler before this one.
       ctx.pipeline().addBefore(ctx.name(), WebSocketClientProtocolHandshakeHandler.class.getName(),
-          new WebSocketClientProtocolHandshakeHandler(handshaker, handshakeTimeoutMillis));
+        new WebSocketClientProtocolHandshakeHandler(handshaker, handshakeTimeoutMillis));
     }
     if (cp.get(Utf8FrameValidator.class) == null) {
       // Add the UFT8 checking before this one.
       ctx.pipeline().addBefore(ctx.name(), Utf8FrameValidator.class.getName(),
-          new Utf8FrameValidator());
+        new Utf8FrameValidator());
     }
   }
 }

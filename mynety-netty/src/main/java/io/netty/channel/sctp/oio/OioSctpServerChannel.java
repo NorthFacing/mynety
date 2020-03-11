@@ -17,7 +17,11 @@ package io.netty.channel.sctp.oio;
 
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpServerChannel;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.oio.AbstractOioMessageChannel;
 import io.netty.channel.sctp.DefaultSctpServerChannelConfig;
 import io.netty.channel.sctp.SctpServerChannelConfig;
@@ -30,7 +34,11 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link io.netty.channel.sctp.SctpServerChannel} implementation which use blocking mode to accept new
@@ -38,15 +46,14 @@ import java.util.*;
  * <p>
  * Be aware that not all operations systems support SCTP. Please refer to the documentation of your operation system,
  * to understand what you need to do to use it. Also this feature is only supported on Java 7+.
- *
  * @deprecated use {@link io.netty.channel.sctp.nio.NioSctpServerChannel}.
  */
 @Deprecated
 public class OioSctpServerChannel extends AbstractOioMessageChannel
-    implements io.netty.channel.sctp.SctpServerChannel {
+  implements io.netty.channel.sctp.SctpServerChannel {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(OioSctpServerChannel.class);
+    InternalLoggerFactory.getInstance(OioSctpServerChannel.class);
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 1);
 
@@ -71,7 +78,6 @@ public class OioSctpServerChannel extends AbstractOioMessageChannel
 
   /**
    * Create a new instance from the given {@link SctpServerChannel}
-   *
    * @param sch the {@link SctpServerChannel} which is used by this instance
    */
   public OioSctpServerChannel(SctpServerChannel sch) {
@@ -266,7 +272,7 @@ public class OioSctpServerChannel extends AbstractOioMessageChannel
 
   @Override
   protected void doConnect(
-      SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+    SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
     throw new UnsupportedOperationException();
   }
 

@@ -39,7 +39,6 @@ public final class SSLContext {
 
   /**
    * Initialize new SSL context
-   *
    * @param protocol The SSL protocol to use. It can be any combination of
    *                 the following:
    *                 <PRE>
@@ -60,11 +59,10 @@ public final class SSLContext {
    * @throws Exception if an error happened
    */
   public static native long make(int protocol, int mode)
-      throws Exception;
+    throws Exception;
 
   /**
    * Free the resources used by the Context
-   *
    * @param ctx Server or Client context to free.
    * @return APR Status code.
    */
@@ -72,7 +70,6 @@ public final class SSLContext {
 
   /**
    * Set Session context id. Usually host:port combination.
-   *
    * @param ctx Context to use.
    * @param id  String that uniquely identifies this context.
    */
@@ -80,7 +77,6 @@ public final class SSLContext {
 
   /**
    * Set OpenSSL Option.
-   *
    * @param ctx     Server or Client context to use.
    * @param options See SSL.SSL_OP_* for option flags.
    */
@@ -88,7 +84,6 @@ public final class SSLContext {
 
   /**
    * Get OpenSSL Option.
-   *
    * @param ctx Server or Client context to use.
    * @return options  See SSL.SSL_OP_* for option flags.
    */
@@ -96,7 +91,6 @@ public final class SSLContext {
 
   /**
    * Clears OpenSSL Options.
-   *
    * @param ctx     Server or Client context to use.
    * @param options See SSL.SSL_OP_* for option flags.
    */
@@ -113,7 +107,6 @@ public final class SSLContext {
    * connection is established. In per-directory context it forces a SSL
    * renegotiation with the reconfigured Cipher Suite after the HTTP request
    * was read but before the HTTP response is sent.
-   *
    * @param ctx     Server or Client context to use.
    * @param ciphers An SSL cipher specification.
    * @return {@code true} if successful
@@ -136,7 +129,6 @@ public final class SSLContext {
    * connection is established. In per-directory context it forces a SSL
    * renegotiation with the reconfigured Cipher Suite after the HTTP request
    * was read but before the HTTP response is sent.
-   *
    * @param ctx     Server or Client context to use.
    * @param ciphers An SSL cipher specification.
    * @param tlsv13  {@code true} if the ciphers are for TLSv1.3
@@ -160,7 +152,6 @@ public final class SSLContext {
    * coupled RSA+DSA certificate pair, this will work only if actually both
    * certificates use the same certificate chain. Else the browsers will be
    * confused in this situation.
-   *
    * @param ctx       Server or Client context to use.
    * @param file      File of PEM-encoded Server CA Certificates.
    * @param skipfirst Skip first certificate if chain file is inside
@@ -184,7 +175,6 @@ public final class SSLContext {
    * coupled RSA+DSA certificate pair, this will work only if actually both
    * certificates use the same certificate chain. Otherwsie the browsers will be
    * confused in this situation.
-   *
    * @param ctx       Server or Client context to use.
    * @param bio       BIO of PEM-encoded Server CA Certificates.
    * @param skipfirst Skip first certificate if chain file is inside
@@ -208,7 +198,6 @@ public final class SSLContext {
    * to point at the key file.  Keep in mind that if
    * you've both a RSA and a DSA private key you can configure
    * both in parallel (to also allow the use of DSA ciphers, etc.)
-   *
    * @param ctx      Server or Client context to use.
    * @param cert     Certificate file.
    * @param key      Private Key file to use if not in cert.
@@ -234,7 +223,6 @@ public final class SSLContext {
    * to point at the key file.  Keep in mind that if
    * you've both a RSA and a DSA private key you can configure
    * both in parallel (to also allow the use of DSA ciphers, etc.)
-   *
    * @param ctx      Server or Client context to use.
    * @param certBio  Certificate BIO.
    * @param keyBio   Private Key BIO to use if not in cert.
@@ -248,7 +236,6 @@ public final class SSLContext {
   /**
    * Set the size of the internal session cache.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_set_cache_size.html">man SSL_CTX_sess_set_cache_size</a>
-   *
    * @param ctx  Server or Client context to use.
    * @param size the size of the cache
    * @return the previous set value
@@ -258,7 +245,6 @@ public final class SSLContext {
   /**
    * Get the size of the internal session cache.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_get_cache_size.html">man SSL_CTX_sess_get_cache_size</a>
-   *
    * @param ctx Server or Client context to use.
    * @return the current value
    */
@@ -267,7 +253,6 @@ public final class SSLContext {
   /**
    * Set the timeout for the internal session cache in seconds.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_set_timeout.html">man SSL_CTX_set_timeout</a>
-   *
    * @param ctx            Server or Client context to use.
    * @param timeoutSeconds the timeout of the cache
    * @return the previous set value
@@ -277,7 +262,6 @@ public final class SSLContext {
   /**
    * Get the timeout for the internal session cache in seconds.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_get_timeout.html">man SSL_CTX_get_timeout</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current value
    */
@@ -285,7 +269,6 @@ public final class SSLContext {
 
   /**
    * Set the mode of the internal session cache and return the previous used mode.
-   *
    * @param ctx  Server or Client context to use
    * @param mode the mode of the cache
    * @return the previous set value
@@ -294,7 +277,6 @@ public final class SSLContext {
 
   /**
    * Get the mode of the current used internal session cache.
-   *
    * @param ctx Server or Client context to use
    * @return the current mode
    */
@@ -303,7 +285,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -312,7 +293,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -321,7 +301,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -330,7 +309,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -339,7 +317,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -348,7 +325,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -357,7 +333,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -366,7 +341,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -375,7 +349,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -384,7 +357,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -393,7 +365,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -402,7 +373,6 @@ public final class SSLContext {
   /**
    * Session resumption statistics methods.
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_sess_number.html">man SSL_CTX_sess_number</a>
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -410,7 +380,6 @@ public final class SSLContext {
 
   /**
    * TLS session ticket key resumption statistics.
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -418,7 +387,6 @@ public final class SSLContext {
 
   /**
    * TLS session ticket key resumption statistics.
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -426,7 +394,6 @@ public final class SSLContext {
 
   /**
    * TLS session ticket key resumption statistics.
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -434,7 +401,6 @@ public final class SSLContext {
 
   /**
    * TLS session ticket key resumption statistics.
-   *
    * @param ctx Server or Client context to use
    * @return the current number
    */
@@ -447,7 +413,6 @@ public final class SSLContext {
    * in the list will be accepted but updated to a new ticket using the primary key. This
    * is useful for implementing ticket key rotation.
    * See <a href="https://tools.ietf.org/html/rfc5077">RFC 5077</a>
-   *
    * @param ctx  Server or Client context to use
    * @param keys the {@link SessionTicketKey}s
    */
@@ -483,7 +448,6 @@ public final class SSLContext {
    * preference. This can be used alternatively and/or additionally to
    * path.
    * <br>
-   *
    * @param ctx     Server context to use.
    * @param certBio Directory of PEM-encoded CA Certificates for Client Auth.
    * @return {@code true} if successful, {@code false} otherwise.
@@ -516,7 +480,6 @@ public final class SSLContext {
    * certificate can be self-signed or has to be signed by a CA which is directly
    * known to the server (i.e. the CA's certificate is under
    * <code>setCACertificatePath</code>), etc.
-   *
    * @param ctx   Server or Client context to use.
    * @param level Type of Client Certificate verification.
    * @param depth Maximum depth of CA Certificates in Client Certificate
@@ -528,7 +491,6 @@ public final class SSLContext {
    * Allow to hook {@link CertificateVerifier} into the handshake processing.
    * This will call {@code SSL_CTX_set_cert_verify_callback} and so replace the default verification
    * callback used by openssl
-   *
    * @param ctx      Server or Client context to use.
    * @param verifier the verifier to call during handshake.
    */
@@ -538,7 +500,6 @@ public final class SSLContext {
    * Allow to hook {@link CertificateRequestedCallback} into the certificate choosing process.
    * This will call {@code SSL_CTX_set_client_cert_cb} and so replace the default verification
    * callback used by openssl
-   *
    * @param ctx      Server or Client context to use.
    * @param callback the callback to call during certificate selection.
    * @deprecated use {@link #setCertificateCallback(long, CertificateCallback)}
@@ -550,7 +511,6 @@ public final class SSLContext {
    * Allow to hook {@link CertificateCallback} into the certificate choosing process.
    * This will call {@code SSL_CTX_set_cert_cb} and so replace the default verification
    * callback used by openssl
-   *
    * @param ctx      Server or Client context to use.
    * @param callback the callback to call during certificate selection.
    */
@@ -560,7 +520,6 @@ public final class SSLContext {
    * Allow to hook {@link SniHostNameMatcher} into the sni processing.
    * This will call {@code SSL_CTX_set_tlsext_servername_callback} and so replace the default
    * callback used by openssl
-   *
    * @param ctx     Server or Client context to use.
    * @param matcher the matcher to call during sni hostname matching.
    */
@@ -568,7 +527,6 @@ public final class SSLContext {
 
   /**
    * Set next protocol for next protocol negotiation extension
-   *
    * @param ctx                     Server context to use.
    * @param nextProtos              protocols in priority order
    * @param selectorFailureBehavior see {@link SSL#SSL_SELECTOR_FAILURE_NO_ADVERTISE}
@@ -578,7 +536,6 @@ public final class SSLContext {
 
   /**
    * Set application layer protocol for application layer protocol negotiation extension
-   *
    * @param ctx                     Server context to use.
    * @param alpnProtos              protocols in priority order
    * @param selectorFailureBehavior see {@link SSL#SSL_SELECTOR_FAILURE_NO_ADVERTISE}
@@ -588,7 +545,6 @@ public final class SSLContext {
 
   /**
    * Set length of the DH to use.
-   *
    * @param ctx    Server context to use.
    * @param length the length.
    */
@@ -597,7 +553,6 @@ public final class SSLContext {
   /**
    * Set the context within which session be reused (server side only).
    * See <a href="https://www.openssl.org/docs/man1.0.2/ssl/SSL_CTX_set_session_id_context.html">man SSL_CTX_set_session_id_context</a>
-   *
    * @param ctx    Server context to use.
    * @param sidCtx can be any kind of binary data, it is therefore possible to use e.g. the name
    *               of the application and/or the hostname and/or service name
@@ -607,7 +562,6 @@ public final class SSLContext {
 
   /**
    * Call SSL_CTX_set_mode
-   *
    * @param ctx  context to use
    * @param mode the mode
    * @return the set mode.
@@ -616,7 +570,6 @@ public final class SSLContext {
 
   /**
    * Call SSL_CTX_get_mode
-   *
    * @param ctx context to use
    * @return the mode.
    */
@@ -646,7 +599,6 @@ public final class SSLContext {
 
   /**
    * Enable or disable producing of tasks that should be obtained via {@link SSL#getTask(long)} and run.
-   *
    * @param ctx      context to use
    * @param useTasks {@code true} to enable, {@code false} to disable.
    */
@@ -657,7 +609,6 @@ public final class SSLContext {
    * if needed.
    * <p>
    * This method is currently only supported when {@code BoringSSL} is used.
-   *
    * @param ctx    context to use
    * @param method method to use for the given context.
    */

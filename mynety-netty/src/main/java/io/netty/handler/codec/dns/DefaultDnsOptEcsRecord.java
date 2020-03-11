@@ -31,7 +31,6 @@ public final class DefaultDnsOptEcsRecord extends AbstractDnsOptPseudoRrRecord i
 
   /**
    * Creates a new instance.
-   *
    * @param maxPayloadSize  the suggested max payload size in bytes
    * @param extendedRcode   the extended rcode
    * @param version         the version
@@ -47,7 +46,6 @@ public final class DefaultDnsOptEcsRecord extends AbstractDnsOptPseudoRrRecord i
 
   /**
    * Creates a new instance.
-   *
    * @param maxPayloadSize  the suggested max payload size in bytes
    * @param srcPrefixLength the prefix length
    * @param address         the bytes of the {@link InetAddress} to use
@@ -58,7 +56,6 @@ public final class DefaultDnsOptEcsRecord extends AbstractDnsOptPseudoRrRecord i
 
   /**
    * Creates a new instance.
-   *
    * @param maxPayloadSize the suggested max payload size in bytes
    * @param protocolFamily the {@link InternetProtocolFamily} to use. This should be the same as the one used to
    *                       send the query.
@@ -94,11 +91,11 @@ public final class DefaultDnsOptEcsRecord extends AbstractDnsOptPseudoRrRecord i
     StringBuilder sb = toStringBuilder();
     sb.setLength(sb.length() - 1);
     return sb.append(" address:")
-        .append(Arrays.toString(address))
-        .append(" sourcePrefixLength:")
-        .append(sourcePrefixLength())
-        .append(" scopePrefixLength:")
-        .append(scopePrefixLength())
-        .append(')').toString();
+      .append(Arrays.toString(address))
+      .append(" sourcePrefixLength:")
+      .append(sourcePrefixLength())
+      .append(" scopePrefixLength:")
+      .append(scopePrefixLength())
+      .append(')').toString();
   }
 }

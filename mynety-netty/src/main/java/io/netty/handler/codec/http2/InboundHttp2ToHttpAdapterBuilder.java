@@ -21,11 +21,10 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public final class InboundHttp2ToHttpAdapterBuilder
-    extends AbstractInboundHttp2ToHttpAdapterBuilder<InboundHttp2ToHttpAdapter, InboundHttp2ToHttpAdapterBuilder> {
+  extends AbstractInboundHttp2ToHttpAdapterBuilder<InboundHttp2ToHttpAdapter, InboundHttp2ToHttpAdapterBuilder> {
 
   /**
    * Creates a new {@link InboundHttp2ToHttpAdapter} builder for the specified {@link Http2Connection}.
-   *
    * @param connection the object which will provide connection notification events
    *                   for the current connection
    */
@@ -60,6 +59,6 @@ public final class InboundHttp2ToHttpAdapterBuilder
                                             boolean propagateSettings) throws Exception {
 
     return new InboundHttp2ToHttpAdapter(connection, maxContentLength,
-        validateHttpHeaders, propagateSettings);
+      validateHttpHeaders, propagateSettings);
   }
 }

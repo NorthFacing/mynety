@@ -29,7 +29,6 @@ import java.nio.charset.Charset;
 
 /**
  * Wrapper which swap the {@link ByteOrder} of a {@link ByteBuf}.
- *
  * @deprecated use the Little Endian accessors, e.g. {@code getShortLE}, {@code getIntLE}
  * instead.
  */

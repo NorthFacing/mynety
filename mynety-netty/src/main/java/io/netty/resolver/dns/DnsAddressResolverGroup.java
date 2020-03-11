@@ -51,15 +51,15 @@ public class DnsAddressResolverGroup extends AddressResolverGroup<InetSocketAddr
   }
 
   public DnsAddressResolverGroup(
-      Class<? extends DatagramChannel> channelType,
-      DnsServerAddressStreamProvider nameServerProvider) {
+    Class<? extends DatagramChannel> channelType,
+    DnsServerAddressStreamProvider nameServerProvider) {
     this(new DnsNameResolverBuilder());
     dnsResolverBuilder.channelType(channelType).nameServerProvider(nameServerProvider);
   }
 
   public DnsAddressResolverGroup(
-      ChannelFactory<? extends DatagramChannel> channelFactory,
-      DnsServerAddressStreamProvider nameServerProvider) {
+    ChannelFactory<? extends DatagramChannel> channelFactory,
+    DnsServerAddressStreamProvider nameServerProvider) {
     this(new DnsNameResolverBuilder());
     dnsResolverBuilder.channelFactory(channelFactory).nameServerProvider(nameServerProvider);
   }
@@ -69,15 +69,15 @@ public class DnsAddressResolverGroup extends AddressResolverGroup<InetSocketAddr
   protected final AddressResolver<InetSocketAddress> newResolver(EventExecutor executor) throws Exception {
     if (!(executor instanceof EventLoop)) {
       throw new IllegalStateException(
-          "unsupported executor type: " + StringUtil.simpleClassName(executor) +
-              " (expected: " + StringUtil.simpleClassName(EventLoop.class));
+        "unsupported executor type: " + StringUtil.simpleClassName(executor) +
+          " (expected: " + StringUtil.simpleClassName(EventLoop.class));
     }
 
     // we don't really need to pass channelFactory and nameServerProvider separately,
     // but still keep this to ensure backward compatibility with (potentially) override methods
     return newResolver((EventLoop) executor,
-        dnsResolverBuilder.channelFactory(),
-        dnsResolverBuilder.nameServerProvider());
+      dnsResolverBuilder.channelFactory(),
+      dnsResolverBuilder.nameServerProvider());
   }
 
   /**
@@ -85,14 +85,14 @@ public class DnsAddressResolverGroup extends AddressResolverGroup<InetSocketAddr
    */
   @Deprecated
   protected AddressResolver<InetSocketAddress> newResolver(
-      EventLoop eventLoop, ChannelFactory<? extends DatagramChannel> channelFactory,
-      DnsServerAddressStreamProvider nameServerProvider) throws Exception {
+    EventLoop eventLoop, ChannelFactory<? extends DatagramChannel> channelFactory,
+    DnsServerAddressStreamProvider nameServerProvider) throws Exception {
 
     final NameResolver<InetAddress> resolver = new InflightNameResolver<InetAddress>(
-        eventLoop,
-        newNameResolver(eventLoop, channelFactory, nameServerProvider),
-        resolvesInProgress,
-        resolveAllsInProgress);
+      eventLoop,
+      newNameResolver(eventLoop, channelFactory, nameServerProvider),
+      resolvesInProgress,
+      resolveAllsInProgress);
 
     return newAddressResolver(eventLoop, resolver);
   }
@@ -104,13 +104,13 @@ public class DnsAddressResolverGroup extends AddressResolverGroup<InetSocketAddr
   protected NameResolver<InetAddress> newNameResolver(EventLoop eventLoop,
                                                       ChannelFactory<? extends DatagramChannel> channelFactory,
                                                       DnsServerAddressStreamProvider nameServerProvider)
-      throws Exception {
+    throws Exception {
     // once again, channelFactory and nameServerProvider are most probably set in builder already,
     // but I do reassign them again to avoid corner cases with override methods
     return dnsResolverBuilder.eventLoop(eventLoop)
-        .channelFactory(channelFactory)
-        .nameServerProvider(nameServerProvider)
-        .build();
+      .channelFactory(channelFactory)
+      .nameServerProvider(nameServerProvider)
+      .build();
   }
 
   /**
@@ -119,7 +119,7 @@ public class DnsAddressResolverGroup extends AddressResolverGroup<InetSocketAddr
    */
   protected AddressResolver<InetSocketAddress> newAddressResolver(EventLoop eventLoop,
                                                                   NameResolver<InetAddress> resolver)
-      throws Exception {
+    throws Exception {
     return new InetSocketAddressResolver(eventLoop, resolver);
   }
 }

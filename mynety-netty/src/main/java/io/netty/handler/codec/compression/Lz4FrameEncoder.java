@@ -18,7 +18,12 @@ package io.netty.handler.codec.compression;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelPromiseNotifier;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.util.concurrent.EventExecutor;
@@ -31,7 +36,19 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Checksum;
 
-import static io.netty.handler.codec.compression.Lz4Constants.*;
+import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_COMPRESSED;
+import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_NON_COMPRESSED;
+import static io.netty.handler.codec.compression.Lz4Constants.CHECKSUM_OFFSET;
+import static io.netty.handler.codec.compression.Lz4Constants.COMPRESSED_LENGTH_OFFSET;
+import static io.netty.handler.codec.compression.Lz4Constants.COMPRESSION_LEVEL_BASE;
+import static io.netty.handler.codec.compression.Lz4Constants.DECOMPRESSED_LENGTH_OFFSET;
+import static io.netty.handler.codec.compression.Lz4Constants.DEFAULT_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Lz4Constants.DEFAULT_SEED;
+import static io.netty.handler.codec.compression.Lz4Constants.HEADER_LENGTH;
+import static io.netty.handler.codec.compression.Lz4Constants.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.Lz4Constants.MAX_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Lz4Constants.MIN_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Lz4Constants.TOKEN_OFFSET;
 
 /**
  * Compresses a {@link ByteBuf} using the LZ4 format.
@@ -102,7 +119,6 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
    * Creates a new LZ4 encoder with hight or fast compression, default block size (64 KB)
    * and xxhash hashing for Java, based on Yann Collet's work available at
    * <a href="https://github.com/Cyan4973/xxHash">Github</a>.
-   *
    * @param highCompressor if {@code true} codec will use compressor which requires more memory
    *                       and is slower but compresses more efficiently
    */
@@ -112,7 +128,6 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a new customizable LZ4 encoder.
-   *
    * @param factory        user customizable {@link LZ4Factory} instance
    *                       which may be JNI bindings to the original C implementation, a pure Java implementation
    *                       or a Java implementation that uses the {@link sun.misc.Unsafe}
@@ -128,7 +143,6 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates a new customizable LZ4 encoder.
-   *
    * @param factory        user customizable {@link LZ4Factory} instance
    *                       which may be JNI bindings to the original C implementation, a pure Java implementation
    *                       or a Java implementation that uses the {@link sun.misc.Unsafe}
@@ -163,7 +177,7 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
   private static int compressionLevel(int blockSize) {
     if (blockSize < MIN_BLOCK_SIZE || blockSize > MAX_BLOCK_SIZE) {
       throw new IllegalArgumentException(String.format(
-          "blockSize: %d (expected: %d-%d)", blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE));
+        "blockSize: %d (expected: %d-%d)", blockSize, MIN_BLOCK_SIZE, MAX_BLOCK_SIZE));
     }
     int compressionLevel = 32 - Integer.numberOfLeadingZeros(blockSize - 1); // ceil of log2
     compressionLevel = Math.max(0, compressionLevel - COMPRESSION_LEVEL_BASE);
@@ -197,7 +211,7 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
     // again to be >= 0, this is a good check for the overflow case.
     if (targetBufSize > maxEncodeSize || 0 > targetBufSize) {
       throw new EncoderException(String.format("requested encode buffer size (%d bytes) exceeds the maximum " +
-          "allowable size (%d bytes)", targetBufSize, maxEncodeSize));
+        "allowable size (%d bytes)", targetBufSize, maxEncodeSize));
     }
 
     if (allowEmptyReturn && targetBufSize < blockSize) {
@@ -299,7 +313,7 @@ public class Lz4FrameEncoder extends MessageToByteEncoder<ByteBuf> {
     finished = true;
 
     final ByteBuf footer = ctx.alloc().heapBuffer(
-        compressor.maxCompressedLength(buffer.readableBytes()) + HEADER_LENGTH);
+      compressor.maxCompressedLength(buffer.readableBytes()) + HEADER_LENGTH);
     flushBufferedData(footer);
 
     final int idx = footer.writerIndex();

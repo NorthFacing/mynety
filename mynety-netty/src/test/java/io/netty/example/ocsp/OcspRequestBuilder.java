@@ -37,7 +37,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
  * This is a simplified version of BC's own {@link OCSPReqBuilder}.
- *
  * @see OCSPReqBuilder
  */
 public class OcspRequestBuilder {
@@ -85,7 +84,7 @@ public class OcspRequestBuilder {
     BigInteger serial = certificate.getSerialNumber();
 
     CertificateID certId = new CertificateID(calculator,
-        new X509CertificateHolder(issuer.getEncoded()), serial);
+      new X509CertificateHolder(issuer.getEncoded()), serial);
 
     OCSPReqBuilder builder = new OCSPReqBuilder();
     builder.addRequest(certId);
@@ -94,8 +93,8 @@ public class OcspRequestBuilder {
     generator.nextBytes(nonce);
 
     Extension[] extensions = new Extension[]{
-        new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
-            new DEROctetString(nonce))};
+      new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
+        new DEROctetString(nonce))};
 
     builder.setRequestExtensions(new Extensions(extensions));
 

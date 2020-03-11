@@ -73,7 +73,7 @@ import static io.netty.buffer.ByteBufUtil.readBytes;
  * href="https://github.com/joewalnes/webbit">webbit</a> and modified.
  */
 public class WebSocket08FrameDecoder extends ByteToMessageDecoder
-    implements WebSocketFrameDecoder {
+  implements WebSocketFrameDecoder {
 
   enum State {
     READING_FIRST,
@@ -108,7 +108,6 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
 
   /**
    * Constructor
-   *
    * @param expectMaskedFrames    Web socket servers must set this to true processed incoming masked payload. Client implementations
    *                              must set this to false.
    * @param allowExtensions       Flag to allow reserved extension bits to be used or not
@@ -121,7 +120,6 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
 
   /**
    * Constructor
-   *
    * @param expectMaskedFrames    Web socket servers must set this to true processed incoming masked payload. Client implementations
    *                              must set this to false.
    * @param allowExtensions       Flag to allow reserved extension bits to be used or not
@@ -133,16 +131,15 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
   public WebSocket08FrameDecoder(boolean expectMaskedFrames, boolean allowExtensions, int maxFramePayloadLength,
                                  boolean allowMaskMismatch) {
     this(WebSocketDecoderConfig.newBuilder()
-        .expectMaskedFrames(expectMaskedFrames)
-        .allowExtensions(allowExtensions)
-        .maxFramePayloadLength(maxFramePayloadLength)
-        .allowMaskMismatch(allowMaskMismatch)
-        .build());
+      .expectMaskedFrames(expectMaskedFrames)
+      .allowExtensions(allowExtensions)
+      .maxFramePayloadLength(maxFramePayloadLength)
+      .allowMaskMismatch(allowMaskMismatch)
+      .build());
   }
 
   /**
    * Constructor
-   *
    * @param decoderConfig Frames decoder configuration.
    */
   public WebSocket08FrameDecoder(WebSocketDecoderConfig decoderConfig) {
@@ -211,7 +208,7 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
 
           // check for reserved control frame opcodes
           if (!(frameOpcode == OPCODE_CLOSE || frameOpcode == OPCODE_PING
-              || frameOpcode == OPCODE_PONG)) {
+            || frameOpcode == OPCODE_PONG)) {
             protocolViolation(ctx, in, "control frame using reserved opcode " + frameOpcode);
             return;
           }
@@ -226,7 +223,7 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
         } else { // data frame
           // check for reserved data frame opcodes
           if (!(frameOpcode == OPCODE_CONT || frameOpcode == OPCODE_TEXT
-              || frameOpcode == OPCODE_BINARY)) {
+            || frameOpcode == OPCODE_BINARY)) {
             protocolViolation(ctx, in, "data frame using reserved opcode " + frameOpcode);
             return;
           }
@@ -240,7 +237,7 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
           // check opcode vs message fragmentation state 2/2
           if (fragmentedFramesCount != 0 && frameOpcode != OPCODE_CONT && frameOpcode != OPCODE_PING) {
             protocolViolation(ctx, in,
-                "received non-continuation data frame while inside fragmented message");
+              "received non-continuation data frame while inside fragmented message");
             return;
           }
         }
@@ -276,7 +273,7 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
 
         if (framePayloadLength > config.maxFramePayloadLength()) {
           protocolViolation(ctx, in, WebSocketCloseStatus.MESSAGE_TOO_BIG,
-              "Max frame length of " + config.maxFramePayloadLength() + " has been exceeded.");
+            "Max frame length of " + config.maxFramePayloadLength() + " has been exceeded.");
           return;
         }
 
@@ -358,12 +355,12 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
             return;
           } else if (frameOpcode == OPCODE_CONT) {
             out.add(new ContinuationWebSocketFrame(frameFinalFlag, frameRsv,
-                payloadBuffer));
+              payloadBuffer));
             payloadBuffer = null;
             return;
           } else {
             throw new UnsupportedOperationException("Cannot decode web socket frame with opcode: "
-                + frameOpcode);
+              + frameOpcode);
           }
         } finally {
           if (payloadBuffer != null) {
@@ -391,9 +388,9 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
     // Remark: & 0xFF is necessary because Java will do signed expansion from
     // byte to int which we don't want.
     int intMask = ((maskingKey[0] & 0xFF) << 24)
-        | ((maskingKey[1] & 0xFF) << 16)
-        | ((maskingKey[2] & 0xFF) << 8)
-        | (maskingKey[3] & 0xFF);
+      | ((maskingKey[1] & 0xFF) << 16)
+      | ((maskingKey[2] & 0xFF) << 8)
+      | (maskingKey[3] & 0xFF);
 
     // If the byte order of our buffers it little endian we have to bring our mask
     // into the same format, because getInt() and writeInt() will use a reversed byte order
@@ -455,7 +452,7 @@ public class WebSocket08FrameDecoder extends ByteToMessageDecoder
    *
    */
   protected void checkCloseFrameBody(
-      ChannelHandlerContext ctx, ByteBuf buffer) {
+    ChannelHandlerContext ctx, ByteBuf buffer) {
     if (buffer == null || !buffer.isReadable()) {
       return;
     }

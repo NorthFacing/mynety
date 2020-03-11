@@ -31,7 +31,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 @UnstableApi
 public final class DelegatingChannelPromiseNotifier implements ChannelPromise, ChannelFutureListener {
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(DelegatingChannelPromiseNotifier.class);
+    InternalLoggerFactory.getInstance(DelegatingChannelPromiseNotifier.class);
   private final ChannelPromise delegate;
   private final boolean logNotifyFailure;
 

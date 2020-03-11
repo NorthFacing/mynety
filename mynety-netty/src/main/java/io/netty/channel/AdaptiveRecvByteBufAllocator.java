@@ -158,7 +158,6 @@ public class AdaptiveRecvByteBufAllocator extends DefaultMaxMessagesRecvByteBufA
 
   /**
    * Creates a new predictor with the specified parameters.
-   *
    * @param minimum the inclusive lower bound of the expected buffer size
    * @param initial the initial buffer size when no feed back was received
    * @param maximum the inclusive upper bound of the expected buffer size

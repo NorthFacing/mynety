@@ -25,7 +25,6 @@ public final class SimpleStringRedisMessage extends AbstractStringRedisMessage {
 
   /**
    * Creates a {@link SimpleStringRedisMessage} for the given {@code content}.
-   *
    * @param content the message content, must not be {@code null}.
    */
   public SimpleStringRedisMessage(String content) {

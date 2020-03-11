@@ -27,7 +27,6 @@ public abstract class DefaultSpdyStreamFrame implements SpdyStreamFrame {
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    */
   protected DefaultSpdyStreamFrame(int streamId) {

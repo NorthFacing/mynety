@@ -83,11 +83,11 @@ final class Java9SslEngine extends JdkSslEngine {
     if (isServer) {
       selectionListener = null;
       alpnSelector = new AlpnSelector(applicationNegotiator.protocolSelectorFactory().
-          newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())));
+        newSelector(this, new LinkedHashSet<String>(applicationNegotiator.protocols())));
       Java9SslUtils.setHandshakeApplicationProtocolSelector(engine, alpnSelector);
     } else {
       selectionListener = applicationNegotiator.protocolListenerFactory()
-          .newListener(this, applicationNegotiator.protocols());
+        .newListener(this, applicationNegotiator.protocols());
       alpnSelector = null;
       Java9SslUtils.setApplicationProtocols(engine, applicationNegotiator.protocols());
     }

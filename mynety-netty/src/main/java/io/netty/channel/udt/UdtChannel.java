@@ -24,7 +24,6 @@ import java.net.InetSocketAddress;
  * UDT {@link Channel}.
  * <p>
  * Supported UDT {@link UdtChannel} are available via {@link NioUdtProvider}.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated

@@ -51,7 +51,6 @@ public abstract class DefaultMaxMessagesRecvByteBufAllocator implements MaxMessa
 
   /**
    * Determine if future instances of {@link #newHandle()} will stop reading if we think there is no more data.
-   *
    * @param respectMaybeMoreData <ul>
    *                             <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
    *                             the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
@@ -68,7 +67,6 @@ public abstract class DefaultMaxMessagesRecvByteBufAllocator implements MaxMessa
 
   /**
    * Get if future instances of {@link #newHandle()} will stop reading if we think there is no more data.
-   *
    * @return <ul>
    * <li>{@code true} to stop reading if we think there is no more data. This may save a system call to read from
    * the socket, but if data has arrived in a racy fashion we may give up our {@link #maxMessagesPerRead()}
@@ -140,9 +138,9 @@ public abstract class DefaultMaxMessagesRecvByteBufAllocator implements MaxMessa
     @Override
     public boolean continueReading(UncheckedBooleanSupplier maybeMoreDataSupplier) {
       return config.isAutoRead() &&
-          (!respectMaybeMoreData || maybeMoreDataSupplier.get()) &&
-          totalMessages < maxMessagePerRead &&
-          totalBytesRead > 0;
+        (!respectMaybeMoreData || maybeMoreDataSupplier.get()) &&
+        totalMessages < maxMessagePerRead &&
+        totalBytesRead > 0;
     }
 
     @Override

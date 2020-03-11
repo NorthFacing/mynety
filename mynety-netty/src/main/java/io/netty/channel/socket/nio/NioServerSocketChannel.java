@@ -44,7 +44,7 @@ import java.util.Map;
  * NIO selector based implementation to accept new connections.
  */
 public class NioServerSocketChannel extends AbstractNioMessageChannel
-    implements io.netty.channel.socket.ServerSocketChannel {
+  implements io.netty.channel.socket.ServerSocketChannel {
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
   private static final SelectorProvider DEFAULT_SELECTOR_PROVIDER = SelectorProvider.provider();
@@ -62,7 +62,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
       return provider.openServerSocketChannel();
     } catch (IOException e) {
       throw new ChannelException(
-          "Failed to open a server socket.", e);
+        "Failed to open a server socket.", e);
     }
   }
 
@@ -167,7 +167,7 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
   // Unnecessary stuff
   @Override
   protected boolean doConnect(
-      SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+    SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
     throw new UnsupportedOperationException();
   }
 

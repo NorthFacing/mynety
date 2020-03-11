@@ -15,7 +15,14 @@
 
 package io.netty.util.collection;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractSet;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static io.netty.util.internal.MathUtil.safeFindNextPositivePowerOfTwo;
 
@@ -24,7 +31,6 @@ import static io.netty.util.internal.MathUtil.safeFindNextPositivePowerOfTwo;
  * To minimize the memory footprint, this class uses open addressing rather than chaining.
  * Collisions are resolved using linear probing. Deletions implement compaction, so cost of
  * remove can approach O(N) for full maps, which makes a small loadFactor recommended.
- *
  * @param <V> The value type stored in the map.
  */
 public class LongObjectHashMap<V> implements LongObjectMap<V> {
@@ -334,7 +340,6 @@ public class LongObjectHashMap<V> implements LongObjectMap<V> {
 
   /**
    * Locates the index for the given key. This method probes using double hashing.
-   *
    * @param key the key for an entry in the map.
    * @return the index where the key was found, or {@code -1} if no entry is found for that key.
    */
@@ -400,7 +405,6 @@ public class LongObjectHashMap<V> implements LongObjectMap<V> {
   /**
    * Removes entry at the given index position. Also performs opportunistic, incremental rehashing
    * if necessary to not break conflict chains.
-   *
    * @param index the index position of the element to remove.
    * @return {@code true} if the next item was moved back. {@code false} otherwise.
    */
@@ -422,7 +426,7 @@ public class LongObjectHashMap<V> implements LongObjectMap<V> {
       long key = keys[i];
       int bucket = hashIndex(key);
       if (i < bucket && (bucket <= nextFree || nextFree <= i) ||
-          bucket <= nextFree && nextFree <= i) {
+        bucket <= nextFree && nextFree <= i) {
         // Move the displaced entry "back" to the first available position.
         keys[nextFree] = key;
         values[nextFree] = value;
@@ -446,7 +450,6 @@ public class LongObjectHashMap<V> implements LongObjectMap<V> {
 
   /**
    * Rehashes the map for the given capacity.
-   *
    * @param newCapacity the new capacity for the map.
    */
   private void rehash(int newCapacity) {
@@ -499,7 +502,7 @@ public class LongObjectHashMap<V> implements LongObjectMap<V> {
           sb.append(", ");
         }
         sb.append(keyToString(keys[i])).append('=').append(value == this ? "(this Map)" :
-            toExternal(value));
+          toExternal(value));
         first = false;
       }
     }

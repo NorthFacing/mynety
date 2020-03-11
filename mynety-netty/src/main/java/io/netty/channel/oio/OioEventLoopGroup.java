@@ -16,7 +16,12 @@
 package io.netty.channel.oio;
 
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ThreadPerChannelEventLoopGroup;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -25,7 +30,6 @@ import java.util.concurrent.ThreadFactory;
 /**
  * {@link EventLoopGroup} which is used to handle OIO {@link Channel}'s. Each {@link Channel} will be handled by its
  * own {@link EventLoop} to not block others.
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated
@@ -40,7 +44,6 @@ public class OioEventLoopGroup extends ThreadPerChannelEventLoopGroup {
 
   /**
    * Create a new {@link OioEventLoopGroup}.
-   *
    * @param maxChannels the maximum number of channels to handle with this instance. Once you try to register
    *                    a new {@link Channel} and the maximum is exceed it will throw an
    *                    {@link ChannelException} on the {@link #register(Channel)} and
@@ -53,7 +56,6 @@ public class OioEventLoopGroup extends ThreadPerChannelEventLoopGroup {
 
   /**
    * Create a new {@link OioEventLoopGroup}.
-   *
    * @param maxChannels the maximum number of channels to handle with this instance. Once you try to register
    *                    a new {@link Channel} and the maximum is exceed it will throw an
    *                    {@link ChannelException} on the {@link #register(Channel)} and
@@ -68,7 +70,6 @@ public class OioEventLoopGroup extends ThreadPerChannelEventLoopGroup {
 
   /**
    * Create a new {@link OioEventLoopGroup}.
-   *
    * @param maxChannels   the maximum number of channels to handle with this instance. Once you try to register
    *                      a new {@link Channel} and the maximum is exceed it will throw an
    *                      {@link ChannelException} on the {@link #register(Channel)} and

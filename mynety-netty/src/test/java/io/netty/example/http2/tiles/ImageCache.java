@@ -52,7 +52,7 @@ public final class ImageCache {
         try {
           String name = name(x, y);
           ByteBuf fileBytes = unreleasableBuffer(toByteBuf(getClass()
-              .getResourceAsStream(name)).asReadOnly());
+            .getResourceAsStream(name)).asReadOnly());
           imageBank.put(name, fileBytes);
         } catch (IOException e) {
           e.printStackTrace();

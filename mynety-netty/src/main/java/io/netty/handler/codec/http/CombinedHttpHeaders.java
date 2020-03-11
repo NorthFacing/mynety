@@ -47,7 +47,7 @@ public class CombinedHttpHeaders extends DefaultHttpHeaders {
   }
 
   private static final class CombinedHttpHeadersImpl
-      extends DefaultHeaders<CharSequence, CharSequence, CombinedHttpHeadersImpl> {
+    extends DefaultHeaders<CharSequence, CharSequence, CombinedHttpHeadersImpl> {
     /**
      * An estimate of the size of a header value.
      */
@@ -242,7 +242,7 @@ public class CombinedHttpHeaders extends DefaultHttpHeaders {
 
     private static <T> CharSequence commaSeparate(CsvValueEscaper<T> escaper, Iterable<? extends T> values) {
       @SuppressWarnings("rawtypes") final StringBuilder sb = values instanceof Collection
-          ? new StringBuilder(((Collection) values).size() * VALUE_LENGTH_ESTIMATE) : new StringBuilder();
+        ? new StringBuilder(((Collection) values).size() * VALUE_LENGTH_ESTIMATE) : new StringBuilder();
       Iterator<? extends T> iterator = values.iterator();
       if (iterator.hasNext()) {
         T next = iterator.next();
@@ -257,20 +257,18 @@ public class CombinedHttpHeaders extends DefaultHttpHeaders {
 
     private static CharSequence commaSeparateEscapedValues(CharSequence currentValue, CharSequence value) {
       return new StringBuilder(currentValue.length() + 1 + value.length())
-          .append(currentValue)
-          .append(COMMA)
-          .append(value);
+        .append(currentValue)
+        .append(COMMA)
+        .append(value);
     }
 
     /**
      * Escapes comma separated values (CSV).
-     *
      * @param <T> The type that a concrete implementation handles
      */
     private interface CsvValueEscaper<T> {
       /**
        * Appends the value to the specified {@link StringBuilder}, escaping if necessary.
-       *
        * @param value the value to be appended, escaped if necessary
        */
       CharSequence escape(T value);

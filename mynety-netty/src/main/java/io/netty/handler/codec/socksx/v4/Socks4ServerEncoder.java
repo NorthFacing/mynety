@@ -41,6 +41,6 @@ public final class Socks4ServerEncoder extends MessageToByteEncoder<Socks4Comman
     out.writeByte(msg.status().byteValue());
     out.writeShort(msg.dstPort());
     out.writeBytes(msg.dstAddr() == null ? IPv4_HOSTNAME_ZEROED
-        : NetUtil.createByteArrayFromIpAddressString(msg.dstAddr()));
+      : NetUtil.createByteArrayFromIpAddressString(msg.dstAddr()));
   }
 }

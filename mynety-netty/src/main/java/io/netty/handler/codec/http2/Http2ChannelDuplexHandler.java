@@ -69,7 +69,7 @@ public abstract class Http2ChannelDuplexHandler extends ChannelDuplexHandler {
     Http2FrameCodec codec = frameCodec;
     if (codec == null) {
       throw new IllegalStateException(StringUtil.simpleClassName(Http2FrameCodec.class) + " not found." +
-          " Has the handler been added to a pipeline?");
+        " Has the handler been added to a pipeline?");
     }
     return codec.newStream();
   }
@@ -87,7 +87,7 @@ public abstract class Http2ChannelDuplexHandler extends ChannelDuplexHandler {
     ChannelHandlerContext frameCodecCtx = ctx.pipeline().context(Http2FrameCodec.class);
     if (frameCodecCtx == null) {
       throw new IllegalArgumentException(Http2FrameCodec.class.getSimpleName()
-          + " was not found in the channel pipeline.");
+        + " was not found in the channel pipeline.");
     }
     return (Http2FrameCodec) frameCodecCtx.handler();
   }

@@ -29,7 +29,6 @@ public class DefaultSpdyGoAwayFrame implements SpdyGoAwayFrame {
 
   /**
    * Creates a new instance.
-   *
    * @param lastGoodStreamId the Last-good-stream-ID of this frame
    */
   public DefaultSpdyGoAwayFrame(int lastGoodStreamId) {
@@ -38,7 +37,6 @@ public class DefaultSpdyGoAwayFrame implements SpdyGoAwayFrame {
 
   /**
    * Creates a new instance.
-   *
    * @param lastGoodStreamId the Last-good-stream-ID of this frame
    * @param statusCode       the Status code of this frame
    */
@@ -48,7 +46,6 @@ public class DefaultSpdyGoAwayFrame implements SpdyGoAwayFrame {
 
   /**
    * Creates a new instance.
-   *
    * @param lastGoodStreamId the Last-good-stream-ID of this frame
    * @param status           the status of this frame
    */
@@ -83,13 +80,13 @@ public class DefaultSpdyGoAwayFrame implements SpdyGoAwayFrame {
   @Override
   public String toString() {
     return new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append(StringUtil.NEWLINE)
-        .append("--> Last-good-stream-ID = ")
-        .append(lastGoodStreamId())
-        .append(StringUtil.NEWLINE)
-        .append("--> Status: ")
-        .append(status())
-        .toString();
+      .append(StringUtil.simpleClassName(this))
+      .append(StringUtil.NEWLINE)
+      .append("--> Last-good-stream-ID = ")
+      .append(lastGoodStreamId())
+      .append(StringUtil.NEWLINE)
+      .append("--> Status: ")
+      .append(status())
+      .toString();
   }
 }

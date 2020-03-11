@@ -36,8 +36,8 @@ public final class PromiseNotificationUtil {
         logger.warn("Failed to cancel promise because it has succeeded already: {}", p);
       } else {
         logger.warn(
-            "Failed to cancel promise because it has failed already: {}, unnotified cause:",
-            p, err);
+          "Failed to cancel promise because it has failed already: {}, unnotified cause:",
+          p, err);
       }
     }
   }
@@ -52,8 +52,8 @@ public final class PromiseNotificationUtil {
         logger.warn("Failed to mark a promise as success because it has succeeded already: {}", p);
       } else {
         logger.warn(
-            "Failed to mark a promise as success because it has failed already: {}, unnotified cause:",
-            p, err);
+          "Failed to mark a promise as success because it has failed already: {}, unnotified cause:",
+          p, err);
       }
     }
   }
@@ -68,8 +68,8 @@ public final class PromiseNotificationUtil {
         logger.warn("Failed to mark a promise as failure because it has succeeded already: {}", p, cause);
       } else {
         logger.warn(
-            "Failed to mark a promise as failure because it has failed already: {}, unnotified cause: {}",
-            p, ThrowableUtil.stackTraceToString(err), cause);
+          "Failed to mark a promise as failure because it has failed already: {}, unnotified cause: {}",
+          p, ThrowableUtil.stackTraceToString(err), cause);
       }
     }
   }

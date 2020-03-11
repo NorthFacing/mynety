@@ -485,7 +485,6 @@ public class EmptyHeaders<K, V, T extends Headers<K, V, T>> implements Headers<K
 
   /**
    * Equivalent to {@link #getAll(Object)} but no intermediate list is generated.
-   *
    * @param name the name of the header to retrieve
    * @return an {@link Iterator} of header values corresponding to {@code name}.
    */

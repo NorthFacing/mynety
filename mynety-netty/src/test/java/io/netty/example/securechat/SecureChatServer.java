@@ -36,16 +36,16 @@ public final class SecureChatServer {
   public static void main(String[] args) throws Exception {
     SelfSignedCertificate ssc = new SelfSignedCertificate();
     SslContext sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-        .build();
+      .build();
 
     EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     EventLoopGroup workerGroup = new NioEventLoopGroup();
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new SecureChatServerInitializer(sslCtx));
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new SecureChatServerInitializer(sslCtx));
 
       b.bind(PORT).sync().channel().closeFuture().sync();
     } finally {

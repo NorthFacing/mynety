@@ -17,7 +17,14 @@ package io.netty.channel.nio;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.FileRegion;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.internal.ChannelUtils;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
@@ -36,8 +43,8 @@ import static io.netty.channel.internal.ChannelUtils.WRITE_STATUS_SNDBUF_FULL;
 public abstract class AbstractNioByteChannel extends AbstractNioChannel {
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
   private static final String EXPECTED_TYPES =
-      " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
-          StringUtil.simpleClassName(FileRegion.class) + ')';
+    " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
+      StringUtil.simpleClassName(FileRegion.class) + ')';
 
   private final Runnable flushTask = new Runnable() {
     @Override
@@ -51,7 +58,6 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
 
   /**
    * Create a new instance
-   *
    * @param parent the parent {@link Channel} by which this instance was created. May be {@code null}
    * @param ch     the underlying {@link SelectableChannel} on which it operates
    */
@@ -84,7 +90,7 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
 
   private static boolean isAllowHalfClosure(ChannelConfig config) {
     return config instanceof SocketChannelConfig &&
-        ((SocketChannelConfig) config).isAllowHalfClosure();
+      ((SocketChannelConfig) config).isAllowHalfClosure();
   }
 
   protected class NioByteUnsafe extends AbstractNioUnsafe {
@@ -181,7 +187,6 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
 
   /**
    * Write objects to the OS.
-   *
    * @param in the collection which contains objects to write.
    * @return The value that should be decremented from the write quantum which starts at
    * {@link ChannelConfig#getWriteSpinCount()}. The typical use cases are as follows:
@@ -274,7 +279,7 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
   }
 
   protected final void incompleteWrite(boolean setOpWrite) {
@@ -295,7 +300,6 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
 
   /**
    * Write a {@link FileRegion}
-   *
    * @param region the {@link FileRegion} from which the bytes should be written
    * @return amount       the amount of written bytes
    */
@@ -308,7 +312,6 @@ public abstract class AbstractNioByteChannel extends AbstractNioChannel {
 
   /**
    * Write bytes form the given {@link ByteBuf} to the underlying {@link java.nio.channels.Channel}.
-   *
    * @param buf the {@link ByteBuf} from which the bytes should be written
    * @return amount       the amount of written bytes
    */

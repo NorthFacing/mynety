@@ -53,7 +53,6 @@ public abstract class SimpleUserEventChannelHandler<I> extends ChannelInboundHan
 
   /**
    * Create a new instance which will try to detect the types to match out of the type parameter of the class.
-   *
    * @param autoRelease {@code true} if handled events should be released automatically by passing them to
    *                    {@link ReferenceCountUtil#release(Object)}.
    */
@@ -71,7 +70,6 @@ public abstract class SimpleUserEventChannelHandler<I> extends ChannelInboundHan
 
   /**
    * Create a new instance
-   *
    * @param eventType   The type of events to match
    * @param autoRelease {@code true} if handled events should be released automatically by passing them to
    *                    {@link ReferenceCountUtil#release(Object)}.
@@ -110,7 +108,6 @@ public abstract class SimpleUserEventChannelHandler<I> extends ChannelInboundHan
 
   /**
    * Is called for each user event triggered of type {@link I}.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link SimpleUserEventChannelHandler} belongs to
    * @param evt the user event to handle
    * @throws Exception is thrown if an error occurred

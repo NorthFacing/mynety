@@ -62,8 +62,8 @@ public class DefaultStompHeadersSubframe implements StompHeadersSubframe {
   @Override
   public String toString() {
     return "StompFrame{" +
-        "command=" + command +
-        ", headers=" + headers +
-        '}';
+      "command=" + command +
+      ", headers=" + headers +
+      '}';
   }
 }

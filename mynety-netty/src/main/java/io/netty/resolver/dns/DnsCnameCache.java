@@ -26,7 +26,6 @@ public interface DnsCnameCache {
 
   /**
    * Returns the cached cname for the given hostname.
-   *
    * @param hostname the hostname
    * @return the cached entries or an {@code null} if none.
    */
@@ -34,7 +33,6 @@ public interface DnsCnameCache {
 
   /**
    * Caches a cname entry that should be used for the given hostname.
-   *
    * @param hostname    the hostname
    * @param cname       the cname mapping.
    * @param originalTtl the TTL as returned by the DNS server
@@ -44,14 +42,12 @@ public interface DnsCnameCache {
 
   /**
    * Clears all cached nameservers.
-   *
    * @see #clear(String)
    */
   void clear();
 
   /**
    * Clears the cached nameservers for the specified hostname.
-   *
    * @return {@code true} if and only if there was an entry for the specified host name in the cache and
    * it has been removed by this method
    */

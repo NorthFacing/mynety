@@ -25,7 +25,7 @@ import java.net.UnknownHostException;
  */
 public final class NativeInetAddress {
   private static final byte[] IPV4_MAPPED_IPV6_PREFIX = {
-      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xff, (byte) 0xff};
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xff, (byte) 0xff};
   final byte[] address;
   final int scopeId;
 
@@ -104,8 +104,8 @@ public final class NativeInetAddress {
 
   static int decodeInt(byte[] addr, int index) {
     return (addr[index] & 0xff) << 24 |
-        (addr[index + 1] & 0xff) << 16 |
-        (addr[index + 2] & 0xff) << 8 |
-        addr[index + 3] & 0xff;
+      (addr[index + 1] & 0xff) << 16 |
+      (addr[index + 2] & 0xff) << 8 |
+      addr[index + 3] & 0xff;
   }
 }

@@ -19,7 +19,6 @@ import javax.net.ssl.SSLEngine;
 
 /**
  * The {@link JdkApplicationProtocolNegotiator} to use if you need NPN and are using {@link SslProvider#JDK}.
- *
  * @deprecated use {@link ApplicationProtocolConfig}.
  */
 @Deprecated
@@ -28,7 +27,7 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
     {
       if (!JettyNpnSslEngine.isAvailable()) {
         throw new RuntimeException("NPN unsupported. Is your classpath configured correctly?"
-            + " See https://wiki.eclipse.org/Jetty/Feature/NPN");
+          + " See https://wiki.eclipse.org/Jetty/Feature/NPN");
       }
     }
 
@@ -41,7 +40,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param protocols The order of iteration determines the preference of support for protocols.
    */
   public JdkNpnApplicationProtocolNegotiator(Iterable<String> protocols) {
@@ -50,7 +48,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param protocols The order of iteration determines the preference of support for protocols.
    */
   public JdkNpnApplicationProtocolNegotiator(String... protocols) {
@@ -59,7 +56,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param failIfNoCommonProtocols Fail with a fatal alert if not common protocols are detected.
    * @param protocols               The order of iteration determines the preference of support for protocols.
    */
@@ -69,7 +65,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param failIfNoCommonProtocols Fail with a fatal alert if not common protocols are detected.
    * @param protocols               The order of iteration determines the preference of support for protocols.
    */
@@ -79,7 +74,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param clientFailIfNoCommonProtocols Client side fail with a fatal alert if not common protocols are detected.
    * @param serverFailIfNoCommonProtocols Server side fail with a fatal alert if not common protocols are detected.
    * @param protocols                     The order of iteration determines the preference of support for protocols.
@@ -87,13 +81,12 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
   public JdkNpnApplicationProtocolNegotiator(boolean clientFailIfNoCommonProtocols,
                                              boolean serverFailIfNoCommonProtocols, Iterable<String> protocols) {
     this(clientFailIfNoCommonProtocols ? FAIL_SELECTOR_FACTORY : NO_FAIL_SELECTOR_FACTORY,
-        serverFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
-        protocols);
+      serverFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
+      protocols);
   }
 
   /**
    * Create a new instance.
-   *
    * @param clientFailIfNoCommonProtocols Client side fail with a fatal alert if not common protocols are detected.
    * @param serverFailIfNoCommonProtocols Server side fail with a fatal alert if not common protocols are detected.
    * @param protocols                     The order of iteration determines the preference of support for protocols.
@@ -101,13 +94,12 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
   public JdkNpnApplicationProtocolNegotiator(boolean clientFailIfNoCommonProtocols,
                                              boolean serverFailIfNoCommonProtocols, String... protocols) {
     this(clientFailIfNoCommonProtocols ? FAIL_SELECTOR_FACTORY : NO_FAIL_SELECTOR_FACTORY,
-        serverFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
-        protocols);
+      serverFailIfNoCommonProtocols ? FAIL_SELECTION_LISTENER_FACTORY : NO_FAIL_SELECTION_LISTENER_FACTORY,
+      protocols);
   }
 
   /**
    * Create a new instance.
-   *
    * @param selectorFactory The factory which provides classes responsible for selecting the protocol.
    * @param listenerFactory The factory which provides to be notified of which protocol was selected.
    * @param protocols       The order of iteration determines the preference of support for protocols.
@@ -119,7 +111,6 @@ public final class JdkNpnApplicationProtocolNegotiator extends JdkBaseApplicatio
 
   /**
    * Create a new instance.
-   *
    * @param selectorFactory The factory which provides classes responsible for selecting the protocol.
    * @param listenerFactory The factory which provides to be notified of which protocol was selected.
    * @param protocols       The order of iteration determines the preference of support for protocols.

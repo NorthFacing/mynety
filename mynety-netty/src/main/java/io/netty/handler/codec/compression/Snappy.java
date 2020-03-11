@@ -141,7 +141,6 @@ public final class Snappy {
   /**
    * Hashes the 4 bytes located at index, shifting the resulting hash into
    * the appropriate range for our hash table.
-   *
    * @param in    The input buffer to read 4 bytes from
    * @param index The index to read at
    * @param shift The shift value, for ensuring that the resulting value is
@@ -154,7 +153,6 @@ public final class Snappy {
 
   /**
    * Creates an appropriately sized hashtable for the given input size
-   *
    * @param inputSize The size of our input, ie. the number of bytes we need to encode
    * @return An appropriately sized empty hashtable
    */
@@ -170,7 +168,6 @@ public final class Snappy {
    * Iterates over the supplied input buffer between the supplied minIndex and
    * maxIndex to find how long our matched copy overlaps with an already-written
    * literal value.
-   *
    * @param in       The input buffer to scan over
    * @param minIndex The index in the input buffer to start scanning from
    * @param inIndex  The index of the start of our copy
@@ -181,7 +178,7 @@ public final class Snappy {
     int matched = 0;
 
     while (inIndex <= maxIndex - 4 &&
-        in.getInt(inIndex) == in.getInt(minIndex + matched)) {
+      in.getInt(inIndex) == in.getInt(minIndex + matched)) {
       inIndex += 4;
       matched += 4;
     }
@@ -198,7 +195,6 @@ public final class Snappy {
    * Calculates the minimum number of bits required to encode a value.  This can
    * then in turn be used to calculate the number of septets or octets (as
    * appropriate) to use to encode a length parameter.
-   *
    * @param value The value to calculate the minimum number of bits required to encode
    * @return The minimum number of bits required to encode the supplied value
    */
@@ -216,7 +212,6 @@ public final class Snappy {
    * Writes a literal to the supplied output buffer by directly copying from
    * the input buffer.  The literal is taken from the current readerIndex
    * up to the supplied length.
-   *
    * @param in     The input buffer to copy from
    * @param out    The output buffer to copy to
    * @param length The length of the literal to copy
@@ -249,7 +244,6 @@ public final class Snappy {
 
   /**
    * Encodes a series of copies, each at most 64 bytes in length.
-   *
    * @param out    The output buffer to write the copy pointer to
    * @param offset The offset at which the original instance lies
    * @param length The length of the original instance
@@ -356,7 +350,6 @@ public final class Snappy {
    * Reads the length varint (a series of bytes, where the lower 7 bits
    * are data and the upper bit is a flag to indicate more bytes to be
    * read).
-   *
    * @param in The input buffer to read the preamble from
    * @return The calculated length based on the input buffer, or 0 if
    * no preamble is able to be calculated
@@ -383,7 +376,6 @@ public final class Snappy {
    * Reads a literal from the input buffer directly to the output buffer.
    * A "literal" is an uncompressed segment of data stored directly in the
    * byte stream.
-   *
    * @param tag The tag that identified this segment as a literal is also
    *            used to encode part of the length of the data
    * @param in  The input buffer to read the literal from
@@ -436,7 +428,6 @@ public final class Snappy {
    * Reads a compressed reference offset and length from the supplied input
    * buffer, seeks back to the appropriate place in the input buffer and
    * writes the found data to the supplied output stream.
-   *
    * @param tag The tag used to identify this as a copy is also used to encode
    *            the length and part of the offset
    * @param in  The input buffer to read from
@@ -480,7 +471,6 @@ public final class Snappy {
    * Reads a compressed reference offset and length from the supplied input
    * buffer, seeks back to the appropriate place in the input buffer and
    * writes the found data to the supplied output stream.
-   *
    * @param tag The tag used to identify this as a copy is also used to encode
    *            the length and part of the offset
    * @param in  The input buffer to read from
@@ -524,7 +514,6 @@ public final class Snappy {
    * Reads a compressed reference offset and length from the supplied input
    * buffer, seeks back to the appropriate place in the input buffer and
    * writes the found data to the supplied output stream.
-   *
    * @param tag The tag used to identify this as a copy is also used to encode
    *            the length and part of the offset
    * @param in  The input buffer to read from
@@ -568,7 +557,6 @@ public final class Snappy {
    * Validates that the offset extracted from a compressed reference is within
    * the permissible bounds of an offset (0 < offset < Integer.MAX_VALUE), and does not
    * exceed the length of the chunk currently read so far.
-   *
    * @param offset         The offset extracted from the compressed reference
    * @param chunkSizeSoFar The number of bytes read so far from this chunk
    * @throws DecompressionException if the offset is invalid
@@ -591,7 +579,6 @@ public final class Snappy {
   /**
    * Computes the CRC32C checksum of the supplied data and performs the "mask" operation
    * on the computed checksum
-   *
    * @param data The input data to calculate the CRC32C checksum of
    */
   static int calculateChecksum(ByteBuf data) {
@@ -601,7 +588,6 @@ public final class Snappy {
   /**
    * Computes the CRC32C checksum of the supplied data and performs the "mask" operation
    * on the computed checksum
-   *
    * @param data The input data to calculate the CRC32C checksum of
    */
   static int calculateChecksum(ByteBuf data, int offset, int length) {
@@ -618,7 +604,6 @@ public final class Snappy {
    * Computes the CRC32C checksum of the supplied data, performs the "mask" operation
    * on the computed checksum, and then compares the resulting masked checksum to the
    * supplied checksum.
-   *
    * @param expectedChecksum The checksum decoded from the stream to compare against
    * @param data             The input data to calculate the CRC32C checksum of
    * @throws DecompressionException If the calculated and supplied checksums do not match
@@ -631,7 +616,6 @@ public final class Snappy {
    * Computes the CRC32C checksum of the supplied data, performs the "mask" operation
    * on the computed checksum, and then compares the resulting masked checksum to the
    * supplied checksum.
-   *
    * @param expectedChecksum The checksum decoded from the stream to compare against
    * @param data             The input data to calculate the CRC32C checksum of
    * @throws DecompressionException If the calculated and supplied checksums do not match
@@ -640,8 +624,8 @@ public final class Snappy {
     final int actualChecksum = calculateChecksum(data, offset, length);
     if (actualChecksum != expectedChecksum) {
       throw new DecompressionException(
-          "mismatching checksum: " + Integer.toHexString(actualChecksum) +
-              " (expected: " + Integer.toHexString(expectedChecksum) + ')');
+        "mismatching checksum: " + Integer.toHexString(actualChecksum) +
+          " (expected: " + Integer.toHexString(expectedChecksum) + ')');
     }
   }
 
@@ -652,7 +636,6 @@ public final class Snappy {
    * then its own checksum can be problematic. The masking is the same as used
    * in Apache Hadoop: Rotate the checksum by 15 bits, then add the constant
    * 0xa282ead8 (using wraparound as normal for unsigned integers)."
-   *
    * @param checksum The actual checksum of the data
    * @return The masked checksum
    */

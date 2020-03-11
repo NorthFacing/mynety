@@ -18,7 +18,6 @@ import io.netty.util.HashingStrategy;
 
 /**
  * A concrete implementation of {@link DefaultHeaders} that allows for direct instantiation.
- *
  * @param <K> the type of the header name.
  * @param <V> the type of the header value.
  */

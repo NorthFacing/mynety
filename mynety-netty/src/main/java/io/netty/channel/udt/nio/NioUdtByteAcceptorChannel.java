@@ -21,7 +21,6 @@ import io.netty.channel.udt.UdtChannel;
 
 /**
  * Byte Channel Acceptor for UDT Streams.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated

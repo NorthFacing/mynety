@@ -172,20 +172,20 @@ public final class MqttMessageBuilders {
 
     public MqttConnectMessage build() {
       MqttFixedHeader mqttFixedHeader =
-          new MqttFixedHeader(MqttMessageType.CONNECT, false, MqttQoS.AT_MOST_ONCE, false, 0);
+        new MqttFixedHeader(MqttMessageType.CONNECT, false, MqttQoS.AT_MOST_ONCE, false, 0);
       MqttConnectVariableHeader mqttConnectVariableHeader =
-          new MqttConnectVariableHeader(
-              version.protocolName(),
-              version.protocolLevel(),
-              hasUser,
-              hasPassword,
-              willRetain,
-              willQos.value(),
-              willFlag,
-              cleanSession,
-              keepAliveSecs);
+        new MqttConnectVariableHeader(
+          version.protocolName(),
+          version.protocolLevel(),
+          hasUser,
+          hasPassword,
+          willRetain,
+          willQos.value(),
+          willFlag,
+          cleanSession,
+          keepAliveSecs);
       MqttConnectPayload mqttConnectPayload =
-          new MqttConnectPayload(clientId, willTopic, willMessage, username, password);
+        new MqttConnectPayload(clientId, willTopic, willMessage, username, password);
       return new MqttConnectMessage(mqttFixedHeader, mqttConnectVariableHeader, mqttConnectPayload);
     }
   }
@@ -213,7 +213,7 @@ public final class MqttMessageBuilders {
 
     public MqttSubscribeMessage build() {
       MqttFixedHeader mqttFixedHeader =
-          new MqttFixedHeader(MqttMessageType.SUBSCRIBE, false, MqttQoS.AT_LEAST_ONCE, false, 0);
+        new MqttFixedHeader(MqttMessageType.SUBSCRIBE, false, MqttQoS.AT_LEAST_ONCE, false, 0);
       MqttMessageIdVariableHeader mqttVariableHeader = MqttMessageIdVariableHeader.from(messageId);
       MqttSubscribePayload mqttSubscribePayload = new MqttSubscribePayload(subscriptions);
       return new MqttSubscribeMessage(mqttFixedHeader, mqttVariableHeader, mqttSubscribePayload);
@@ -243,7 +243,7 @@ public final class MqttMessageBuilders {
 
     public MqttUnsubscribeMessage build() {
       MqttFixedHeader mqttFixedHeader =
-          new MqttFixedHeader(MqttMessageType.UNSUBSCRIBE, false, MqttQoS.AT_LEAST_ONCE, false, 0);
+        new MqttFixedHeader(MqttMessageType.UNSUBSCRIBE, false, MqttQoS.AT_LEAST_ONCE, false, 0);
       MqttMessageIdVariableHeader mqttVariableHeader = MqttMessageIdVariableHeader.from(messageId);
       MqttUnsubscribePayload mqttSubscribePayload = new MqttUnsubscribePayload(topicFilters);
       return new MqttUnsubscribeMessage(mqttFixedHeader, mqttVariableHeader, mqttSubscribePayload);
@@ -270,9 +270,9 @@ public final class MqttMessageBuilders {
 
     public MqttConnAckMessage build() {
       MqttFixedHeader mqttFixedHeader =
-          new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
+        new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
       MqttConnAckVariableHeader mqttConnAckVariableHeader =
-          new MqttConnAckVariableHeader(returnCode, sessionPresent);
+        new MqttConnAckVariableHeader(returnCode, sessionPresent);
       return new MqttConnAckMessage(mqttFixedHeader, mqttConnAckVariableHeader);
     }
   }

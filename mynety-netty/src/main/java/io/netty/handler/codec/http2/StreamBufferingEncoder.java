@@ -23,7 +23,11 @@ import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.UnstableApi;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
+import java.util.TreeMap;
 
 import static io.netty.handler.codec.http2.Http2CodecUtil.SMALLEST_MAX_CONCURRENT_STREAMS;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
@@ -135,7 +139,7 @@ public class StreamBufferingEncoder extends DecoratingHttp2ConnectionEncoder {
   public ChannelFuture writeHeaders(ChannelHandlerContext ctx, int streamId, Http2Headers headers,
                                     int padding, boolean endStream, ChannelPromise promise) {
     return writeHeaders(ctx, streamId, headers, 0, Http2CodecUtil.DEFAULT_PRIORITY_WEIGHT,
-        false, padding, endStream, promise);
+      false, padding, endStream, promise);
   }
 
   @Override
@@ -147,11 +151,11 @@ public class StreamBufferingEncoder extends DecoratingHttp2ConnectionEncoder {
     }
     if (isExistingStream(streamId) || connection().goAwayReceived()) {
       return super.writeHeaders(ctx, streamId, headers, streamDependency, weight,
-          exclusive, padding, endOfStream, promise);
+        exclusive, padding, endOfStream, promise);
     }
     if (canCreateStream()) {
       return super.writeHeaders(ctx, streamId, headers, streamDependency, weight,
-          exclusive, padding, endOfStream, promise);
+        exclusive, padding, endOfStream, promise);
     }
     PendingStream pendingStream = pendingStreams.get(streamId);
     if (pendingStream == null) {
@@ -159,7 +163,7 @@ public class StreamBufferingEncoder extends DecoratingHttp2ConnectionEncoder {
       pendingStreams.put(streamId, pendingStream);
     }
     pendingStream.frames.add(new HeadersFrame(headers, streamDependency, weight, exclusive,
-        padding, endOfStream, promise));
+      padding, endOfStream, promise));
     return promise;
   }
 

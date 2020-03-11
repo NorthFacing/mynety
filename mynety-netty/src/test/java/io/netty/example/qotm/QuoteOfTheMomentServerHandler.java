@@ -29,10 +29,10 @@ public class QuoteOfTheMomentServerHandler extends SimpleChannelInboundHandler<D
 
   // Quotes from Mohandas K. Gandhi:
   private static final String[] quotes = {
-      "Where there is love there is life.",
-      "First they ignore you, then they laugh at you, then they fight you, then you win.",
-      "Be the change you want to see in the world.",
-      "The weak can never forgive. Forgiveness is the attribute of the strong.",
+    "Where there is love there is life.",
+    "First they ignore you, then they laugh at you, then they fight you, then you win.",
+    "Be the change you want to see in the world.",
+    "The weak can never forgive. Forgiveness is the attribute of the strong.",
   };
 
   private static String nextQuote() {
@@ -48,7 +48,7 @@ public class QuoteOfTheMomentServerHandler extends SimpleChannelInboundHandler<D
     System.err.println(packet);
     if ("QOTM?".equals(packet.content().toString(CharsetUtil.UTF_8))) {
       ctx.write(new DatagramPacket(
-          Unpooled.copiedBuffer("QOTM: " + nextQuote(), CharsetUtil.UTF_8), packet.sender()));
+        Unpooled.copiedBuffer("QOTM: " + nextQuote(), CharsetUtil.UTF_8), packet.sender()));
     }
   }
 

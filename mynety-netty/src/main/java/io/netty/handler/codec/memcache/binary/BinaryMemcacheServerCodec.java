@@ -27,7 +27,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public class BinaryMemcacheServerCodec extends
-    CombinedChannelDuplexHandler<BinaryMemcacheRequestDecoder, BinaryMemcacheResponseEncoder> {
+  CombinedChannelDuplexHandler<BinaryMemcacheRequestDecoder, BinaryMemcacheResponseEncoder> {
 
   public BinaryMemcacheServerCodec() {
     this(AbstractBinaryMemcacheDecoder.DEFAULT_MAX_CHUNK_SIZE);

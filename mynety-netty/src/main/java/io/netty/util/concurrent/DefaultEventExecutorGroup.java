@@ -32,18 +32,16 @@ public class DefaultEventExecutorGroup extends MultithreadEventExecutorGroup {
 
   /**
    * Create a new instance.
-   *
    * @param nThreads      the number of threads that will be used by this instance.
    * @param threadFactory the ThreadFactory to use, or {@code null} if the default should be used.
    */
   public DefaultEventExecutorGroup(int nThreads, ThreadFactory threadFactory) {
     this(nThreads, threadFactory, SingleThreadEventExecutor.DEFAULT_MAX_PENDING_EXECUTOR_TASKS,
-        RejectedExecutionHandlers.reject());
+      RejectedExecutionHandlers.reject());
   }
 
   /**
    * Create a new instance.
-   *
    * @param nThreads        the number of threads that will be used by this instance.
    * @param threadFactory   the ThreadFactory to use, or {@code null} if the default should be used.
    * @param maxPendingTasks the maximum number of pending tasks before new tasks will be rejected.

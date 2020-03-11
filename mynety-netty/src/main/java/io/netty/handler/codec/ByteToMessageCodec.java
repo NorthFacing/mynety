@@ -64,7 +64,6 @@ public abstract class ByteToMessageCodec<I> extends ChannelDuplexHandler {
 
   /**
    * Create a new instance which will try to detect the types to match out of the type parameter of the class.
-   *
    * @param preferDirect {@code true} if a direct {@link ByteBuf} should be tried to be used as target for
    *                     the encoded messages. If {@code false} is used it will allocate a heap
    *                     {@link ByteBuf}, which is backed by an byte array.
@@ -77,7 +76,6 @@ public abstract class ByteToMessageCodec<I> extends ChannelDuplexHandler {
 
   /**
    * Create a new instance
-   *
    * @param outboundMessageType The type of messages to match
    * @param preferDirect        {@code true} if a direct {@link ByteBuf} should be tried to be used as target for
    *                            the encoded messages. If {@code false} is used it will allocate a heap
@@ -91,7 +89,6 @@ public abstract class ByteToMessageCodec<I> extends ChannelDuplexHandler {
 
   /**
    * Returns {@code true} if and only if the specified message can be encoded by this codec.
-   *
    * @param msg the message
    */
   public boolean acceptOutboundMessage(Object msg) throws Exception {

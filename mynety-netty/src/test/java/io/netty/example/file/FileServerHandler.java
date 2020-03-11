@@ -65,8 +65,8 @@ public class FileServerHandler extends SimpleChannelInboundHandler<String> {
 
     if (ctx.channel().isActive()) {
       ctx.writeAndFlush("ERR: " +
-          cause.getClass().getSimpleName() + ": " +
-          cause.getMessage() + '\n').addListener(ChannelFutureListener.CLOSE);
+        cause.getClass().getSimpleName() + ": " +
+        cause.getMessage() + '\n').addListener(ChannelFutureListener.CLOSE);
     }
   }
 }

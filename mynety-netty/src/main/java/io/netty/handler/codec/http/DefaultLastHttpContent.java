@@ -120,8 +120,8 @@ public class DefaultLastHttpContent extends DefaultHttpContent implements LastHt
       public void validateName(CharSequence name) {
         DefaultHttpHeaders.HttpNameValidator.validateName(name);
         if (HttpHeaderNames.CONTENT_LENGTH.contentEqualsIgnoreCase(name)
-            || HttpHeaderNames.TRANSFER_ENCODING.contentEqualsIgnoreCase(name)
-            || HttpHeaderNames.TRAILER.contentEqualsIgnoreCase(name)) {
+          || HttpHeaderNames.TRANSFER_ENCODING.contentEqualsIgnoreCase(name)
+          || HttpHeaderNames.TRAILER.contentEqualsIgnoreCase(name)) {
           throw new IllegalArgumentException("prohibited trailing header: " + name);
         }
       }

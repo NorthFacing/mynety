@@ -38,7 +38,7 @@ class CompactObjectOutputStream extends ObjectOutputStream {
   protected void writeClassDescriptor(ObjectStreamClass desc) throws IOException {
     Class<?> clazz = desc.forClass();
     if (clazz.isPrimitive() || clazz.isArray() || clazz.isInterface() ||
-        desc.getSerialVersionUID() == 0) {
+      desc.getSerialVersionUID() == 0) {
       write(TYPE_FAT_DESCRIPTOR);
       super.writeClassDescriptor(desc);
     } else {

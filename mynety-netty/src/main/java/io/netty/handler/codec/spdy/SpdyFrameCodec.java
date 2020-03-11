@@ -16,7 +16,12 @@
 package io.netty.handler.codec.spdy;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.UnsupportedMessageTypeException;
 
@@ -27,10 +32,10 @@ import java.util.List;
  * A {@link ChannelHandler} that encodes and decodes SPDY Frames.
  */
 public class SpdyFrameCodec extends ByteToMessageDecoder
-    implements SpdyFrameDecoderDelegate, ChannelOutboundHandler {
+  implements SpdyFrameDecoderDelegate, ChannelOutboundHandler {
 
   private static final SpdyProtocolException INVALID_FRAME =
-      new SpdyProtocolException("Received invalid frame");
+    new SpdyProtocolException("Received invalid frame");
 
   private final SpdyFrameDecoder spdyFrameDecoder;
   private final SpdyFrameEncoder spdyFrameEncoder;
@@ -73,8 +78,8 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
    * decoder and encoder options.
    */
   public SpdyFrameCodec(
-      SpdyVersion version, int maxChunkSize, int maxHeaderSize,
-      int compressionLevel, int windowBits, int memLevel) {
+    SpdyVersion version, int maxChunkSize, int maxHeaderSize,
+    int compressionLevel, int windowBits, int memLevel) {
     this(version, maxChunkSize, maxHeaderSize, compressionLevel, windowBits, memLevel, true);
   }
 
@@ -83,11 +88,11 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
    * decoder and encoder options.
    */
   public SpdyFrameCodec(
-      SpdyVersion version, int maxChunkSize, int maxHeaderSize,
-      int compressionLevel, int windowBits, int memLevel, boolean validateHeaders) {
+    SpdyVersion version, int maxChunkSize, int maxHeaderSize,
+    int compressionLevel, int windowBits, int memLevel, boolean validateHeaders) {
     this(version, maxChunkSize,
-        SpdyHeaderBlockDecoder.newInstance(version, maxHeaderSize),
-        SpdyHeaderBlockEncoder.newInstance(version, compressionLevel, windowBits, memLevel), validateHeaders);
+      SpdyHeaderBlockDecoder.newInstance(version, maxHeaderSize),
+      SpdyHeaderBlockEncoder.newInstance(version, compressionLevel, windowBits, memLevel), validateHeaders);
   }
 
   protected SpdyFrameCodec(SpdyVersion version, int maxChunkSize,
@@ -173,10 +178,10 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdyDataFrame spdyDataFrame = (SpdyDataFrame) msg;
       frame = spdyFrameEncoder.encodeDataFrame(
-          ctx.alloc(),
-          spdyDataFrame.streamId(),
-          spdyDataFrame.isLast(),
-          spdyDataFrame.content()
+        ctx.alloc(),
+        spdyDataFrame.streamId(),
+        spdyDataFrame.isLast(),
+        spdyDataFrame.content()
       );
       spdyDataFrame.release();
       ctx.write(frame, promise);
@@ -187,13 +192,13 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
       ByteBuf headerBlock = spdyHeaderBlockEncoder.encode(ctx.alloc(), spdySynStreamFrame);
       try {
         frame = spdyFrameEncoder.encodeSynStreamFrame(
-            ctx.alloc(),
-            spdySynStreamFrame.streamId(),
-            spdySynStreamFrame.associatedStreamId(),
-            spdySynStreamFrame.priority(),
-            spdySynStreamFrame.isLast(),
-            spdySynStreamFrame.isUnidirectional(),
-            headerBlock
+          ctx.alloc(),
+          spdySynStreamFrame.streamId(),
+          spdySynStreamFrame.associatedStreamId(),
+          spdySynStreamFrame.priority(),
+          spdySynStreamFrame.isLast(),
+          spdySynStreamFrame.isUnidirectional(),
+          headerBlock
         );
       } finally {
         headerBlock.release();
@@ -206,10 +211,10 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
       ByteBuf headerBlock = spdyHeaderBlockEncoder.encode(ctx.alloc(), spdySynReplyFrame);
       try {
         frame = spdyFrameEncoder.encodeSynReplyFrame(
-            ctx.alloc(),
-            spdySynReplyFrame.streamId(),
-            spdySynReplyFrame.isLast(),
-            headerBlock
+          ctx.alloc(),
+          spdySynReplyFrame.streamId(),
+          spdySynReplyFrame.isLast(),
+          headerBlock
         );
       } finally {
         headerBlock.release();
@@ -220,9 +225,9 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdyRstStreamFrame spdyRstStreamFrame = (SpdyRstStreamFrame) msg;
       frame = spdyFrameEncoder.encodeRstStreamFrame(
-          ctx.alloc(),
-          spdyRstStreamFrame.streamId(),
-          spdyRstStreamFrame.status().code()
+        ctx.alloc(),
+        spdyRstStreamFrame.streamId(),
+        spdyRstStreamFrame.status().code()
       );
       ctx.write(frame, promise);
 
@@ -230,8 +235,8 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdySettingsFrame spdySettingsFrame = (SpdySettingsFrame) msg;
       frame = spdyFrameEncoder.encodeSettingsFrame(
-          ctx.alloc(),
-          spdySettingsFrame
+        ctx.alloc(),
+        spdySettingsFrame
       );
       ctx.write(frame, promise);
 
@@ -239,8 +244,8 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdyPingFrame spdyPingFrame = (SpdyPingFrame) msg;
       frame = spdyFrameEncoder.encodePingFrame(
-          ctx.alloc(),
-          spdyPingFrame.id()
+        ctx.alloc(),
+        spdyPingFrame.id()
       );
       ctx.write(frame, promise);
 
@@ -248,9 +253,9 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdyGoAwayFrame spdyGoAwayFrame = (SpdyGoAwayFrame) msg;
       frame = spdyFrameEncoder.encodeGoAwayFrame(
-          ctx.alloc(),
-          spdyGoAwayFrame.lastGoodStreamId(),
-          spdyGoAwayFrame.status().code()
+        ctx.alloc(),
+        spdyGoAwayFrame.lastGoodStreamId(),
+        spdyGoAwayFrame.status().code()
       );
       ctx.write(frame, promise);
 
@@ -260,10 +265,10 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
       ByteBuf headerBlock = spdyHeaderBlockEncoder.encode(ctx.alloc(), spdyHeadersFrame);
       try {
         frame = spdyFrameEncoder.encodeHeadersFrame(
-            ctx.alloc(),
-            spdyHeadersFrame.streamId(),
-            spdyHeadersFrame.isLast(),
-            headerBlock
+          ctx.alloc(),
+          spdyHeadersFrame.streamId(),
+          spdyHeadersFrame.isLast(),
+          headerBlock
         );
       } finally {
         headerBlock.release();
@@ -274,9 +279,9 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
       SpdyWindowUpdateFrame spdyWindowUpdateFrame = (SpdyWindowUpdateFrame) msg;
       frame = spdyFrameEncoder.encodeWindowUpdateFrame(
-          ctx.alloc(),
-          spdyWindowUpdateFrame.streamId(),
-          spdyWindowUpdateFrame.deltaWindowSize()
+        ctx.alloc(),
+        spdyWindowUpdateFrame.streamId(),
+        spdyWindowUpdateFrame.deltaWindowSize()
       );
       ctx.write(frame, promise);
     } else {
@@ -295,9 +300,9 @@ public class SpdyFrameCodec extends ByteToMessageDecoder
 
   @Override
   public void readSynStreamFrame(
-      int streamId, int associatedToStreamId, byte priority, boolean last, boolean unidirectional) {
+    int streamId, int associatedToStreamId, byte priority, boolean last, boolean unidirectional) {
     SpdySynStreamFrame spdySynStreamFrame =
-        new DefaultSpdySynStreamFrame(streamId, associatedToStreamId, priority, validateHeaders);
+      new DefaultSpdySynStreamFrame(streamId, associatedToStreamId, priority, validateHeaders);
     spdySynStreamFrame.setLast(last);
     spdySynStreamFrame.setUnidirectional(unidirectional);
     spdyHeadersFrame = spdySynStreamFrame;

@@ -19,14 +19,12 @@ import io.netty.util.internal.UnstableApi;
 
 /**
  * Provides an extensibility point for users to define the validity of push requests.
- *
  * @see <a href="https://tools.ietf.org/html/rfc7540#section-8.2">[RFC 7540], Section 8.2</a>.
  */
 @UnstableApi
 public interface Http2PromisedRequestVerifier {
   /**
    * Determine if a {@link Http2Headers} are authoritative for a particular {@link ChannelHandlerContext}.
-   *
    * @param ctx     The context on which the {@code headers} where received on.
    * @param headers The headers to be verified.
    * @return {@code true} if the {@code ctx} is authoritative for the {@code headers}, {@code false} otherwise.
@@ -36,7 +34,6 @@ public interface Http2PromisedRequestVerifier {
 
   /**
    * Determine if a request is cacheable.
-   *
    * @param headers The headers for a push request.
    * @return {@code true} if the request associated with {@code headers} is known to be cacheable,
    * {@code false} otherwise.
@@ -46,7 +43,6 @@ public interface Http2PromisedRequestVerifier {
 
   /**
    * Determine if a request is safe.
-   *
    * @param headers The headers for a push request.
    * @return {@code true} if the request associated with {@code headers} is known to be safe,
    * {@code false} otherwise.

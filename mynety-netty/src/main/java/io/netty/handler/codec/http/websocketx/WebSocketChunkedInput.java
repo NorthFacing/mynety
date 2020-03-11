@@ -34,7 +34,6 @@ public final class WebSocketChunkedInput implements ChunkedInput<WebSocketFrame>
 
   /**
    * Creates a new instance using the specified input.
-   *
    * @param input {@link ChunkedInput} containing data to write
    */
   public WebSocketChunkedInput(ChunkedInput<ByteBuf> input) {
@@ -43,7 +42,6 @@ public final class WebSocketChunkedInput implements ChunkedInput<WebSocketFrame>
 
   /**
    * Creates a new instance using the specified input.
-   *
    * @param input {@link ChunkedInput} containing data to write
    * @param rsv   RSV1, RSV2, RSV3 used for extensions
    * @throws NullPointerException if {@code input} is null
@@ -89,7 +87,6 @@ public final class WebSocketChunkedInput implements ChunkedInput<WebSocketFrame>
    * Fetches a chunked data from the stream. Once this method returns the last chunk
    * and thus the stream has reached at its end, any subsequent {@link #isEndOfInput()}
    * call must return {@code true}.
-   *
    * @param allocator {@link ByteBufAllocator}
    * @return {@link WebSocketFrame} contain chunk of data
    */

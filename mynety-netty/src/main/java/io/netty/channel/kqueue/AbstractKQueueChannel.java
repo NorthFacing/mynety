@@ -19,7 +19,18 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.AbstractChannel;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.EventLoop;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.channel.socket.SocketChannelConfig;
@@ -271,7 +282,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
       }
     } else {
       final ByteBuffer nioBuf = buf.nioBufferCount() == 1 ?
-          buf.internalNioBuffer(buf.readerIndex(), buf.readableBytes()) : buf.nioBuffer();
+        buf.internalNioBuffer(buf.readerIndex(), buf.readableBytes()) : buf.nioBuffer();
       int localFlushedAmount = socket.write(nioBuf, nioBuf.position(), nioBuf.limit());
       if (localFlushedAmount > 0) {
         nioBuf.position(nioBuf.position() + localFlushedAmount);
@@ -292,7 +303,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
     }
 
     return config instanceof SocketChannelConfig &&
-        ((SocketChannelConfig) config).isAllowHalfClosure();
+      ((SocketChannelConfig) config).isAllowHalfClosure();
   }
 
   final void clearReadFilter() {
@@ -407,7 +418,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
         ChannelPromise connectPromise = AbstractKQueueChannel.this.connectPromise;
         AbstractKQueueChannel.this.connectPromise = null;
         if (connectPromise.tryFailure((cause instanceof ConnectException) ? cause
-            : new ConnectException("failed to connect").initCause(cause))) {
+          : new ConnectException("failed to connect").initCause(cause))) {
           closeIfClosed();
           return true;
         }
@@ -480,7 +491,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
     public KQueueRecvByteAllocatorHandle recvBufAllocHandle() {
       if (allocHandle == null) {
         allocHandle = new KQueueRecvByteAllocatorHandle(
-            (RecvByteBufAllocator.ExtendedHandle) super.recvBufAllocHandle());
+          (RecvByteBufAllocator.ExtendedHandle) super.recvBufAllocHandle());
       }
       return allocHandle;
     }
@@ -523,7 +534,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
 
     @Override
     public void connect(
-        final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
+      final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
       if (!promise.setUncancellable() || !ensureOpen(promise)) {
         return;
       }
@@ -548,7 +559,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
               public void run() {
                 ChannelPromise connectPromise = AbstractKQueueChannel.this.connectPromise;
                 ConnectTimeoutException cause =
-                    new ConnectTimeoutException("connection timed out: " + remoteAddress);
+                  new ConnectTimeoutException("connection timed out: " + remoteAddress);
                 if (connectPromise != null && connectPromise.tryFailure(cause)) {
                   close(voidPromise());
                 }
@@ -672,7 +683,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
     }
 
     InetSocketAddress remoteSocketAddr = remoteAddress instanceof InetSocketAddress
-        ? (InetSocketAddress) remoteAddress : null;
+      ? (InetSocketAddress) remoteAddress : null;
     if (remoteSocketAddr != null) {
       checkResolvable(remoteSocketAddr);
     }
@@ -691,7 +702,7 @@ abstract class AbstractKQueueChannel extends AbstractChannel implements UnixChan
     boolean connected = doConnect0(remoteAddress);
     if (connected) {
       remote = remoteSocketAddr == null ?
-          remoteAddress : computeRemoteAddr(remoteSocketAddr, socket.remoteAddress());
+        remoteAddress : computeRemoteAddr(remoteSocketAddr, socket.remoteAddress());
     }
     // We always need to set the localAddress even if not connected yet as the bind already took place.
     //

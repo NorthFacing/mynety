@@ -15,13 +15,31 @@
  */
 package io.netty.util.concurrent;
 
-import io.netty.util.internal.*;
+import io.netty.util.internal.ObjectUtil;
+import io.netty.util.internal.PlatformDependent;
+import io.netty.util.internal.SystemPropertyUtil;
+import io.netty.util.internal.ThreadExecutorMap;
+import io.netty.util.internal.UnstableApi;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.lang.Thread.State;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
@@ -31,10 +49,10 @@ import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 public abstract class SingleThreadEventExecutor extends AbstractScheduledEventExecutor implements OrderedEventExecutor {
 
   static final int DEFAULT_MAX_PENDING_EXECUTOR_TASKS = Math.max(16,
-      SystemPropertyUtil.getInt("io.netty.eventexecutor.maxPendingTasks", Integer.MAX_VALUE));
+    SystemPropertyUtil.getInt("io.netty.eventexecutor.maxPendingTasks", Integer.MAX_VALUE));
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(SingleThreadEventExecutor.class);
+    InternalLoggerFactory.getInstance(SingleThreadEventExecutor.class);
 
   private static final int ST_NOT_STARTED = 1;
   private static final int ST_STARTED = 2;
@@ -56,10 +74,10 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
   };
 
   private static final AtomicIntegerFieldUpdater<SingleThreadEventExecutor> STATE_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(SingleThreadEventExecutor.class, "state");
+    AtomicIntegerFieldUpdater.newUpdater(SingleThreadEventExecutor.class, "state");
   private static final AtomicReferenceFieldUpdater<SingleThreadEventExecutor, ThreadProperties> PROPERTIES_UPDATER =
-      AtomicReferenceFieldUpdater.newUpdater(
-          SingleThreadEventExecutor.class, ThreadProperties.class, "threadProperties");
+    AtomicReferenceFieldUpdater.newUpdater(
+      SingleThreadEventExecutor.class, ThreadProperties.class, "threadProperties");
 
   private final Queue<Runnable> taskQueue;
 
@@ -88,20 +106,18 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * Create a new instance
-   *
    * @param parent         the {@link EventExecutorGroup} which is the parent of this instance and belongs to it
    * @param threadFactory  the {@link ThreadFactory} which will be used for the used {@link Thread}
    * @param addTaskWakesUp {@code true} if and only if invocation of {@link #addTask(Runnable)} will wake up the
    *                       executor thread
    */
   protected SingleThreadEventExecutor(
-      EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp) {
+    EventExecutorGroup parent, ThreadFactory threadFactory, boolean addTaskWakesUp) {
     this(parent, new ThreadPerTaskExecutor(threadFactory), addTaskWakesUp);
   }
 
   /**
    * Create a new instance
-   *
    * @param parent          the {@link EventExecutorGroup} which is the parent of this instance and belongs to it
    * @param threadFactory   the {@link ThreadFactory} which will be used for the used {@link Thread}
    * @param addTaskWakesUp  {@code true} if and only if invocation of {@link #addTask(Runnable)} will wake up the
@@ -110,14 +126,13 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
    * @param rejectedHandler the {@link RejectedExecutionHandler} to use.
    */
   protected SingleThreadEventExecutor(
-      EventExecutorGroup parent, ThreadFactory threadFactory,
-      boolean addTaskWakesUp, int maxPendingTasks, RejectedExecutionHandler rejectedHandler) {
+    EventExecutorGroup parent, ThreadFactory threadFactory,
+    boolean addTaskWakesUp, int maxPendingTasks, RejectedExecutionHandler rejectedHandler) {
     this(parent, new ThreadPerTaskExecutor(threadFactory), addTaskWakesUp, maxPendingTasks, rejectedHandler);
   }
 
   /**
    * Create a new instance
-   *
    * @param parent         the {@link EventExecutorGroup} which is the parent of this instance and belongs to it
    * @param executor       the {@link Executor} which will be used for executing
    * @param addTaskWakesUp {@code true} if and only if invocation of {@link #addTask(Runnable)} will wake up the
@@ -129,7 +144,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * Create a new instance
-   *
    * @param parent          the {@link EventExecutorGroup} which is the parent of this instance and belongs to it
    * @param executor        the {@link Executor} which will be used for executing
    * @param addTaskWakesUp  {@code true} if and only if invocation of {@link #addTask(Runnable)} will wake up the
@@ -167,7 +181,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
    * If {@code false} is returned, {@link #afterScheduledTaskSubmitted(long)} will be called with
    * the same value <i>after</i> the scheduled task is enqueued, providing another opportunity
    * to wake the {@link EventExecutor} thread if required.
-   *
    * @param deadlineNanos deadline of the to-be-scheduled task
    *                      relative to {@link AbstractScheduledEventExecutor#nanoTime()}
    * @return {@code true} if the {@link EventExecutor} thread should be woken, {@code false} otherwise
@@ -178,7 +191,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * See {@link #beforeScheduledTaskSubmitted(long)}. Called only after that method returns false.
-   *
    * @param deadlineNanos relative to {@link AbstractScheduledEventExecutor#nanoTime()}
    * @return {@code true} if the {@link EventExecutor} thread should be woken, {@code false} otherwise
    */
@@ -239,7 +251,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
    * Be aware that this method will throw an {@link UnsupportedOperationException} if the task queue, which was
    * created via {@link #newTaskQueue()}, does not implement {@link BlockingQueue}.
    * </p>
-   *
    * @return {@code null} if the executor thread has been interrupted or waken up.
    */
   protected Runnable takeTask() {
@@ -383,7 +394,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * Poll all tasks from the task queue and run them via {@link Runnable#run()} method.
-   *
    * @return {@code true} if and only if at least one task was run
    */
   protected boolean runAllTasks() {
@@ -408,7 +418,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
   /**
    * Execute all expired scheduled tasks and all current tasks in the executor queue until both queues are empty,
    * or {@code maxDrainAttempts} has been exceeded.
-   *
    * @param maxDrainAttempts The maximum amount of times this method attempts to drain from queues. This is to prevent
    *                         continuous task execution and scheduling from preventing the EventExecutor thread to
    *                         make progress and return to the selector mechanism to process inbound I/O events.
@@ -434,7 +443,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * Runs all tasks from the passed {@code taskQueue}.
-   *
    * @param taskQueue To poll and execute all tasks.
    * @return {@code true} if at least one task was executed.
    */
@@ -454,7 +462,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * What ever tasks are present in {@code taskQueue} when this method is invoked will be {@link Runnable#run()}.
-   *
    * @param taskQueue the task queue to drain.
    * @return {@code true} if at least {@link Runnable#run()} was called.
    */
@@ -664,7 +671,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
     }
     if (timeout < quietPeriod) {
       throw new IllegalArgumentException(
-          "timeout: " + timeout + " (expected >= quietPeriod (" + quietPeriod + "))");
+        "timeout: " + timeout + " (expected >= quietPeriod (" + quietPeriod + "))");
     }
     if (unit == null) {
       throw new NullPointerException("unit");
@@ -899,21 +906,21 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   @Override
   public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
+    throws InterruptedException, ExecutionException, TimeoutException {
     throwIfInEventLoop("invokeAny");
     return super.invokeAny(tasks, timeout, unit);
   }
 
   @Override
   public <T> List<java.util.concurrent.Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
-      throws InterruptedException {
+    throws InterruptedException {
     throwIfInEventLoop("invokeAll");
     return super.invokeAll(tasks);
   }
 
   @Override
   public <T> List<java.util.concurrent.Future<T>> invokeAll(
-      Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+    Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
     throwIfInEventLoop("invokeAll");
     return super.invokeAll(tasks, timeout, unit);
   }
@@ -973,7 +980,6 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
   /**
    * Offers the task to the associated {@link RejectedExecutionHandler}.
-   *
    * @param task to reject.
    */
   protected final void reject(Runnable task) {
@@ -1039,7 +1045,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
           for (; ; ) {
             int oldState = state;
             if (oldState >= ST_SHUTTING_DOWN || STATE_UPDATER.compareAndSet(
-                SingleThreadEventExecutor.this, oldState, ST_SHUTTING_DOWN)) {
+              SingleThreadEventExecutor.this, oldState, ST_SHUTTING_DOWN)) {
               break;
             }
           }
@@ -1048,8 +1054,8 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
           if (success && gracefulShutdownStartTime == 0) {
             if (logger.isErrorEnabled()) {
               logger.error("Buggy " + EventExecutor.class.getSimpleName() + " implementation; " +
-                  SingleThreadEventExecutor.class.getSimpleName() + ".confirmShutdown() must " +
-                  "be called before run() implementation terminates.");
+                SingleThreadEventExecutor.class.getSimpleName() + ".confirmShutdown() must " +
+                "be called before run() implementation terminates.");
             }
           }
 
@@ -1074,7 +1080,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
               threadLock.countDown();
               if (logger.isWarnEnabled() && !taskQueue.isEmpty()) {
                 logger.warn("An event executor terminated with " +
-                    "non-empty task queue (" + taskQueue.size() + ')');
+                  "non-empty task queue (" + taskQueue.size() + ')');
               }
               terminationFuture.setSuccess(null);
             }

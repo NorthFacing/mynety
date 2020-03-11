@@ -40,7 +40,7 @@ class OpenSslKeyMaterialProvider {
   }
 
   static void validateKeyMaterialSupported(X509Certificate[] keyCertChain, PrivateKey key, String keyPassword)
-      throws SSLException {
+    throws SSLException {
     validateSupported(keyCertChain);
     validateSupported(key, keyPassword);
   }

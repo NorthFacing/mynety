@@ -18,7 +18,12 @@ package io.netty.handler.proxy;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.codec.socksx.v4.*;
+import io.netty.handler.codec.socksx.v4.DefaultSocks4CommandRequest;
+import io.netty.handler.codec.socksx.v4.Socks4ClientDecoder;
+import io.netty.handler.codec.socksx.v4.Socks4ClientEncoder;
+import io.netty.handler.codec.socksx.v4.Socks4CommandResponse;
+import io.netty.handler.codec.socksx.v4.Socks4CommandStatus;
+import io.netty.handler.codec.socksx.v4.Socks4CommandType;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -95,7 +100,7 @@ public final class Socks4ProxyHandler extends ProxyHandler {
       rhost = raddr.getAddress().getHostAddress();
     }
     return new DefaultSocks4CommandRequest(
-        Socks4CommandType.CONNECT, rhost, raddr.getPort(), username != null ? username : "");
+      Socks4CommandType.CONNECT, rhost, raddr.getPort(), username != null ? username : "");
   }
 
   @Override

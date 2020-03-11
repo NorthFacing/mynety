@@ -25,7 +25,11 @@ import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,15 +38,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * {@link ServerSocketChannel} which accepts new connections and create the {@link OioSocketChannel}'s for them.
  * <p>
  * This implementation use Old-Blocking-IO.
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated
 public class OioServerSocketChannel extends AbstractOioMessageChannel
-    implements ServerSocketChannel {
+  implements ServerSocketChannel {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(OioServerSocketChannel.class);
+    InternalLoggerFactory.getInstance(OioServerSocketChannel.class);
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 1);
 
@@ -67,7 +70,6 @@ public class OioServerSocketChannel extends AbstractOioMessageChannel
 
   /**
    * Create a new instance from the given {@link ServerSocket}
-   *
    * @param socket the {@link ServerSocket} which is used by this instance
    */
   public OioServerSocketChannel(ServerSocket socket) {
@@ -82,7 +84,7 @@ public class OioServerSocketChannel extends AbstractOioMessageChannel
       success = true;
     } catch (IOException e) {
       throw new ChannelException(
-          "Failed to set the server socket timeout.", e);
+        "Failed to set the server socket timeout.", e);
     } finally {
       if (!success) {
         try {
@@ -90,7 +92,7 @@ public class OioServerSocketChannel extends AbstractOioMessageChannel
         } catch (IOException e) {
           if (logger.isWarnEnabled()) {
             logger.warn(
-                "Failed to close a partially initialized socket.", e);
+              "Failed to close a partially initialized socket.", e);
           }
         }
       }
@@ -181,7 +183,7 @@ public class OioServerSocketChannel extends AbstractOioMessageChannel
 
   @Override
   protected void doConnect(
-      SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
+    SocketAddress remoteAddress, SocketAddress localAddress) throws Exception {
     throw new UnsupportedOperationException();
   }
 

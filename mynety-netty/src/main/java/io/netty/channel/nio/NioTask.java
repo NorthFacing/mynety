@@ -21,7 +21,6 @@ import java.nio.channels.Selector;
 
 /**
  * An arbitrary task that can be executed by {@link NioEventLoop} when a {@link SelectableChannel} becomes ready.
- *
  * @see NioEventLoop#register(SelectableChannel, int, NioTask)
  */
 public interface NioTask<C extends SelectableChannel> {
@@ -33,7 +32,6 @@ public interface NioTask<C extends SelectableChannel> {
   /**
    * Invoked when the {@link SelectionKey} of the specified {@link SelectableChannel} has been cancelled and thus
    * this {@link NioTask} will not be notified anymore.
-   *
    * @param cause the cause of the unregistration. {@code null} if a user called {@link SelectionKey#cancel()} or
    *              the event loop has been shut down.
    */

@@ -59,7 +59,7 @@ public final class DnsNameResolverBuilder {
   private HostsFileEntriesResolver hostsFileEntriesResolver = HostsFileEntriesResolver.DEFAULT;
   private DnsServerAddressStreamProvider dnsServerAddressStreamProvider = platformDefault();
   private DnsQueryLifecycleObserverFactory dnsQueryLifecycleObserverFactory =
-      NoopDnsQueryLifecycleObserverFactory.INSTANCE;
+    NoopDnsQueryLifecycleObserverFactory.INSTANCE;
   private String[] searchDomains;
   private int ndots = -1;
   private boolean decodeIdn = true;
@@ -72,7 +72,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Creates a new builder.
-   *
    * @param eventLoop the {@link EventLoop} which will perform the communication with the DNS
    *                  servers.
    */
@@ -82,7 +81,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the {@link EventLoop} which will perform the communication with the DNS servers.
-   *
    * @param eventLoop the {@link EventLoop}
    * @return {@code this}
    */
@@ -97,7 +95,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the {@link ChannelFactory} that will create a {@link DatagramChannel}.
-   *
    * @param channelFactory the {@link ChannelFactory}
    * @return {@code this}
    */
@@ -109,7 +106,6 @@ public final class DnsNameResolverBuilder {
   /**
    * Sets the {@link ChannelFactory} as a {@link ReflectiveChannelFactory} of this type.
    * Use as an alternative to {@link #channelFactory(ChannelFactory)}.
-   *
    * @param channelType the type
    * @return {@code this}
    */
@@ -120,7 +116,6 @@ public final class DnsNameResolverBuilder {
   /**
    * Sets the {@link ChannelFactory} that will create a {@link SocketChannel} for
    * <a href="https://tools.ietf.org/html/rfc7766">TCP fallback</a> if needed.
-   *
    * @param channelFactory the {@link ChannelFactory} or {@code null}
    *                       if <a href="https://tools.ietf.org/html/rfc7766">TCP fallback</a> should not be supported.
    * @return {@code this}
@@ -134,7 +129,6 @@ public final class DnsNameResolverBuilder {
    * Sets the {@link ChannelFactory} as a {@link ReflectiveChannelFactory} of this type for
    * <a href="https://tools.ietf.org/html/rfc7766">TCP fallback</a> if needed.
    * Use as an alternative to {@link #socketChannelFactory(ChannelFactory)}.
-   *
    * @param channelType the type or {@code null} if <a href="https://tools.ietf.org/html/rfc7766">TCP fallback</a>
    *                    should not be supported.
    * @return {@code this}
@@ -148,7 +142,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the cache for resolution results.
-   *
    * @param resolveCache the DNS resolution results cache
    * @return {@code this}
    */
@@ -159,7 +152,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the cache for {@code CNAME} mappings.
-   *
    * @param cnameCache the cache used to cache {@code CNAME} mappings for a domain.
    * @return {@code this}
    */
@@ -170,19 +162,17 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Set the factory used to generate objects which can observe individual DNS queries.
-   *
    * @param lifecycleObserverFactory the factory used to generate objects which can observe individual DNS queries.
    * @return {@code this}
    */
   public DnsNameResolverBuilder dnsQueryLifecycleObserverFactory(DnsQueryLifecycleObserverFactory
-                                                                     lifecycleObserverFactory) {
+                                                                   lifecycleObserverFactory) {
     this.dnsQueryLifecycleObserverFactory = checkNotNull(lifecycleObserverFactory, "lifecycleObserverFactory");
     return this;
   }
 
   /**
    * Sets the cache for authoritative NS servers
-   *
    * @param authoritativeDnsServerCache the authoritative NS servers cache
    * @return {@code this}
    * @deprecated Use {@link #authoritativeDnsServerCache(AuthoritativeDnsServerCache)}
@@ -195,7 +185,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the cache for authoritative NS servers
-   *
    * @param authoritativeDnsServerCache the authoritative NS servers cache
    * @return {@code this}
    */
@@ -211,7 +200,6 @@ public final class DnsNameResolverBuilder {
    * respectively.
    * The default value is {@code 0} and {@link Integer#MAX_VALUE}, which practically tells this resolver to
    * respect the TTL from the DNS server.
-   *
    * @param minTtl the minimum TTL
    * @param maxTtl the maximum TTL
    * @return {@code this}
@@ -224,7 +212,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the TTL of the cache for the failed DNS queries (in seconds).
-   *
    * @param negativeTtl the TTL for failed cached queries
    * @return {@code this}
    */
@@ -235,7 +222,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the timeout of each DNS query performed by this resolver (in milliseconds).
-   *
    * @param queryTimeoutMillis the query timeout
    * @return {@code this}
    */
@@ -248,7 +234,6 @@ public final class DnsNameResolverBuilder {
    * Compute a {@link ResolvedAddressTypes} from some {@link InternetProtocolFamily}s.
    * An empty input will return the default value, based on "java.net" System properties.
    * Valid inputs are (), (IPv4), (IPv6), (Ipv4, IPv6) and (IPv6, IPv4).
-   *
    * @param internetProtocolFamilies a valid sequence of {@link InternetProtocolFamily}s
    * @return a {@link ResolvedAddressTypes}
    */
@@ -263,15 +248,15 @@ public final class DnsNameResolverBuilder {
     switch (internetProtocolFamilies[0]) {
       case IPv4:
         return (internetProtocolFamilies.length >= 2
-            && internetProtocolFamilies[1] == InternetProtocolFamily.IPv6) ?
-            ResolvedAddressTypes.IPV4_PREFERRED : ResolvedAddressTypes.IPV4_ONLY;
+          && internetProtocolFamilies[1] == InternetProtocolFamily.IPv6) ?
+          ResolvedAddressTypes.IPV4_PREFERRED : ResolvedAddressTypes.IPV4_ONLY;
       case IPv6:
         return (internetProtocolFamilies.length >= 2
-            && internetProtocolFamilies[1] == InternetProtocolFamily.IPv4) ?
-            ResolvedAddressTypes.IPV6_PREFERRED : ResolvedAddressTypes.IPV6_ONLY;
+          && internetProtocolFamilies[1] == InternetProtocolFamily.IPv4) ?
+          ResolvedAddressTypes.IPV6_PREFERRED : ResolvedAddressTypes.IPV6_ONLY;
       default:
         throw new IllegalArgumentException(
-            "Couldn't resolve ResolvedAddressTypes from InternetProtocolFamily array");
+          "Couldn't resolve ResolvedAddressTypes from InternetProtocolFamily array");
     }
   }
 
@@ -279,7 +264,6 @@ public final class DnsNameResolverBuilder {
    * Sets the list of the protocol families of the address resolved.
    * You can use {@link DnsNameResolverBuilder#computeResolvedAddressTypes(InternetProtocolFamily...)}
    * to get a {@link ResolvedAddressTypes} out of some {@link InternetProtocolFamily}s.
-   *
    * @param resolvedAddressTypes the address types
    * @return {@code this}
    */
@@ -291,7 +275,6 @@ public final class DnsNameResolverBuilder {
   /**
    * If {@code true} {@link DnsNameResolver#resolveAll(String)} will notify the returned {@link Future} as
    * soon as all queries for the preferred address-type are complete.
-   *
    * @param completeOncePreferredResolved {@code true} to enable, {@code false} to disable.
    * @return {@code this}
    */
@@ -302,7 +285,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets if this resolver has to send a DNS query with the RD (recursion desired) flag set.
-   *
    * @param recursionDesired true if recursion is desired
    * @return {@code this}
    */
@@ -313,7 +295,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the maximum allowed number of DNS queries to send when resolving a host name.
-   *
    * @param maxQueriesPerResolve the max number of queries
    * @return {@code this}
    */
@@ -325,7 +306,6 @@ public final class DnsNameResolverBuilder {
   /**
    * Sets if this resolver should generate the detailed trace information in an exception message so that
    * it is easier to understand the cause of resolution failure.
-   *
    * @param traceEnabled true if trace is enabled
    * @return {@code this}
    */
@@ -336,7 +316,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Sets the capacity of the datagram packet buffer (in bytes).  The default value is {@code 4096} bytes.
-   *
    * @param maxPayloadSize the capacity of the datagram packet buffer
    * @return {@code this}
    */
@@ -349,7 +328,6 @@ public final class DnsNameResolverBuilder {
    * Enable the automatic inclusion of a optional records that tries to give the remote DNS server a hint about
    * how much data the resolver can read per response. Some DNSServer may not support this and so fail to answer
    * queries. If you find problems you may want to disable this.
-   *
    * @param optResourceEnabled if optional records inclusion is enabled
    * @return {@code this}
    */
@@ -375,18 +353,16 @@ public final class DnsNameResolverBuilder {
   /**
    * Set the {@link DnsServerAddressStreamProvider} which is used to determine which DNS server is used to resolve
    * each hostname.
-   *
    * @return {@code this}.
    */
   public DnsNameResolverBuilder nameServerProvider(DnsServerAddressStreamProvider dnsServerAddressStreamProvider) {
     this.dnsServerAddressStreamProvider =
-        checkNotNull(dnsServerAddressStreamProvider, "dnsServerAddressStreamProvider");
+      checkNotNull(dnsServerAddressStreamProvider, "dnsServerAddressStreamProvider");
     return this;
   }
 
   /**
    * Set the list of search domains of the resolver.
-   *
    * @param searchDomains the search domains
    * @return {@code this}
    */
@@ -415,7 +391,6 @@ public final class DnsNameResolverBuilder {
   /**
    * Set the number of dots which must appear in a name before an initial absolute query is made.
    * The default value is {@code 1}.
-   *
    * @param ndots the ndots value
    * @return {@code this}
    */
@@ -430,21 +405,20 @@ public final class DnsNameResolverBuilder {
 
   private AuthoritativeDnsServerCache newAuthoritativeDnsServerCache() {
     return new DefaultAuthoritativeDnsServerCache(
-        intValue(minTtl, 0), intValue(maxTtl, Integer.MAX_VALUE),
-        // Let us use the sane ordering as DnsNameResolver will be used when returning
-        // nameservers from the cache.
-        new NameServerComparator(DnsNameResolver.preferredAddressType(resolvedAddressTypes).addressType()));
+      intValue(minTtl, 0), intValue(maxTtl, Integer.MAX_VALUE),
+      // Let us use the sane ordering as DnsNameResolver will be used when returning
+      // nameservers from the cache.
+      new NameServerComparator(DnsNameResolver.preferredAddressType(resolvedAddressTypes).addressType()));
   }
 
   private DnsCnameCache newCnameCache() {
     return new DefaultDnsCnameCache(
-        intValue(minTtl, 0), intValue(maxTtl, Integer.MAX_VALUE));
+      intValue(minTtl, 0), intValue(maxTtl, Integer.MAX_VALUE));
   }
 
   /**
    * Set if domain / host names should be decoded to unicode when received.
    * See <a href="https://tools.ietf.org/html/rfc3492">rfc3492</a>.
-   *
    * @param decodeIdn if should get decoded
    * @return {@code this}
    */
@@ -455,7 +429,6 @@ public final class DnsNameResolverBuilder {
 
   /**
    * Returns a new {@link DnsNameResolver} instance.
-   *
    * @return a {@link DnsNameResolver}
    */
   public DnsNameResolver build() {
@@ -474,33 +447,32 @@ public final class DnsNameResolverBuilder {
     DnsCache resolveCache = this.resolveCache != null ? this.resolveCache : newCache();
     DnsCnameCache cnameCache = this.cnameCache != null ? this.cnameCache : newCnameCache();
     AuthoritativeDnsServerCache authoritativeDnsServerCache = this.authoritativeDnsServerCache != null ?
-        this.authoritativeDnsServerCache : newAuthoritativeDnsServerCache();
+      this.authoritativeDnsServerCache : newAuthoritativeDnsServerCache();
     return new DnsNameResolver(
-        eventLoop,
-        channelFactory,
-        socketChannelFactory,
-        resolveCache,
-        cnameCache,
-        authoritativeDnsServerCache,
-        dnsQueryLifecycleObserverFactory,
-        queryTimeoutMillis,
-        resolvedAddressTypes,
-        recursionDesired,
-        maxQueriesPerResolve,
-        traceEnabled,
-        maxPayloadSize,
-        optResourceEnabled,
-        hostsFileEntriesResolver,
-        dnsServerAddressStreamProvider,
-        searchDomains,
-        ndots,
-        decodeIdn,
-        completeOncePreferredResolved);
+      eventLoop,
+      channelFactory,
+      socketChannelFactory,
+      resolveCache,
+      cnameCache,
+      authoritativeDnsServerCache,
+      dnsQueryLifecycleObserverFactory,
+      queryTimeoutMillis,
+      resolvedAddressTypes,
+      recursionDesired,
+      maxQueriesPerResolve,
+      traceEnabled,
+      maxPayloadSize,
+      optResourceEnabled,
+      hostsFileEntriesResolver,
+      dnsServerAddressStreamProvider,
+      searchDomains,
+      ndots,
+      decodeIdn,
+      completeOncePreferredResolved);
   }
 
   /**
    * Creates a copy of this {@link DnsNameResolverBuilder}
-   *
    * @return {@link DnsNameResolverBuilder}
    */
   public DnsNameResolverBuilder copy() {

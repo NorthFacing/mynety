@@ -26,7 +26,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public abstract class AbstractBinaryMemcacheEncoder<M extends BinaryMemcacheMessage>
-    extends AbstractMemcacheObjectEncoder<M> {
+  extends AbstractMemcacheObjectEncoder<M> {
 
   /**
    * Every binary memcache message has at least a 24 bytes header.
@@ -36,7 +36,7 @@ public abstract class AbstractBinaryMemcacheEncoder<M extends BinaryMemcacheMess
   @Override
   protected ByteBuf encodeMessage(ChannelHandlerContext ctx, M msg) {
     ByteBuf buf = ctx.alloc().buffer(MINIMUM_HEADER_SIZE + msg.extrasLength()
-        + msg.keyLength());
+      + msg.keyLength());
 
     encodeHeader(buf, msg);
     encodeExtras(buf, msg.extras());
@@ -47,7 +47,6 @@ public abstract class AbstractBinaryMemcacheEncoder<M extends BinaryMemcacheMess
 
   /**
    * Encode the extras.
-   *
    * @param buf    the {@link ByteBuf} to write into.
    * @param extras the extras to encode.
    */
@@ -61,7 +60,6 @@ public abstract class AbstractBinaryMemcacheEncoder<M extends BinaryMemcacheMess
 
   /**
    * Encode the key.
-   *
    * @param buf the {@link ByteBuf} to write into.
    * @param key the key to encode.
    */
@@ -78,7 +76,6 @@ public abstract class AbstractBinaryMemcacheEncoder<M extends BinaryMemcacheMess
    * <p/>
    * This methods needs to be implemented by a sub class because the header is different
    * for both requests and responses.
-   *
    * @param buf the {@link ByteBuf} to write into.
    * @param msg the message to encode.
    */

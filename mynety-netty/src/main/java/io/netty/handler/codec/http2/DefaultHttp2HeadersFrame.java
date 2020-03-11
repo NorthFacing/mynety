@@ -32,7 +32,6 @@ public final class DefaultHttp2HeadersFrame extends AbstractHttp2StreamFrame imp
 
   /**
    * Equivalent to {@code new DefaultHttp2HeadersFrame(headers, false)}.
-   *
    * @param headers the non-{@code null} headers to send
    */
   public DefaultHttp2HeadersFrame(Http2Headers headers) {
@@ -41,7 +40,6 @@ public final class DefaultHttp2HeadersFrame extends AbstractHttp2StreamFrame imp
 
   /**
    * Equivalent to {@code new DefaultHttp2HeadersFrame(headers, endStream, 0)}.
-   *
    * @param headers the non-{@code null} headers to send
    */
   public DefaultHttp2HeadersFrame(Http2Headers headers, boolean endStream) {
@@ -50,7 +48,6 @@ public final class DefaultHttp2HeadersFrame extends AbstractHttp2StreamFrame imp
 
   /**
    * Construct a new headers message.
-   *
    * @param headers   the non-{@code null} headers to send
    * @param endStream whether these headers should terminate the stream
    * @param padding   additional bytes that should be added to obscure the true content size. Must be between 0 and
@@ -92,7 +89,7 @@ public final class DefaultHttp2HeadersFrame extends AbstractHttp2StreamFrame imp
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + "(stream=" + stream() + ", headers=" + headers
-        + ", endStream=" + endStream + ", padding=" + padding + ')';
+      + ", endStream=" + endStream + ", padding=" + padding + ')';
   }
 
   @Override
@@ -102,7 +99,7 @@ public final class DefaultHttp2HeadersFrame extends AbstractHttp2StreamFrame imp
     }
     DefaultHttp2HeadersFrame other = (DefaultHttp2HeadersFrame) o;
     return super.equals(other) && headers.equals(other.headers)
-        && endStream == other.endStream && padding == other.padding;
+      && endStream == other.endStream && padding == other.padding;
   }
 
   @Override

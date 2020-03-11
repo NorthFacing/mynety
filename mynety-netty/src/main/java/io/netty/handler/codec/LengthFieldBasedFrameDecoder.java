@@ -182,7 +182,6 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
  * | 0xCA | 0x0010 | 0xFE | "HELLO, WORLD" |      | 0xFE | "HELLO, WORLD" |
  * +------+--------+------+----------------+      +------+----------------+
  * </pre>
- *
  * @see LengthFieldPrepender
  */
 public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
@@ -201,7 +200,6 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength    the maximum length of the frame.  If the length of the frame is
    *                          greater than this value, {@link TooLongFrameException} will be
    *                          thrown.
@@ -209,14 +207,13 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
    * @param lengthFieldLength the length of the length field
    */
   public LengthFieldBasedFrameDecoder(
-      int maxFrameLength,
-      int lengthFieldOffset, int lengthFieldLength) {
+    int maxFrameLength,
+    int lengthFieldOffset, int lengthFieldLength) {
     this(maxFrameLength, lengthFieldOffset, lengthFieldLength, 0, 0);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength      the maximum length of the frame.  If the length of the frame is
    *                            greater than this value, {@link TooLongFrameException} will be
    *                            thrown.
@@ -226,18 +223,17 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
    * @param initialBytesToStrip the number of first bytes to strip out from the decoded frame
    */
   public LengthFieldBasedFrameDecoder(
-      int maxFrameLength,
-      int lengthFieldOffset, int lengthFieldLength,
-      int lengthAdjustment, int initialBytesToStrip) {
+    int maxFrameLength,
+    int lengthFieldOffset, int lengthFieldLength,
+    int lengthAdjustment, int initialBytesToStrip) {
     this(
-        maxFrameLength,
-        lengthFieldOffset, lengthFieldLength, lengthAdjustment,
-        initialBytesToStrip, true);
+      maxFrameLength,
+      lengthFieldOffset, lengthFieldLength, lengthAdjustment,
+      initialBytesToStrip, true);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength      the maximum length of the frame.  If the length of the frame is
    *                            greater than this value, {@link TooLongFrameException} will be
    *                            thrown.
@@ -253,16 +249,15 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
    *                            has been read.
    */
   public LengthFieldBasedFrameDecoder(
-      int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
-      int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
+    int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
+    int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
     this(
-        ByteOrder.BIG_ENDIAN, maxFrameLength, lengthFieldOffset, lengthFieldLength,
-        lengthAdjustment, initialBytesToStrip, failFast);
+      ByteOrder.BIG_ENDIAN, maxFrameLength, lengthFieldOffset, lengthFieldLength,
+      lengthAdjustment, initialBytesToStrip, failFast);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param byteOrder           the {@link ByteOrder} of the length field
    * @param maxFrameLength      the maximum length of the frame.  If the length of the frame is
    *                            greater than this value, {@link TooLongFrameException} will be
@@ -279,8 +274,8 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
    *                            has been read.
    */
   public LengthFieldBasedFrameDecoder(
-      ByteOrder byteOrder, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
-      int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
+    ByteOrder byteOrder, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength,
+    int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
     if (byteOrder == null) {
       throw new NullPointerException("byteOrder");
     }
@@ -293,10 +288,10 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
 
     if (lengthFieldOffset > maxFrameLength - lengthFieldLength) {
       throw new IllegalArgumentException(
-          "maxFrameLength (" + maxFrameLength + ") " +
-              "must be equal to or greater than " +
-              "lengthFieldOffset (" + lengthFieldOffset + ") + " +
-              "lengthFieldLength (" + lengthFieldLength + ").");
+        "maxFrameLength (" + maxFrameLength + ") " +
+          "must be equal to or greater than " +
+          "lengthFieldOffset (" + lengthFieldOffset + ") + " +
+          "lengthFieldLength (" + lengthFieldLength + ").");
     }
 
     this.byteOrder = byteOrder;
@@ -330,7 +325,7 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
   private static void failOnNegativeLengthField(ByteBuf in, long frameLength, int lengthFieldEndOffset) {
     in.skipBytes(lengthFieldEndOffset);
     throw new CorruptedFrameException(
-        "negative pre-adjustment length field: " + frameLength);
+      "negative pre-adjustment length field: " + frameLength);
   }
 
   private static void failOnFrameLengthLessThanLengthFieldEndOffset(ByteBuf in,
@@ -338,8 +333,8 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
                                                                     int lengthFieldEndOffset) {
     in.skipBytes(lengthFieldEndOffset);
     throw new CorruptedFrameException(
-        "Adjusted frame length (" + frameLength + ") is less " +
-            "than lengthFieldEndOffset: " + lengthFieldEndOffset);
+      "Adjusted frame length (" + frameLength + ") is less " +
+        "than lengthFieldEndOffset: " + lengthFieldEndOffset);
   }
 
   private void exceededFrameLength(ByteBuf in, long frameLength) {
@@ -363,13 +358,12 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
                                                                    int initialBytesToStrip) {
     in.skipBytes((int) frameLength);
     throw new CorruptedFrameException(
-        "Adjusted frame length (" + frameLength + ") is less " +
-            "than initialBytesToStrip: " + initialBytesToStrip);
+      "Adjusted frame length (" + frameLength + ") is less " +
+        "than initialBytesToStrip: " + initialBytesToStrip);
   }
 
   /**
    * Create a frame out of the {@link ByteBuf} and return it.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
    * @param in  the {@link ByteBuf} from which to read data
    * @return frame           the {@link ByteBuf} which represent the frame or {@code null} if no frame could
@@ -426,7 +420,6 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
    * capable of decoding the specified region into an unsigned 8/16/24/32/64 bit integer.  Override this method to
    * decode the length field encoded differently.  Note that this method must not modify the state of the specified
    * buffer (e.g. {@code readerIndex}, {@code writerIndex}, and the content of the buffer.)
-   *
    * @throws DecoderException if failed to decode the specified region
    */
   protected long getUnadjustedFrameLength(ByteBuf buf, int offset, int length, ByteOrder order) {
@@ -450,7 +443,7 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
         break;
       default:
         throw new DecoderException(
-            "unsupported lengthFieldLength: " + lengthFieldLength + " (expected: 1, 2, 3, 4, or 8)");
+          "unsupported lengthFieldLength: " + lengthFieldLength + " (expected: 1, 2, 3, 4, or 8)");
     }
     return frameLength;
   }
@@ -491,12 +484,12 @@ public class LengthFieldBasedFrameDecoder extends ByteToMessageDecoder {
   private void fail(long frameLength) {
     if (frameLength > 0) {
       throw new TooLongFrameException(
-          "Adjusted frame length exceeds " + maxFrameLength +
-              ": " + frameLength + " - discarded");
+        "Adjusted frame length exceeds " + maxFrameLength +
+          ": " + frameLength + " - discarded");
     } else {
       throw new TooLongFrameException(
-          "Adjusted frame length exceeds " + maxFrameLength +
-              " - discarding");
+        "Adjusted frame length exceeds " + maxFrameLength +
+          " - discarding");
     }
   }
 }

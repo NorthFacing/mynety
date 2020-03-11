@@ -22,7 +22,6 @@ import java.net.SocketAddress;
 
 /**
  * A message that wraps another message with a sender address and a recipient address.
- *
  * @param <M> the type of the wrapped message
  * @param <A> the type of the address
  */

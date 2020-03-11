@@ -16,15 +16,26 @@
 package io.netty.channel.rxtx;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.PreferHeapByteBufAllocator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 
 import java.util.Map;
 
-import static io.netty.channel.rxtx.RxtxChannelOption.*;
+import static io.netty.channel.rxtx.RxtxChannelOption.BAUD_RATE;
+import static io.netty.channel.rxtx.RxtxChannelOption.DATA_BITS;
+import static io.netty.channel.rxtx.RxtxChannelOption.DTR;
+import static io.netty.channel.rxtx.RxtxChannelOption.PARITY_BIT;
+import static io.netty.channel.rxtx.RxtxChannelOption.READ_TIMEOUT;
+import static io.netty.channel.rxtx.RxtxChannelOption.RTS;
+import static io.netty.channel.rxtx.RxtxChannelOption.STOP_BITS;
+import static io.netty.channel.rxtx.RxtxChannelOption.WAIT_TIME;
 
 /**
  * Default configuration class for RXTX device connections.
- *
  * @deprecated this transport will be removed in the next major version.
  */
 @Deprecated

@@ -236,8 +236,8 @@ abstract class PoolArena<T> implements PoolArenaMetric {
   // Method must be called inside synchronized(this) { ... } block
   private void allocateNormal(PooledByteBuf<T> buf, int reqCapacity, int normCapacity) {
     if (q050.allocate(buf, reqCapacity, normCapacity) || q025.allocate(buf, reqCapacity, normCapacity) ||
-        q000.allocate(buf, reqCapacity, normCapacity) || qInit.allocate(buf, reqCapacity, normCapacity) ||
-        q075.allocate(buf, reqCapacity, normCapacity)) {
+      q000.allocate(buf, reqCapacity, normCapacity) || qInit.allocate(buf, reqCapacity, normCapacity) ||
+      q075.allocate(buf, reqCapacity, normCapacity)) {
       return;
     }
 
@@ -522,7 +522,7 @@ abstract class PoolArena<T> implements PoolArenaMetric {
   @Override
   public long numActiveAllocations() {
     long val = allocationsTiny.value() + allocationsSmall.value() + allocationsHuge.value()
-        - deallocationsHuge.value();
+      - deallocationsHuge.value();
     synchronized (this) {
       val += allocationsNormal - (deallocationsTiny + deallocationsSmall + deallocationsNormal);
     }
@@ -579,34 +579,34 @@ abstract class PoolArena<T> implements PoolArenaMetric {
   @Override
   public synchronized String toString() {
     StringBuilder buf = new StringBuilder()
-        .append("Chunk(s) at 0~25%:")
-        .append(StringUtil.NEWLINE)
-        .append(qInit)
-        .append(StringUtil.NEWLINE)
-        .append("Chunk(s) at 0~50%:")
-        .append(StringUtil.NEWLINE)
-        .append(q000)
-        .append(StringUtil.NEWLINE)
-        .append("Chunk(s) at 25~75%:")
-        .append(StringUtil.NEWLINE)
-        .append(q025)
-        .append(StringUtil.NEWLINE)
-        .append("Chunk(s) at 50~100%:")
-        .append(StringUtil.NEWLINE)
-        .append(q050)
-        .append(StringUtil.NEWLINE)
-        .append("Chunk(s) at 75~100%:")
-        .append(StringUtil.NEWLINE)
-        .append(q075)
-        .append(StringUtil.NEWLINE)
-        .append("Chunk(s) at 100%:")
-        .append(StringUtil.NEWLINE)
-        .append(q100)
-        .append(StringUtil.NEWLINE)
-        .append("tiny subpages:");
+      .append("Chunk(s) at 0~25%:")
+      .append(StringUtil.NEWLINE)
+      .append(qInit)
+      .append(StringUtil.NEWLINE)
+      .append("Chunk(s) at 0~50%:")
+      .append(StringUtil.NEWLINE)
+      .append(q000)
+      .append(StringUtil.NEWLINE)
+      .append("Chunk(s) at 25~75%:")
+      .append(StringUtil.NEWLINE)
+      .append(q025)
+      .append(StringUtil.NEWLINE)
+      .append("Chunk(s) at 50~100%:")
+      .append(StringUtil.NEWLINE)
+      .append(q050)
+      .append(StringUtil.NEWLINE)
+      .append("Chunk(s) at 75~100%:")
+      .append(StringUtil.NEWLINE)
+      .append(q075)
+      .append(StringUtil.NEWLINE)
+      .append("Chunk(s) at 100%:")
+      .append(StringUtil.NEWLINE)
+      .append(q100)
+      .append(StringUtil.NEWLINE)
+      .append("tiny subpages:");
     appendPoolSubPages(buf, tinySubpagePools);
     buf.append(StringUtil.NEWLINE)
-        .append("small subpages:");
+      .append("small subpages:");
     appendPoolSubPages(buf, smallSubpagePools);
     buf.append(StringUtil.NEWLINE);
 
@@ -621,8 +621,8 @@ abstract class PoolArena<T> implements PoolArenaMetric {
       }
 
       buf.append(StringUtil.NEWLINE)
-          .append(i)
-          .append(": ");
+        .append(i)
+        .append(": ");
       PoolSubpage<?> s = head.next;
       for (; ; ) {
         buf.append(s);
@@ -662,7 +662,7 @@ abstract class PoolArena<T> implements PoolArenaMetric {
     HeapArena(PooledByteBufAllocator parent, int pageSize, int maxOrder,
               int pageShifts, int chunkSize, int directMemoryCacheAlignment) {
       super(parent, pageSize, maxOrder, pageShifts, chunkSize,
-          directMemoryCacheAlignment);
+        directMemoryCacheAlignment);
     }
 
     private static byte[] newByteArray(int size) {
@@ -692,7 +692,7 @@ abstract class PoolArena<T> implements PoolArenaMetric {
     @Override
     protected PooledByteBuf<byte[]> newByteBuf(int maxCapacity) {
       return HAS_UNSAFE ? PooledUnsafeHeapByteBuf.newUnsafeInstance(maxCapacity)
-          : PooledHeapByteBuf.newInstance(maxCapacity);
+        : PooledHeapByteBuf.newInstance(maxCapacity);
     }
 
     @Override
@@ -710,7 +710,7 @@ abstract class PoolArena<T> implements PoolArenaMetric {
     DirectArena(PooledByteBufAllocator parent, int pageSize, int maxOrder,
                 int pageShifts, int chunkSize, int directMemoryCacheAlignment) {
       super(parent, pageSize, maxOrder, pageShifts, chunkSize,
-          directMemoryCacheAlignment);
+        directMemoryCacheAlignment);
     }
 
     @Override
@@ -723,8 +723,8 @@ abstract class PoolArena<T> implements PoolArenaMetric {
       // We can only calculate the offset if Unsafe is present as otherwise directBufferAddress(...) will
       // throw an NPE.
       int remainder = HAS_UNSAFE
-          ? (int) (PlatformDependent.directBufferAddress(memory) & directMemoryCacheAlignmentMask)
-          : 0;
+        ? (int) (PlatformDependent.directBufferAddress(memory) & directMemoryCacheAlignmentMask)
+        : 0;
 
       // offset = alignment - address & (alignment - 1)
       return directMemoryCacheAlignment - remainder;
@@ -735,31 +735,31 @@ abstract class PoolArena<T> implements PoolArenaMetric {
                                              int pageShifts, int chunkSize) {
       if (directMemoryCacheAlignment == 0) {
         return new PoolChunk<ByteBuffer>(this,
-            allocateDirect(chunkSize), pageSize, maxOrder,
-            pageShifts, chunkSize, 0);
+          allocateDirect(chunkSize), pageSize, maxOrder,
+          pageShifts, chunkSize, 0);
       }
       final ByteBuffer memory = allocateDirect(chunkSize
-          + directMemoryCacheAlignment);
+        + directMemoryCacheAlignment);
       return new PoolChunk<ByteBuffer>(this, memory, pageSize,
-          maxOrder, pageShifts, chunkSize,
-          offsetCacheLine(memory));
+        maxOrder, pageShifts, chunkSize,
+        offsetCacheLine(memory));
     }
 
     @Override
     protected PoolChunk<ByteBuffer> newUnpooledChunk(int capacity) {
       if (directMemoryCacheAlignment == 0) {
         return new PoolChunk<ByteBuffer>(this,
-            allocateDirect(capacity), capacity, 0);
+          allocateDirect(capacity), capacity, 0);
       }
       final ByteBuffer memory = allocateDirect(capacity
-          + directMemoryCacheAlignment);
+        + directMemoryCacheAlignment);
       return new PoolChunk<ByteBuffer>(this, memory, capacity,
-          offsetCacheLine(memory));
+        offsetCacheLine(memory));
     }
 
     private static ByteBuffer allocateDirect(int capacity) {
       return PlatformDependent.useDirectBufferNoCleaner() ?
-          PlatformDependent.allocateDirectNoCleaner(capacity) : ByteBuffer.allocateDirect(capacity);
+        PlatformDependent.allocateDirectNoCleaner(capacity) : ByteBuffer.allocateDirect(capacity);
     }
 
     @Override
@@ -788,8 +788,8 @@ abstract class PoolArena<T> implements PoolArenaMetric {
 
       if (HAS_UNSAFE) {
         PlatformDependent.copyMemory(
-            PlatformDependent.directBufferAddress(src) + srcOffset,
-            PlatformDependent.directBufferAddress(dst) + dstOffset, length);
+          PlatformDependent.directBufferAddress(src) + srcOffset,
+          PlatformDependent.directBufferAddress(dst) + dstOffset, length);
       } else {
         // We must duplicate the NIO buffers because they may be accessed by other Netty buffers.
         src = src.duplicate();

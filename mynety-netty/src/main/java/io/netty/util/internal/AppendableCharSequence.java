@@ -54,7 +54,6 @@ public final class AppendableCharSequence implements CharSequence, Appendable {
    * Access a value in this {@link CharSequence}.
    * This method is considered unsafe as index values are assumed to be legitimate.
    * Only underlying array bounds checking is done.
-   *
    * @param index The index to access the underlying array at.
    * @return The value at {@code index}.
    */

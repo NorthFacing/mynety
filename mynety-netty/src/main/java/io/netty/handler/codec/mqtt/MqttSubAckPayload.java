@@ -62,9 +62,9 @@ public class MqttSubAckPayload {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("grantedQoSLevels=").append(grantedQoSLevels)
-        .append(']')
-        .toString();
+      .append('[')
+      .append("grantedQoSLevels=").append(grantedQoSLevels)
+      .append(']')
+      .toString();
   }
 }

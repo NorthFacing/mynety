@@ -18,9 +18,17 @@ package io.netty.handler.codec.http.cookie;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.internal.InternalThreadLocalMap;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-import static io.netty.handler.codec.http.cookie.CookieUtil.*;
+import static io.netty.handler.codec.http.cookie.CookieUtil.add;
+import static io.netty.handler.codec.http.cookie.CookieUtil.addQuoted;
+import static io.netty.handler.codec.http.cookie.CookieUtil.stringBuilder;
+import static io.netty.handler.codec.http.cookie.CookieUtil.stripTrailingSeparator;
+import static io.netty.handler.codec.http.cookie.CookieUtil.stripTrailingSeparatorOrNull;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -34,7 +42,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * {@link HttpRequest} req = ...;
  * res.setHeader("Cookie", {@link ClientCookieEncoder}.encode("JSESSIONID", "1234"));
  * </pre>
- *
  * @see ClientCookieDecoder
  */
 public final class ClientCookieEncoder extends CookieEncoder {
@@ -57,7 +64,6 @@ public final class ClientCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookie into a Cookie header value.
-   *
    * @param name  the cookie name
    * @param value the cookie value
    * @return a Rfc6265 style Cookie header value
@@ -68,7 +74,6 @@ public final class ClientCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookie into a Cookie header value.
-   *
    * @param cookie the specified cookie
    * @return a Rfc6265 style Cookie header value
    */
@@ -106,7 +111,6 @@ public final class ClientCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookies into a single Cookie header value.
-   *
    * @param cookies some cookies
    * @return a Rfc6265 style Cookie header value, null if no cookies are passed.
    */
@@ -136,7 +140,6 @@ public final class ClientCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookies into a single Cookie header value.
-   *
    * @param cookies some cookies
    * @return a Rfc6265 style Cookie header value, null if no cookies are passed.
    */
@@ -166,7 +169,6 @@ public final class ClientCookieEncoder extends CookieEncoder {
 
   /**
    * Encodes the specified cookies into a single Cookie header value.
-   *
    * @param cookies some cookies
    * @return a Rfc6265 style Cookie header value, null if no cookies are passed.
    */

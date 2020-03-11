@@ -16,7 +16,11 @@
 package io.netty.channel.socket;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -110,14 +114,12 @@ public interface DatagramChannelConfig extends ChannelConfig {
 
   /**
    * Gets the {@link StandardSocketOptions#IP_MULTICAST_LOOP} option.
-   *
    * @return {@code true} if and only if the loopback mode has been disabled
    */
   boolean isLoopbackModeDisabled();
 
   /**
    * Sets the {@link StandardSocketOptions#IP_MULTICAST_LOOP} option.
-   *
    * @param loopbackModeDisabled {@code true} if and only if the loopback mode has been disabled
    */
   DatagramChannelConfig setLoopbackModeDisabled(boolean loopbackModeDisabled);

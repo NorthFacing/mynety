@@ -451,7 +451,7 @@ final class FixedCompositeByteBuf extends AbstractReferenceCountedByteBuf {
 
   @Override
   public int getBytes(int index, GatheringByteChannel out, int length)
-      throws IOException {
+    throws IOException {
     int count = nioBufferCount();
     if (count == 1) {
       return out.write(internalNioBuffer(index, length));
@@ -467,7 +467,7 @@ final class FixedCompositeByteBuf extends AbstractReferenceCountedByteBuf {
 
   @Override
   public int getBytes(int index, FileChannel out, long position, int length)
-      throws IOException {
+    throws IOException {
     int count = nioBufferCount();
     if (count == 1) {
       return out.write(internalNioBuffer(index, length), position);

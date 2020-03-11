@@ -88,7 +88,6 @@ public interface Channel extends AttributeMap, ChannelOutboundInvoker, Comparabl
 
   /**
    * Returns the parent of this channel.
-   *
    * @return the parent channel.
    * {@code null} if this channel does not have a parent channel.
    */
@@ -124,7 +123,6 @@ public interface Channel extends AttributeMap, ChannelOutboundInvoker, Comparabl
    * {@link SocketAddress} is supposed to be down-cast into more concrete
    * type such as {@link InetSocketAddress} to retrieve the detailed
    * information.
-   *
    * @return the local address of this channel.
    * {@code null} if this channel is not bound.
    */
@@ -135,7 +133,6 @@ public interface Channel extends AttributeMap, ChannelOutboundInvoker, Comparabl
    * returned {@link SocketAddress} is supposed to be down-cast into more
    * concrete type such as {@link InetSocketAddress} to retrieve the detailed
    * information.
-   *
    * @return the remote address of this channel.
    * {@code null} if this channel is not connected.
    * If this channel is not connected but it can receive messages

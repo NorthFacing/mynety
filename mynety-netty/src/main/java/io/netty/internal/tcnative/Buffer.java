@@ -41,7 +41,6 @@ public final class Buffer {
 
   /**
    * Returns the memory address of the ByteBuffer.
-   *
    * @param buf Previously allocated ByteBuffer.
    * @return the memory address.
    */
@@ -49,7 +48,6 @@ public final class Buffer {
 
   /**
    * Returns the allocated memory size of the ByteBuffer.
-   *
    * @param buf Previously allocated ByteBuffer.
    * @return the allocated memory size
    */

@@ -41,12 +41,12 @@ final class SignatureAlgorithmConverter {
   // https://github.com/google/boringssl/blob/8525ff3/ssl/ssl_privkey.cc#L436
   //
   private static final Pattern PATTERN = Pattern.compile(
-      // group 1 - 2
-      "(?:(^[a-zA-Z].+)With(.+)Encryption$)|" +
-          // group 3 - 4
-          "(?:(^[a-zA-Z].+)(?:_with_|-with-|_pkcs1_|_pss_rsae_)(.+$))|" +
-          // group 5 - 6
-          "(?:(^[a-zA-Z].+)_(.+$))");
+    // group 1 - 2
+    "(?:(^[a-zA-Z].+)With(.+)Encryption$)|" +
+      // group 3 - 4
+      "(?:(^[a-zA-Z].+)(?:_with_|-with-|_pkcs1_|_pss_rsae_)(.+$))|" +
+      // group 5 - 6
+      "(?:(^[a-zA-Z].+)_(.+$))");
 
   /**
    * Converts an OpenSSL algorithm name to a Java algorithm name and return it,

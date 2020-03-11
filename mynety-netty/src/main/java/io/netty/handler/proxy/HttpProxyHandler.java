@@ -21,7 +21,17 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.base64.Base64;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.AsciiString;
 import io.netty.util.CharsetUtil;
 
@@ -140,13 +150,13 @@ public final class HttpProxyHandler extends ProxyHandler {
     int port = raddr.getPort();
     String url = hostString + ":" + port;
     String hostHeader = (ignoreDefaultPortsInConnectHostHeader && (port == 80 || port == 443)) ?
-        hostString :
-        url;
+      hostString :
+      url;
 
     FullHttpRequest req = new DefaultFullHttpRequest(
-        HttpVersion.HTTP_1_1, HttpMethod.CONNECT,
-        url,
-        Unpooled.EMPTY_BUFFER, false);
+      HttpVersion.HTTP_1_1, HttpMethod.CONNECT,
+      url,
+      Unpooled.EMPTY_BUFFER, false);
 
     req.headers().set(HttpHeaderNames.HOST, hostHeader);
 

@@ -25,7 +25,11 @@ import io.netty.util.internal.UnstableApi;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_ENCODING;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaderValues.*;
+import static io.netty.handler.codec.http.HttpHeaderValues.DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.GZIP;
+import static io.netty.handler.codec.http.HttpHeaderValues.IDENTITY;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_GZIP;
 import static io.netty.handler.codec.http2.Http2Error.INTERNAL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.streamError;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
@@ -67,7 +71,7 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
 
   @Override
   public int onDataRead(ChannelHandlerContext ctx, int streamId, ByteBuf data, int padding, boolean endOfStream)
-      throws Http2Exception {
+    throws Http2Exception {
     final Http2Stream stream = connection.stream(streamId);
     final Http2Decompressor decompressor = decompressor(stream);
     if (decompressor == null) {
@@ -112,7 +116,7 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
           // from the decompressed amount which the user knows about to the compressed amount which flow
           // control knows about.
           flowController.consumeBytes(stream,
-              listener.onDataRead(ctx, streamId, buf, padding, decompressedEndOfStream));
+            listener.onDataRead(ctx, streamId, buf, padding, decompressedEndOfStream));
           if (nextBuf == null) {
             break;
           }
@@ -132,7 +136,7 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
       throw e;
     } catch (Throwable t) {
       throw streamError(stream.id(), INTERNAL_ERROR, t,
-          "Decompressor error detected while delegating data read on streamId %d", stream.id());
+        "Decompressor error detected while delegating data read on streamId %d", stream.id());
     }
   }
 
@@ -153,23 +157,22 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
   /**
    * Returns a new {@link EmbeddedChannel} that decodes the HTTP2 message content encoded in the specified
    * {@code contentEncoding}.
-   *
    * @param contentEncoding the value of the {@code content-encoding} header
    * @return a new {@link ByteToMessageDecoder} if the specified encoding is supported. {@code null} otherwise
    * (alternatively, you can throw a {@link Http2Exception} to block unknown encoding).
    * @throws Http2Exception If the specified encoding is not not supported and warrants an exception
    */
   protected EmbeddedChannel newContentDecompressor(final ChannelHandlerContext ctx, CharSequence contentEncoding)
-      throws Http2Exception {
+    throws Http2Exception {
     if (GZIP.contentEqualsIgnoreCase(contentEncoding) || X_GZIP.contentEqualsIgnoreCase(contentEncoding)) {
       return new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-          ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
+        ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
     }
     if (DEFLATE.contentEqualsIgnoreCase(contentEncoding) || X_DEFLATE.contentEqualsIgnoreCase(contentEncoding)) {
       final ZlibWrapper wrapper = strict ? ZlibWrapper.ZLIB : ZlibWrapper.ZLIB_OR_NONE;
       // To be strict, 'deflate' means ZLIB, but some servers were not implemented correctly.
       return new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-          ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(wrapper));
+        ctx.channel().config(), ZlibCodecFactory.newZlibDecoder(wrapper));
     }
     // 'identity' or unsupported
     return null;
@@ -178,20 +181,18 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
   /**
    * Returns the expected content encoding of the decoded content. This getMethod returns {@code "identity"} by
    * default, which is the case for most decompressors.
-   *
    * @param contentEncoding the value of the {@code content-encoding} header
    * @return the expected content encoding of the new content.
    * @throws Http2Exception if the {@code contentEncoding} is not supported and warrants an exception
    */
   protected CharSequence getTargetContentEncoding(@SuppressWarnings("UnusedParameters") CharSequence contentEncoding)
-      throws Http2Exception {
+    throws Http2Exception {
     return IDENTITY;
   }
 
   /**
    * Checks if a new decompressor object is needed for the stream identified by {@code streamId}.
    * This method will modify the {@code content-encoding} header contained in {@code headers}.
-   *
    * @param ctx         The context
    * @param streamId    The identifier for the headers inside {@code headers}
    * @param headers     Object representing headers which have been read
@@ -199,7 +200,7 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
    * @throws Http2Exception If the {@code content-encoding} is not supported
    */
   private void initDecompressor(ChannelHandlerContext ctx, int streamId, Http2Headers headers, boolean endOfStream)
-      throws Http2Exception {
+    throws Http2Exception {
     final Http2Stream stream = connection.stream(streamId);
     if (stream == null) {
       return;
@@ -248,7 +249,6 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
 
   /**
    * Release remaining content from the {@link EmbeddedChannel}.
-   *
    * @param decompressor The decompressor for {@code stream}
    */
   private static void cleanup(Http2Decompressor decompressor) {
@@ -258,7 +258,6 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
   /**
    * Read the next decompressed {@link ByteBuf} from the {@link EmbeddedChannel}
    * or {@code null} if one does not exist.
-   *
    * @param decompressor The channel to read from
    * @return The next decoded {@link ByteBuf} from the {@link EmbeddedChannel} or {@code null} if one does not exist
    */
@@ -390,7 +389,6 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
      * Determines the ratio between {@code numBytes} and {@link Http2Decompressor#decompressed}.
      * This ratio is used to decrement {@link Http2Decompressor#decompressed} and
      * {@link Http2Decompressor#compressed}.
-     *
      * @param streamId          the stream ID
      * @param decompressedBytes The number of post-decompressed bytes to return to flow control
      * @return The number of pre-decompressed bytes that have been consumed.
@@ -399,16 +397,16 @@ public class DelegatingDecompressorFrameListener extends Http2FrameListenerDecor
       checkPositiveOrZero(decompressedBytes, "decompressedBytes");
       if (decompressed - decompressedBytes < 0) {
         throw streamError(streamId, INTERNAL_ERROR,
-            "Attempting to return too many bytes for stream %d. decompressed: %d " +
-                "decompressedBytes: %d", streamId, decompressed, decompressedBytes);
+          "Attempting to return too many bytes for stream %d. decompressed: %d " +
+            "decompressedBytes: %d", streamId, decompressed, decompressedBytes);
       }
       double consumedRatio = decompressedBytes / (double) decompressed;
       int consumedCompressed = Math.min(compressed, (int) Math.ceil(compressed * consumedRatio));
       if (compressed - consumedCompressed < 0) {
         throw streamError(streamId, INTERNAL_ERROR,
-            "overflow when converting decompressed bytes to compressed bytes for stream %d." +
-                "decompressedBytes: %d decompressed: %d compressed: %d consumedCompressed: %d",
-            streamId, decompressedBytes, decompressed, compressed, consumedCompressed);
+          "overflow when converting decompressed bytes to compressed bytes for stream %d." +
+            "decompressedBytes: %d decompressed: %d compressed: %d consumedCompressed: %d",
+          streamId, decompressedBytes, decompressed, compressed, consumedCompressed);
       }
       decompressed -= decompressedBytes;
       compressed -= consumedCompressed;

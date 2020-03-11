@@ -15,7 +15,13 @@
  */
 package io.netty.channel.nio;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopException;
+import io.netty.channel.EventLoopTaskQueueFactory;
+import io.netty.channel.SelectStrategy;
+import io.netty.channel.SingleThreadEventLoop;
 import io.netty.util.IntSupplier;
 import io.netty.util.concurrent.RejectedExecutionHandler;
 import io.netty.util.internal.PlatformDependent;
@@ -33,7 +39,11 @@ import java.nio.channels.Selector;
 import java.nio.channels.spi.SelectorProvider;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -49,7 +59,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
   private static final int CLEANUP_INTERVAL = 256; // XXX Hard-coded value, but won't need customization.
 
   private static final boolean DISABLE_KEY_SET_OPTIMIZATION =
-      SystemPropertyUtil.getBoolean("io.netty.noKeySetOptimization", false);
+    SystemPropertyUtil.getBoolean("io.netty.noKeySetOptimization", false);
 
   private static final int MIN_PREMATURE_SELECTOR_RETURNS = 3;
   private static final int SELECTOR_AUTO_REBUILD_THRESHOLD;
@@ -124,7 +134,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler,
                EventLoopTaskQueueFactory queueFactory) {
     super(parent, executor, false, newTaskQueue(queueFactory), newTaskQueue(queueFactory),
-        rejectedExecutionHandler);
+      rejectedExecutionHandler);
     if (selectorProvider == null) {
       throw new NullPointerException("selectorProvider");
     }
@@ -139,7 +149,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
   }
 
   private static Queue<Runnable> newTaskQueue(
-      EventLoopTaskQueueFactory queueFactory) {
+    EventLoopTaskQueueFactory queueFactory) {
     if (queueFactory == null) {
       return newTaskQueue0(DEFAULT_MAX_PENDING_TASKS);
     }
@@ -178,9 +188,9 @@ public final class NioEventLoop extends SingleThreadEventLoop {
       public Object run() {
         try {
           return Class.forName(
-              "sun.nio.ch.SelectorImpl",
-              false,
-              PlatformDependent.getSystemClassLoader());
+            "sun.nio.ch.SelectorImpl",
+            false,
+            PlatformDependent.getSystemClassLoader());
         } catch (Throwable cause) {
           return cause;
         }
@@ -188,8 +198,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     });
 
     if (!(maybeSelectorImplClass instanceof Class) ||
-        // ensure the current selector implementation is what we can instrument.
-        !((Class<?>) maybeSelectorImplClass).isAssignableFrom(unwrappedSelector.getClass())) {
+      // ensure the current selector implementation is what we can instrument.
+      !((Class<?>) maybeSelectorImplClass).isAssignableFrom(unwrappedSelector.getClass())) {
       if (maybeSelectorImplClass instanceof Throwable) {
         Throwable t = (Throwable) maybeSelectorImplClass;
         logger.trace("failed to instrument a special java.util.Set into: {}", unwrappedSelector, t);
@@ -212,13 +222,13 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // This allows us to also do this in Java9+ without any extra flags.
             long selectedKeysFieldOffset = PlatformDependent.objectFieldOffset(selectedKeysField);
             long publicSelectedKeysFieldOffset =
-                PlatformDependent.objectFieldOffset(publicSelectedKeysField);
+              PlatformDependent.objectFieldOffset(publicSelectedKeysField);
 
             if (selectedKeysFieldOffset != -1 && publicSelectedKeysFieldOffset != -1) {
               PlatformDependent.putObject(
-                  unwrappedSelector, selectedKeysFieldOffset, selectedKeySet);
+                unwrappedSelector, selectedKeysFieldOffset, selectedKeySet);
               PlatformDependent.putObject(
-                  unwrappedSelector, publicSelectedKeysFieldOffset, selectedKeySet);
+                unwrappedSelector, publicSelectedKeysFieldOffset, selectedKeySet);
               return null;
             }
             // We could not retrieve the offset, lets try reflection as last-resort.
@@ -253,7 +263,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     selectedKeys = selectedKeySet;
     logger.trace("instrumented a special java.util.Set into: {}", unwrappedSelector);
     return new SelectorTuple(unwrappedSelector,
-        new SelectedSelectionKeySetSelector(unwrappedSelector, selectedKeySet));
+      new SelectedSelectionKeySetSelector(unwrappedSelector, selectedKeySet));
   }
 
   /**
@@ -271,7 +281,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
   private static Queue<Runnable> newTaskQueue0(int maxPendingTasks) {
     // This event loop never calls takeTask()
     return maxPendingTasks == Integer.MAX_VALUE ? PlatformDependent.<Runnable>newMpscQueue()
-        : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
+      : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
   }
 
   /**
@@ -288,7 +298,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
     if ((interestOps & ~ch.validOps()) != 0) {
       throw new IllegalArgumentException(
-          "invalid interestOps: " + interestOps + "(validOps: " + ch.validOps() + ')');
+        "invalid interestOps: " + interestOps + "(validOps: " + ch.validOps() + ')');
     }
     if (task == null) {
       throw new NullPointerException("task");
@@ -827,8 +837,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
           // See https://github.com/netty/netty/issues/2426
           if (logger.isDebugEnabled()) {
             logger.debug("Selector.select() returned prematurely because " +
-                "Thread.currentThread().interrupt() was called. Use " +
-                "NioEventLoop.shutdownGracefully() to shutdown the NioEventLoop.");
+              "Thread.currentThread().interrupt() was called. Use " +
+              "NioEventLoop.shutdownGracefully() to shutdown the NioEventLoop.");
           }
           selectCnt = 1;
           break;
@@ -839,7 +849,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
           // timeoutMillis elapsed without anything selected.
           selectCnt = 1;
         } else if (SELECTOR_AUTO_REBUILD_THRESHOLD > 0 &&
-            selectCnt >= SELECTOR_AUTO_REBUILD_THRESHOLD) {
+          selectCnt >= SELECTOR_AUTO_REBUILD_THRESHOLD) {
           // The code exists in an extra method to ensure the method is not too big to inline as this
           // branch is not very likely to get hit very frequently.
           selector = selectRebuildSelector(selectCnt);
@@ -853,13 +863,13 @@ public final class NioEventLoop extends SingleThreadEventLoop {
       if (selectCnt > MIN_PREMATURE_SELECTOR_RETURNS) {
         if (logger.isDebugEnabled()) {
           logger.debug("Selector.select() returned prematurely {} times in a row for Selector {}.",
-              selectCnt - 1, selector);
+            selectCnt - 1, selector);
         }
       }
     } catch (CancelledKeyException e) {
       if (logger.isDebugEnabled()) {
         logger.debug(CancelledKeyException.class.getSimpleName() + " raised by a Selector {} - JDK bug?",
-            selector, e);
+          selector, e);
       }
       // Harmless exception - log anyway
     }
@@ -869,8 +879,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     // The selector returned prematurely many times in a row.
     // Rebuild the selector to work around the problem.
     logger.warn(
-        "Selector.select() returned prematurely {} times in a row; rebuilding Selector {}.",
-        selectCnt, selector);
+      "Selector.select() returned prematurely {} times in a row; rebuilding Selector {}.",
+      selectCnt, selector);
 
     rebuildSelector();
     Selector selector = this.selector;

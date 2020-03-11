@@ -63,7 +63,7 @@ public class ChannelDuplexHandler extends ChannelInboundHandlerAdapter implement
   @Skip
   @Override
   public void disconnect(ChannelHandlerContext ctx, ChannelPromise promise)
-      throws Exception {
+    throws Exception {
     ctx.disconnect(promise);
   }
 

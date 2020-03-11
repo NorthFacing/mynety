@@ -18,7 +18,11 @@ package io.netty.handler.codec;
 import io.netty.util.AsciiString;
 import io.netty.util.concurrent.FastThreadLocal;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
@@ -35,7 +39,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * java.util.DateTimeFormatter.RFC_1123_DATE_TIME.
  * <p>
  * On the formatting side, it uses RFC1123 format.
- *
  * @see <a href="https://tools.ietf.org/html/rfc6265#section-5.1.1">RFC6265</a> for the parsing side
  * @see <a href="https://tools.ietf.org/html/rfc1123#page-55">RFC1123</a> for the encoding side.
  */
@@ -60,22 +63,21 @@ public final class DateFormatter {
   }
 
   private static final String[] DAY_OF_WEEK_TO_SHORT_NAME =
-      new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
   private static final String[] CALENDAR_MONTH_TO_SHORT_NAME =
-      new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
   private static final FastThreadLocal<DateFormatter> INSTANCES =
-      new FastThreadLocal<DateFormatter>() {
-        @Override
-        protected DateFormatter initialValue() {
-          return new DateFormatter();
-        }
-      };
+    new FastThreadLocal<DateFormatter>() {
+      @Override
+      protected DateFormatter initialValue() {
+        return new DateFormatter();
+      }
+    };
 
   /**
    * Parse some text into a {@link Date}, according to RFC6265
-   *
    * @param txt text to parse
    * @return a {@link Date}, or null if text couldn't be parsed
    */
@@ -85,7 +87,6 @@ public final class DateFormatter {
 
   /**
    * Parse some text into a {@link Date}, according to RFC6265
-   *
    * @param txt   text to parse
    * @param start the start index inside {@code txt}
    * @param end   the end index inside {@code txt}
@@ -99,14 +100,13 @@ public final class DateFormatter {
       throw new IllegalArgumentException("Can't have end < start");
     } else if (length > 64) {
       throw new IllegalArgumentException("Can't parse more than 64 chars," +
-          "looks like a user error or a malformed header");
+        "looks like a user error or a malformed header");
     }
     return formatter().parse0(checkNotNull(txt, "txt"), start, end);
   }
 
   /**
    * Format a {@link Date} into RFC1123 format
-   *
    * @param date the date to format
    * @return a RFC1123 string
    */
@@ -116,7 +116,6 @@ public final class DateFormatter {
 
   /**
    * Append a {@link Date} to a {@link StringBuilder} into RFC1123 format
-   *
    * @param date the date to format
    * @param sb   the StringBuilder
    * @return the same StringBuilder
@@ -322,9 +321,9 @@ public final class DateFormatter {
       char c3 = txt.charAt(tokenStart + 3);
       if (isDigit(c0) && isDigit(c1) && isDigit(c2) && isDigit(c3)) {
         year = getNumericalValue(c0) * 1000 +
-            getNumericalValue(c1) * 100 +
-            getNumericalValue(c2) * 10 +
-            getNumericalValue(c3);
+          getNumericalValue(c1) * 100 +
+          getNumericalValue(c2) * 10 +
+          getNumericalValue(c3);
         return true;
       }
     }
@@ -393,10 +392,10 @@ public final class DateFormatter {
 
   private boolean normalizeAndValidate() {
     if (dayOfMonth < 1
-        || dayOfMonth > 31
-        || hours > 23
-        || minutes > 59
-        || seconds > 59) {
+      || dayOfMonth > 31
+      || hours > 23
+      || minutes > 59
+      || seconds > 59) {
       return false;
     }
 

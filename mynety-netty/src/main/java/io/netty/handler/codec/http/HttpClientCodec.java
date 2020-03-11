@@ -39,11 +39,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * <p>
  * If the {@link Channel} is closed and there are missing responses,
  * a {@link PrematureChannelClosureException} is thrown.
- *
  * @see HttpServerCodec
  */
 public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResponseDecoder, HttpRequestEncoder>
-    implements HttpClientUpgradeHandler.SourceCodec {
+  implements HttpClientUpgradeHandler.SourceCodec {
 
   /**
    * A queue that is used for correlating a request and a response.
@@ -79,7 +78,7 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
    * Creates a new instance with the specified decoder options.
    */
   public HttpClientCodec(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse) {
     this(maxInitialLineLength, maxHeaderSize, maxChunkSize, failOnMissingResponse, true);
   }
 
@@ -87,8 +86,8 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
    * Creates a new instance with the specified decoder options.
    */
   public HttpClientCodec(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
-      boolean validateHeaders) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
+    boolean validateHeaders) {
     this(maxInitialLineLength, maxHeaderSize, maxChunkSize, failOnMissingResponse, validateHeaders, false);
   }
 
@@ -96,8 +95,8 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
    * Creates a new instance with the specified decoder options.
    */
   public HttpClientCodec(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
-      boolean validateHeaders, boolean parseHttpAfterConnectRequest) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
+    boolean validateHeaders, boolean parseHttpAfterConnectRequest) {
     init(new Decoder(maxInitialLineLength, maxHeaderSize, maxChunkSize, validateHeaders), new Encoder());
     this.failOnMissingResponse = failOnMissingResponse;
     this.parseHttpAfterConnectRequest = parseHttpAfterConnectRequest;
@@ -107,20 +106,20 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
    * Creates a new instance with the specified decoder options.
    */
   public HttpClientCodec(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
-      boolean validateHeaders, int initialBufferSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
+    boolean validateHeaders, int initialBufferSize) {
     this(maxInitialLineLength, maxHeaderSize, maxChunkSize, failOnMissingResponse, validateHeaders,
-        initialBufferSize, false);
+      initialBufferSize, false);
   }
 
   /**
    * Creates a new instance with the specified decoder options.
    */
   public HttpClientCodec(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
-      boolean validateHeaders, int initialBufferSize, boolean parseHttpAfterConnectRequest) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean failOnMissingResponse,
+    boolean validateHeaders, int initialBufferSize, boolean parseHttpAfterConnectRequest) {
     init(new Decoder(maxInitialLineLength, maxHeaderSize, maxChunkSize, validateHeaders, initialBufferSize),
-        new Encoder());
+      new Encoder());
     this.parseHttpAfterConnectRequest = parseHttpAfterConnectRequest;
     this.failOnMissingResponse = failOnMissingResponse;
   }
@@ -157,7 +156,7 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
 
     @Override
     protected void encode(
-        ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {
+      ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {
 
       if (upgraded) {
         out.add(ReferenceCountUtil.retain(msg));
@@ -192,7 +191,7 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
 
     @Override
     protected void decode(
-        ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
+      ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
       if (done) {
         int readable = actualReadableBytes();
         if (readable == 0) {
@@ -285,15 +284,15 @@ public final class HttpClientCodec extends CombinedChannelDuplexHandler<HttpResp
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx)
-        throws Exception {
+      throws Exception {
       super.channelInactive(ctx);
 
       if (failOnMissingResponse) {
         long missingResponses = requestResponseCounter.get();
         if (missingResponses > 0) {
           ctx.fireExceptionCaught(new PrematureChannelClosureException(
-              "channel gone inactive with " + missingResponses +
-                  " missing response(s)"));
+            "channel gone inactive with " + missingResponses +
+              " missing response(s)"));
         }
       }
     }

@@ -30,7 +30,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * the {@link Object#hashCode()} and {@link Object#equals(Object)} is used.
  */
 public abstract class AbstractChannelPoolMap<K, P extends ChannelPool>
-    implements ChannelPoolMap<K, P>, Iterable<Entry<K, P>>, Closeable {
+  implements ChannelPoolMap<K, P>, Iterable<Entry<K, P>>, Closeable {
   private final ConcurrentMap<K, P> map = PlatformDependent.newConcurrentHashMap();
 
   @Override

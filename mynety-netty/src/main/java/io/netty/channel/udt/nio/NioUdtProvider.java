@@ -17,7 +17,12 @@ package io.netty.channel.udt.nio;
 
 import com.barchart.udt.SocketUDT;
 import com.barchart.udt.TypeUDT;
-import com.barchart.udt.nio.*;
+import com.barchart.udt.nio.ChannelUDT;
+import com.barchart.udt.nio.KindUDT;
+import com.barchart.udt.nio.RendezvousChannelUDT;
+import com.barchart.udt.nio.SelectorProviderUDT;
+import com.barchart.udt.nio.ServerSocketChannelUDT;
+import com.barchart.udt.nio.SocketChannelUDT;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelException;
 import io.netty.channel.ChannelFactory;
@@ -33,7 +38,6 @@ import java.nio.channels.spi.SelectorProvider;
  * Provides {@link ChannelFactory} for UDT channels.
  * <p>
  * Provides {@link SelectorProvider} for UDT channels.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated
@@ -44,14 +48,14 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
    * and {@link KindUDT#ACCEPTOR}.
    */
   public static final ChannelFactory<UdtServerChannel> BYTE_ACCEPTOR = new NioUdtProvider<UdtServerChannel>(
-      TypeUDT.STREAM, KindUDT.ACCEPTOR);
+    TypeUDT.STREAM, KindUDT.ACCEPTOR);
 
   /**
    * {@link ChannelFactory} for UDT Byte Connector. See {@link TypeUDT#STREAM}
    * and {@link KindUDT#CONNECTOR}.
    */
   public static final ChannelFactory<UdtChannel> BYTE_CONNECTOR = new NioUdtProvider<UdtChannel>(
-      TypeUDT.STREAM, KindUDT.CONNECTOR);
+    TypeUDT.STREAM, KindUDT.CONNECTOR);
 
   /**
    * {@link SelectorProvider} for UDT Byte channels. See
@@ -64,21 +68,21 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
    * {@link TypeUDT#STREAM} and {@link KindUDT#RENDEZVOUS}.
    */
   public static final ChannelFactory<UdtChannel> BYTE_RENDEZVOUS = new NioUdtProvider<UdtChannel>(
-      TypeUDT.STREAM, KindUDT.RENDEZVOUS);
+    TypeUDT.STREAM, KindUDT.RENDEZVOUS);
 
   /**
    * {@link ChannelFactory} for UDT Message Acceptor. See
    * {@link TypeUDT#DATAGRAM} and {@link KindUDT#ACCEPTOR}.
    */
   public static final ChannelFactory<UdtServerChannel> MESSAGE_ACCEPTOR = new NioUdtProvider<UdtServerChannel>(
-      TypeUDT.DATAGRAM, KindUDT.ACCEPTOR);
+    TypeUDT.DATAGRAM, KindUDT.ACCEPTOR);
 
   /**
    * {@link ChannelFactory} for UDT Message Connector. See
    * {@link TypeUDT#DATAGRAM} and {@link KindUDT#CONNECTOR}.
    */
   public static final ChannelFactory<UdtChannel> MESSAGE_CONNECTOR = new NioUdtProvider<UdtChannel>(
-      TypeUDT.DATAGRAM, KindUDT.CONNECTOR);
+    TypeUDT.DATAGRAM, KindUDT.CONNECTOR);
 
   /**
    * {@link SelectorProvider} for UDT Message channels. See
@@ -91,12 +95,11 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
    * {@link TypeUDT#DATAGRAM} and {@link KindUDT#RENDEZVOUS}.
    */
   public static final ChannelFactory<UdtChannel> MESSAGE_RENDEZVOUS = new NioUdtProvider<UdtChannel>(
-      TypeUDT.DATAGRAM, KindUDT.RENDEZVOUS);
+    TypeUDT.DATAGRAM, KindUDT.RENDEZVOUS);
 
   /**
    * Expose underlying {@link ChannelUDT} for debugging and monitoring.
    * <p>
-   *
    * @return underlying {@link ChannelUDT} or null, if parameter is not
    * {@link UdtChannel}
    */
@@ -130,7 +133,7 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
    * Convenience factory for {@link KindUDT#ACCEPTOR} channels.
    */
   static ServerSocketChannelUDT newAcceptorChannelUDT(
-      final TypeUDT type) {
+    final TypeUDT type) {
     try {
       return SelectorProviderUDT.from(type).openServerSocketChannel();
     } catch (final IOException e) {
@@ -153,7 +156,7 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
    * Convenience factory for {@link KindUDT#RENDEZVOUS} channels.
    */
   static RendezvousChannelUDT newRendezvousChannelUDT(
-      final TypeUDT type) {
+    final TypeUDT type) {
     try {
       return SelectorProviderUDT.from(type).openRendezvousChannel();
     } catch (final IOException e) {
@@ -164,7 +167,6 @@ public final class NioUdtProvider<T extends UdtChannel> implements ChannelFactor
   /**
    * Expose underlying {@link SocketUDT} for debugging and monitoring.
    * <p>
-   *
    * @return underlying {@link SocketUDT} or null, if parameter is not
    * {@link UdtChannel}
    */

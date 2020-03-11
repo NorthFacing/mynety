@@ -15,9 +15,22 @@
  */
 package io.netty.resolver.dns;
 
-import io.netty.channel.*;
-import io.netty.handler.codec.dns.*;
-import io.netty.util.concurrent.*;
+import io.netty.channel.AddressedEnvelope;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelPromise;
+import io.netty.handler.codec.dns.AbstractDnsOptPseudoRrRecord;
+import io.netty.handler.codec.dns.DnsQuery;
+import io.netty.handler.codec.dns.DnsQuestion;
+import io.netty.handler.codec.dns.DnsRecord;
+import io.netty.handler.codec.dns.DnsResponse;
+import io.netty.handler.codec.dns.DnsSection;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.Promise;
+import io.netty.util.concurrent.ScheduledFuture;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
@@ -133,7 +146,7 @@ abstract class DnsQueryContext implements FutureListener<AddressedEnvelope<DnsRe
 
   private void writeQuery(final DnsQuery query, final boolean flush, final ChannelPromise writePromise) {
     final ChannelFuture writeFuture = flush ? channel().writeAndFlush(query, writePromise) :
-        channel().write(query, writePromise);
+      channel().write(query, writePromise);
     if (writeFuture.isDone()) {
       onQueryWriteCompletion(writeFuture);
     } else {
@@ -164,7 +177,7 @@ abstract class DnsQueryContext implements FutureListener<AddressedEnvelope<DnsRe
           }
 
           tryFailure("query via " + protocol() + " timed out after " +
-              queryTimeoutMillis + " milliseconds", null, true);
+            queryTimeoutMillis + " milliseconds", null, true);
         }
       }, queryTimeoutMillis, TimeUnit.MILLISECONDS);
     }
@@ -198,10 +211,10 @@ abstract class DnsQueryContext implements FutureListener<AddressedEnvelope<DnsRe
 
     final StringBuilder buf = new StringBuilder(message.length() + 64);
     buf.append('[')
-        .append(nameServerAddr)
-        .append("] ")
-        .append(message)
-        .append(" (no stack trace available)");
+      .append(nameServerAddr)
+      .append("] ")
+      .append(message)
+      .append(" (no stack trace available)");
 
     final DnsNameResolverException e;
     if (timeout) {

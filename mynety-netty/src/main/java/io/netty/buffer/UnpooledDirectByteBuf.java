@@ -45,7 +45,6 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
 
   /**
    * Creates a new direct buffer.
-   *
    * @param initialCapacity the initial capacity of the underlying direct buffer
    * @param maxCapacity     the maximum capacity of the underlying direct buffer
    */
@@ -58,7 +57,7 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
     checkPositiveOrZero(maxCapacity, "maxCapacity");
     if (initialCapacity > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
+        "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
     }
 
     this.alloc = alloc;
@@ -67,7 +66,6 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
 
   /**
    * Creates a new direct buffer by wrapping the specified initial buffer.
-   *
    * @param maxCapacity the maximum capacity of the underlying direct buffer
    */
   protected UnpooledDirectByteBuf(ByteBufAllocator alloc, ByteBuffer initialBuffer, int maxCapacity) {
@@ -93,7 +91,7 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
     int initialCapacity = initialBuffer.remaining();
     if (initialCapacity > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
+        "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
     }
 
     this.alloc = alloc;
@@ -237,15 +235,15 @@ public class UnpooledDirectByteBuf extends AbstractReferenceCountedByteBuf {
   @Override
   protected int _getUnsignedMedium(int index) {
     return (getByte(index) & 0xff) << 16 |
-        (getByte(index + 1) & 0xff) << 8 |
-        getByte(index + 2) & 0xff;
+      (getByte(index + 1) & 0xff) << 8 |
+      getByte(index + 2) & 0xff;
   }
 
   @Override
   protected int _getUnsignedMediumLE(int index) {
     return getByte(index) & 0xff |
-        (getByte(index + 1) & 0xff) << 8 |
-        (getByte(index + 2) & 0xff) << 16;
+      (getByte(index + 1) & 0xff) << 8 |
+      (getByte(index + 2) & 0xff) << 16;
   }
 
   @Override

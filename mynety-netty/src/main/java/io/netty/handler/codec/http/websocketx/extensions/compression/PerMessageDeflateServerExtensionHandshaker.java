@@ -16,7 +16,12 @@
 package io.netty.handler.codec.http.websocketx.extensions.compression;
 
 import io.netty.handler.codec.compression.ZlibCodecFactory;
-import io.netty.handler.codec.http.websocketx.extensions.*;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionData;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionDecoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionEncoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionFilterProvider;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketServerExtension;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketServerExtensionHandshaker;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +60,6 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel          Compression level between 0 and 9 (default is 6).
    * @param allowServerWindowSize     allows WebSocket client to customize the server inflater window size
    *                                  (default is false).
@@ -69,12 +73,11 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
                                                     int preferredClientWindowSize,
                                                     boolean allowServerNoContext, boolean preferredClientNoContext) {
     this(compressionLevel, allowServerWindowSize, preferredClientWindowSize, allowServerNoContext,
-        preferredClientNoContext, WebSocketExtensionFilterProvider.DEFAULT);
+      preferredClientNoContext, WebSocketExtensionFilterProvider.DEFAULT);
   }
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel          Compression level between 0 and 9 (default is 6).
    * @param allowServerWindowSize     allows WebSocket client to customize the server inflater window size
    *                                  (default is false).
@@ -91,11 +94,11 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
                                                     WebSocketExtensionFilterProvider extensionFilterProvider) {
     if (preferredClientWindowSize > MAX_WINDOW_SIZE || preferredClientWindowSize < MIN_WINDOW_SIZE) {
       throw new IllegalArgumentException(
-          "preferredServerWindowSize: " + preferredClientWindowSize + " (expected: 8-15)");
+        "preferredServerWindowSize: " + preferredClientWindowSize + " (expected: 8-15)");
     }
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     this.compressionLevel = compressionLevel;
     this.allowServerWindowSize = allowServerWindowSize;
@@ -118,7 +121,7 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
     boolean clientNoContext = false;
 
     Iterator<Entry<String, String>> parametersIterator =
-        extensionData.parameters().entrySet().iterator();
+      extensionData.parameters().entrySet().iterator();
     while (deflateEnabled && parametersIterator.hasNext()) {
       Entry<String, String> parameter = parametersIterator.next();
 
@@ -153,7 +156,7 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
 
     if (deflateEnabled) {
       return new PermessageDeflateExtension(compressionLevel, serverNoContext,
-          serverWindowSize, clientNoContext, clientWindowSize, extensionFilterProvider);
+        serverWindowSize, clientNoContext, clientWindowSize, extensionFilterProvider);
     } else {
       return null;
     }
@@ -187,7 +190,7 @@ public final class PerMessageDeflateServerExtensionHandshaker implements WebSock
     @Override
     public WebSocketExtensionEncoder newExtensionEncoder() {
       return new PerMessageDeflateEncoder(compressionLevel, serverWindowSize, serverNoContext,
-          extensionFilterProvider.encoderFilter());
+        extensionFilterProvider.encoderFilter());
     }
 
     @Override

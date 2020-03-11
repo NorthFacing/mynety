@@ -23,7 +23,6 @@ import java.util.Set;
 
 /**
  * JDK extension methods to support {@link ApplicationProtocolNegotiator}
- *
  * @deprecated use {@link ApplicationProtocolConfig}
  */
 @Deprecated
@@ -34,7 +33,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
   interface SslEngineWrapperFactory {
     /**
      * Abstract factory pattern for wrapping an {@link SSLEngine} object. This is useful for NPN/APLN support.
-     *
      * @param engine                The engine to wrap.
      * @param applicationNegotiator The application level protocol negotiator
      * @param isServer              <ul>
@@ -44,7 +42,7 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
      * @return The resulting wrapped engine. This may just be {@code engine}.
      */
     SSLEngine wrapSslEngine(
-        SSLEngine engine, JdkApplicationProtocolNegotiator applicationNegotiator, boolean isServer);
+      SSLEngine engine, JdkApplicationProtocolNegotiator applicationNegotiator, boolean isServer);
   }
 
   abstract class AllocatorAwareSslEngineWrapperFactory implements SslEngineWrapperFactory {
@@ -57,7 +55,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
 
     /**
      * Abstract factory pattern for wrapping an {@link SSLEngine} object. This is useful for NPN/APLN support.
-     *
      * @param engine                The engine to wrap.
      * @param alloc                 the buffer allocator.
      * @param applicationNegotiator The application level protocol negotiator
@@ -85,7 +82,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
 
     /**
      * Callback invoked to select the application level protocol from the {@code protocols} provided.
-     *
      * @param protocols the protocols sent by the protocol advertiser
      * @return the protocol selected by this {@link ProtocolSelector}. A {@code null} value will indicate the no
      * protocols were selected but the handshake should not fail. The decision to fail the handshake is left to the
@@ -109,7 +105,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
 
     /**
      * Callback invoked to let this application know the protocol chosen by the peer.
-     *
      * @param protocol the protocol selected by the peer. May be {@code null} or empty as supported by the
      *                 application negotiation protocol.
      * @throws Exception This may be thrown if the selected protocol is not acceptable and the desired behavior is
@@ -124,7 +119,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
   interface ProtocolSelectorFactory {
     /**
      * Generate a new instance of {@link ProtocolSelector}.
-     *
      * @param engine             The {@link SSLEngine} that the returned {@link ProtocolSelector} will be used to create an
      *                           instance for.
      * @param supportedProtocols The protocols that are supported.
@@ -139,7 +133,6 @@ public interface JdkApplicationProtocolNegotiator extends ApplicationProtocolNeg
   interface ProtocolSelectionListenerFactory {
     /**
      * Generate a new instance of {@link ProtocolSelectionListener}.
-     *
      * @param engine             The {@link SSLEngine} that the returned {@link ProtocolSelectionListener} will be used to
      *                           create an instance for.
      * @param supportedProtocols The protocols that are supported in preference order.

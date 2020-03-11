@@ -41,17 +41,17 @@ public final class SctpEchoServer {
     try {
       ServerBootstrap b = new ServerBootstrap();
       b.group(bossGroup, workerGroup)
-          .channel(NioSctpServerChannel.class)
-          .option(ChannelOption.SO_BACKLOG, 100)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new ChannelInitializer<SctpChannel>() {
-            @Override
-            public void initChannel(SctpChannel ch) throws Exception {
-              ch.pipeline().addLast(
-                  //new LoggingHandler(LogLevel.INFO),
-                  serverHandler);
-            }
-          });
+        .channel(NioSctpServerChannel.class)
+        .option(ChannelOption.SO_BACKLOG, 100)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new ChannelInitializer<SctpChannel>() {
+          @Override
+          public void initChannel(SctpChannel ch) throws Exception {
+            ch.pipeline().addLast(
+              //new LoggingHandler(LogLevel.INFO),
+              serverHandler);
+          }
+        });
 
       // Start the server.
       ChannelFuture f = b.bind(PORT).sync();

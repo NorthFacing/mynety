@@ -22,7 +22,6 @@ import java.util.concurrent.locks.Lock;
 
 /**
  * Stats exposed by an OpenSSL session context.
- *
  * @see <a href="https://www.openssl.org/docs/manmaster/man3/SSL_CTX_sess_number.html">SSL_CTX_sess_number</a>
  */
 public final class OpenSslSessionStats {

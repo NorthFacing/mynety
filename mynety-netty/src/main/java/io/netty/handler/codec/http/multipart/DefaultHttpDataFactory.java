@@ -21,7 +21,12 @@ import io.netty.handler.codec.http.HttpRequest;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -62,7 +67,7 @@ public class DefaultHttpDataFactory implements HttpDataFactory {
    * different data items may be equal.
    */
   private final Map<HttpRequest, List<HttpData>> requestFileDeleteMap =
-      Collections.synchronizedMap(new IdentityHashMap<HttpRequest, List<HttpData>>());
+    Collections.synchronizedMap(new IdentityHashMap<HttpRequest, List<HttpData>>());
 
   /**
    * HttpData will be in memory if less than default size (16KB).
@@ -218,7 +223,7 @@ public class DefaultHttpDataFactory implements HttpDataFactory {
                                      long size) {
     if (useDisk) {
       FileUpload fileUpload = new DiskFileUpload(name, filename, contentType,
-          contentTransferEncoding, charset, size);
+        contentTransferEncoding, charset, size);
       fileUpload.setMaxSize(maxSize);
       checkHttpDataSize(fileUpload);
       List<HttpData> list = getList(request);
@@ -227,7 +232,7 @@ public class DefaultHttpDataFactory implements HttpDataFactory {
     }
     if (checkSize) {
       FileUpload fileUpload = new MixedFileUpload(name, filename, contentType,
-          contentTransferEncoding, charset, size, minSize);
+        contentTransferEncoding, charset, size, minSize);
       fileUpload.setMaxSize(maxSize);
       checkHttpDataSize(fileUpload);
       List<HttpData> list = getList(request);
@@ -235,7 +240,7 @@ public class DefaultHttpDataFactory implements HttpDataFactory {
       return fileUpload;
     }
     MemoryFileUpload fileUpload = new MemoryFileUpload(name, filename, contentType,
-        contentTransferEncoding, charset, size);
+      contentTransferEncoding, charset, size);
     fileUpload.setMaxSize(maxSize);
     checkHttpDataSize(fileUpload);
     return fileUpload;

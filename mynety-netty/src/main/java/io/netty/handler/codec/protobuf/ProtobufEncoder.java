@@ -62,7 +62,7 @@ import static io.netty.buffer.Unpooled.wrappedBuffer;
 public class ProtobufEncoder extends MessageToMessageEncoder<MessageLiteOrBuilder> {
   @Override
   protected void encode(ChannelHandlerContext ctx, MessageLiteOrBuilder msg, List<Object> out)
-      throws Exception {
+    throws Exception {
     if (msg instanceof MessageLite) {
       out.add(wrappedBuffer(((MessageLite) msg).toByteArray()));
       return;

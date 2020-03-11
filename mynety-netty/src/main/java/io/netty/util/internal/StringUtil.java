@@ -75,7 +75,6 @@ public final class StringUtil {
 
   /**
    * Checks if two strings have the same suffix of specified length
-   *
    * @param s   string
    * @param p   string
    * @param len length of the common suffix
@@ -205,7 +204,6 @@ public final class StringUtil {
 
   /**
    * Helper to decode half of a hexadecimal number from a string.
-   *
    * @param c The ASCII character of the hexadecimal number to decode.
    *          Must be in the range {@code [0-9a-fA-F]}.
    * @return The hexadecimal value represented in the ASCII character
@@ -234,14 +232,13 @@ public final class StringUtil {
     int lo = decodeHexNibble(s.charAt(pos + 1));
     if (hi == -1 || lo == -1) {
       throw new IllegalArgumentException(String.format(
-          "invalid hex byte '%s' at index %d of '%s'", s.subSequence(pos, pos + 2), pos, s));
+        "invalid hex byte '%s' at index %d of '%s'", s.subSequence(pos, pos + 2), pos, s));
     }
     return (byte) ((hi << 4) + lo);
   }
 
   /**
    * Decodes part of a string with <a href="http://en.wikipedia.org/wiki/Hex_dump">hex dump</a>
-   *
    * @param hexDump   a {@link CharSequence} which contains the hex dump
    * @param fromIndex start of hex dump in {@code hexDump}
    * @param length    hex string length
@@ -294,7 +291,6 @@ public final class StringUtil {
   /**
    * Escapes the specified value, if necessary according to
    * <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>.
-   *
    * @param value The value which will be escaped according to
    *              <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>
    * @return {@link CharSequence} the escaped value if necessary, or the value unchanged
@@ -306,7 +302,6 @@ public final class StringUtil {
   /**
    * Escapes the specified value, if necessary according to
    * <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>.
-   *
    * @param value          The value which will be escaped according to
    *                       <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>
    * @param trimWhiteSpace The value will first be trimmed of its optional white-space characters,
@@ -394,7 +389,6 @@ public final class StringUtil {
   /**
    * Unescapes the specified escaped CSV field, if necessary according to
    * <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>.
-   *
    * @param value The escaped CSV field which will be unescaped according to
    *              <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>
    * @return {@link CharSequence} the unescaped value if necessary, or the value unchanged
@@ -431,7 +425,6 @@ public final class StringUtil {
   /**
    * Unescapes the specified escaped CSV fields according to
    * <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>.
-   *
    * @param value A string with multiple CSV escaped fields which will be unescaped according to
    *              <a href="https://tools.ietf.org/html/rfc4180#section-2">RFC-4180</a>
    * @return {@link List} the list of unescaped fields
@@ -502,7 +495,6 @@ public final class StringUtil {
 
   /**
    * Validate if {@code value} is a valid csv field without double-quotes.
-   *
    * @throws IllegalArgumentException if {@code value} needs to be encoded with double-quotes.
    */
   private static void validateCsvFormat(CharSequence value) {
@@ -540,7 +532,6 @@ public final class StringUtil {
 
   /**
    * Find the index of the first non-white space character in {@code s} starting at {@code offset}.
-   *
    * @param seq    The string to search.
    * @param offset The offset to start searching at.
    * @return the index of the first non-white space character or &lt;{@code 0} if none was found.
@@ -557,7 +548,6 @@ public final class StringUtil {
   /**
    * Determine if {@code c} lies within the range of values defined for
    * <a href="http://unicode.org/glossary/#surrogate_code_point">Surrogate Code Point</a>.
-   *
    * @param c the character to check.
    * @return {@code true} if {@code c} lies within the range of values defined for
    * <a href="http://unicode.org/glossary/#surrogate_code_point">Surrogate Code Point</a>. {@code false} otherwise.
@@ -572,7 +562,6 @@ public final class StringUtil {
 
   /**
    * Determine if the string {@code s} ends with the char {@code c}.
-   *
    * @param s the string to test
    * @param c the tested char
    * @return true if {@code s} ends with the char {@code c}
@@ -585,7 +574,6 @@ public final class StringUtil {
   /**
    * Trim optional white-space characters from the specified value,
    * according to <a href="https://tools.ietf.org/html/rfc7230#section-7">RFC-7230</a>.
-   *
    * @param value the value to trim
    * @return {@link CharSequence} the trimmed value if necessary, or the value unchanged
    */
@@ -601,7 +589,6 @@ public final class StringUtil {
 
   /**
    * Returns a char sequence that contains all {@code elements} joined by a given separator.
-   *
    * @param separator for each element
    * @param elements  to join together
    * @return a char sequence joined by a given separator.

@@ -20,7 +20,13 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPromise;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.util.regex.Pattern;
 
@@ -43,7 +49,6 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param subprotocols          CSV of supported protocols
@@ -52,13 +57,12 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
    */
   public WebSocketServerHandshaker00(String webSocketURL, String subprotocols, int maxFramePayloadLength) {
     this(webSocketURL, subprotocols, WebSocketDecoderConfig.newBuilder()
-        .maxFramePayloadLength(maxFramePayloadLength)
-        .build());
+      .maxFramePayloadLength(maxFramePayloadLength)
+      .build());
   }
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param webSocketURL  URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                      sent to this URL.
    * @param subprotocols  CSV of supported protocols
@@ -113,13 +117,13 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
 
     // Serve the WebSocket handshake request.
     if (!req.headers().containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true)
-        || !HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(req.headers().get(HttpHeaderNames.UPGRADE))) {
+      || !HttpHeaderValues.WEBSOCKET.contentEqualsIgnoreCase(req.headers().get(HttpHeaderNames.UPGRADE))) {
       throw new WebSocketHandshakeException("not a WebSocket handshake request: missing upgrade");
     }
 
     // Hixie 75 does not contain these headers while Hixie 76 does
     boolean isHixie76 = req.headers().contains(HttpHeaderNames.SEC_WEBSOCKET_KEY1) &&
-        req.headers().contains(HttpHeaderNames.SEC_WEBSOCKET_KEY2);
+      req.headers().contains(HttpHeaderNames.SEC_WEBSOCKET_KEY2);
 
     String origin = req.headers().get(HttpHeaderNames.ORIGIN);
     //throw before allocating FullHttpResponse
@@ -129,8 +133,8 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
 
     // Create the WebSocket handshake response.
     FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, new HttpResponseStatus(101,
-        isHixie76 ? "WebSocket Protocol Handshake" : "Web Socket Protocol Handshake"),
-        req.content().alloc().buffer(0));
+      isHixie76 ? "WebSocket Protocol Handshake" : "Web Socket Protocol Handshake"),
+      req.content().alloc().buffer(0));
     if (headers != null) {
       res.headers().add(headers);
     }
@@ -160,9 +164,9 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
       String key1 = req.headers().get(HttpHeaderNames.SEC_WEBSOCKET_KEY1);
       String key2 = req.headers().get(HttpHeaderNames.SEC_WEBSOCKET_KEY2);
       int a = (int) (Long.parseLong(BEGINNING_DIGIT.matcher(key1).replaceAll("")) /
-          BEGINNING_SPACE.matcher(key1).replaceAll("").length());
+        BEGINNING_SPACE.matcher(key1).replaceAll("").length());
       int b = (int) (Long.parseLong(BEGINNING_DIGIT.matcher(key2).replaceAll("")) /
-          BEGINNING_SPACE.matcher(key2).replaceAll("").length());
+        BEGINNING_SPACE.matcher(key2).replaceAll("").length());
       long c = req.content().readLong();
       ByteBuf input = Unpooled.wrappedBuffer(new byte[16]).setIndex(0, 0);
       input.writeInt(a);
@@ -184,7 +188,6 @@ public class WebSocketServerHandshaker00 extends WebSocketServerHandshaker {
 
   /**
    * Echo back the closing frame
-   *
    * @param channel Channel
    * @param frame   Web Socket frame that was received
    */

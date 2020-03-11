@@ -41,12 +41,12 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 abstract class DeflateDecoder extends WebSocketExtensionDecoder {
 
   static final ByteBuf FRAME_TAIL = Unpooled.unreleasableBuffer(
-      Unpooled.wrappedBuffer(new byte[]{0x00, 0x00, (byte) 0xff, (byte) 0xff}))
-      .asReadOnly();
+    Unpooled.wrappedBuffer(new byte[]{0x00, 0x00, (byte) 0xff, (byte) 0xff}))
+    .asReadOnly();
 
   static final ByteBuf EMPTY_DEFLATE_BLOCK = Unpooled.unreleasableBuffer(
-      Unpooled.wrappedBuffer(new byte[]{0x00}))
-      .asReadOnly();
+    Unpooled.wrappedBuffer(new byte[]{0x00}))
+    .asReadOnly();
 
   private final boolean noContext;
   private final WebSocketExtensionFilter extensionDecoderFilter;
@@ -55,7 +55,6 @@ abstract class DeflateDecoder extends WebSocketExtensionDecoder {
 
   /**
    * Constructor
-   *
    * @param noContext              true to disable context takeover.
    * @param extensionDecoderFilter extension decoder filter.
    */

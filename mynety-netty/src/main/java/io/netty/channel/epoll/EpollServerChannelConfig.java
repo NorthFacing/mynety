@@ -16,14 +16,20 @@
 package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.ServerSocketChannelConfig;
 import io.netty.util.NetUtil;
 
 import java.io.IOException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.*;
+import static io.netty.channel.ChannelOption.SO_BACKLOG;
+import static io.netty.channel.ChannelOption.SO_RCVBUF;
+import static io.netty.channel.ChannelOption.SO_REUSEADDR;
 import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 public class EpollServerChannelConfig extends EpollChannelConfig implements ServerSocketChannelConfig {
@@ -128,7 +134,6 @@ public class EpollServerChannelConfig extends EpollChannelConfig implements Serv
 
   /**
    * Returns threshold value of number of pending for fast open connect.
-   *
    * @see <a href="https://tools.ietf.org/html/rfc7413#appendix-A.2">RFC 7413 Passive Open</a>
    */
   public int getTcpFastopen() {
@@ -138,7 +143,6 @@ public class EpollServerChannelConfig extends EpollChannelConfig implements Serv
   /**
    * Enables tcpFastOpen on the server channel. If the underlying os doesnt support TCP_FASTOPEN setting this has no
    * effect. This has to be set before doing listen on the socket otherwise this takes no effect.
-   *
    * @param pendingFastOpenRequestsThreshold number of requests to be pending for fastopen at a given point in time
    *                                         for security. @see <a href="https://tools.ietf.org/html/rfc7413#appendix-A.2">RFC 7413 Passive Open</a>
    * @see <a href="https://tools.ietf.org/html/rfc7413">RFC 7413 TCP FastOpen</a>

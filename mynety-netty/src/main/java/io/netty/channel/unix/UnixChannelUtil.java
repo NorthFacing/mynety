@@ -49,8 +49,8 @@ public final class UnixChannelUtil {
           // exists in earlier releases and so the retrieval of the hostname could block the EventLoop if a
           // reverse lookup would be needed.
           return new InetSocketAddress(InetAddress.getByAddress(remoteAddr.getHostString(),
-              osRemoteAddr.getAddress().getAddress()),
-              osRemoteAddr.getPort());
+            osRemoteAddr.getAddress().getAddress()),
+            osRemoteAddr.getPort());
         } catch (UnknownHostException ignore) {
           // Should never happen but fallback to osRemoteAddr anyway.
         }

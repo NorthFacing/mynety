@@ -55,7 +55,7 @@ public class ChannelException extends RuntimeException {
 
   @UnstableApi
   @SuppressJava6Requirement(reason = "uses Java 7+ RuntimeException.<init>(String, Throwable, boolean, boolean)" +
-      " but is guarded by version checks")
+    " but is guarded by version checks")
   protected ChannelException(String message, Throwable cause, boolean shared) {
     super(message, cause, false, true);
     assert shared;

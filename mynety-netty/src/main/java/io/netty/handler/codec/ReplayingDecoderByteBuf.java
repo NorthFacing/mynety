@@ -921,12 +921,12 @@ final class ReplayingDecoderByteBuf extends ByteBuf {
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + '(' +
-        "ridx=" +
-        readerIndex() +
-        ", " +
-        "widx=" +
-        writerIndex() +
-        ')';
+      "ridx=" +
+      readerIndex() +
+      ", " +
+      "widx=" +
+      writerIndex() +
+      ')';
   }
 
   @Override

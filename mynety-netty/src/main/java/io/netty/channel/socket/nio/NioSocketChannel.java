@@ -16,7 +16,16 @@
 package io.netty.channel.socket.nio;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
+import io.netty.channel.FileRegion;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.nio.AbstractNioByteChannel;
 import io.netty.channel.socket.DefaultSocketChannelConfig;
 import io.netty.channel.socket.ServerSocketChannel;
@@ -88,7 +97,6 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
 
   /**
    * Create a new instance
-   *
    * @param parent the {@link Channel} which created this instance or {@code null} if it was created by the user
    * @param socket the {@link SocketChannel} which will be used
    */
@@ -245,7 +253,7 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
     if (shutdownOutputCause != null) {
       if (shutdownInputCause != null) {
         logger.debug("Exception suppressed because a previous exception occurred.",
-            shutdownInputCause);
+          shutdownInputCause);
       }
       promise.setFailure(shutdownOutputCause);
     } else if (shutdownInputCause != null) {
@@ -419,7 +427,7 @@ public class NioSocketChannel extends AbstractNioByteChannel implements io.netty
           }
           // Casting to int is safe because we limit the total amount of data in the nioBuffers to int above.
           adjustMaxBytesPerGatheringWrite((int) attemptedBytes, (int) localWrittenBytes,
-              maxBytesPerGatheringWrite);
+            maxBytesPerGatheringWrite);
           in.removeBytes(localWrittenBytes);
           --writeSpinCount;
           break;

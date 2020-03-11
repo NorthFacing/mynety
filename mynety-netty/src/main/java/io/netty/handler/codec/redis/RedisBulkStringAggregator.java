@@ -41,7 +41,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public final class RedisBulkStringAggregator extends MessageAggregator<RedisMessage, BulkStringHeaderRedisMessage,
-    BulkStringRedisContent, FullBulkStringRedisMessage> {
+  BulkStringRedisContent, FullBulkStringRedisMessage> {
 
   /**
    * Creates a new instance.
@@ -72,7 +72,7 @@ public final class RedisBulkStringAggregator extends MessageAggregator<RedisMess
 
   @Override
   protected boolean isContentLengthInvalid(BulkStringHeaderRedisMessage start, int maxContentLength)
-      throws Exception {
+    throws Exception {
     return start.bulkStringLength() > maxContentLength;
   }
 
@@ -94,7 +94,7 @@ public final class RedisBulkStringAggregator extends MessageAggregator<RedisMess
 
   @Override
   protected FullBulkStringRedisMessage beginAggregation(BulkStringHeaderRedisMessage start, ByteBuf content)
-      throws Exception {
+    throws Exception {
     return new FullBulkStringRedisMessage(content);
   }
 }

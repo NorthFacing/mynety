@@ -29,7 +29,6 @@ final class FailedChannelFuture extends CompleteChannelFuture {
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    * @param cause   the cause of failure
    */

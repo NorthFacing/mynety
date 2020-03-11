@@ -24,7 +24,6 @@ import java.net.SocketAddress;
 
 /**
  * The default {@link AddressedEnvelope} implementation.
- *
  * @param <M> the type of the wrapped message
  * @param <A> the type of the recipient address
  */
@@ -122,10 +121,10 @@ public class DefaultAddressedEnvelope<M, A extends SocketAddress> implements Add
   public String toString() {
     if (sender != null) {
       return StringUtil.simpleClassName(this) +
-          '(' + sender + " => " + recipient + ", " + message + ')';
+        '(' + sender + " => " + recipient + ", " + message + ')';
     } else {
       return StringUtil.simpleClassName(this) +
-          "(=> " + recipient + ", " + message + ')';
+        "(=> " + recipient + ", " + message + ')';
     }
   }
 }

@@ -67,11 +67,11 @@ public class SpdyFrameLogger extends ChannelDuplexHandler {
   private void log(SpdyFrame msg, Direction d) {
     if (logger.isEnabled(level)) {
       StringBuilder b = new StringBuilder(200)
-          .append("\n----------------")
-          .append(d.name())
-          .append("--------------------\n")
-          .append(msg)
-          .append("\n------------------------------------");
+        .append("\n----------------")
+        .append(d.name())
+        .append("--------------------\n")
+        .append(msg)
+        .append("\n------------------------------------");
 
       logger.log(level, b.toString());
     }

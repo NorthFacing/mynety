@@ -43,7 +43,6 @@ import org.apache.commons.logging.Log;
 /**
  * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>
  * logger.
- *
  * @deprecated Please use {@link Log4J2Logger} or {@link Log4JLogger} or
  * {@link Slf4JLogger}.
  */
@@ -74,7 +73,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#trace(Object)} method of the underlying
    * {@link Log} instance.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -90,7 +88,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level TRACE.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -110,7 +107,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level TRACE.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -131,7 +127,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level TRACE.
    * </p>
-   *
    * @param format    the format string
    * @param arguments a list of 3 or more arguments
    */
@@ -146,7 +141,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#trace(Object, Throwable)} method of
    * the underlying {@link Log} instance.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -169,7 +163,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#debug(Object)} method of the underlying
    * {@link Log} instance.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -185,7 +178,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level DEBUG.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -205,7 +197,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level DEBUG.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -226,7 +217,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level DEBUG.
    * </p>
-   *
    * @param format    the format string
    * @param arguments a list of 3 or more arguments
    */
@@ -241,7 +231,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#debug(Object, Throwable)} method of
    * the underlying {@link Log} instance.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -262,7 +251,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#debug(Object)} method of the underlying
    * {@link Log} instance.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -278,7 +266,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level INFO.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -299,7 +286,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level INFO.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -320,7 +306,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level INFO.
    * </p>
-   *
    * @param format    the format string
    * @param arguments a list of 3 or more arguments
    */
@@ -335,7 +320,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#info(Object, Throwable)} method of
    * the underlying {@link Log} instance.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -356,7 +340,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#warn(Object)} method of the underlying
    * {@link Log} instance.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -372,7 +355,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level WARN.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -392,7 +374,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level WARN.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -413,7 +394,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level WARN.
    * </p>
-   *
    * @param format    the format string
    * @param arguments a list of 3 or more arguments
    */
@@ -428,7 +408,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#warn(Object, Throwable)} method of
    * the underlying {@link Log} instance.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -450,7 +429,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#error(Object)} method of the underlying
    * {@link Log} instance.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -466,7 +444,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level ERROR.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -486,7 +463,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level ERROR.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -507,7 +483,6 @@ class CommonsLogger extends AbstractInternalLogger {
    * However, this form avoids superfluous object creation when the logger is disabled
    * for level ERROR.
    * </p>
-   *
    * @param format    the format string
    * @param arguments a list of 3 or more arguments
    */
@@ -522,7 +497,6 @@ class CommonsLogger extends AbstractInternalLogger {
   /**
    * Delegates to the {@link Log#error(Object, Throwable)} method of
    * the underlying {@link Log} instance.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */

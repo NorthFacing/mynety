@@ -44,15 +44,15 @@ public final class MqttHeartBeatBrokerHandler extends ChannelInboundHandlerAdapt
     switch (mqttMessage.fixedHeader().messageType()) {
       case CONNECT:
         MqttFixedHeader connackFixedHeader =
-            new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
+          new MqttFixedHeader(MqttMessageType.CONNACK, false, MqttQoS.AT_MOST_ONCE, false, 0);
         MqttConnAckVariableHeader mqttConnAckVariableHeader =
-            new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, false);
+          new MqttConnAckVariableHeader(MqttConnectReturnCode.CONNECTION_ACCEPTED, false);
         MqttConnAckMessage connack = new MqttConnAckMessage(connackFixedHeader, mqttConnAckVariableHeader);
         ctx.writeAndFlush(connack);
         break;
       case PINGREQ:
         MqttFixedHeader pingreqFixedHeader = new MqttFixedHeader(MqttMessageType.PINGRESP, false,
-            MqttQoS.AT_MOST_ONCE, false, 0);
+          MqttQoS.AT_MOST_ONCE, false, 0);
         MqttMessage pingResp = new MqttMessage(pingreqFixedHeader);
         ctx.writeAndFlush(pingResp);
         break;

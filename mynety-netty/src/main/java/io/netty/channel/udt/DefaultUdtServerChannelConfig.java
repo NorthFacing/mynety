@@ -29,17 +29,16 @@ import static io.netty.channel.ChannelOption.SO_BACKLOG;
 
 /**
  * The default {@link UdtServerChannelConfig} implementation.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated
 public class DefaultUdtServerChannelConfig extends DefaultUdtChannelConfig
-    implements UdtServerChannelConfig {
+  implements UdtServerChannelConfig {
 
   private volatile int backlog = 64;
 
   public DefaultUdtServerChannelConfig(
-      final UdtChannel channel, final ChannelUDT channelUDT, final boolean apply) throws IOException {
+    final UdtChannel channel, final ChannelUDT channelUDT, final boolean apply) throws IOException {
     super(channel, channelUDT, apply);
     if (apply) {
       apply(channelUDT);
@@ -89,21 +88,21 @@ public class DefaultUdtServerChannelConfig extends DefaultUdtChannelConfig
 
   @Override
   public UdtServerChannelConfig setProtocolReceiveBufferSize(
-      final int protocolReceiveBufferSize) {
+    final int protocolReceiveBufferSize) {
     super.setProtocolReceiveBufferSize(protocolReceiveBufferSize);
     return this;
   }
 
   @Override
   public UdtServerChannelConfig setProtocolSendBufferSize(
-      final int protocolSendBufferSize) {
+    final int protocolSendBufferSize) {
     super.setProtocolSendBufferSize(protocolSendBufferSize);
     return this;
   }
 
   @Override
   public UdtServerChannelConfig setReceiveBufferSize(
-      final int receiveBufferSize) {
+    final int receiveBufferSize) {
     super.setReceiveBufferSize(receiveBufferSize);
     return this;
   }
@@ -128,14 +127,14 @@ public class DefaultUdtServerChannelConfig extends DefaultUdtChannelConfig
 
   @Override
   public UdtServerChannelConfig setSystemReceiveBufferSize(
-      final int systemSendBufferSize) {
+    final int systemSendBufferSize) {
     super.setSystemReceiveBufferSize(systemSendBufferSize);
     return this;
   }
 
   @Override
   public UdtServerChannelConfig setSystemSendBufferSize(
-      final int systemReceiveBufferSize) {
+    final int systemReceiveBufferSize) {
     super.setSystemSendBufferSize(systemReceiveBufferSize);
     return this;
   }

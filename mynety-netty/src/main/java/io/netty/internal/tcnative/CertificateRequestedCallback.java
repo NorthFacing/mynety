@@ -22,7 +22,6 @@ package io.netty.internal.tcnative;
  * means if you use an inner / anonymous class to implement this and also depend on the finalizer of the
  * class to free up the SSLContext the finalizer will never run as the object is never GC, due the hard
  * reference to the enclosing class. This will most likely result in a memory leak.+
- *
  * @deprecated use {@link CertificateCallback}
  */
 @Deprecated
@@ -44,7 +43,6 @@ public interface CertificateRequestedCallback {
    * Called during cert selection. If a certificate chain / key should be used
    * {@link SSL#setKeyMaterialClientSide(long, long, long, long, long)} must be called from this callback after
    * all preparations / validations were completed.
-   *
    * @param ssl                      the SSL instance
    * @param certOut                  the pointer to the pointer of the certificate to use.
    * @param keyOut                   the pointer to the pointer of the private key to use.
@@ -52,5 +50,5 @@ public interface CertificateRequestedCallback {
    * @param asn1DerEncodedPrincipals the principals
    */
   void requested(long ssl, long certOut, long keyOut, byte[] keyTypeBytes, byte[][] asn1DerEncodedPrincipals)
-      throws Exception;
+    throws Exception;
 }

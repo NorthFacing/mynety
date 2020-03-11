@@ -52,8 +52,8 @@ public class DatagramDnsQueryEncoder extends MessageToMessageEncoder<AddressedEn
 
   @Override
   protected void encode(
-      ChannelHandlerContext ctx,
-      AddressedEnvelope<DnsQuery, InetSocketAddress> in, List<Object> out) throws Exception {
+    ChannelHandlerContext ctx,
+    AddressedEnvelope<DnsQuery, InetSocketAddress> in, List<Object> out) throws Exception {
 
     final InetSocketAddress recipient = in.recipient();
     final DnsQuery query = in.content();
@@ -77,8 +77,8 @@ public class DatagramDnsQueryEncoder extends MessageToMessageEncoder<AddressedEn
    * Sub-classes may override this method to return a {@link ByteBuf} with a perfect matching initial capacity.
    */
   protected ByteBuf allocateBuffer(
-      ChannelHandlerContext ctx,
-      @SuppressWarnings("unused") AddressedEnvelope<DnsQuery, InetSocketAddress> msg) throws Exception {
+    ChannelHandlerContext ctx,
+    @SuppressWarnings("unused") AddressedEnvelope<DnsQuery, InetSocketAddress> msg) throws Exception {
     return ctx.alloc().ioBuffer(1024);
   }
 }

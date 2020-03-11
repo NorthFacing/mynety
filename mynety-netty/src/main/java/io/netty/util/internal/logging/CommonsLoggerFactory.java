@@ -22,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
  * Logger factory which creates an
  * <a href="http://commons.apache.org/logging/">Apache Commons Logging</a>
  * logger.
- *
  * @deprecated Please use {@link Log4J2LoggerFactory} or {@link Log4JLoggerFactory} or
  * {@link Slf4JLoggerFactory}.
  */

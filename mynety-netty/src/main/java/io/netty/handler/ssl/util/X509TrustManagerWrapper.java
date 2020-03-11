@@ -42,13 +42,13 @@ final class X509TrustManagerWrapper extends X509ExtendedTrustManager {
 
   @Override
   public void checkClientTrusted(X509Certificate[] chain, String s, Socket socket)
-      throws CertificateException {
+    throws CertificateException {
     delegate.checkClientTrusted(chain, s);
   }
 
   @Override
   public void checkClientTrusted(X509Certificate[] chain, String s, SSLEngine sslEngine)
-      throws CertificateException {
+    throws CertificateException {
     delegate.checkClientTrusted(chain, s);
   }
 
@@ -59,13 +59,13 @@ final class X509TrustManagerWrapper extends X509ExtendedTrustManager {
 
   @Override
   public void checkServerTrusted(X509Certificate[] chain, String s, Socket socket)
-      throws CertificateException {
+    throws CertificateException {
     delegate.checkServerTrusted(chain, s);
   }
 
   @Override
   public void checkServerTrusted(X509Certificate[] chain, String s, SSLEngine sslEngine)
-      throws CertificateException {
+    throws CertificateException {
     delegate.checkServerTrusted(chain, s);
   }
 

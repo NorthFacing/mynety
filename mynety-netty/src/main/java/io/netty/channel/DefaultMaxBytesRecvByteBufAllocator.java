@@ -133,8 +133,8 @@ public class DefaultMaxBytesRecvByteBufAllocator implements MaxBytesRecvByteBufA
       final int maxBytesPerIndividualRead = maxBytesPerIndividualRead();
       if (maxBytesPerRead < maxBytesPerIndividualRead) {
         throw new IllegalArgumentException(
-            "maxBytesPerRead cannot be less than " +
-                "maxBytesPerIndividualRead (" + maxBytesPerIndividualRead + "): " + maxBytesPerRead);
+          "maxBytesPerRead cannot be less than " +
+            "maxBytesPerIndividualRead (" + maxBytesPerIndividualRead + "): " + maxBytesPerRead);
       }
 
       this.maxBytesPerRead = maxBytesPerRead;
@@ -156,8 +156,8 @@ public class DefaultMaxBytesRecvByteBufAllocator implements MaxBytesRecvByteBufA
       final int maxBytesPerRead = maxBytesPerRead();
       if (maxBytesPerIndividualRead > maxBytesPerRead) {
         throw new IllegalArgumentException(
-            "maxBytesPerIndividualRead cannot be greater than " +
-                "maxBytesPerRead (" + maxBytesPerRead + "): " + maxBytesPerIndividualRead);
+          "maxBytesPerIndividualRead cannot be greater than " +
+            "maxBytesPerRead (" + maxBytesPerRead + "): " + maxBytesPerIndividualRead);
       }
 
       this.maxBytesPerIndividualRead = maxBytesPerIndividualRead;
@@ -175,8 +175,8 @@ public class DefaultMaxBytesRecvByteBufAllocator implements MaxBytesRecvByteBufA
     checkPositive(maxBytesPerIndividualRead, "maxBytesPerIndividualRead");
     if (maxBytesPerRead < maxBytesPerIndividualRead) {
       throw new IllegalArgumentException(
-          "maxBytesPerRead cannot be less than " +
-              "maxBytesPerIndividualRead (" + maxBytesPerIndividualRead + "): " + maxBytesPerRead);
+        "maxBytesPerRead cannot be less than " +
+          "maxBytesPerIndividualRead (" + maxBytesPerIndividualRead + "): " + maxBytesPerRead);
     }
   }
 

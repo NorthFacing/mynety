@@ -37,7 +37,6 @@ import java.util.Set;
  * a special field to store the necessary state.  An access by any other kind of thread falls back to a regular
  * {@link ThreadLocal}.
  * </p>
- *
  * @param <V> the type of the thread-local variable
  * @see ThreadLocal
  */
@@ -62,7 +61,7 @@ public class FastThreadLocal<V> {
         @SuppressWarnings("unchecked")
         Set<FastThreadLocal<?>> variablesToRemove = (Set<FastThreadLocal<?>>) v;
         FastThreadLocal<?>[] variablesToRemoveArray =
-            variablesToRemove.toArray(new FastThreadLocal[0]);
+          variablesToRemove.toArray(new FastThreadLocal[0]);
         for (FastThreadLocal<?> tlv : variablesToRemoveArray) {
           tlv.remove(threadLocalMap);
         }
@@ -109,7 +108,7 @@ public class FastThreadLocal<V> {
   }
 
   private static void removeFromVariablesToRemove(
-      InternalThreadLocalMap threadLocalMap, FastThreadLocal<?> variable) {
+    InternalThreadLocalMap threadLocalMap, FastThreadLocal<?> variable) {
 
     Object v = threadLocalMap.indexedVariable(variablesToRemoveIndex);
 

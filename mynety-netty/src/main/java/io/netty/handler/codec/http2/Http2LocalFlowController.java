@@ -25,7 +25,6 @@ public interface Http2LocalFlowController extends Http2FlowController {
   /**
    * Sets the writer to be use for sending {@code WINDOW_UPDATE} frames. This must be called before any flow
    * controlled data is received.
-   *
    * @param frameWriter the HTTP/2 frame writer.
    */
   Http2LocalFlowController frameWriter(Http2FrameWriter frameWriter);
@@ -37,7 +36,6 @@ public interface Http2LocalFlowController extends Http2FlowController {
    * <p/>
    * If {@code stream} is {@code null} or closed, flow control should only be applied to the connection window and the
    * bytes are immediately consumed.
-   *
    * @param stream      the subject stream for the received frame. The connection stream object must not be used. If {@code
    *                    stream} is {@code null} or closed, flow control should only be applied to the connection window and the bytes are
    *                    immediately consumed.
@@ -58,7 +56,6 @@ public interface Http2LocalFlowController extends Http2FlowController {
    * <p/>
    * If {@code stream} is {@code null} or closed (i.e. {@link Http2Stream#state()} method returns {@link
    * Http2Stream.State#CLOSED}), calling this method has no effect.
-   *
    * @param stream   the stream for which window space should be freed. The connection stream object must not be used.
    *                 If {@code stream} is {@code null} or closed (i.e. {@link Http2Stream#state()} method returns {@link
    *                 Http2Stream.State#CLOSED}), calling this method has no effect.
@@ -72,7 +69,6 @@ public interface Http2LocalFlowController extends Http2FlowController {
   /**
    * The number of bytes for the given stream that have been received but not yet consumed by the
    * application.
-   *
    * @param stream the stream for which window space should be freed.
    * @return the number of unconsumed bytes for the stream.
    */

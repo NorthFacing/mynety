@@ -48,7 +48,6 @@ public final class CleartextHttp2ServerUpgradeHandler extends ChannelHandlerAdap
   /**
    * Creates the channel handler provide cleartext HTTP/2 upgrade from HTTP
    * upgrade or prior knowledge
-   *
    * @param httpServerCodec          the http server codec
    * @param httpServerUpgradeHandler the http server upgrade handler for HTTP/2
    * @param http2ServerHandler       the http2 server handler, will be added into pipeline
@@ -65,9 +64,9 @@ public final class CleartextHttp2ServerUpgradeHandler extends ChannelHandlerAdap
   @Override
   public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline()
-        .addBefore(ctx.name(), null, new PriorKnowledgeHandler())
-        .addBefore(ctx.name(), null, httpServerCodec)
-        .replace(this, null, httpServerUpgradeHandler);
+      .addBefore(ctx.name(), null, new PriorKnowledgeHandler())
+      .addBefore(ctx.name(), null, httpServerCodec)
+      .replace(this, null, httpServerUpgradeHandler);
   }
 
   /**
@@ -81,14 +80,14 @@ public final class CleartextHttp2ServerUpgradeHandler extends ChannelHandlerAdap
       int bytesRead = Math.min(in.readableBytes(), prefaceLength);
 
       if (!ByteBufUtil.equals(CONNECTION_PREFACE, CONNECTION_PREFACE.readerIndex(),
-          in, in.readerIndex(), bytesRead)) {
+        in, in.readerIndex(), bytesRead)) {
         ctx.pipeline().remove(this);
       } else if (bytesRead == prefaceLength) {
         // Full h2 preface match, removed source codec, using http2 codec to handle
         // following network traffic
         ctx.pipeline()
-            .remove(httpServerCodec)
-            .remove(httpServerUpgradeHandler);
+          .remove(httpServerCodec)
+          .remove(httpServerUpgradeHandler);
 
         ctx.pipeline().addAfter(ctx.name(), null, http2ServerHandler);
         ctx.pipeline().remove(this);

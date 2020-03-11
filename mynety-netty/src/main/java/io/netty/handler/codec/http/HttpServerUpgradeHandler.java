@@ -73,7 +73,6 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
     /**
      * Performs an HTTP protocol upgrade from the source codec. This method is responsible for
      * adding all handlers required for the new protocol.
-     *
      * @param ctx            the context for the current handler.
      * @param upgradeRequest the request that triggered the upgrade to this protocol.
      */
@@ -88,7 +87,6 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
      * Invoked by {@link HttpServerUpgradeHandler} for all the requested protocol names in the order of
      * the client preference. The first non-{@code null} {@link UpgradeCodec} returned by this method
      * will be selected.
-     *
      * @return a new {@link UpgradeCodec}, or {@code null} if the specified protocol name is not supported
      */
     UpgradeCodec newUpgradeCodec(CharSequence protocol);
@@ -180,7 +178,6 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
    * {@link #HttpServerUpgradeHandler(SourceCodec, UpgradeCodecFactory, int)} to specify the maximum
    * length of the content of an upgrade request.
    * </p>
-   *
    * @param sourceCodec         the codec that is being used initially
    * @param upgradeCodecFactory the factory that creates a new upgrade codec
    *                            for one of the requested upgrade protocols
@@ -191,14 +188,13 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
 
   /**
    * Constructs the upgrader with the supported codecs.
-   *
    * @param sourceCodec         the codec that is being used initially
    * @param upgradeCodecFactory the factory that creates a new upgrade codec
    *                            for one of the requested upgrade protocols
    * @param maxContentLength    the maximum length of the content of an upgrade request
    */
   public HttpServerUpgradeHandler(
-      SourceCodec sourceCodec, UpgradeCodecFactory upgradeCodecFactory, int maxContentLength) {
+    SourceCodec sourceCodec, UpgradeCodecFactory upgradeCodecFactory, int maxContentLength) {
     super(maxContentLength);
 
     this.sourceCodec = checkNotNull(sourceCodec, "sourceCodec");
@@ -207,7 +203,7 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, HttpObject msg, List<Object> out)
-      throws Exception {
+    throws Exception {
     // Determine if we're already handling an upgrade request or just starting a new one.
     handlingUpgrade |= isUpgradeRequest(msg);
     if (!handlingUpgrade) {
@@ -257,7 +253,6 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
   /**
    * Attempts to upgrade to the protocol(s) identified by the {@link HttpHeaderNames#UPGRADE} header (if provided
    * in the request).
-   *
    * @param ctx     the context for this handler.
    * @param request the HTTP request.
    * @return {@code true} if the upgrade occurred, otherwise {@code false}.
@@ -300,7 +295,7 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
     Collection<CharSequence> requiredHeaders = upgradeCodec.requiredUpgradeHeaders();
     List<CharSequence> values = splitHeader(concatenatedConnectionValue);
     if (!containsContentEqualsIgnoreCase(values, HttpHeaderNames.UPGRADE) ||
-        !containsAllContentEqualsIgnoreCase(values, requiredHeaders)) {
+      !containsAllContentEqualsIgnoreCase(values, requiredHeaders)) {
       return false;
     }
 
@@ -354,7 +349,7 @@ public class HttpServerUpgradeHandler extends HttpObjectAggregator {
    */
   private static FullHttpResponse createUpgradeResponse(CharSequence upgradeProtocol) {
     DefaultFullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, SWITCHING_PROTOCOLS,
-        Unpooled.EMPTY_BUFFER, false);
+      Unpooled.EMPTY_BUFFER, false);
     res.headers().add(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE);
     res.headers().add(HttpHeaderNames.UPGRADE, upgradeProtocol);
     return res;

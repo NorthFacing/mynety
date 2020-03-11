@@ -20,7 +20,16 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.TooLongFrameException;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpMessage;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.spdy.SpdyHttpHeaders.Names;
 import io.netty.util.ReferenceCountUtil;
 
@@ -28,7 +37,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.*;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.HOST;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.METHOD;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.PATH;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.SCHEME;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.STATUS;
+import static io.netty.handler.codec.spdy.SpdyHeaders.HttpNames.VERSION;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
 
 /**
@@ -44,7 +58,6 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
   /**
    * Creates a new instance.
-   *
    * @param version          the protocol version
    * @param maxContentLength the maximum length of the message content.
    *                         If the length of the message content exceeds this value,
@@ -56,7 +69,6 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
   /**
    * Creates a new instance.
-   *
    * @param version          the protocol version
    * @param maxContentLength the maximum length of the message content.
    *                         If the length of the message content exceeds this value,
@@ -69,7 +81,6 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
   /**
    * Creates a new instance with the specified parameters.
-   *
    * @param version          the protocol version
    * @param maxContentLength the maximum length of the message content.
    *                         If the length of the message content exceeds this value,
@@ -82,7 +93,6 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
   /**
    * Creates a new instance with the specified parameters.
-   *
    * @param version          the protocol version
    * @param maxContentLength the maximum length of the message content.
    *                         If the length of the message content exceeds this value,
@@ -91,7 +101,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
    * @param validateHeaders  {@code true} if http headers should be validated
    */
   protected SpdyHttpDecoder(SpdyVersion version, int maxContentLength, Map<Integer,
-      FullHttpMessage> messageMap, boolean validateHeaders) {
+    FullHttpMessage> messageMap, boolean validateHeaders) {
     if (version == null) {
       throw new NullPointerException("version");
     }
@@ -126,7 +136,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, SpdyFrame msg, List<Object> out)
-      throws Exception {
+    throws Exception {
     if (msg instanceof SpdySynStreamFrame) {
 
       // HTTP requests/responses are mapped one-to-one to SPDY streams.
@@ -141,7 +151,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
         // it must reply with a RST_STREAM with error code INVALID_STREAM.
         if (associatedToStreamId == 0) {
           SpdyRstStreamFrame spdyRstStreamFrame =
-              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INVALID_STREAM);
+            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INVALID_STREAM);
           ctx.writeAndFlush(spdyRstStreamFrame);
           return;
         }
@@ -151,7 +161,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
         // (we only support pushed resources divided into two header blocks).
         if (spdySynStreamFrame.isLast()) {
           SpdyRstStreamFrame spdyRstStreamFrame =
-              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
+            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
           ctx.writeAndFlush(spdyRstStreamFrame);
           return;
         }
@@ -160,7 +170,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
         // reply with a RST_STREAM with error code INTERNAL_ERROR.
         if (spdySynStreamFrame.isTruncated()) {
           SpdyRstStreamFrame spdyRstStreamFrame =
-              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
+            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
           ctx.writeAndFlush(spdyRstStreamFrame);
           return;
         }
@@ -177,7 +187,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
 
         } catch (Throwable ignored) {
           SpdyRstStreamFrame spdyRstStreamFrame =
-              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
+            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
           ctx.writeAndFlush(spdyRstStreamFrame);
         }
       } else {
@@ -229,14 +239,14 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
       // reply with a RST_STREAM frame with error code INTERNAL_ERROR.
       if (spdySynReplyFrame.isTruncated()) {
         SpdyRstStreamFrame spdyRstStreamFrame =
-            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
+          new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
         ctx.writeAndFlush(spdyRstStreamFrame);
         return;
       }
 
       try {
         FullHttpResponse httpResponseWithEntity =
-            createHttpResponse(spdySynReplyFrame, ctx.alloc(), validateHeaders);
+          createHttpResponse(spdySynReplyFrame, ctx.alloc(), validateHeaders);
 
         // Set the Stream-ID as a header
         httpResponseWithEntity.headers().setInt(Names.STREAM_ID, streamId);
@@ -252,7 +262,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
         // If a client receives a SYN_REPLY without valid getStatus and version headers
         // the client must reply with a RST_STREAM frame indicating a PROTOCOL_ERROR
         SpdyRstStreamFrame spdyRstStreamFrame =
-            new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
+          new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
         ctx.writeAndFlush(spdyRstStreamFrame);
       }
 
@@ -270,7 +280,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
           // reply with a RST_STREAM frame with error code INTERNAL_ERROR.
           if (spdyHeadersFrame.isTruncated()) {
             SpdyRstStreamFrame spdyRstStreamFrame =
-                new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
+              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.INTERNAL_ERROR);
             ctx.writeAndFlush(spdyRstStreamFrame);
             return;
           }
@@ -292,7 +302,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
             // If a client receives a SYN_REPLY without valid getStatus and version headers
             // the client must reply with a RST_STREAM frame indicating a PROTOCOL_ERROR
             SpdyRstStreamFrame spdyRstStreamFrame =
-                new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
+              new DefaultSpdyRstStreamFrame(streamId, SpdyStreamStatus.PROTOCOL_ERROR);
             ctx.writeAndFlush(spdyRstStreamFrame);
           }
         }
@@ -327,7 +337,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
       if (content.readableBytes() > maxContentLength - spdyDataFrame.content().readableBytes()) {
         removeMessage(streamId);
         throw new TooLongFrameException(
-            "HTTP content length exceeded " + maxContentLength + " bytes.");
+          "HTTP content length exceeded " + maxContentLength + " bytes.");
       }
 
       ByteBuf spdyDataFrameData = spdyDataFrame.content();
@@ -349,7 +359,7 @@ public class SpdyHttpDecoder extends MessageToMessageDecoder<SpdyFrame> {
   }
 
   private static FullHttpRequest createHttpRequest(SpdyHeadersFrame requestFrame, ByteBufAllocator alloc)
-      throws Exception {
+    throws Exception {
     // Create the first line of the request from the name/value pairs
     SpdyHeaders headers = requestFrame.headers();
     HttpMethod method = HttpMethod.valueOf(headers.getAsString(METHOD));

@@ -24,22 +24,22 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
  */
 public abstract class AbstractReferenceCounted implements ReferenceCounted {
   private static final long REFCNT_FIELD_OFFSET =
-      ReferenceCountUpdater.getUnsafeOffset(AbstractReferenceCounted.class, "refCnt");
+    ReferenceCountUpdater.getUnsafeOffset(AbstractReferenceCounted.class, "refCnt");
   private static final AtomicIntegerFieldUpdater<AbstractReferenceCounted> AIF_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(AbstractReferenceCounted.class, "refCnt");
+    AtomicIntegerFieldUpdater.newUpdater(AbstractReferenceCounted.class, "refCnt");
 
   private static final ReferenceCountUpdater<AbstractReferenceCounted> updater =
-      new ReferenceCountUpdater<AbstractReferenceCounted>() {
-        @Override
-        protected AtomicIntegerFieldUpdater<AbstractReferenceCounted> updater() {
-          return AIF_UPDATER;
-        }
+    new ReferenceCountUpdater<AbstractReferenceCounted>() {
+      @Override
+      protected AtomicIntegerFieldUpdater<AbstractReferenceCounted> updater() {
+        return AIF_UPDATER;
+      }
 
-        @Override
-        protected long unsafeOffset() {
-          return REFCNT_FIELD_OFFSET;
-        }
-      };
+      @Override
+      protected long unsafeOffset() {
+        return REFCNT_FIELD_OFFSET;
+      }
+    };
 
   // Value might not equal "real" reference count, all access should be via the updater
   @SuppressWarnings("unused")

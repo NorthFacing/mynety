@@ -15,7 +15,12 @@
  */
 package io.netty.handler.codec.http.websocketx.extensions.compression;
 
-import io.netty.handler.codec.http.websocketx.extensions.*;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtension;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketClientExtensionHandshaker;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionData;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionDecoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionEncoder;
+import io.netty.handler.codec.http.websocketx.extensions.WebSocketExtensionFilterProvider;
 
 import java.util.Collections;
 
@@ -42,7 +47,6 @@ public final class DeflateFrameClientExtensionHandshaker implements WebSocketCli
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel Compression level between 0 and 9 (default is 6).
    */
   public DeflateFrameClientExtensionHandshaker(int compressionLevel, boolean useWebkitExtensionName) {
@@ -51,7 +55,6 @@ public final class DeflateFrameClientExtensionHandshaker implements WebSocketCli
 
   /**
    * Constructor with custom configuration.
-   *
    * @param compressionLevel        Compression level between 0 and 9 (default is 6).
    * @param extensionFilterProvider provides client extension filters for per frame deflate encoder and decoder.
    */
@@ -59,7 +62,7 @@ public final class DeflateFrameClientExtensionHandshaker implements WebSocketCli
                                                WebSocketExtensionFilterProvider extensionFilterProvider) {
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     this.compressionLevel = compressionLevel;
     this.useWebkitExtensionName = useWebkitExtensionName;
@@ -69,14 +72,14 @@ public final class DeflateFrameClientExtensionHandshaker implements WebSocketCli
   @Override
   public WebSocketExtensionData newRequestData() {
     return new WebSocketExtensionData(
-        useWebkitExtensionName ? X_WEBKIT_DEFLATE_FRAME_EXTENSION : DEFLATE_FRAME_EXTENSION,
-        Collections.<String, String>emptyMap());
+      useWebkitExtensionName ? X_WEBKIT_DEFLATE_FRAME_EXTENSION : DEFLATE_FRAME_EXTENSION,
+      Collections.<String, String>emptyMap());
   }
 
   @Override
   public WebSocketClientExtension handshakeExtension(WebSocketExtensionData extensionData) {
     if (!X_WEBKIT_DEFLATE_FRAME_EXTENSION.equals(extensionData.name()) &&
-        !DEFLATE_FRAME_EXTENSION.equals(extensionData.name())) {
+      !DEFLATE_FRAME_EXTENSION.equals(extensionData.name())) {
       return null;
     }
 
@@ -105,7 +108,7 @@ public final class DeflateFrameClientExtensionHandshaker implements WebSocketCli
     @Override
     public WebSocketExtensionEncoder newExtensionEncoder() {
       return new PerFrameDeflateEncoder(compressionLevel, 15, false,
-          extensionFilterProvider.encoderFilter());
+        extensionFilterProvider.encoderFilter());
     }
 
     @Override

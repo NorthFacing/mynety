@@ -44,7 +44,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public abstract class AbstractMemcacheObjectAggregator<H extends MemcacheMessage> extends
-    MessageAggregator<MemcacheObject, H, MemcacheContent, FullMemcacheMessage> {
+  MessageAggregator<MemcacheObject, H, MemcacheContent, FullMemcacheMessage> {
 
   protected AbstractMemcacheObjectAggregator(int maxContentLength) {
     super(maxContentLength);

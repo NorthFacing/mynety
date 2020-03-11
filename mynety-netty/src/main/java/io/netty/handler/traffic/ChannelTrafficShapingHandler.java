@@ -68,7 +68,6 @@ public class ChannelTrafficShapingHandler extends AbstractTrafficShapingHandler 
 
   /**
    * Create a new instance.
-   *
    * @param writeLimit    0 or a limit in bytes/s
    * @param readLimit     0 or a limit in bytes/s
    * @param checkInterval The delay between two computations of performances for
@@ -83,7 +82,6 @@ public class ChannelTrafficShapingHandler extends AbstractTrafficShapingHandler 
   /**
    * Create a new instance using default
    * max time as delay allowed value of 15000 ms.
-   *
    * @param writeLimit    0 or a limit in bytes/s
    * @param readLimit     0 or a limit in bytes/s
    * @param checkInterval The delay between two computations of performances for
@@ -97,7 +95,6 @@ public class ChannelTrafficShapingHandler extends AbstractTrafficShapingHandler 
   /**
    * Create a new instance using default Check Interval value of 1000 ms and
    * max time as delay allowed value of 15000 ms.
-   *
    * @param writeLimit 0 or a limit in bytes/s
    * @param readLimit  0 or a limit in bytes/s
    */
@@ -109,7 +106,6 @@ public class ChannelTrafficShapingHandler extends AbstractTrafficShapingHandler 
   /**
    * Create a new instance using
    * default max time as delay allowed value of 15000 ms and no limit.
-   *
    * @param checkInterval The delay between two computations of performances for
    *                      channels or 0 if no stats are to be computed.
    */
@@ -120,7 +116,7 @@ public class ChannelTrafficShapingHandler extends AbstractTrafficShapingHandler 
   @Override
   public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
     TrafficCounter trafficCounter = new TrafficCounter(this, ctx.executor(), "ChannelTC" +
-        ctx.channel().hashCode(), checkInterval);
+      ctx.channel().hashCode(), checkInterval);
     setTrafficCounter(trafficCounter);
     trafficCounter.start();
     super.handlerAdded(ctx);

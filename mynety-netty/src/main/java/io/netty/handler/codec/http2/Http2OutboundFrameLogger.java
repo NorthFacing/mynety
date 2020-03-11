@@ -57,9 +57,9 @@ public class Http2OutboundFrameLogger implements Http2FrameWriter {
                                     Http2Headers headers, int streamDependency, short weight, boolean exclusive,
                                     int padding, boolean endStream, ChannelPromise promise) {
     logger.logHeaders(OUTBOUND, ctx, streamId, headers, streamDependency, weight, exclusive,
-        padding, endStream);
+      padding, endStream);
     return writer.writeHeaders(ctx, streamId, headers, streamDependency, weight,
-        exclusive, padding, endStream, promise);
+      exclusive, padding, endStream, promise);
   }
 
   @Override

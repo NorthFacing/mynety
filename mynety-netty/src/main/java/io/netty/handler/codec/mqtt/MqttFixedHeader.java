@@ -32,11 +32,11 @@ public final class MqttFixedHeader {
   private final int remainingLength;
 
   public MqttFixedHeader(
-      MqttMessageType messageType,
-      boolean isDup,
-      MqttQoS qosLevel,
-      boolean isRetain,
-      int remainingLength) {
+    MqttMessageType messageType,
+    boolean isDup,
+    MqttQoS qosLevel,
+    boolean isRetain,
+    int remainingLength) {
     this.messageType = ObjectUtil.checkNotNull(messageType, "messageType");
     this.isDup = isDup;
     this.qosLevel = ObjectUtil.checkNotNull(qosLevel, "qosLevel");
@@ -67,13 +67,13 @@ public final class MqttFixedHeader {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("messageType=").append(messageType)
-        .append(", isDup=").append(isDup)
-        .append(", qosLevel=").append(qosLevel)
-        .append(", isRetain=").append(isRetain)
-        .append(", remainingLength=").append(remainingLength)
-        .append(']')
-        .toString();
+      .append('[')
+      .append("messageType=").append(messageType)
+      .append(", isDup=").append(isDup)
+      .append(", qosLevel=").append(qosLevel)
+      .append(", isRetain=").append(isRetain)
+      .append(", remainingLength=").append(remainingLength)
+      .append(']')
+      .toString();
   }
 }

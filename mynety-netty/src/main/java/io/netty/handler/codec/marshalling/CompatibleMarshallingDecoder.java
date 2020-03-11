@@ -38,7 +38,6 @@ public class CompatibleMarshallingDecoder extends ReplayingDecoder<Void> {
 
   /**
    * Create a new instance of {@link CompatibleMarshallingDecoder}.
-   *
    * @param provider      the {@link UnmarshallerProvider} which is used to obtain the {@link Unmarshaller}
    *                      for the {@link Channel}
    * @param maxObjectSize the maximal size (in bytes) of the {@link Object} to unmarshal. Once the size is

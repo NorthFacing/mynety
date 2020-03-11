@@ -42,7 +42,7 @@ import static java.lang.Math.min;
  */
 abstract class ConscryptAlpnSslEngine extends JdkSslEngine {
   private static final boolean USE_BUFFER_ALLOCATOR = SystemPropertyUtil.getBoolean(
-      "io.netty.handler.ssl.conscrypt.useBufferAllocator", true);
+    "io.netty.handler.ssl.conscrypt.useBufferAllocator", true);
 
   static ConscryptAlpnSslEngine newClientEngine(SSLEngine engine, ByteBufAllocator alloc,
                                                 JdkApplicationProtocolNegotiator applicationNegotiator) {
@@ -77,7 +77,6 @@ abstract class ConscryptAlpnSslEngine extends JdkSslEngine {
   /**
    * Calculates the maximum size of the encrypted output buffer required to wrap the given plaintext bytes. Assumes
    * as a worst case that there is one TLS record per buffer.
-   *
    * @param plaintextBytes the number of plaintext bytes to be wrapped.
    * @param numBuffers     the number of buffers that the plaintext bytes are spread across.
    * @return the maximum size of the encrypted output buffer required for the wrap operation.
@@ -108,8 +107,8 @@ abstract class ConscryptAlpnSslEngine extends JdkSslEngine {
       });
 
       protocolListener = checkNotNull(applicationNegotiator
-              .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
-          "protocolListener");
+          .protocolListenerFactory().newListener(this, applicationNegotiator.protocols()),
+        "protocolListener");
     }
 
     private void selectProtocol() throws SSLException {
@@ -138,16 +137,16 @@ abstract class ConscryptAlpnSslEngine extends JdkSslEngine {
       });
 
       protocolSelector = checkNotNull(applicationNegotiator.protocolSelectorFactory()
-              .newSelector(this,
-                  new LinkedHashSet<String>(applicationNegotiator.protocols())),
-          "protocolSelector");
+          .newSelector(this,
+            new LinkedHashSet<String>(applicationNegotiator.protocols())),
+        "protocolSelector");
     }
 
     private void selectProtocol() throws SSLException {
       try {
         String protocol = Conscrypt.getApplicationProtocol(getWrappedEngine());
         protocolSelector.select(protocol != null ? Collections.singletonList(protocol)
-            : Collections.<String>emptyList());
+          : Collections.<String>emptyList());
       } catch (Throwable e) {
         throw toSSLHandshakeException(e);
       }

@@ -24,7 +24,22 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.EncoderException;
 import io.netty.handler.codec.MessageToMessageCodec;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.FullHttpMessage;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpScheme;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.SslHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
@@ -46,7 +61,7 @@ import java.util.List;
 public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Http2StreamFrame, HttpObject> {
 
   private static final AttributeKey<HttpScheme> SCHEME_ATTR_KEY =
-      AttributeKey.valueOf(HttpScheme.class, "STREAMFRAMECODEC_SCHEME");
+    AttributeKey.valueOf(HttpScheme.class, "STREAMFRAMECODEC_SCHEME");
 
   private final boolean isServer;
   private final boolean validateHeaders;
@@ -88,7 +103,7 @@ public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Htt
         if (headers.method() == null && status == null) {
           LastHttpContent last = new DefaultLastHttpContent(Unpooled.EMPTY_BUFFER, validateHeaders);
           HttpConversionUtil.addHttp2ToHttpHeaders(id, headers, last.trailingHeaders(),
-              HttpVersion.HTTP_1_1, true, true);
+            HttpVersion.HTTP_1_1, true, true);
           out.add(last);
         } else {
           FullHttpMessage full = newFullMessage(id, headers, ctx.alloc());
@@ -127,7 +142,6 @@ public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Htt
    * be called for each written message that can be handled by this encoder.
    * <p>
    * NOTE: 100-Continue responses that are NOT {@link FullHttpResponse} will be rejected.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this handler belongs to
    * @param obj the {@link HttpObject} message to encode
    * @param out the {@link List} into which the encoded msg should be added
@@ -147,7 +161,7 @@ public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Htt
           return;
         } else {
           throw new EncoderException(
-              HttpResponseStatus.CONTINUE.toString() + " must be a FullHttpResponse");
+            HttpResponseStatus.CONTINUE.toString() + " must be a FullHttpResponse");
         }
       }
     }
@@ -175,8 +189,8 @@ public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Htt
   private Http2Headers toHttp2Headers(final ChannelHandlerContext ctx, final HttpMessage msg) {
     if (msg instanceof HttpRequest) {
       msg.headers().set(
-          HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(),
-          connectionScheme(ctx));
+        HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(),
+        connectionScheme(ctx));
     }
 
     return HttpConversionUtil.toHttp2Headers(msg, validateHeaders);
@@ -185,16 +199,16 @@ public class Http2StreamFrameToHttpObjectCodec extends MessageToMessageCodec<Htt
   private HttpMessage newMessage(final int id,
                                  final Http2Headers headers) throws Http2Exception {
     return isServer ?
-        HttpConversionUtil.toHttpRequest(id, headers, validateHeaders) :
-        HttpConversionUtil.toHttpResponse(id, headers, validateHeaders);
+      HttpConversionUtil.toHttpRequest(id, headers, validateHeaders) :
+      HttpConversionUtil.toHttpResponse(id, headers, validateHeaders);
   }
 
   private FullHttpMessage newFullMessage(final int id,
                                          final Http2Headers headers,
                                          final ByteBufAllocator alloc) throws Http2Exception {
     return isServer ?
-        HttpConversionUtil.toFullHttpRequest(id, headers, alloc, validateHeaders) :
-        HttpConversionUtil.toFullHttpResponse(id, headers, alloc, validateHeaders);
+      HttpConversionUtil.toFullHttpRequest(id, headers, alloc, validateHeaders) :
+      HttpConversionUtil.toFullHttpResponse(id, headers, alloc, validateHeaders);
   }
 
   @Override

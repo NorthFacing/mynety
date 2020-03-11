@@ -37,7 +37,6 @@ public abstract class AbstractDnsRecord implements DnsRecord {
 
   /**
    * Creates a new {@link #CLASS_IN IN-class} record.
-   *
    * @param name       the domain name
    * @param type       the type of the record
    * @param timeToLive the TTL value of the record
@@ -48,7 +47,6 @@ public abstract class AbstractDnsRecord implements DnsRecord {
 
   /**
    * Creates a new record.
-   *
    * @param name       the domain name
    * @param type       the type of the record
    * @param dnsClass   the class of the record, usually one of the following:
@@ -118,8 +116,8 @@ public abstract class AbstractDnsRecord implements DnsRecord {
     }
 
     return type().intValue() == that.type().intValue() &&
-        dnsClass() == that.dnsClass() &&
-        name().equals(that.name());
+      dnsClass() == that.dnsClass() &&
+      name().equals(that.name());
   }
 
   @Override
@@ -137,16 +135,16 @@ public abstract class AbstractDnsRecord implements DnsRecord {
     StringBuilder buf = new StringBuilder(64);
 
     buf.append(StringUtil.simpleClassName(this))
-        .append('(')
-        .append(name())
-        .append(' ')
-        .append(timeToLive())
-        .append(' ');
+      .append('(')
+      .append(name())
+      .append(' ')
+      .append(timeToLive())
+      .append(' ');
 
     DnsMessageUtil.appendRecordClass(buf, dnsClass())
-        .append(' ')
-        .append(type().name())
-        .append(')');
+      .append(' ')
+      .append(type().name())
+      .append(')');
 
     return buf.toString();
   }

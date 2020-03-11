@@ -89,7 +89,7 @@ public class DefaultThreadFactory implements ThreadFactory {
     }
     if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
       throw new IllegalArgumentException(
-          "priority: " + priority + " (expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)");
+        "priority: " + priority + " (expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)");
     }
 
     prefix = poolName + '-' + poolId.incrementAndGet() + '-';
@@ -100,7 +100,7 @@ public class DefaultThreadFactory implements ThreadFactory {
 
   public DefaultThreadFactory(String poolName, boolean daemon, int priority) {
     this(poolName, daemon, priority, System.getSecurityManager() == null ?
-        Thread.currentThread().getThreadGroup() : System.getSecurityManager().getThreadGroup());
+      Thread.currentThread().getThreadGroup() : System.getSecurityManager().getThreadGroup());
   }
 
   @Override

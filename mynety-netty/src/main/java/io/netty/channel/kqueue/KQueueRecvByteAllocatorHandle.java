@@ -28,7 +28,7 @@ import static java.lang.Math.min;
 
 final class KQueueRecvByteAllocatorHandle extends DelegatingHandle implements ExtendedHandle {
   private final PreferredDirectByteBufAllocator preferredDirectByteBufAllocator =
-      new PreferredDirectByteBufAllocator();
+    new PreferredDirectByteBufAllocator();
 
   private final UncheckedBooleanSupplier defaultMaybeMoreDataSupplier = new UncheckedBooleanSupplier() {
     @Override
@@ -60,7 +60,7 @@ final class KQueueRecvByteAllocatorHandle extends DelegatingHandle implements Ex
     // We need to ensure we always allocate a direct ByteBuf as we can only use a direct buffer to read via JNI.
     preferredDirectByteBufAllocator.updateAllocator(alloc);
     return overrideGuess ? preferredDirectByteBufAllocator.ioBuffer(guess0()) :
-        delegate().allocate(preferredDirectByteBufAllocator);
+      delegate().allocate(preferredDirectByteBufAllocator);
   }
 
   @Override

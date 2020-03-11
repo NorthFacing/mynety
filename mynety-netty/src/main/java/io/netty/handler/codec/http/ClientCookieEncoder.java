@@ -31,7 +31,6 @@ import io.netty.handler.codec.http.cookie.ClientCookieDecoder;
  * {@link HttpRequest} req = ...;
  * res.setHeader("Cookie", {@link ClientCookieEncoder}.encode("JSESSIONID", "1234"));
  * </pre>
- *
  * @see ClientCookieDecoder
  */
 @Deprecated
@@ -39,7 +38,6 @@ public final class ClientCookieEncoder {
 
   /**
    * Encodes the specified cookie into a Cookie header value.
-   *
    * @param name  the cookie name
    * @param value the cookie value
    * @return a Rfc6265 style Cookie header value
@@ -51,7 +49,6 @@ public final class ClientCookieEncoder {
 
   /**
    * Encodes the specified cookie into a Cookie header value.
-   *
    * @param cookie the specified cookie
    * @return a Rfc6265 style Cookie header value
    */
@@ -62,7 +59,6 @@ public final class ClientCookieEncoder {
 
   /**
    * Encodes the specified cookies into a single Cookie header value.
-   *
    * @param cookies some cookies
    * @return a Rfc6265 style Cookie header value, null if no cookies are passed.
    */
@@ -73,7 +69,6 @@ public final class ClientCookieEncoder {
 
   /**
    * Encodes the specified cookies into a single Cookie header value.
-   *
    * @param cookies some cookies
    * @return a Rfc6265 style Cookie header value, null if no cookies are passed.
    */

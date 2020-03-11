@@ -71,7 +71,7 @@ public class ProtobufDecoderNano extends MessageToMessageDecoder<ByteBuf> {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out)
-      throws Exception {
+    throws Exception {
     final byte[] array;
     final int offset;
     final int length = msg.readableBytes();

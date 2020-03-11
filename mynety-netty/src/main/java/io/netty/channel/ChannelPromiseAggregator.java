@@ -28,8 +28,8 @@ import io.netty.util.concurrent.PromiseCombiner;
  */
 @Deprecated
 public final class ChannelPromiseAggregator
-    extends PromiseAggregator<Void, ChannelFuture>
-    implements ChannelFutureListener {
+  extends PromiseAggregator<Void, ChannelFuture>
+  implements ChannelFutureListener {
 
   public ChannelPromiseAggregator(ChannelPromise aggregatePromise) {
     super(aggregatePromise);

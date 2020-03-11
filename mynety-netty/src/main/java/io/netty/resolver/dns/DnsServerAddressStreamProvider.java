@@ -28,7 +28,6 @@ import io.netty.util.internal.UnstableApi;
 public interface DnsServerAddressStreamProvider {
   /**
    * Ask this provider for the name servers to query for {@code hostname}.
-   *
    * @param hostname The hostname for which to lookup the DNS server addressed to use.
    *                 If this is the final {@link DnsServerAddressStreamProvider} to be queried then generally empty
    *                 string or {@code '.'} correspond to the default {@link DnsServerAddressStream}.

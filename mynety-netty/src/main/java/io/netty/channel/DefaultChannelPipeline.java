@@ -28,7 +28,14 @@ import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.net.SocketAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.WeakHashMap;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
@@ -44,16 +51,16 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   private static final String TAIL_NAME = generateName0(TailContext.class);
 
   private static final FastThreadLocal<Map<Class<?>, String>> nameCaches =
-      new FastThreadLocal<Map<Class<?>, String>>() {
-        @Override
-        protected Map<Class<?>, String> initialValue() {
-          return new WeakHashMap<Class<?>, String>();
-        }
-      };
+    new FastThreadLocal<Map<Class<?>, String>>() {
+      @Override
+      protected Map<Class<?>, String> initialValue() {
+        return new WeakHashMap<Class<?>, String>();
+      }
+    };
 
   private static final AtomicReferenceFieldUpdater<DefaultChannelPipeline, MessageSizeEstimator.Handle> ESTIMATOR =
-      AtomicReferenceFieldUpdater.newUpdater(
-          DefaultChannelPipeline.class, MessageSizeEstimator.Handle.class, "estimatorHandle");
+    AtomicReferenceFieldUpdater.newUpdater(
+      DefaultChannelPipeline.class, MessageSizeEstimator.Handle.class, "estimatorHandle");
   final AbstractChannelHandlerContext head;
   final AbstractChannelHandlerContext tail;
 
@@ -233,7 +240,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
   @Override
   public final ChannelPipeline addBefore(
-      EventExecutorGroup group, String baseName, String name, ChannelHandler handler) {
+    EventExecutorGroup group, String baseName, String name, ChannelHandler handler) {
     final AbstractChannelHandlerContext newCtx;
     final AbstractChannelHandlerContext ctx;
     synchronized (this) {
@@ -286,7 +293,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
   @Override
   public final ChannelPipeline addAfter(
-      EventExecutorGroup group, String baseName, String name, ChannelHandler handler) {
+    EventExecutorGroup group, String baseName, String name, ChannelHandler handler) {
     final AbstractChannelHandlerContext newCtx;
     final AbstractChannelHandlerContext ctx;
 
@@ -516,12 +523,12 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   @Override
   @SuppressWarnings("unchecked")
   public final <T extends ChannelHandler> T replace(
-      Class<T> oldHandlerType, String newName, ChannelHandler newHandler) {
+    Class<T> oldHandlerType, String newName, ChannelHandler newHandler) {
     return (T) replace(getContextOrDie(oldHandlerType), newName, newHandler);
   }
 
   private ChannelHandler replace(
-      final AbstractChannelHandlerContext ctx, String newName, ChannelHandler newHandler) {
+    final AbstractChannelHandlerContext ctx, String newName, ChannelHandler newHandler) {
     assert ctx != head && ctx != tail;
 
     final AbstractChannelHandlerContext newCtx;
@@ -595,8 +602,8 @@ public class DefaultChannelPipeline implements ChannelPipeline {
       ChannelHandlerAdapter h = (ChannelHandlerAdapter) handler;
       if (!h.isSharable() && h.added) {
         throw new ChannelPipelineException(
-            h.getClass().getName() +
-                " is not a @Sharable handler, so can't be added or removed multiple times.");
+          h.getClass().getName() +
+            " is not a @Sharable handler, so can't be added or removed multiple times.");
       }
       h.added = true;
     }
@@ -619,12 +626,12 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
       if (removed) {
         fireExceptionCaught(new ChannelPipelineException(
-            ctx.handler().getClass().getName() +
-                ".handlerAdded() has thrown an exception; removed.", t));
+          ctx.handler().getClass().getName() +
+            ".handlerAdded() has thrown an exception; removed.", t));
       } else {
         fireExceptionCaught(new ChannelPipelineException(
-            ctx.handler().getClass().getName() +
-                ".handlerAdded() has thrown an exception; also failed to remove.", t));
+          ctx.handler().getClass().getName() +
+            ".handlerAdded() has thrown an exception; also failed to remove.", t));
       }
     }
   }
@@ -635,7 +642,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
       ctx.callHandlerRemoved();
     } catch (Throwable t) {
       fireExceptionCaught(new ChannelPipelineException(
-          ctx.handler().getClass().getName() + ".handlerRemoved() has thrown an exception.", t));
+        ctx.handler().getClass().getName() + ".handlerRemoved() has thrown an exception.", t));
     }
   }
 
@@ -791,8 +798,8 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   @Override
   public final String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append('{');
+      .append(StringUtil.simpleClassName(this))
+      .append('{');
     AbstractChannelHandlerContext ctx = head.next;
     for (; ; ) {
       if (ctx == tail) {
@@ -800,10 +807,10 @@ public class DefaultChannelPipeline implements ChannelPipeline {
       }
 
       buf.append('(')
-          .append(ctx.name())
-          .append(" = ")
-          .append(ctx.handler().getClass().getName())
-          .append(')');
+        .append(ctx.name())
+        .append(" = ")
+        .append(ctx.handler().getClass().getName())
+        .append(')');
 
       ctx = ctx.next;
       if (ctx == tail) {
@@ -986,7 +993,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
   @Override
   public final ChannelFuture connect(
-      SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
+    SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
     return tail.connect(remoteAddress, localAddress, promise);
   }
 
@@ -1156,9 +1163,9 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   protected void onUnhandledInboundException(Throwable cause) {
     try {
       logger.warn(
-          "An exceptionCaught() event was fired, and it reached at the tail of the pipeline. " +
-              "It usually means the last handler in the pipeline did not handle the exception.",
-          cause);
+        "An exceptionCaught() event was fired, and it reached at the tail of the pipeline. " +
+          "It usually means the last handler in the pipeline did not handle the exception.",
+        cause);
     } finally {
       ReferenceCountUtil.release(cause);
     }
@@ -1186,8 +1193,8 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   protected void onUnhandledInboundMessage(Object msg) {
     try {
       logger.debug(
-          "Discarded inbound message {} that reached at the tail of the pipeline. " +
-              "Please check your pipeline configuration.", msg);
+        "Discarded inbound message {} that reached at the tail of the pipeline. " +
+          "Please check your pipeline configuration.", msg);
     } finally {
       ReferenceCountUtil.release(msg);
     }
@@ -1202,7 +1209,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
     onUnhandledInboundMessage(msg);
     if (logger.isDebugEnabled()) {
       logger.debug("Discarded message pipeline : {}. Channel : {}.",
-          ctx.pipeline().names(), ctx.channel());
+        ctx.pipeline().names(), ctx.channel());
     }
   }
 
@@ -1313,7 +1320,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
   }
 
   final class HeadContext extends AbstractChannelHandlerContext
-      implements ChannelOutboundHandler, ChannelInboundHandler {
+    implements ChannelOutboundHandler, ChannelInboundHandler {
 
     private final Unsafe unsafe;
 
@@ -1340,15 +1347,15 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
     @Override
     public void bind(
-        ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise) {
+      ChannelHandlerContext ctx, SocketAddress localAddress, ChannelPromise promise) {
       unsafe.bind(localAddress, promise);
     }
 
     @Override
     public void connect(
-        ChannelHandlerContext ctx,
-        SocketAddress remoteAddress, SocketAddress localAddress,
-        ChannelPromise promise) {
+      ChannelHandlerContext ctx,
+      SocketAddress remoteAddress, SocketAddress localAddress,
+      ChannelPromise promise) {
       unsafe.connect(remoteAddress, localAddress, promise);
     }
 
@@ -1477,8 +1484,8 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         } catch (RejectedExecutionException e) {
           if (logger.isWarnEnabled()) {
             logger.warn(
-                "Can't invoke handlerAdded() as the EventExecutor {} rejected it, removing handler {}.",
-                executor, ctx.name(), e);
+              "Can't invoke handlerAdded() as the EventExecutor {} rejected it, removing handler {}.",
+              executor, ctx.name(), e);
           }
           atomicRemoveFromHandlerList(ctx);
           ctx.setRemoved();
@@ -1509,8 +1516,8 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         } catch (RejectedExecutionException e) {
           if (logger.isWarnEnabled()) {
             logger.warn(
-                "Can't invoke handlerRemoved() as the EventExecutor {} rejected it," +
-                    " removing handler {}.", executor, ctx.name(), e);
+              "Can't invoke handlerRemoved() as the EventExecutor {} rejected it," +
+                " removing handler {}.", executor, ctx.name(), e);
           }
           // remove0(...) was call before so just call AbstractChannelHandlerContext.setRemoved().
           ctx.setRemoved();

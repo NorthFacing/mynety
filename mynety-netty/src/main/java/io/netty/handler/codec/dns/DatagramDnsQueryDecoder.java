@@ -84,11 +84,11 @@ public class DatagramDnsQueryDecoder extends MessageToMessageDecoder<DatagramPac
       throw new CorruptedFrameException("not a query");
     }
     final DnsQuery query =
-        new DatagramDnsQuery(
-            packet.sender(),
-            packet.recipient(),
-            id,
-            DnsOpCode.valueOf((byte) (flags >> 11 & 0xf)));
+      new DatagramDnsQuery(
+        packet.sender(),
+        packet.recipient(),
+        id,
+        DnsOpCode.valueOf((byte) (flags >> 11 & 0xf)));
     query.setRecursionDesired((flags >> 8 & 1) == 1);
     query.setZ(flags >> 4 & 0x7);
     return query;
@@ -101,7 +101,7 @@ public class DatagramDnsQueryDecoder extends MessageToMessageDecoder<DatagramPac
   }
 
   private void decodeRecords(
-      DnsQuery query, DnsSection section, ByteBuf buf, int count) throws Exception {
+    DnsQuery query, DnsSection section, ByteBuf buf, int count) throws Exception {
     for (int i = count; i > 0; i--) {
       final DnsRecord r = recordDecoder.decodeRecord(buf);
       if (r == null) {

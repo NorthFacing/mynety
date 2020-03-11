@@ -17,7 +17,18 @@ package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultFileRegion;
+import io.netty.channel.EventLoop;
+import io.netty.channel.FileRegion;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.internal.ChannelUtils;
 import io.netty.channel.socket.DuplexChannel;
 import io.netty.channel.unix.FileDescriptor;
@@ -47,8 +58,8 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel implements DuplexChannel {
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
   private static final String EXPECTED_TYPES =
-      " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
-          StringUtil.simpleClassName(DefaultFileRegion.class) + ')';
+    " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
+      StringUtil.simpleClassName(DefaultFileRegion.class) + ')';
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(AbstractEpollStreamChannel.class);
 
   private final Runnable flushTask = new Runnable() {
@@ -144,7 +155,7 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
     }
     checkPositiveOrZero(len, "len");
     if (ch.config().getEpollMode() != EpollMode.LEVEL_TRIGGERED
-        || config().getEpollMode() != EpollMode.LEVEL_TRIGGERED) {
+      || config().getEpollMode() != EpollMode.LEVEL_TRIGGERED) {
       throw new IllegalStateException("spliceTo() supported only when using " + EpollMode.LEVEL_TRIGGERED);
     }
     checkNotNull(promise, "promise");
@@ -224,7 +235,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Write bytes form the given {@link ByteBuf} to the underlying {@link java.nio.channels.Channel}.
-   *
    * @param in  the collection which contains objects to write.
    * @param buf the {@link ByteBuf} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -249,7 +259,7 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
     } else {
       ByteBuffer[] nioBuffers = buf.nioBuffers();
       return writeBytesMultiple(in, nioBuffers, nioBuffers.length, readableBytes,
-          config().getMaxBytesPerGatheringWrite());
+        config().getMaxBytesPerGatheringWrite());
     }
   }
 
@@ -268,7 +278,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Write multiple bytes via {@link IovArray}.
-   *
    * @param in    the collection which contains objects to write.
    * @param array The array which contains the content to write.
    * @return The value that should be decremented from the write quantum which starts at
@@ -299,7 +308,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Write multiple bytes via {@link ByteBuffer} array.
-   *
    * @param in                        the collection which contains objects to write.
    * @param nioBuffers                The buffers to write.
    * @param nioBufferCnt              The number of buffers to write.
@@ -317,8 +325,8 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
    * @throws IOException If an I/O exception occurs during write.
    */
   private int writeBytesMultiple(
-      ChannelOutboundBuffer in, ByteBuffer[] nioBuffers, int nioBufferCnt, long expectedWrittenBytes,
-      long maxBytesPerGatheringWrite) throws IOException {
+    ChannelOutboundBuffer in, ByteBuffer[] nioBuffers, int nioBufferCnt, long expectedWrittenBytes,
+    long maxBytesPerGatheringWrite) throws IOException {
     assert expectedWrittenBytes != 0;
     if (expectedWrittenBytes > maxBytesPerGatheringWrite) {
       expectedWrittenBytes = maxBytesPerGatheringWrite;
@@ -335,7 +343,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Write a {@link DefaultFileRegion}
-   *
    * @param in     the collection which contains objects to write.
    * @param region the {@link DefaultFileRegion} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -371,7 +378,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Write a {@link FileRegion}
-   *
    * @param in     the collection which contains objects to write.
    * @param region the {@link FileRegion} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -444,7 +450,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Attempt to write a single object.
-   *
    * @param in the collection which contains objects to write.
    * @return The value that should be decremented from the write quantum which starts at
    * {@link ChannelConfig#getWriteSpinCount()}. The typical use cases are as follows:
@@ -480,7 +485,6 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
 
   /**
    * Attempt to write multiple {@link ByteBuf} objects.
-   *
    * @param in the collection which contains objects to write.
    * @return The value that should be decremented from the write quantum which starts at
    * {@link ChannelConfig#getWriteSpinCount()}. The typical use cases are as follows:
@@ -520,7 +524,7 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
   }
 
   @UnstableApi
@@ -649,7 +653,7 @@ public abstract class AbstractEpollStreamChannel extends AbstractEpollChannel im
     if (shutdownOutputCause != null) {
       if (shutdownInputCause != null) {
         logger.debug("Exception suppressed because a previous exception occurred.",
-            shutdownInputCause);
+          shutdownInputCause);
       }
       promise.setFailure(shutdownOutputCause);
     } else if (shutdownInputCause != null) {

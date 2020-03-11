@@ -15,8 +15,22 @@
  */
 package io.netty.handler.codec.http.websocketx;
 
-import io.netty.channel.*;
-import io.netty.handler.codec.http.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.EmptyArrays;
 import io.netty.util.internal.ObjectUtil;
@@ -51,7 +65,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param version               the protocol version
    * @param uri                   URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
@@ -59,16 +72,15 @@ public abstract class WebSocketServerHandshaker {
    * @param maxFramePayloadLength Maximum length of a frame's payload
    */
   protected WebSocketServerHandshaker(
-      WebSocketVersion version, String uri, String subprotocols,
-      int maxFramePayloadLength) {
+    WebSocketVersion version, String uri, String subprotocols,
+    int maxFramePayloadLength) {
     this(version, uri, subprotocols, WebSocketDecoderConfig.newBuilder()
-        .maxFramePayloadLength(maxFramePayloadLength)
-        .build());
+      .maxFramePayloadLength(maxFramePayloadLength)
+      .build());
   }
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param version       the protocol version
    * @param uri           URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                      sent to this URL.
@@ -76,7 +88,7 @@ public abstract class WebSocketServerHandshaker {
    * @param decoderConfig Frames decoder configuration.
    */
   protected WebSocketServerHandshaker(
-      WebSocketVersion version, String uri, String subprotocols, WebSocketDecoderConfig decoderConfig) {
+    WebSocketVersion version, String uri, String subprotocols, WebSocketDecoderConfig decoderConfig) {
     this.version = version;
     this.uri = uri;
     if (subprotocols != null) {
@@ -116,7 +128,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Gets the maximum length for any frame's payload.
-   *
    * @return The maximum length for a frame's payload
    */
   public int maxFramePayloadLength() {
@@ -125,7 +136,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Gets this decoder configuration.
-   *
    * @return This decoder configuration.
    */
   public WebSocketDecoderConfig decoderConfig() {
@@ -135,7 +145,6 @@ public abstract class WebSocketServerHandshaker {
   /**
    * Performs the opening handshake. When call this method you <strong>MUST NOT</strong> retain the
    * {@link FullHttpRequest} which is passed in.
-   *
    * @param channel Channel
    * @param req     HTTP Request
    * @return future
@@ -149,7 +158,6 @@ public abstract class WebSocketServerHandshaker {
    * Performs the opening handshake
    * <p>
    * When call this method you <strong>MUST NOT</strong> retain the {@link FullHttpRequest} which is passed in.
-   *
    * @param channel         Channel
    * @param req             HTTP Request
    * @param responseHeaders Extra headers to add to the handshake response or {@code null} if no extra headers should be added
@@ -178,7 +186,7 @@ public abstract class WebSocketServerHandshaker {
       ctx = p.context(HttpServerCodec.class);
       if (ctx == null) {
         promise.setFailure(
-            new IllegalStateException("No HttpDecoder and no HttpServerCodec in the pipeline"));
+          new IllegalStateException("No HttpDecoder and no HttpServerCodec in the pipeline"));
         return promise;
       }
       p.addBefore(ctx.name(), "wsencoder", newWebSocketEncoder());
@@ -208,7 +216,6 @@ public abstract class WebSocketServerHandshaker {
   /**
    * Performs the opening handshake. When call this method you <strong>MUST NOT</strong> retain the
    * {@link FullHttpRequest} which is passed in.
-   *
    * @param channel Channel
    * @param req     HTTP Request
    * @return future
@@ -222,7 +229,6 @@ public abstract class WebSocketServerHandshaker {
    * Performs the opening handshake
    * <p>
    * When call this method you <strong>MUST NOT</strong> retain the {@link HttpRequest} which is passed in.
-   *
    * @param channel         Channel
    * @param req             HTTP Request
    * @param responseHeaders Extra headers to add to the handshake response or {@code null} if no extra headers should be added
@@ -246,7 +252,7 @@ public abstract class WebSocketServerHandshaker {
       ctx = p.context(HttpServerCodec.class);
       if (ctx == null) {
         promise.setFailure(
-            new IllegalStateException("No HttpDecoder and no HttpServerCodec in the pipeline"));
+          new IllegalStateException("No HttpDecoder and no HttpServerCodec in the pipeline"));
         return promise;
       }
     }
@@ -297,7 +303,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Performs the closing handshake
-   *
    * @param channel Channel
    * @param frame   Closing Frame that was received
    */
@@ -310,7 +315,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Performs the closing handshake
-   *
    * @param channel Channel
    * @param frame   Closing Frame that was received
    * @param promise the {@link ChannelPromise} to be notified when the closing handshake is done
@@ -324,7 +328,6 @@ public abstract class WebSocketServerHandshaker {
 
   /**
    * Selects the first matching supported sub protocol
-   *
    * @param requestedSubprotocols CSV of protocols to be supported. e.g. "chat, superchat"
    * @return First matching supported sub protocol. Null if not found.
    */
@@ -339,7 +342,7 @@ public abstract class WebSocketServerHandshaker {
 
       for (String supportedSubprotocol : subprotocols) {
         if (SUB_PROTOCOL_WILDCARD.equals(supportedSubprotocol)
-            || requestedSubprotocol.equals(supportedSubprotocol)) {
+          || requestedSubprotocol.equals(supportedSubprotocol)) {
           selectedSubprotocol = requestedSubprotocol;
           return requestedSubprotocol;
         }

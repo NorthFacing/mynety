@@ -17,7 +17,17 @@ package io.netty.channel.kqueue;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultFileRegion;
+import io.netty.channel.EventLoop;
+import io.netty.channel.FileRegion;
 import io.netty.channel.internal.ChannelUtils;
 import io.netty.channel.socket.DuplexChannel;
 import io.netty.channel.unix.IovArray;
@@ -42,8 +52,8 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(AbstractKQueueStreamChannel.class);
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
   private static final String EXPECTED_TYPES =
-      " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
-          StringUtil.simpleClassName(DefaultFileRegion.class) + ')';
+    " (expected: " + StringUtil.simpleClassName(ByteBuf.class) + ", " +
+      StringUtil.simpleClassName(DefaultFileRegion.class) + ')';
   private WritableByteChannel byteChannel;
   private final Runnable flushTask = new Runnable() {
     @Override
@@ -78,7 +88,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Write bytes form the given {@link ByteBuf} to the underlying {@link java.nio.channels.Channel}.
-   *
    * @param in  the collection which contains objects to write.
    * @param buf the {@link ByteBuf} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -103,7 +112,7 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
     } else {
       ByteBuffer[] nioBuffers = buf.nioBuffers();
       return writeBytesMultiple(in, nioBuffers, nioBuffers.length, readableBytes,
-          config().getMaxBytesPerGatheringWrite());
+        config().getMaxBytesPerGatheringWrite());
     }
   }
 
@@ -122,7 +131,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Write multiple bytes via {@link IovArray}.
-   *
    * @param in    the collection which contains objects to write.
    * @param array The array which contains the content to write.
    * @return The value that should be decremented from the write quantum which starts at
@@ -153,7 +161,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Write multiple bytes via {@link ByteBuffer} array.
-   *
    * @param in                        the collection which contains objects to write.
    * @param nioBuffers                The buffers to write.
    * @param nioBufferCnt              The number of buffers to write.
@@ -171,8 +178,8 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
    * @throws IOException If an I/O exception occurs during write.
    */
   private int writeBytesMultiple(
-      ChannelOutboundBuffer in, ByteBuffer[] nioBuffers, int nioBufferCnt, long expectedWrittenBytes,
-      long maxBytesPerGatheringWrite) throws IOException {
+    ChannelOutboundBuffer in, ByteBuffer[] nioBuffers, int nioBufferCnt, long expectedWrittenBytes,
+    long maxBytesPerGatheringWrite) throws IOException {
     assert expectedWrittenBytes != 0;
     if (expectedWrittenBytes > maxBytesPerGatheringWrite) {
       expectedWrittenBytes = maxBytesPerGatheringWrite;
@@ -189,7 +196,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Write a {@link DefaultFileRegion}
-   *
    * @param in     the collection which contains objects to write.
    * @param region the {@link DefaultFileRegion} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -226,7 +232,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Write a {@link FileRegion}
-   *
    * @param in     the collection which contains objects to write.
    * @param region the {@link FileRegion} from which the bytes should be written
    * @return The value that should be decremented from the write quantum which starts at
@@ -299,7 +304,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Attempt to write a single object.
-   *
    * @param in the collection which contains objects to write.
    * @return The value that should be decremented from the write quantum which starts at
    * {@link ChannelConfig#getWriteSpinCount()}. The typical use cases are as follows:
@@ -329,7 +333,6 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
 
   /**
    * Attempt to write multiple {@link ByteBuf} objects.
-   *
    * @param in the collection which contains objects to write.
    * @return The value that should be decremented from the write quantum which starts at
    * {@link ChannelConfig#getWriteSpinCount()}. The typical use cases are as follows:
@@ -369,7 +372,7 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
   }
 
   @UnstableApi
@@ -488,7 +491,7 @@ public abstract class AbstractKQueueStreamChannel extends AbstractKQueueChannel 
     if (shutdownOutputCause != null) {
       if (shutdownInputCause != null) {
         logger.debug("Exception suppressed because a previous exception occurred.",
-            shutdownInputCause);
+          shutdownInputCause);
       }
       promise.setFailure(shutdownOutputCause);
     } else if (shutdownInputCause != null) {

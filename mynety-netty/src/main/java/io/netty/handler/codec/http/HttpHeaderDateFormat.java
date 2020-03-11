@@ -33,7 +33,6 @@ import java.util.TimeZone;
  * <li>Sunday, 06-Nov-94 08:49:37 GMT: obsolete specification</li>
  * <li>Sun Nov  6 08:49:37 1994: obsolete specification</li>
  * </ul>
- *
  * @deprecated Use {@link DateFormatter} instead
  */
 @Deprecated
@@ -44,12 +43,12 @@ public final class HttpHeaderDateFormat extends SimpleDateFormat {
   private final SimpleDateFormat format2 = new HttpHeaderDateFormatObsolete2();
 
   private static final FastThreadLocal<HttpHeaderDateFormat> dateFormatThreadLocal =
-      new FastThreadLocal<HttpHeaderDateFormat>() {
-        @Override
-        protected HttpHeaderDateFormat initialValue() {
-          return new HttpHeaderDateFormat();
-        }
-      };
+    new FastThreadLocal<HttpHeaderDateFormat>() {
+      @Override
+      protected HttpHeaderDateFormat initialValue() {
+        return new HttpHeaderDateFormat();
+      }
+    };
 
   public static HttpHeaderDateFormat get() {
     return dateFormatThreadLocal.get();

@@ -35,7 +35,6 @@ public interface ResourceLeak {
 
   /**
    * Close the leak so that {@link ResourceLeakDetector} does not warn about leaked resources.
-   *
    * @return {@code true} if called first time, {@code false} if called already
    */
   boolean close();

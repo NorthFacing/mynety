@@ -15,7 +15,11 @@
  */
 package io.netty.handler.ipfilter;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.net.SocketAddress;
 
@@ -77,7 +81,6 @@ public abstract class AbstractRemoteAddressFilter<T extends SocketAddress> exten
 
   /**
    * This method is called immediately after a {@link io.netty.channel.Channel} gets registered.
-   *
    * @return Return true if connections from this IP address and port should be accepted. False otherwise.
    */
   protected abstract boolean accept(ChannelHandlerContext ctx, T remoteAddress) throws Exception;
@@ -95,7 +98,6 @@ public abstract class AbstractRemoteAddressFilter<T extends SocketAddress> exten
    * This method is called if {@code remoteAddress} gets rejected by
    * {@link #accept(ChannelHandlerContext, SocketAddress)}.  You should override it if you would like to handle
    * (e.g. respond to) rejected addresses.
-   *
    * @return A {@link ChannelFuture} if you perform I/O operations, so that
    * the {@link Channel} can be closed once it completes. Null otherwise.
    */

@@ -23,7 +23,6 @@ import java.net.IDN;
 
 /**
  * A socks cmd response.
- *
  * @see SocksCmdRequest
  * @see SocksCmdResponseDecoder
  */
@@ -38,9 +37,9 @@ public final class SocksCmdResponse extends SocksResponse {
   private static final byte[] DOMAIN_ZEROED = {0x00};
   private static final byte[] IPv4_HOSTNAME_ZEROED = {0x00, 0x00, 0x00, 0x00};
   private static final byte[] IPv6_HOSTNAME_ZEROED = {0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00,
-      0x00, 0x00, 0x00, 0x00};
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00};
 
   public SocksCmdResponse(SocksCmdStatus cmdStatus, SocksAddressType addressType) {
     this(cmdStatus, addressType, null, 0);
@@ -48,7 +47,6 @@ public final class SocksCmdResponse extends SocksResponse {
 
   /**
    * Constructs new response and includes provided host and port as part of it.
-   *
    * @param cmdStatus   status of the response
    * @param addressType type of host parameter
    * @param host        host (BND.ADDR field) is address that server used when connecting to the target host.
@@ -101,7 +99,6 @@ public final class SocksCmdResponse extends SocksResponse {
 
   /**
    * Returns the {@link SocksCmdStatus} of this {@link SocksCmdResponse}
-   *
    * @return The {@link SocksCmdStatus} of this {@link SocksCmdResponse}
    */
   public SocksCmdStatus cmdStatus() {
@@ -110,7 +107,6 @@ public final class SocksCmdResponse extends SocksResponse {
 
   /**
    * Returns the {@link SocksAddressType} of this {@link SocksCmdResponse}
-   *
    * @return The {@link SocksAddressType} of this {@link SocksCmdResponse}
    */
   public SocksAddressType addressType() {
@@ -121,7 +117,6 @@ public final class SocksCmdResponse extends SocksResponse {
    * Returns host that is used as a parameter in {@link SocksCmdType}.
    * Host (BND.ADDR field in response) is address that server used when connecting to the target host.
    * This is typically different from address which client uses to connect to the SOCKS server.
-   *
    * @return host that is used as a parameter in {@link SocksCmdType}
    * or null when there was no host specified during response construction
    */
@@ -132,7 +127,6 @@ public final class SocksCmdResponse extends SocksResponse {
   /**
    * Returns port that is used as a parameter in {@link SocksCmdType}.
    * Port (BND.PORT field in response) is port that the server assigned to connect to the target host.
-   *
    * @return port that is used as a parameter in {@link SocksCmdType}
    */
   public int port() {
@@ -148,7 +142,7 @@ public final class SocksCmdResponse extends SocksResponse {
     switch (addressType) {
       case IPv4: {
         byte[] hostContent = host == null ?
-            IPv4_HOSTNAME_ZEROED : NetUtil.createByteArrayFromIpAddressString(host);
+          IPv4_HOSTNAME_ZEROED : NetUtil.createByteArrayFromIpAddressString(host);
         byteBuf.writeBytes(hostContent);
         byteBuf.writeShort(port);
         break;
@@ -166,7 +160,7 @@ public final class SocksCmdResponse extends SocksResponse {
       }
       case IPv6: {
         byte[] hostContent = host == null
-            ? IPv6_HOSTNAME_ZEROED : NetUtil.createByteArrayFromIpAddressString(host);
+          ? IPv6_HOSTNAME_ZEROED : NetUtil.createByteArrayFromIpAddressString(host);
         byteBuf.writeBytes(hostContent);
         byteBuf.writeShort(port);
         break;

@@ -28,7 +28,7 @@ import static io.netty.util.AsciiString.CASE_INSENSITIVE_HASHER;
 import static io.netty.util.AsciiString.CASE_SENSITIVE_HASHER;
 
 public class DefaultStompHeaders
-    extends DefaultHeaders<CharSequence, CharSequence, StompHeaders> implements StompHeaders {
+  extends DefaultHeaders<CharSequence, CharSequence, StompHeaders> implements StompHeaders {
   public DefaultStompHeaders() {
     super(CASE_SENSITIVE_HASHER, CharSequenceValueConverter.INSTANCE);
   }
@@ -56,7 +56,7 @@ public class DefaultStompHeaders
   @Override
   public boolean contains(CharSequence name, CharSequence value, boolean ignoreCase) {
     return contains(name, value,
-        ignoreCase ? CASE_INSENSITIVE_HASHER : CASE_SENSITIVE_HASHER);
+      ignoreCase ? CASE_INSENSITIVE_HASHER : CASE_SENSITIVE_HASHER);
   }
 
   @Override

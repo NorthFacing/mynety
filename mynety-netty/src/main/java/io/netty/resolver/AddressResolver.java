@@ -37,7 +37,6 @@ public interface AddressResolver<T extends SocketAddress> extends Closeable {
 
   /**
    * Returns {@code true} if and only if the specified address has been resolved.
-   *
    * @throws UnsupportedAddressTypeException if the specified address is not supported by this resolver
    */
   boolean isResolved(SocketAddress address);
@@ -45,7 +44,6 @@ public interface AddressResolver<T extends SocketAddress> extends Closeable {
   /**
    * Resolves the specified address. If the specified address is resolved already, this method does nothing
    * but returning the original address.
-   *
    * @param address the address to resolve
    * @return the {@link SocketAddress} as the result of the resolution
    */
@@ -54,7 +52,6 @@ public interface AddressResolver<T extends SocketAddress> extends Closeable {
   /**
    * Resolves the specified address. If the specified address is resolved already, this method does nothing
    * but returning the original address.
-   *
    * @param address the address to resolve
    * @param promise the {@link Promise} which will be fulfilled when the name resolution is finished
    * @return the {@link SocketAddress} as the result of the resolution
@@ -64,7 +61,6 @@ public interface AddressResolver<T extends SocketAddress> extends Closeable {
   /**
    * Resolves the specified address. If the specified address is resolved already, this method does nothing
    * but returning the original address.
-   *
    * @param address the address to resolve
    * @return the list of the {@link SocketAddress}es as the result of the resolution
    */
@@ -73,7 +69,6 @@ public interface AddressResolver<T extends SocketAddress> extends Closeable {
   /**
    * Resolves the specified address. If the specified address is resolved already, this method does nothing
    * but returning the original address.
-   *
    * @param address the address to resolve
    * @param promise the {@link Promise} which will be fulfilled when the name resolution is finished
    * @return the list of the {@link SocketAddress}es as the result of the resolution

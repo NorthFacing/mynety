@@ -34,7 +34,6 @@ public class ThreadLocalUnmarshallerProvider implements UnmarshallerProvider {
 
   /**
    * Create a new instance of the {@link ThreadLocalUnmarshallerProvider}
-   *
    * @param factory the {@link MarshallerFactory} to use to create {@link Unmarshaller}'s if needed
    * @param config  the {@link MarshallingConfiguration} to use
    */

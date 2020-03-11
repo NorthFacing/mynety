@@ -15,7 +15,20 @@
  */
 package io.netty.handler.codec.haproxy;
 
-import static io.netty.handler.codec.haproxy.HAProxyConstants.*;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_IPV4_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_IPV6_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_UNIX_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.AF_UNSPEC_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_TCP4_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_TCP6_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UDP4_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UDP6_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNIX_DGRAM_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNIX_STREAM_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TPAF_UNKNOWN_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_DGRAM_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_STREAM_BYTE;
+import static io.netty.handler.codec.haproxy.HAProxyConstants.TRANSPORT_UNSPEC_BYTE;
 
 /**
  * A protocol proxied by HAProxy which is represented by its transport protocol and address family.
@@ -58,9 +71,9 @@ public enum HAProxyProxiedProtocol {
    * Creates a new instance.
    */
   HAProxyProxiedProtocol(
-      byte byteValue,
-      AddressFamily addressFamily,
-      TransportProtocol transportProtocol) {
+    byte byteValue,
+    AddressFamily addressFamily,
+    TransportProtocol transportProtocol) {
 
     this.byteValue = byteValue;
     this.addressFamily = addressFamily;
@@ -69,7 +82,6 @@ public enum HAProxyProxiedProtocol {
 
   /**
    * Returns the {@link HAProxyProxiedProtocol} represented by the specified byte.
-   *
    * @param tpafByte transport protocol and address family byte
    */
   public static HAProxyProxiedProtocol valueOf(byte tpafByte) {
@@ -90,7 +102,7 @@ public enum HAProxyProxiedProtocol {
         return UNIX_DGRAM;
       default:
         throw new IllegalArgumentException(
-            "unknown transport protocol + address family: " + (tpafByte & 0xFF));
+          "unknown transport protocol + address family: " + (tpafByte & 0xFF));
     }
   }
 
@@ -152,7 +164,6 @@ public enum HAProxyProxiedProtocol {
 
     /**
      * Returns the {@link AddressFamily} represented by the highest 4 bits of the specified byte.
-     *
      * @param tpafByte transport protocol and address family byte
      */
     public static AddressFamily valueOf(byte tpafByte) {
@@ -212,7 +223,6 @@ public enum HAProxyProxiedProtocol {
 
     /**
      * Returns the {@link TransportProtocol} represented by the lowest 4 bits of the specified byte.
-     *
      * @param tpafByte transport protocol and address family byte
      */
     public static TransportProtocol valueOf(byte tpafByte) {

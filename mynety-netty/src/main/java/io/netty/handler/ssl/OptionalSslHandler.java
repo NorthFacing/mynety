@@ -77,7 +77,6 @@ public class OptionalSslHandler extends ByteToMessageDecoder {
 
   /**
    * Optionally specify the SSL handler name, this method may return {@code null}.
-   *
    * @return the name of the SSL handler.
    */
   protected String newSslHandlerName() {
@@ -88,7 +87,6 @@ public class OptionalSslHandler extends ByteToMessageDecoder {
    * Override to configure the SslHandler eg. {@link SSLParameters#setEndpointIdentificationAlgorithm(String)}.
    * The hostname and port is not known by this method so servers may want to override this method and use the
    * {@link SslContext#newHandler(ByteBufAllocator, String, int)} variant.
-   *
    * @param context    the {@link ChannelHandlerContext} to use.
    * @param sslContext the {@link SSLContext} to use.
    * @return the {@link SslHandler} which will replace the {@link OptionalSslHandler} in the pipeline if the
@@ -100,7 +98,6 @@ public class OptionalSslHandler extends ByteToMessageDecoder {
 
   /**
    * Optionally specify the non-SSL handler name, this method may return {@code null}.
-   *
    * @return the name of the non-SSL handler.
    */
   protected String newNonSslHandlerName() {
@@ -109,7 +106,6 @@ public class OptionalSslHandler extends ByteToMessageDecoder {
 
   /**
    * Override to configure the ChannelHandler.
-   *
    * @param context the {@link ChannelHandlerContext} to use.
    * @return the {@link ChannelHandler} which will replace the {@link OptionalSslHandler} in the pipeline
    * or {@code null} to simply remove the {@link OptionalSslHandler} if the traffic is non-SSL.

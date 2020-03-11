@@ -194,7 +194,7 @@ public class JdkZlibDecoder extends ZlibDecoder {
           if (inflater.needsDictionary()) {
             if (dictionary == null) {
               throw new DecompressionException(
-                  "decompression failure, unable to set dictionary as non was specified");
+                "decompression failure, unable to set dictionary as non was specified");
             }
             inflater.setDictionary(dictionary);
           }
@@ -265,7 +265,7 @@ public class JdkZlibDecoder extends ZlibDecoder {
         int method = in.readUnsignedByte();
         if (method != Deflater.DEFLATED) {
           throw new DecompressionException("Unsupported compression method "
-              + method + " in the GZIP header");
+            + method + " in the GZIP header");
         }
         crc.update(method);
 
@@ -274,7 +274,7 @@ public class JdkZlibDecoder extends ZlibDecoder {
 
         if ((flags & FRESERVED) != 0) {
           throw new DecompressionException(
-              "Reserved flags are set in the GZIP header");
+            "Reserved flags are set in the GZIP header");
         }
 
         // mtime (int)
@@ -372,7 +372,7 @@ public class JdkZlibDecoder extends ZlibDecoder {
     int readLength = inflater.getTotalOut();
     if (dataLength != readLength) {
       throw new DecompressionException(
-          "Number of bytes mismatch. Expected: " + dataLength + ", Got: " + readLength);
+        "Number of bytes mismatch. Expected: " + dataLength + ", Got: " + readLength);
     }
     return true;
   }
@@ -385,7 +385,7 @@ public class JdkZlibDecoder extends ZlibDecoder {
     long readCrc = crc.getValue();
     if (crcValue != readCrc) {
       throw new DecompressionException(
-          "CRC value mismatch. Expected: " + crcValue + ", Got: " + readCrc);
+        "CRC value mismatch. Expected: " + crcValue + ", Got: " + readCrc);
     }
   }
 
@@ -398,6 +398,6 @@ public class JdkZlibDecoder extends ZlibDecoder {
    */
   private static boolean looksLikeZlib(short cmf_flg) {
     return (cmf_flg & 0x7800) == 0x7800 &&
-        cmf_flg % 31 == 0;
+      cmf_flg % 31 == 0;
   }
 }

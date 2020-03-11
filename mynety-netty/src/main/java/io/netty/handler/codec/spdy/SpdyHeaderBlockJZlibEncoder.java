@@ -31,31 +31,31 @@ class SpdyHeaderBlockJZlibEncoder extends SpdyHeaderBlockRawEncoder {
   private boolean finished;
 
   SpdyHeaderBlockJZlibEncoder(
-      SpdyVersion version, int compressionLevel, int windowBits, int memLevel) {
+    SpdyVersion version, int compressionLevel, int windowBits, int memLevel) {
     super(version);
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel + " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel + " (expected: 0-9)");
     }
     if (windowBits < 9 || windowBits > 15) {
       throw new IllegalArgumentException(
-          "windowBits: " + windowBits + " (expected: 9-15)");
+        "windowBits: " + windowBits + " (expected: 9-15)");
     }
     if (memLevel < 1 || memLevel > 9) {
       throw new IllegalArgumentException(
-          "memLevel: " + memLevel + " (expected: 1-9)");
+        "memLevel: " + memLevel + " (expected: 1-9)");
     }
 
     int resultCode = z.deflateInit(
-        compressionLevel, windowBits, memLevel, JZlib.W_ZLIB);
+      compressionLevel, windowBits, memLevel, JZlib.W_ZLIB);
     if (resultCode != JZlib.Z_OK) {
       throw new CompressionException(
-          "failed to initialize an SPDY header block deflater: " + resultCode);
+        "failed to initialize an SPDY header block deflater: " + resultCode);
     } else {
       resultCode = z.deflateSetDictionary(SPDY_DICT, SPDY_DICT.length);
       if (resultCode != JZlib.Z_OK) {
         throw new CompressionException(
-            "failed to set the SPDY dictionary: " + resultCode);
+          "failed to set the SPDY dictionary: " + resultCode);
       }
     }
   }

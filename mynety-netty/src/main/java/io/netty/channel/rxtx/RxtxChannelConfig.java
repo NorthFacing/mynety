@@ -49,7 +49,6 @@ import io.netty.channel.WriteBufferWaterMark;
  * <td>{@link RxtxChannelOption#WAIT_TIME}</td><td>{@link #setWaitTimeMillis(int)}</td>
  * </tr>
  * </table>
- *
  * @deprecated this transport will be removed in the next major version.
  */
 @Deprecated
@@ -174,7 +173,6 @@ public interface RxtxChannelConfig extends ChannelConfig {
    * Sets the baud rate (ie. bits per second) for communication with the serial device.
    * The baud rate will include bits for framing (in the form of stop bits and parity),
    * such that the effective data rate will be lower than this value.
-   *
    * @param baudrate The baud rate (in bits per second)
    */
   RxtxChannelConfig setBaudrate(int baudrate);
@@ -182,7 +180,6 @@ public interface RxtxChannelConfig extends ChannelConfig {
   /**
    * Sets the number of stop bits to include at the end of every character to aid the
    * serial device in synchronising with the data.
-   *
    * @param stopbits The number of stop bits to use
    */
   RxtxChannelConfig setStopbits(Stopbits stopbits);
@@ -190,14 +187,12 @@ public interface RxtxChannelConfig extends ChannelConfig {
   /**
    * Sets the number of data bits to use to make up each character sent to the serial
    * device.
-   *
    * @param databits The number of data bits to use
    */
   RxtxChannelConfig setDatabits(Databits databits);
 
   /**
    * Sets the type of parity bit to be used when communicating with the serial device.
-   *
    * @param paritybit The type of parity bit to be used
    */
   RxtxChannelConfig setParitybit(Paritybit paritybit);
@@ -230,7 +225,6 @@ public interface RxtxChannelConfig extends ChannelConfig {
   /**
    * Sets whether the serial device supports the Data Terminal Ready signal, used for
    * flow control
-   *
    * @param dtr true if DTR is supported, false otherwise
    */
   RxtxChannelConfig setDtr(boolean dtr);
@@ -243,7 +237,6 @@ public interface RxtxChannelConfig extends ChannelConfig {
   /**
    * Sets whether the serial device supports the Request To Send signal, used for flow
    * control
-   *
    * @param rts true if RTS is supported, false otherwise
    */
   RxtxChannelConfig setRts(boolean rts);
@@ -258,7 +251,6 @@ public interface RxtxChannelConfig extends ChannelConfig {
    * Sets the time to wait after opening the serial port and before sending it any
    * configuration information or data. A value of 0 indicates that no waiting should
    * occur.
-   *
    * @param waitTimeMillis The number of milliseconds to wait, defaulting to 0 (no
    *                       wait) if unset
    * @throws IllegalArgumentException if the supplied value is &lt; 0

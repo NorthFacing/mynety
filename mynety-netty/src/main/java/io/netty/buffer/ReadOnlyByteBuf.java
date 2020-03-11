@@ -31,7 +31,6 @@ import java.nio.channels.ScatteringByteChannel;
  * A derived buffer which forbids any write requests to its parent.  It is
  * recommended to use {@link Unpooled#unmodifiableBuffer(ByteBuf)}
  * instead of calling the constructor explicitly.
- *
  * @deprecated Do not use.
  */
 @Deprecated
@@ -248,19 +247,19 @@ public class ReadOnlyByteBuf extends AbstractDerivedByteBuf {
 
   @Override
   public int getBytes(int index, GatheringByteChannel out, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().getBytes(index, out, length);
   }
 
   @Override
   public int getBytes(int index, FileChannel out, long position, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().getBytes(index, out, position, length);
   }
 
   @Override
   public ByteBuf getBytes(int index, OutputStream out, int length)
-      throws IOException {
+    throws IOException {
     unwrap().getBytes(index, out, length);
     return this;
   }

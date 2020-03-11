@@ -34,7 +34,6 @@ public class DefaultChannelPromise extends DefaultPromise<Void> implements Chann
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   public DefaultChannelPromise(Channel channel) {
@@ -43,7 +42,6 @@ public class DefaultChannelPromise extends DefaultPromise<Void> implements Chann
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   public DefaultChannelPromise(Channel channel, EventExecutor executor) {

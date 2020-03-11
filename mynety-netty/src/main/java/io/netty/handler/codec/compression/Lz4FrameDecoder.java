@@ -25,7 +25,13 @@ import net.jpountz.lz4.LZ4FastDecompressor;
 import java.util.List;
 import java.util.zip.Checksum;
 
-import static io.netty.handler.codec.compression.Lz4Constants.*;
+import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_COMPRESSED;
+import static io.netty.handler.codec.compression.Lz4Constants.BLOCK_TYPE_NON_COMPRESSED;
+import static io.netty.handler.codec.compression.Lz4Constants.COMPRESSION_LEVEL_BASE;
+import static io.netty.handler.codec.compression.Lz4Constants.DEFAULT_SEED;
+import static io.netty.handler.codec.compression.Lz4Constants.HEADER_LENGTH;
+import static io.netty.handler.codec.compression.Lz4Constants.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.Lz4Constants.MAX_BLOCK_SIZE;
 
 /**
  * Uncompresses a {@link ByteBuf} encoded with the LZ4 format.
@@ -101,7 +107,6 @@ public class Lz4FrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a LZ4 decoder with fastest decoder instance available on your machine.
-   *
    * @param validateChecksums if {@code true}, the checksum field will be validated against the actual
    *                          uncompressed data, and if the checksums do not match, a suitable
    *                          {@link DecompressionException} will be thrown
@@ -112,7 +117,6 @@ public class Lz4FrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new LZ4 decoder with customizable implementation.
-   *
    * @param factory           user customizable {@link LZ4Factory} instance
    *                          which may be JNI bindings to the original C implementation, a pure Java implementation
    *                          or a Java implementation that uses the {@link sun.misc.Unsafe}
@@ -128,7 +132,6 @@ public class Lz4FrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new customizable LZ4 decoder.
-   *
    * @param factory  user customizable {@link LZ4Factory} instance
    *                 which may be JNI bindings to the original C implementation, a pure Java implementation
    *                 or a Java implementation that uses the {@link sun.misc.Unsafe}
@@ -163,23 +166,23 @@ public class Lz4FrameDecoder extends ByteToMessageDecoder {
           int compressedLength = Integer.reverseBytes(in.readInt());
           if (compressedLength < 0 || compressedLength > MAX_BLOCK_SIZE) {
             throw new DecompressionException(String.format(
-                "invalid compressedLength: %d (expected: 0-%d)",
-                compressedLength, MAX_BLOCK_SIZE));
+              "invalid compressedLength: %d (expected: 0-%d)",
+              compressedLength, MAX_BLOCK_SIZE));
           }
 
           int decompressedLength = Integer.reverseBytes(in.readInt());
           final int maxDecompressedLength = 1 << compressionLevel;
           if (decompressedLength < 0 || decompressedLength > maxDecompressedLength) {
             throw new DecompressionException(String.format(
-                "invalid decompressedLength: %d (expected: 0-%d)",
-                decompressedLength, maxDecompressedLength));
+              "invalid decompressedLength: %d (expected: 0-%d)",
+              decompressedLength, maxDecompressedLength));
           }
           if (decompressedLength == 0 && compressedLength != 0
-              || decompressedLength != 0 && compressedLength == 0
-              || blockType == BLOCK_TYPE_NON_COMPRESSED && decompressedLength != compressedLength) {
+            || decompressedLength != 0 && compressedLength == 0
+            || blockType == BLOCK_TYPE_NON_COMPRESSED && decompressedLength != compressedLength) {
             throw new DecompressionException(String.format(
-                "stream corrupted: compressedLength(%d) and decompressedLength(%d) mismatch",
-                compressedLength, decompressedLength));
+              "stream corrupted: compressedLength(%d) and decompressedLength(%d) mismatch",
+              compressedLength, decompressedLength));
           }
 
           int currentChecksum = Integer.reverseBytes(in.readInt());
@@ -224,14 +227,14 @@ public class Lz4FrameDecoder extends ByteToMessageDecoder {
                 uncompressed = ctx.alloc().buffer(decompressedLength, decompressedLength);
 
                 decompressor.decompress(CompressionUtil.safeNioBuffer(in),
-                    uncompressed.internalNioBuffer(uncompressed.writerIndex(), decompressedLength));
+                  uncompressed.internalNioBuffer(uncompressed.writerIndex(), decompressedLength));
                 // Update the writerIndex now to reflect what we decompressed.
                 uncompressed.writerIndex(uncompressed.writerIndex() + decompressedLength);
                 break;
               default:
                 throw new DecompressionException(String.format(
-                    "unexpected blockType: %d (expected: %d or %d)",
-                    blockType, BLOCK_TYPE_NON_COMPRESSED, BLOCK_TYPE_COMPRESSED));
+                  "unexpected blockType: %d (expected: %d or %d)",
+                  blockType, BLOCK_TYPE_NON_COMPRESSED, BLOCK_TYPE_COMPRESSED));
             }
             // Skip inbound bytes after we processed them.
             in.skipBytes(compressedLength);

@@ -34,7 +34,7 @@ public final class PendingWriteQueue {
   //  - 4 reference fields
   //  - 1 long fields
   private static final int PENDING_WRITE_OVERHEAD =
-      SystemPropertyUtil.getInt("io.netty.transport.pendingWriteSizeOverhead", 64);
+    SystemPropertyUtil.getInt("io.netty.transport.pendingWriteSizeOverhead", 64);
 
   private final ChannelHandlerContext ctx;
   private final PendingBytesTracker tracker;
@@ -117,7 +117,6 @@ public final class PendingWriteQueue {
   /**
    * Remove all pending write operation and performs them via
    * {@link ChannelHandlerContext#write(Object, ChannelPromise)}.
-   *
    * @return {@link ChannelFuture} if something was written and {@code null}
    * if the {@link PendingWriteQueue} is empty.
    */
@@ -212,7 +211,6 @@ public final class PendingWriteQueue {
   /**
    * Removes a pending write operation and performs it via
    * {@link ChannelHandlerContext#write(Object, ChannelPromise)}.
-   *
    * @return {@link ChannelFuture} if something was written and {@code null}
    * if the {@link PendingWriteQueue} is empty.
    */
@@ -230,7 +228,6 @@ public final class PendingWriteQueue {
 
   /**
    * Removes a pending write operation and release it's message via {@link ReferenceCountUtil#safeRelease(Object)}.
-   *
    * @return {@link ChannelPromise} of the pending write or {@code null} if the queue is empty.
    */
   public ChannelPromise remove() {

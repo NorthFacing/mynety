@@ -115,7 +115,6 @@ public class LzmaFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Creates LZMA encoder with specified settings.
-   *
    * @param lc             the number of "literal context" bits, available values [0, 8], default value {@value #DEFAULT_LC}.
    * @param lp             the number of "literal position" bits, available values [0, 4], default value {@value #DEFAULT_LP}.
    * @param pb             the number of "position" bits, available values [0, 4], default value {@value #DEFAULT_PB}.
@@ -141,8 +140,8 @@ public class LzmaFrameEncoder extends MessageToByteEncoder<ByteBuf> {
     if (lc + lp > 4) {
       if (!warningLogged) {
         logger.warn("The latest versions of LZMA libraries (for example, XZ Utils) " +
-            "has an additional requirement: lc + lp <= 4. Data which don't follow " +
-            "this requirement cannot be decompressed with this libraries.");
+          "has an additional requirement: lc + lp <= 4. Data which don't follow " +
+          "this requirement cannot be decompressed with this libraries.");
         warningLogged = true;
       }
     }
@@ -151,7 +150,7 @@ public class LzmaFrameEncoder extends MessageToByteEncoder<ByteBuf> {
     }
     if (numFastBytes < MIN_FAST_BYTES || numFastBytes > MAX_FAST_BYTES) {
       throw new IllegalArgumentException(String.format(
-          "numFastBytes: %d (expected: %d-%d)", numFastBytes, MIN_FAST_BYTES, MAX_FAST_BYTES
+        "numFastBytes: %d (expected: %d-%d)", numFastBytes, MIN_FAST_BYTES, MAX_FAST_BYTES
       ));
     }
 

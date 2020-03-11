@@ -50,7 +50,6 @@ final class HpackHuffmanEncoder {
 
   /**
    * Creates a new Huffman encoder with the specified Huffman coding.
-   *
    * @param codes   the Huffman codes indexed by symbol
    * @param lengths the length of each Huffman code
    */
@@ -61,7 +60,6 @@ final class HpackHuffmanEncoder {
 
   /**
    * Compresses the input string literal using the Huffman coding.
-   *
    * @param out  the output stream for the compressed data
    * @param data the string literal to be Huffman encoded
    */
@@ -110,7 +108,6 @@ final class HpackHuffmanEncoder {
 
   /**
    * Returns the number of bytes required to Huffman encode the input string literal.
-   *
    * @param data the string literal to be Huffman encoded
    * @return the number of bytes required to Huffman encode {@code data}
    */

@@ -18,7 +18,23 @@ package io.netty.handler.codec.http2;
 import io.netty.util.collection.CharObjectHashMap;
 import io.netty.util.internal.UnstableApi;
 
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_CONCURRENT_STREAMS;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_INITIAL_WINDOW_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_CONCURRENT_STREAMS;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_INITIAL_WINDOW_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.NUM_STANDARD_SETTINGS;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_ENABLE_PUSH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_INITIAL_WINDOW_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_MAX_CONCURRENT_STREAMS;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_MAX_FRAME_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_MAX_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.isMaxFrameSizeValid;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -51,7 +67,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
   /**
    * Adds the given setting key/value pair. For standard settings defined by the HTTP/2 spec, performs
    * validation on the values.
-   *
    * @throws IllegalArgumentException if verification for a standard HTTP/2 setting fails.
    */
   @Override
@@ -69,7 +84,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
 
   /**
    * Sets the {@code SETTINGS_HEADER_TABLE_SIZE} value.
-   *
    * @throws IllegalArgumentException if verification of the setting fails.
    */
   public Http2Settings headerTableSize(long value) {
@@ -105,7 +119,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
 
   /**
    * Sets the {@code SETTINGS_MAX_CONCURRENT_STREAMS} value.
-   *
    * @throws IllegalArgumentException if verification of the setting fails.
    */
   public Http2Settings maxConcurrentStreams(long value) {
@@ -122,7 +135,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
 
   /**
    * Sets the {@code SETTINGS_INITIAL_WINDOW_SIZE} value.
-   *
    * @throws IllegalArgumentException if verification of the setting fails.
    */
   public Http2Settings initialWindowSize(int value) {
@@ -139,7 +151,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
 
   /**
    * Sets the {@code SETTINGS_MAX_FRAME_SIZE} value.
-   *
    * @throws IllegalArgumentException if verification of the setting fails.
    */
   public Http2Settings maxFrameSize(int value) {
@@ -156,7 +167,6 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
 
   /**
    * Sets the {@code SETTINGS_MAX_HEADER_LIST_SIZE} value.
-   *
    * @throws IllegalArgumentException if verification of the setting fails.
    */
   public Http2Settings maxHeaderListSize(long value) {
@@ -202,13 +212,13 @@ public final class Http2Settings extends CharObjectHashMap<Long> {
       case SETTINGS_MAX_CONCURRENT_STREAMS:
         if (value < MIN_CONCURRENT_STREAMS || value > MAX_CONCURRENT_STREAMS) {
           throw new IllegalArgumentException(
-              "Setting MAX_CONCURRENT_STREAMS is invalid: " + value);
+            "Setting MAX_CONCURRENT_STREAMS is invalid: " + value);
         }
         break;
       case SETTINGS_INITIAL_WINDOW_SIZE:
         if (value < MIN_INITIAL_WINDOW_SIZE || value > MAX_INITIAL_WINDOW_SIZE) {
           throw new IllegalArgumentException("Setting INITIAL_WINDOW_SIZE is invalid: "
-              + value);
+            + value);
         }
         break;
       case SETTINGS_MAX_FRAME_SIZE:

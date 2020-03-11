@@ -21,13 +21,12 @@ import io.netty.util.internal.StringUtil;
  * The default {@link SpdyRstStreamFrame} implementation.
  */
 public class DefaultSpdyRstStreamFrame extends DefaultSpdyStreamFrame
-    implements SpdyRstStreamFrame {
+  implements SpdyRstStreamFrame {
 
   private SpdyStreamStatus status;
 
   /**
    * Creates a new instance.
-   *
    * @param streamId   the Stream-ID of this frame
    * @param statusCode the Status code of this frame
    */
@@ -37,7 +36,6 @@ public class DefaultSpdyRstStreamFrame extends DefaultSpdyStreamFrame
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    * @param status   the status of this frame
    */
@@ -72,13 +70,13 @@ public class DefaultSpdyRstStreamFrame extends DefaultSpdyStreamFrame
   @Override
   public String toString() {
     return new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append(StringUtil.NEWLINE)
-        .append("--> Stream-ID = ")
-        .append(streamId())
-        .append(StringUtil.NEWLINE)
-        .append("--> Status: ")
-        .append(status())
-        .toString();
+      .append(StringUtil.simpleClassName(this))
+      .append(StringUtil.NEWLINE)
+      .append("--> Stream-ID = ")
+      .append(streamId())
+      .append(StringUtil.NEWLINE)
+      .append("--> Status: ")
+      .append(status())
+      .toString();
   }
 }

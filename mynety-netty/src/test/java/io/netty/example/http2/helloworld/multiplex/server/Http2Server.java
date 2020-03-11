@@ -57,19 +57,19 @@ public final class Http2Server {
       SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
       SelfSignedCertificate ssc = new SelfSignedCertificate();
       sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-          .sslProvider(provider)
-          /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
-           * Please refer to the HTTP/2 specification for cipher requirements. */
-          .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-          .applicationProtocolConfig(new ApplicationProtocolConfig(
-              Protocol.ALPN,
-              // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-              SelectorFailureBehavior.NO_ADVERTISE,
-              // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-              SelectedListenerFailureBehavior.ACCEPT,
-              ApplicationProtocolNames.HTTP_2,
-              ApplicationProtocolNames.HTTP_1_1))
-          .build();
+        .sslProvider(provider)
+        /* NOTE: the cipher filter may not include all ciphers required by the HTTP/2 specification.
+         * Please refer to the HTTP/2 specification for cipher requirements. */
+        .ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+        .applicationProtocolConfig(new ApplicationProtocolConfig(
+          Protocol.ALPN,
+          // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+          SelectorFailureBehavior.NO_ADVERTISE,
+          // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+          SelectedListenerFailureBehavior.ACCEPT,
+          ApplicationProtocolNames.HTTP_2,
+          ApplicationProtocolNames.HTTP_1_1))
+        .build();
     } else {
       sslCtx = null;
     }
@@ -79,14 +79,14 @@ public final class Http2Server {
       ServerBootstrap b = new ServerBootstrap();
       b.option(ChannelOption.SO_BACKLOG, 1024);
       b.group(group)
-          .channel(NioServerSocketChannel.class)
-          .handler(new LoggingHandler(LogLevel.INFO))
-          .childHandler(new Http2ServerInitializer(sslCtx));
+        .channel(NioServerSocketChannel.class)
+        .handler(new LoggingHandler(LogLevel.INFO))
+        .childHandler(new Http2ServerInitializer(sslCtx));
 
       Channel ch = b.bind(PORT).sync().channel();
 
       System.err.println("Open your HTTP/2-enabled web browser and navigate to " +
-          (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+        (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
 
       ch.closeFuture().sync();
     } finally {

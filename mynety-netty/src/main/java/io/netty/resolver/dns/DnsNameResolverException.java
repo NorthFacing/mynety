@@ -40,7 +40,7 @@ public class DnsNameResolverException extends RuntimeException {
   }
 
   public DnsNameResolverException(
-      InetSocketAddress remoteAddress, DnsQuestion question, String message, Throwable cause) {
+    InetSocketAddress remoteAddress, DnsQuestion question, String message, Throwable cause) {
     super(message, cause);
     this.remoteAddress = validateRemoteAddress(remoteAddress);
     this.question = validateQuestion(question);

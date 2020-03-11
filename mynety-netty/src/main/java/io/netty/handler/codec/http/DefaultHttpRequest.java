@@ -27,7 +27,6 @@ public class DefaultHttpRequest extends DefaultHttpMessage implements HttpReques
 
   /**
    * Creates a new instance.
-   *
    * @param httpVersion the HTTP version of the request
    * @param method      the HTTP method of the request
    * @param uri         the URI or path of the request
@@ -38,7 +37,6 @@ public class DefaultHttpRequest extends DefaultHttpMessage implements HttpReques
 
   /**
    * Creates a new instance.
-   *
    * @param httpVersion     the HTTP version of the request
    * @param method          the HTTP method of the request
    * @param uri             the URI or path of the request
@@ -52,7 +50,6 @@ public class DefaultHttpRequest extends DefaultHttpMessage implements HttpReques
 
   /**
    * Creates a new instance.
-   *
    * @param httpVersion the HTTP version of the request
    * @param method      the HTTP method of the request
    * @param uri         the URI or path of the request
@@ -128,8 +125,8 @@ public class DefaultHttpRequest extends DefaultHttpMessage implements HttpReques
     DefaultHttpRequest other = (DefaultHttpRequest) o;
 
     return method().equals(other.method()) &&
-        uri().equalsIgnoreCase(other.uri()) &&
-        super.equals(o);
+      uri().equalsIgnoreCase(other.uri()) &&
+      super.equals(o);
   }
 
   @Override

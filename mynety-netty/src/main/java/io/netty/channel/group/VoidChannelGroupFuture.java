@@ -140,7 +140,6 @@ final class VoidChannelGroupFuture implements ChannelGroupFuture {
 
   /**
    * {@inheritDoc}
-   *
    * @param mayInterruptIfRunning this value has no effect in this implementation.
    */
   @Override

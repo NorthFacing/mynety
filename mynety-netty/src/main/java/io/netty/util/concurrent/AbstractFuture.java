@@ -22,7 +22,6 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Abstract {@link Future} implementation which does not allow for cancellation.
- *
  * @param <V>
  */
 public abstract class AbstractFuture<V> implements Future<V> {

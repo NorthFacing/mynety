@@ -16,8 +16,16 @@ package io.netty.handler.codec;
 
 import io.netty.util.HashingStrategy;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static io.netty.util.HashingStrategy.JAVA_HASHER;
 import static io.netty.util.internal.MathUtil.findNextPositivePowerOfTwo;
@@ -27,7 +35,6 @@ import static java.lang.Math.min;
 
 /**
  * Default implementation of {@link Headers};
- *
  * @param <K> the type of the header name.
  * @param <V> the type of the header value.
  * @param <T> the type to use for return values when the intention is to return {@code this} object.
@@ -50,7 +57,6 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
   public interface NameValidator<K> {
     /**
      * Verify that {@code name} is valid.
-     *
      * @param name The name to validate.
      * @throws RuntimeException if {@code name} is not valid.
      */
@@ -87,7 +93,6 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
 
   /**
    * Create a new instance.
-   *
    * @param nameHashingStrategy Used to hash and equality compare names.
    * @param valueConverter      Used to convert values to/from native types.
    * @param nameValidator       Used to validate name elements.
@@ -170,7 +175,6 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
 
   /**
    * Equivalent to {@link #getAll(Object)} but no intermediate list is generated.
-   *
    * @param name the name of the header to retrieve
    * @return an {@link Iterator} of header values corresponding to {@code name}.
    */
@@ -395,10 +399,10 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
   protected void addImpl(Headers<? extends K, ? extends V, ?> headers) {
     if (headers instanceof DefaultHeaders) {
       @SuppressWarnings("unchecked") final DefaultHeaders<? extends K, ? extends V, T> defaultHeaders =
-          (DefaultHeaders<? extends K, ? extends V, T>) headers;
+        (DefaultHeaders<? extends K, ? extends V, T>) headers;
       HeaderEntry<? extends K, ? extends V> e = defaultHeaders.head.after;
       if (defaultHeaders.hashingStrategy == hashingStrategy &&
-          defaultHeaders.nameValidator == nameValidator) {
+        defaultHeaders.nameValidator == nameValidator) {
         // Fastest copy
         while (e != defaultHeaders.head) {
           add0(e.hash, index(e.hash), e.key, e.value);
@@ -900,7 +904,6 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
 
   /**
    * Test this object for equality against {@code h2}.
-   *
    * @param h2                   The object to check equality for.
    * @param valueHashingStrategy Defines how values will be compared for equality.
    * @return {@code true} if this object equals {@code h2} given {@code valueHashingStrategy}.
@@ -933,7 +936,6 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
   /**
    * Generate a hash code for this object given a {@link HashingStrategy} to generate hash codes for
    * individual values.
-   *
    * @param valueHashingStrategy Defines how values will be hashed.
    */
   public final int hashCode(HashingStrategy<V> valueHashingStrategy) {
@@ -1032,7 +1034,7 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
    */
   public DefaultHeaders<K, V, T> copy() {
     DefaultHeaders<K, V, T> copy = new DefaultHeaders<K, V, T>(
-        hashingStrategy, valueConverter, nameValidator, entries.length);
+      hashingStrategy, valueConverter, nameValidator, entries.length);
     copy.addImpl(this);
     return copy;
   }
@@ -1197,7 +1199,7 @@ public class DefaultHeaders<K, V, T extends Headers<K, V, T>> implements Headers
       }
       Map.Entry<?, ?> other = (Map.Entry<?, ?>) o;
       return (getKey() == null ? other.getKey() == null : getKey().equals(other.getKey())) &&
-          (getValue() == null ? other.getValue() == null : getValue().equals(other.getValue()));
+        (getValue() == null ? other.getValue() == null : getValue().equals(other.getValue()));
     }
 
     @Override

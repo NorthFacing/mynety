@@ -45,18 +45,18 @@ public class WorldClockServerHandler extends SimpleChannelInboundHandler<Locatio
     LocalTimes.Builder builder = LocalTimes.newBuilder();
     for (Location l : locations.getLocationList()) {
       TimeZone tz = TimeZone.getTimeZone(
-          toString(l.getContinent()) + '/' + l.getCity());
+        toString(l.getContinent()) + '/' + l.getCity());
       Calendar calendar = getInstance(tz);
       calendar.setTimeInMillis(currentTime);
 
       builder.addLocalTime(LocalTime.newBuilder().
-          setYear(calendar.get(YEAR)).
-          setMonth(calendar.get(MONTH) + 1).
-          setDayOfMonth(calendar.get(DAY_OF_MONTH)).
-          setDayOfWeek(DayOfWeek.valueOf(calendar.get(DAY_OF_WEEK))).
-          setHour(calendar.get(HOUR_OF_DAY)).
-          setMinute(calendar.get(MINUTE)).
-          setSecond(calendar.get(SECOND)).build());
+        setYear(calendar.get(YEAR)).
+        setMonth(calendar.get(MONTH) + 1).
+        setDayOfMonth(calendar.get(DAY_OF_MONTH)).
+        setDayOfWeek(DayOfWeek.valueOf(calendar.get(DAY_OF_WEEK))).
+        setHour(calendar.get(HOUR_OF_DAY)).
+        setMinute(calendar.get(MINUTE)).
+        setSecond(calendar.get(SECOND)).build());
     }
 
     ctx.write(builder.build());

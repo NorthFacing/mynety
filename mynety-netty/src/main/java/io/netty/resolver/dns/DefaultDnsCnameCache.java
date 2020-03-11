@@ -21,7 +21,9 @@ import io.netty.util.internal.UnstableApi;
 
 import java.util.List;
 
-import static io.netty.util.internal.ObjectUtil.*;
+import static io.netty.util.internal.ObjectUtil.checkNotNull;
+import static io.netty.util.internal.ObjectUtil.checkPositive;
+import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 /**
  * Default implementation of a {@link DnsCnameCache}.
@@ -53,7 +55,6 @@ public final class DefaultDnsCnameCache implements DnsCnameCache {
 
   /**
    * Create a cache.
-   *
    * @param minTtl the minimum TTL
    * @param maxTtl the maximum TTL
    */
@@ -62,7 +63,7 @@ public final class DefaultDnsCnameCache implements DnsCnameCache {
     this.maxTtl = Math.min(Cache.MAX_SUPPORTED_TTL_SECS, checkPositive(maxTtl, "maxTtl"));
     if (minTtl > maxTtl) {
       throw new IllegalArgumentException(
-          "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
+        "minTtl: " + minTtl + ", maxTtl: " + maxTtl + " (expected: 0 <= minTtl <= maxTtl)");
     }
   }
 

@@ -39,7 +39,7 @@ final class CookieUtil {
       bits.set(i);
     }
     int[] separators = new int[]
-        {'(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=', '{', '}', ' ', '\t'};
+      {'(', ')', '<', '>', '@', ',', ';', ':', '\\', '"', '/', '[', ']', '?', '=', '{', '}', ' ', '\t'};
     for (int separator : separators) {
       bits.set(separator, false);
     }

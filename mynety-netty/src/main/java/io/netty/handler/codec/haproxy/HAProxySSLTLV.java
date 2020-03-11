@@ -33,7 +33,6 @@ public final class HAProxySSLTLV extends HAProxyTLV {
 
   /**
    * Creates a new HAProxySSLTLV
-   *
    * @param verify         the verification result as defined in the specification for the pp2_tlv_ssl struct (see
    *                       http://www.haproxy.org/download/1.5/doc/proxy-protocol.txt)
    * @param clientBitField the bitfield with client information

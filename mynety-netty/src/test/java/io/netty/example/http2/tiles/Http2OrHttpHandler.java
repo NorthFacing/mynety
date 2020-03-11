@@ -56,20 +56,20 @@ public class Http2OrHttpHandler extends ApplicationProtocolNegotiationHandler {
   private static void configureHttp2(ChannelHandlerContext ctx) {
     DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
     InboundHttp2ToHttpAdapter listener = new InboundHttp2ToHttpAdapterBuilder(connection)
-        .propagateSettings(true).validateHttpHeaders(false)
-        .maxContentLength(MAX_CONTENT_LENGTH).build();
+      .propagateSettings(true).validateHttpHeaders(false)
+      .maxContentLength(MAX_CONTENT_LENGTH).build();
 
     ctx.pipeline().addLast(new HttpToHttp2ConnectionHandlerBuilder()
-        .frameListener(listener)
-        // .frameLogger(TilesHttp2ToHttpHandler.logger)
-        .connection(connection).build());
+      .frameListener(listener)
+      // .frameLogger(TilesHttp2ToHttpHandler.logger)
+      .connection(connection).build());
 
     ctx.pipeline().addLast(new Http2RequestHandler());
   }
 
   private static void configureHttp1(ChannelHandlerContext ctx) throws Exception {
     ctx.pipeline().addLast(new HttpServerCodec(),
-        new HttpObjectAggregator(MAX_CONTENT_LENGTH),
-        new FallbackRequestHandler());
+      new HttpObjectAggregator(MAX_CONTENT_LENGTH),
+      new FallbackRequestHandler());
   }
 }

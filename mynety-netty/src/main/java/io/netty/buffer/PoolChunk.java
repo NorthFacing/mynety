@@ -249,7 +249,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
    * This is triggered only when a successor is allocated and all its predecessors
    * need to update their state
    * The minimal depth at which subtree rooted at id has some free space
-   *
    * @param id id
    */
   private void updateParentsAlloc(int id) {
@@ -267,7 +266,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
    * Update method used by free
    * This needs to handle the special case when both children are completely free
    * in which case parent be directly allocated on request of size = child-size * 2
-   *
    * @param id id
    */
   private void updateParentsFree(int id) {
@@ -292,7 +290,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
   /**
    * Algorithm to allocate an index in memoryMap when we query for a free node
    * at depth d
-   *
    * @param d depth
    * @return index in memoryMap
    */
@@ -313,7 +310,7 @@ final class PoolChunk<T> implements PoolChunkMetric {
     }
     byte value = value(id);
     assert value == d && (id & initial) == 1 << d : String.format("val = %d, id & initial = %d, d = %d",
-        value, id & initial, d);
+      value, id & initial, d);
     setValue(id, unusable); // mark as unusable
     updateParentsAlloc(id);
     return id;
@@ -321,7 +318,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
 
   /**
    * Allocate a run of pages (>=1)
-   *
    * @param normCapacity normalized capacity
    * @return index in memoryMap
    */
@@ -338,7 +334,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
   /**
    * Create / initialize a new PoolSubpage of normCapacity
    * Any PoolSubpage created / initialized here is added to subpage pool in the PoolArena that owns this PoolChunk
-   *
    * @param normCapacity normalized capacity
    * @return index in memoryMap
    */
@@ -375,7 +370,6 @@ final class PoolChunk<T> implements PoolChunkMetric {
    * When a subpage is freed from PoolSubpage, it might be added back to subpage pool of the owning PoolArena
    * If the subpage pool in PoolArena has at least one other PoolSubpage of given elemSize, we can
    * completely free the owning Page so it is available for subsequent allocations
-   *
    * @param handle handle to free
    */
   void free(long handle, ByteBuffer nioBuffer) {
@@ -400,7 +394,7 @@ final class PoolChunk<T> implements PoolChunkMetric {
     updateParentsFree(memoryMapIdx);
 
     if (nioBuffer != null && cachedNioBuffers != null &&
-        cachedNioBuffers.size() < PooledByteBufAllocator.DEFAULT_MAX_CACHED_BYTEBUFFERS_PER_CHUNK) {
+      cachedNioBuffers.size() < PooledByteBufAllocator.DEFAULT_MAX_CACHED_BYTEBUFFERS_PER_CHUNK) {
       cachedNioBuffers.offer(nioBuffer);
     }
   }
@@ -412,7 +406,7 @@ final class PoolChunk<T> implements PoolChunkMetric {
       byte val = value(memoryMapIdx);
       assert val == unusable : String.valueOf(val);
       buf.init(this, nioBuffer, handle, runOffset(memoryMapIdx) + offset,
-          reqCapacity, runLength(memoryMapIdx), arena.parent.threadCache());
+        reqCapacity, runLength(memoryMapIdx), arena.parent.threadCache());
     } else {
       initBufWithSubpage(buf, nioBuffer, handle, bitmapIdx, reqCapacity);
     }
@@ -433,9 +427,9 @@ final class PoolChunk<T> implements PoolChunkMetric {
     assert reqCapacity <= subpage.elemSize;
 
     buf.init(
-        this, nioBuffer, handle,
-        runOffset(memoryMapIdx) + (bitmapIdx & 0x3FFFFFFF) * subpage.elemSize + offset,
-        reqCapacity, subpage.elemSize, arena.parent.threadCache());
+      this, nioBuffer, handle,
+      runOffset(memoryMapIdx) + (bitmapIdx & 0x3FFFFFFF) * subpage.elemSize + offset,
+      reqCapacity, subpage.elemSize, arena.parent.threadCache());
   }
 
   private byte value(int id) {
@@ -498,16 +492,16 @@ final class PoolChunk<T> implements PoolChunkMetric {
     }
 
     return new StringBuilder()
-        .append("Chunk(")
-        .append(Integer.toHexString(System.identityHashCode(this)))
-        .append(": ")
-        .append(usage(freeBytes))
-        .append("%, ")
-        .append(chunkSize - freeBytes)
-        .append('/')
-        .append(chunkSize)
-        .append(')')
-        .toString();
+      .append("Chunk(")
+      .append(Integer.toHexString(System.identityHashCode(this)))
+      .append(": ")
+      .append(usage(freeBytes))
+      .append("%, ")
+      .append(chunkSize - freeBytes)
+      .append('/')
+      .append(chunkSize)
+      .append(')')
+      .toString();
   }
 
   void destroy() {

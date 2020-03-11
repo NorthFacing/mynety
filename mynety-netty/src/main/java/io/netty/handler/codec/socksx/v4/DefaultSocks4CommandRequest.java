@@ -32,7 +32,6 @@ public class DefaultSocks4CommandRequest extends AbstractSocks4Message implement
 
   /**
    * Creates a new instance.
-   *
    * @param type    the type of the request
    * @param dstAddr the {@code DSTIP} field of the request
    * @param dstPort the {@code DSTPORT} field of the request
@@ -43,7 +42,6 @@ public class DefaultSocks4CommandRequest extends AbstractSocks4Message implement
 
   /**
    * Creates a new instance.
-   *
    * @param type    the type of the request
    * @param dstAddr the {@code DSTIP} field of the request
    * @param dstPort the {@code DSTPORT} field of the request

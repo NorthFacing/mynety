@@ -31,7 +31,6 @@ public class DefaultDnsRawRecord extends AbstractDnsRecord implements DnsRawReco
 
   /**
    * Creates a new {@link #CLASS_IN IN-class} record.
-   *
    * @param name       the domain name
    * @param type       the type of the record
    * @param timeToLive the TTL value of the record
@@ -42,7 +41,6 @@ public class DefaultDnsRawRecord extends AbstractDnsRecord implements DnsRawReco
 
   /**
    * Creates a new record.
-   *
    * @param name       the domain name
    * @param type       the type of the record
    * @param dnsClass   the class of the record, usually one of the following:
@@ -57,7 +55,7 @@ public class DefaultDnsRawRecord extends AbstractDnsRecord implements DnsRawReco
    * @param timeToLive the TTL value of the record
    */
   public DefaultDnsRawRecord(
-      String name, DnsRecordType type, int dnsClass, long timeToLive, ByteBuf content) {
+    String name, DnsRecordType type, int dnsClass, long timeToLive, ByteBuf content) {
     super(name, type, dnsClass, timeToLive);
     this.content = checkNotNull(content, "content");
   }
@@ -132,23 +130,23 @@ public class DefaultDnsRawRecord extends AbstractDnsRecord implements DnsRawReco
     final DnsRecordType type = type();
     if (type != DnsRecordType.OPT) {
       buf.append(name().isEmpty() ? "<root>" : name())
-          .append(' ')
-          .append(timeToLive())
-          .append(' ');
+        .append(' ')
+        .append(timeToLive())
+        .append(' ');
 
       DnsMessageUtil.appendRecordClass(buf, dnsClass())
-          .append(' ')
-          .append(type.name());
+        .append(' ')
+        .append(type.name());
     } else {
       buf.append("OPT flags:")
-          .append(timeToLive())
-          .append(" udp:")
-          .append(dnsClass());
+        .append(timeToLive())
+        .append(" udp:")
+        .append(dnsClass());
     }
 
     buf.append(' ')
-        .append(content().readableBytes())
-        .append("B)");
+      .append(content().readableBytes())
+      .append("B)");
 
     return buf.toString();
   }

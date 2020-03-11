@@ -65,7 +65,6 @@ public interface DnsRecord {
 
   /**
    * Returns the class of this resource record.
-   *
    * @return the class value, usually one of the following:
    * <ul>
    *     <li>{@link #CLASS_IN}</li>

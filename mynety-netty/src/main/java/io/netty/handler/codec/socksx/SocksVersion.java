@@ -36,7 +36,6 @@ public enum SocksVersion {
   /**
    * Returns the {@link SocksVersion} that corresponds to the specified version field value,
    * as defined in the protocol specification.
-   *
    * @return {@link #UNKNOWN} if the specified value does not represent a known SOCKS protocol version
    */
   public static SocksVersion valueOf(byte b) {

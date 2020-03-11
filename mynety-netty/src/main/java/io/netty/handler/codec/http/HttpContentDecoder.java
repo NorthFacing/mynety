@@ -132,7 +132,7 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
             copy = new DefaultHttpResponse(r.protocolVersion(), r.status());
           } else {
             throw new CodecException("Object of class " + message.getClass().getName() +
-                " is not an HttpRequest or HttpResponse");
+              " is not an HttpRequest or HttpResponse");
           }
           copy.headers().set(message.headers());
           copy.setDecoderResult(message.decoderResult());
@@ -192,7 +192,6 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
   /**
    * Returns a new {@link EmbeddedChannel} that decodes the HTTP message
    * content encoded in the specified <tt>contentEncoding</tt>.
-   *
    * @param contentEncoding the value of the {@code "Content-Encoding"} header
    * @return a new {@link EmbeddedChannel} if the specified encoding is supported.
    * {@code null} otherwise (alternatively, you can throw an exception
@@ -204,12 +203,11 @@ public abstract class HttpContentDecoder extends MessageToMessageDecoder<HttpObj
    * Returns the expected content encoding of the decoded content.
    * This getMethod returns {@code "identity"} by default, which is the case for
    * most decoders.
-   *
    * @param contentEncoding the value of the {@code "Content-Encoding"} header
    * @return the expected content encoding of the new content
    */
   protected String getTargetContentEncoding(
-      @SuppressWarnings("UnusedParameters") String contentEncoding) throws Exception {
+    @SuppressWarnings("UnusedParameters") String contentEncoding) throws Exception {
     return IDENTITY;
   }
 

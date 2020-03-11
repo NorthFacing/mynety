@@ -154,7 +154,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
    * Creates a new instance with the specified parameters.
    */
   protected HttpObjectDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean chunkedSupported) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean chunkedSupported) {
     this(maxInitialLineLength, maxHeaderSize, maxChunkSize, chunkedSupported, true);
   }
 
@@ -162,14 +162,14 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
    * Creates a new instance with the specified parameters.
    */
   protected HttpObjectDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize,
-      boolean chunkedSupported, boolean validateHeaders) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize,
+    boolean chunkedSupported, boolean validateHeaders) {
     this(maxInitialLineLength, maxHeaderSize, maxChunkSize, chunkedSupported, validateHeaders, 128);
   }
 
   protected HttpObjectDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize,
-      boolean chunkedSupported, boolean validateHeaders, int initialBufferSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize,
+    boolean chunkedSupported, boolean validateHeaders, int initialBufferSize) {
     checkPositive(maxInitialLineLength, "maxInitialLineLength");
     checkPositive(maxHeaderSize, "maxHeaderSize");
     checkPositive(maxChunkSize, "maxChunkSize");
@@ -253,7 +253,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
               }
 
               assert nextState == State.READ_FIXED_LENGTH_CONTENT ||
-                  nextState == State.READ_VARIABLE_LENGTH_CONTENT;
+                nextState == State.READ_VARIABLE_LENGTH_CONTENT;
 
               out.add(message);
 
@@ -415,7 +415,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         // If we are still in the state of reading headers we need to create a new invalid message that
         // signals that the connection was closed before we received the headers.
         out.add(invalidMessage(Unpooled.EMPTY_BUFFER,
-            new PrematureChannelClosureException("Connection closed before received headers")));
+          new PrematureChannelClosureException("Connection closed before received headers")));
         resetNow();
         return;
       }
@@ -468,7 +468,7 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
       if (code >= 100 && code < 200) {
         // One exception: Hixie 76 websocket handshake response
         return !(code == 101 && !res.headers().contains(HttpHeaderNames.SEC_WEBSOCKET_ACCEPT)
-            && res.headers().contains(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET, true));
+          && res.headers().contains(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET, true));
       }
 
       switch (code) {
@@ -490,8 +490,8 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
     }
     String newProtocol = msg.headers().get(HttpHeaderNames.UPGRADE);
     return newProtocol == null ||
-        !newProtocol.contains(HttpVersion.HTTP_1_0.text()) &&
-            !newProtocol.contains(HttpVersion.HTTP_1_1.text());
+      !newProtocol.contains(HttpVersion.HTTP_1_0.text()) &&
+        !newProtocol.contains(HttpVersion.HTTP_1_1.text());
   }
 
   /**
@@ -663,8 +663,8 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
         splitHeader(line);
         CharSequence headerName = name;
         if (!HttpHeaderNames.CONTENT_LENGTH.contentEqualsIgnoreCase(headerName) &&
-            !HttpHeaderNames.TRANSFER_ENCODING.contentEqualsIgnoreCase(headerName) &&
-            !HttpHeaderNames.TRAILER.contentEqualsIgnoreCase(headerName)) {
+          !HttpHeaderNames.TRANSFER_ENCODING.contentEqualsIgnoreCase(headerName) &&
+          !HttpHeaderNames.TRAILER.contentEqualsIgnoreCase(headerName)) {
           trailer.trailingHeaders().add(headerName, value);
         }
         lastHeader = name;
@@ -719,9 +719,9 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
     cEnd = findEndOfString(sb);
 
     return new String[]{
-        sb.subStringUnsafe(aStart, aEnd),
-        sb.subStringUnsafe(bStart, bEnd),
-        cStart < cEnd ? sb.subStringUnsafe(cStart, cEnd) : ""};
+      sb.subStringUnsafe(aStart, aEnd),
+      sb.subStringUnsafe(bStart, bEnd),
+      cStart < cEnd ? sb.subStringUnsafe(cStart, cEnd) : ""};
   }
 
   private void splitHeader(AppendableCharSequence sb) {
@@ -745,11 +745,11 @@ public abstract class HttpObjectDecoder extends ByteToMessageDecoder {
       // of 400 (Bad Request). A proxy MUST remove any such whitespace from a
       // response message before forwarding the message downstream.
       if (ch == ':' ||
-          // In case of decoding a request we will just continue processing and header validation
-          // is done in the DefaultHttpHeaders implementation.
-          //
-          // In the case of decoding a response we will "skip" the whitespace.
-          (!isDecodingRequest() && Character.isWhitespace(ch))) {
+        // In case of decoding a request we will just continue processing and header validation
+        // is done in the DefaultHttpHeaders implementation.
+        //
+        // In the case of decoding a response we will "skip" the whitespace.
+        (!isDecodingRequest() && Character.isWhitespace(ch))) {
         break;
       }
     }

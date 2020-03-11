@@ -73,7 +73,7 @@ public class DefaultLastStompContentSubframe extends DefaultStompContentSubframe
   @Override
   public String toString() {
     return "DefaultLastStompContent{" +
-        "decoderResult=" + decoderResult() +
-        '}';
+      "decoderResult=" + decoderResult() +
+      '}';
   }
 }

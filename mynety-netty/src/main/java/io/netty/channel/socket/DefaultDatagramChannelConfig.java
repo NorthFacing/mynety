@@ -16,16 +16,35 @@
 package io.netty.channel.socket;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.FixedRecvByteBufAllocator;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.*;
+import static io.netty.channel.ChannelOption.DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION;
+import static io.netty.channel.ChannelOption.IP_MULTICAST_ADDR;
+import static io.netty.channel.ChannelOption.IP_MULTICAST_IF;
+import static io.netty.channel.ChannelOption.IP_MULTICAST_LOOP_DISABLED;
+import static io.netty.channel.ChannelOption.IP_MULTICAST_TTL;
+import static io.netty.channel.ChannelOption.IP_TOS;
+import static io.netty.channel.ChannelOption.SO_BROADCAST;
+import static io.netty.channel.ChannelOption.SO_RCVBUF;
+import static io.netty.channel.ChannelOption.SO_REUSEADDR;
+import static io.netty.channel.ChannelOption.SO_SNDBUF;
 
 /**
  * The default {@link DatagramChannelConfig} implementation.
@@ -56,9 +75,9 @@ public class DefaultDatagramChannelConfig extends DefaultChannelConfig implement
   @SuppressWarnings("deprecation")
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        SO_BROADCAST, SO_RCVBUF, SO_SNDBUF, SO_REUSEADDR, IP_MULTICAST_LOOP_DISABLED,
-        IP_MULTICAST_ADDR, IP_MULTICAST_IF, IP_MULTICAST_TTL, IP_TOS, DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION);
+      super.getOptions(),
+      SO_BROADCAST, SO_RCVBUF, SO_SNDBUF, SO_REUSEADDR, IP_MULTICAST_LOOP_DISABLED,
+      IP_MULTICAST_ADDR, IP_MULTICAST_IF, IP_MULTICAST_TTL, IP_TOS, DATAGRAM_CHANNEL_ACTIVE_ON_REGISTRATION);
   }
 
   @Override
@@ -150,15 +169,15 @@ public class DefaultDatagramChannelConfig extends DefaultChannelConfig implement
     try {
       // See: https://github.com/netty/netty/issues/576
       if (broadcast &&
-          !javaSocket.getLocalAddress().isAnyLocalAddress() &&
-          !PlatformDependent.isWindows() && !PlatformDependent.maybeSuperUser()) {
+        !javaSocket.getLocalAddress().isAnyLocalAddress() &&
+        !PlatformDependent.isWindows() && !PlatformDependent.maybeSuperUser()) {
         // Warn a user about the fact that a non-root user can't receive a
         // broadcast packet on *nix if the socket is bound on non-wildcard address.
         logger.warn(
-            "A non-root user can't receive a broadcast packet if the socket " +
-                "is not bound to a wildcard address; setting the SO_BROADCAST flag " +
-                "anyway as requested on the socket which is bound to " +
-                javaSocket.getLocalSocketAddress() + '.');
+          "A non-root user can't receive a broadcast packet if the socket " +
+            "is not bound to a wildcard address; setting the SO_BROADCAST flag " +
+            "anyway as requested on the socket which is bound to " +
+            javaSocket.getLocalSocketAddress() + '.');
       }
 
       javaSocket.setBroadcast(broadcast);

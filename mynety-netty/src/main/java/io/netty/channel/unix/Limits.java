@@ -15,7 +15,10 @@
  */
 package io.netty.channel.unix;
 
-import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.*;
+import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.iovMax;
+import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.sizeOfjlong;
+import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.ssizeMax;
+import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.uioMaxIov;
 
 public final class Limits {
   public static final int IOV_MAX = iovMax();

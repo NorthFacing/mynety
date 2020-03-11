@@ -19,17 +19,16 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
  * Result of detecting a protocol.
- *
  * @param <T> the type of the protocol
  */
 public final class ProtocolDetectionResult<T> {
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   private static final ProtocolDetectionResult NEEDS_MORE_DATE =
-      new ProtocolDetectionResult(ProtocolDetectionState.NEEDS_MORE_DATA, null);
+    new ProtocolDetectionResult(ProtocolDetectionState.NEEDS_MORE_DATA, null);
   @SuppressWarnings({"rawtypes", "unchecked"})
   private static final ProtocolDetectionResult INVALID =
-      new ProtocolDetectionResult(ProtocolDetectionState.INVALID, null);
+    new ProtocolDetectionResult(ProtocolDetectionState.INVALID, null);
 
   private final ProtocolDetectionState state;
   private final T result;

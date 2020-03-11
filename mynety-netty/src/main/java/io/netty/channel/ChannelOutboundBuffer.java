@@ -58,7 +58,7 @@ public final class ChannelOutboundBuffer {
   //  - 1 boolean field
   //  - padding
   static final int CHANNEL_OUTBOUND_BUFFER_ENTRY_OVERHEAD =
-      SystemPropertyUtil.getInt("io.netty.transport.outboundBufferEntrySizeOverhead", 96);
+    SystemPropertyUtil.getInt("io.netty.transport.outboundBufferEntrySizeOverhead", 96);
 
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(ChannelOutboundBuffer.class);
 
@@ -88,13 +88,13 @@ public final class ChannelOutboundBuffer {
   private boolean inFail;
 
   private static final AtomicLongFieldUpdater<ChannelOutboundBuffer> TOTAL_PENDING_SIZE_UPDATER =
-      AtomicLongFieldUpdater.newUpdater(ChannelOutboundBuffer.class, "totalPendingSize");
+    AtomicLongFieldUpdater.newUpdater(ChannelOutboundBuffer.class, "totalPendingSize");
 
   @SuppressWarnings("UnusedDeclaration")
   private volatile long totalPendingSize;
 
   private static final AtomicIntegerFieldUpdater<ChannelOutboundBuffer> UNWRITABLE_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(ChannelOutboundBuffer.class, "unwritable");
+    AtomicIntegerFieldUpdater.newUpdater(ChannelOutboundBuffer.class, "unwritable");
 
   @SuppressWarnings("UnusedDeclaration")
   private volatile int unwritable;
@@ -222,7 +222,6 @@ public final class ChannelOutboundBuffer {
 
   /**
    * Return the current message flush progress.
-   *
    * @return {@code 0} if nothing was flushed before for the current message or there is no current message
    */
   public long currentProgress() {
@@ -393,7 +392,6 @@ public final class ChannelOutboundBuffer {
    * {@link AbstractChannel#doWrite(ChannelOutboundBuffer)}.
    * Refer to {@link NioSocketChannel#doWrite(ChannelOutboundBuffer)} for an example.
    * </p>
-   *
    * @param maxCount The maximum amount of buffers that will be added to the return value.
    * @param maxBytes A hint toward the maximum number of bytes to include as part of the return value. Note that this
    *                 value maybe exceeded because we make a best effort to include at least 1 {@link ByteBuffer}

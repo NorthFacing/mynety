@@ -43,7 +43,7 @@ final class CleanerJava9 implements Cleaner {
           try {
             // See https://bugs.openjdk.java.net/browse/JDK-8171377
             Method m = PlatformDependent0.UNSAFE.getClass().getDeclaredMethod(
-                "invokeCleaner", ByteBuffer.class);
+              "invokeCleaner", ByteBuffer.class);
             m.invoke(PlatformDependent0.UNSAFE, buffer);
             return m;
           } catch (NoSuchMethodException e) {

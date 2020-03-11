@@ -19,7 +19,11 @@ import com.jcraft.jzlib.Deflater;
 import com.jcraft.jzlib.JZlib;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ChannelPromiseNotifier;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.EmptyArrays;
 
@@ -39,7 +43,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * Creates a new zlib encoder with the default compression level ({@code 6}),
    * default window bits ({@code 15}), default memory level ({@code 8}),
    * and the default wrapper ({@link ZlibWrapper#ZLIB}).
-   *
    * @throws CompressionException if failed to initialize zlib
    */
   public JZlibEncoder() {
@@ -50,7 +53,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * Creates a new zlib encoder with the specified {@code compressionLevel},
    * default window bits ({@code 15}), default memory level ({@code 8}),
    * and the default wrapper ({@link ZlibWrapper#ZLIB}).
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -64,7 +66,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * Creates a new zlib encoder with the default compression level ({@code 6}),
    * default window bits ({@code 15}), default memory level ({@code 8}),
    * and the specified wrapper.
-   *
    * @throws CompressionException if failed to initialize zlib
    */
   public JZlibEncoder(ZlibWrapper wrapper) {
@@ -75,7 +76,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * Creates a new zlib encoder with the specified {@code compressionLevel},
    * default window bits ({@code 15}), default memory level ({@code 8}),
    * and the specified wrapper.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -89,7 +89,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * Creates a new zlib encoder with the specified {@code compressionLevel},
    * the specified {@code windowBits}, the specified {@code memLevel}, and
    * the specified wrapper.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -107,29 +106,29 @@ public class JZlibEncoder extends ZlibEncoder {
 
     if (compressionLevel < 0 || compressionLevel > 9) {
       throw new IllegalArgumentException(
-          "compressionLevel: " + compressionLevel +
-              " (expected: 0-9)");
+        "compressionLevel: " + compressionLevel +
+          " (expected: 0-9)");
     }
     if (windowBits < 9 || windowBits > 15) {
       throw new IllegalArgumentException(
-          "windowBits: " + windowBits + " (expected: 9-15)");
+        "windowBits: " + windowBits + " (expected: 9-15)");
     }
     if (memLevel < 1 || memLevel > 9) {
       throw new IllegalArgumentException(
-          "memLevel: " + memLevel + " (expected: 1-9)");
+        "memLevel: " + memLevel + " (expected: 1-9)");
     }
     if (wrapper == null) {
       throw new NullPointerException("wrapper");
     }
     if (wrapper == ZlibWrapper.ZLIB_OR_NONE) {
       throw new IllegalArgumentException(
-          "wrapper '" + ZlibWrapper.ZLIB_OR_NONE + "' is not " +
-              "allowed for compression.");
+        "wrapper '" + ZlibWrapper.ZLIB_OR_NONE + "' is not " +
+          "allowed for compression.");
     }
 
     int resultCode = z.init(
-        compressionLevel, windowBits, memLevel,
-        ZlibUtil.convertWrapperType(wrapper));
+      compressionLevel, windowBits, memLevel,
+      ZlibUtil.convertWrapperType(wrapper));
     if (resultCode != JZlib.Z_OK) {
       ZlibUtil.fail(z, "initialization failure", resultCode);
     }
@@ -143,7 +142,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * and the specified preset dictionary.  The wrapper is always
    * {@link ZlibWrapper#ZLIB} because it is the only format that supports
    * the preset dictionary.
-   *
    * @param dictionary the preset dictionary
    * @throws CompressionException if failed to initialize zlib
    */
@@ -157,7 +155,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * and the specified preset dictionary.  The wrapper is always
    * {@link ZlibWrapper#ZLIB} because it is the only format that supports
    * the preset dictionary.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -174,7 +171,6 @@ public class JZlibEncoder extends ZlibEncoder {
    * and the specified preset dictionary.  The wrapper is always
    * {@link ZlibWrapper#ZLIB} because it is the only format that supports
    * the preset dictionary.
-   *
    * @param compressionLevel {@code 1} yields the fastest compression and {@code 9} yields the
    *                         best compression.  {@code 0} means no compression.  The default
    *                         compression level is {@code 6}.
@@ -195,19 +191,19 @@ public class JZlibEncoder extends ZlibEncoder {
     }
     if (windowBits < 9 || windowBits > 15) {
       throw new IllegalArgumentException(
-          "windowBits: " + windowBits + " (expected: 9-15)");
+        "windowBits: " + windowBits + " (expected: 9-15)");
     }
     if (memLevel < 1 || memLevel > 9) {
       throw new IllegalArgumentException(
-          "memLevel: " + memLevel + " (expected: 1-9)");
+        "memLevel: " + memLevel + " (expected: 1-9)");
     }
     if (dictionary == null) {
       throw new NullPointerException("dictionary");
     }
     int resultCode;
     resultCode = z.deflateInit(
-        compressionLevel, windowBits, memLevel,
-        JZlib.W_ZLIB); // Default: ZLIB format
+      compressionLevel, windowBits, memLevel,
+      JZlib.W_ZLIB); // Default: ZLIB format
     if (resultCode != JZlib.Z_OK) {
       ZlibUtil.fail(z, "initialization failure", resultCode);
     } else {
@@ -320,8 +316,8 @@ public class JZlibEncoder extends ZlibEncoder {
 
   @Override
   public void close(
-      final ChannelHandlerContext ctx,
-      final ChannelPromise promise) {
+    final ChannelHandlerContext ctx,
+    final ChannelPromise promise) {
     ChannelFuture f = finishEncode(ctx, ctx.newPromise());
     f.addListener(new ChannelFutureListener() {
       @Override

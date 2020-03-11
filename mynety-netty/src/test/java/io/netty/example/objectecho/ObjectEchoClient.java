@@ -45,7 +45,7 @@ public final class ObjectEchoClient {
     final SslContext sslCtx;
     if (SSL) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -54,20 +54,20 @@ public final class ObjectEchoClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            public void initChannel(SocketChannel ch) throws Exception {
-              ChannelPipeline p = ch.pipeline();
-              if (sslCtx != null) {
-                p.addLast(sslCtx.newHandler(ch.alloc(), HOST, PORT));
-              }
-              p.addLast(
-                  new ObjectEncoder(),
-                  new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                  new ObjectEchoClientHandler());
+        .channel(NioSocketChannel.class)
+        .handler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          public void initChannel(SocketChannel ch) throws Exception {
+            ChannelPipeline p = ch.pipeline();
+            if (sslCtx != null) {
+              p.addLast(sslCtx.newHandler(ch.alloc(), HOST, PORT));
             }
-          });
+            p.addLast(
+              new ObjectEncoder(),
+              new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+              new ObjectEchoClientHandler());
+          }
+        });
 
       // Start the connection attempt.
       b.connect(HOST, PORT).sync().channel().closeFuture().sync();

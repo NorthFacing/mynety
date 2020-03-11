@@ -59,12 +59,12 @@ import java.util.List;
 public class ProtobufEncoderNano extends MessageToMessageEncoder<MessageNano> {
   @Override
   protected void encode(
-      ChannelHandlerContext ctx, MessageNano msg, List<Object> out) throws Exception {
+    ChannelHandlerContext ctx, MessageNano msg, List<Object> out) throws Exception {
     final int size = msg.getSerializedSize();
     final ByteBuf buffer = ctx.alloc().heapBuffer(size, size);
     final byte[] array = buffer.array();
     CodedOutputByteBufferNano cobbn = CodedOutputByteBufferNano.newInstance(array,
-        buffer.arrayOffset(), buffer.capacity());
+      buffer.arrayOffset(), buffer.capacity());
     msg.writeTo(cobbn);
     buffer.writerIndex(size);
     out.add(buffer);

@@ -28,7 +28,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * <p>
  * Old <a href="http://tools.ietf.org/html/rfc2965">RFC2965</a> cookies are still supported,
  * old fields will simply be ignored.
- *
  * @see ServerCookieEncoder
  */
 public final class ServerCookieDecoder extends CookieDecoder {
@@ -58,7 +57,6 @@ public final class ServerCookieDecoder extends CookieDecoder {
 
   /**
    * Decodes the specified Set-Cookie HTTP header value into a {@link Cookie}.
-   *
    * @return the decoded {@link Cookie}
    */
   public Set<Cookie> decode(String header) {
@@ -89,7 +87,7 @@ public final class ServerCookieDecoder extends CookieDecoder {
         }
         char c = header.charAt(i);
         if (c == '\t' || c == '\n' || c == 0x0b || c == '\f'
-            || c == '\r' || c == ' ' || c == ',' || c == ';') {
+          || c == '\r' || c == ' ' || c == ',' || c == ';') {
           i++;
           continue;
         }
@@ -138,8 +136,8 @@ public final class ServerCookieDecoder extends CookieDecoder {
       }
 
       if (rfc2965Style && (header.regionMatches(nameBegin, RFC2965_PATH, 0, RFC2965_PATH.length()) ||
-          header.regionMatches(nameBegin, RFC2965_DOMAIN, 0, RFC2965_DOMAIN.length()) ||
-          header.regionMatches(nameBegin, RFC2965_PORT, 0, RFC2965_PORT.length()))) {
+        header.regionMatches(nameBegin, RFC2965_DOMAIN, 0, RFC2965_DOMAIN.length()) ||
+        header.regionMatches(nameBegin, RFC2965_PORT, 0, RFC2965_PORT.length()))) {
 
         // skip obsolete RFC2965 fields
         continue;

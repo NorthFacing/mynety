@@ -17,7 +17,11 @@ package io.netty.handler.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.TypeParameterMatcher;
 
@@ -60,7 +64,6 @@ public abstract class MessageToByteEncoder<I> extends ChannelOutboundHandlerAdap
 
   /**
    * Create a new instance which will try to detect the types to match out of the type parameter of the class.
-   *
    * @param preferDirect {@code true} if a direct {@link ByteBuf} should be tried to be used as target for
    *                     the encoded messages. If {@code false} is used it will allocate a heap
    *                     {@link ByteBuf}, which is backed by an byte array.
@@ -72,7 +75,6 @@ public abstract class MessageToByteEncoder<I> extends ChannelOutboundHandlerAdap
 
   /**
    * Create a new instance
-   *
    * @param outboundMessageType The type of messages to match
    * @param preferDirect        {@code true} if a direct {@link ByteBuf} should be tried to be used as target for
    *                            the encoded messages. If {@code false} is used it will allocate a heap
@@ -142,7 +144,6 @@ public abstract class MessageToByteEncoder<I> extends ChannelOutboundHandlerAdap
   /**
    * Encode a message into a {@link ByteBuf}. This method will be called for each written message that can be handled
    * by this encoder.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link MessageToByteEncoder} belongs to
    * @param msg the message to encode
    * @param out the {@link ByteBuf} into which the encoded message will be written

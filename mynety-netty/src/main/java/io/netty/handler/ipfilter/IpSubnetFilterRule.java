@@ -18,7 +18,11 @@ package io.netty.handler.ipfilter;
 import io.netty.util.internal.SocketUtils;
 
 import java.math.BigInteger;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 
 /**
  * Use this class to create rules for {@link RuleBasedIpFilter} that group IP addresses into subnets.
@@ -77,7 +81,7 @@ public final class IpSubnetFilterRule implements IpFilterRule {
     private Ip4SubnetFilterRule(Inet4Address ipAddress, int cidrPrefix, IpFilterRuleType ruleType) {
       if (cidrPrefix < 0 || cidrPrefix > 32) {
         throw new IllegalArgumentException(String.format("IPv4 requires the subnet prefix to be in range of " +
-            "[0,32]. The prefix was: %d", cidrPrefix));
+          "[0,32]. The prefix was: %d", cidrPrefix));
       }
 
       subnetMask = prefixToSubnetMask(cidrPrefix);
@@ -105,9 +109,9 @@ public final class IpSubnetFilterRule implements IpFilterRule {
       assert octets.length == 4;
 
       return (octets[0] & 0xff) << 24 |
-          (octets[1] & 0xff) << 16 |
-          (octets[2] & 0xff) << 8 |
-          octets[3] & 0xff;
+        (octets[1] & 0xff) << 16 |
+        (octets[2] & 0xff) << 8 |
+        octets[3] & 0xff;
     }
 
     private static int prefixToSubnetMask(int cidrPrefix) {
@@ -136,7 +140,7 @@ public final class IpSubnetFilterRule implements IpFilterRule {
     private Ip6SubnetFilterRule(Inet6Address ipAddress, int cidrPrefix, IpFilterRuleType ruleType) {
       if (cidrPrefix < 0 || cidrPrefix > 128) {
         throw new IllegalArgumentException(String.format("IPv6 requires the subnet prefix to be in range of " +
-            "[0,128]. The prefix was: %d", cidrPrefix));
+          "[0,128]. The prefix was: %d", cidrPrefix));
       }
 
       subnetMask = prefixToSubnetMask(cidrPrefix);

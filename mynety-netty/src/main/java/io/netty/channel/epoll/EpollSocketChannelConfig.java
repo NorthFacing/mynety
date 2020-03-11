@@ -16,7 +16,11 @@
 package io.netty.channel.epoll;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.SocketChannelConfig;
 import io.netty.util.internal.PlatformDependent;
 
@@ -24,7 +28,14 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.*;
+import static io.netty.channel.ChannelOption.ALLOW_HALF_CLOSURE;
+import static io.netty.channel.ChannelOption.IP_TOS;
+import static io.netty.channel.ChannelOption.SO_KEEPALIVE;
+import static io.netty.channel.ChannelOption.SO_LINGER;
+import static io.netty.channel.ChannelOption.SO_RCVBUF;
+import static io.netty.channel.ChannelOption.SO_REUSEADDR;
+import static io.netty.channel.ChannelOption.SO_SNDBUF;
+import static io.netty.channel.ChannelOption.TCP_NODELAY;
 
 public final class EpollSocketChannelConfig extends EpollChannelConfig implements SocketChannelConfig {
   private volatile boolean allowHalfClosure;
@@ -44,12 +55,12 @@ public final class EpollSocketChannelConfig extends EpollChannelConfig implement
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
-        ALLOW_HALF_CLOSURE, EpollChannelOption.TCP_CORK, EpollChannelOption.TCP_NOTSENT_LOWAT,
-        EpollChannelOption.TCP_KEEPCNT, EpollChannelOption.TCP_KEEPIDLE, EpollChannelOption.TCP_KEEPINTVL,
-        EpollChannelOption.TCP_MD5SIG, EpollChannelOption.TCP_QUICKACK, EpollChannelOption.IP_TRANSPARENT,
-        EpollChannelOption.TCP_FASTOPEN_CONNECT, EpollChannelOption.SO_BUSY_POLL);
+      super.getOptions(),
+      SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
+      ALLOW_HALF_CLOSURE, EpollChannelOption.TCP_CORK, EpollChannelOption.TCP_NOTSENT_LOWAT,
+      EpollChannelOption.TCP_KEEPCNT, EpollChannelOption.TCP_KEEPIDLE, EpollChannelOption.TCP_KEEPINTVL,
+      EpollChannelOption.TCP_MD5SIG, EpollChannelOption.TCP_QUICKACK, EpollChannelOption.IP_TRANSPARENT,
+      EpollChannelOption.TCP_FASTOPEN_CONNECT, EpollChannelOption.SO_BUSY_POLL);
   }
 
   @SuppressWarnings("unchecked")
@@ -249,7 +260,6 @@ public final class EpollSocketChannelConfig extends EpollChannelConfig implement
 
   /**
    * Get the {@code TCP_NOTSENT_LOWAT} option on the socket. See {@code man 7 tcp} for more details.
-   *
    * @return value is a uint32_t
    */
   public long getTcpNotSentLowAt() {
@@ -316,7 +326,7 @@ public final class EpollSocketChannelConfig extends EpollChannelConfig implement
 
   @Override
   public EpollSocketChannelConfig setPerformancePreferences(
-      int connectionTime, int latency, int bandwidth) {
+    int connectionTime, int latency, int bandwidth) {
     return this;
   }
 
@@ -397,7 +407,6 @@ public final class EpollSocketChannelConfig extends EpollChannelConfig implement
 
   /**
    * Set the {@code TCP_NOTSENT_LOWAT} option on the socket. See {@code man 7 tcp} for more details.
-   *
    * @param tcpNotSentLowAt is a uint32_t
    */
   public EpollSocketChannelConfig setTcpNotSentLowAt(long tcpNotSentLowAt) {

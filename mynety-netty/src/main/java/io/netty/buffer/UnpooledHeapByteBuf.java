@@ -43,7 +43,6 @@ public class UnpooledHeapByteBuf extends AbstractReferenceCountedByteBuf {
 
   /**
    * Creates a new heap buffer with a newly allocated byte array.
-   *
    * @param initialCapacity the initial capacity of the underlying byte array
    * @param maxCapacity     the max capacity of the underlying byte array
    */
@@ -54,7 +53,7 @@ public class UnpooledHeapByteBuf extends AbstractReferenceCountedByteBuf {
 
     if (initialCapacity > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
+        "initialCapacity(%d) > maxCapacity(%d)", initialCapacity, maxCapacity));
     }
 
     this.alloc = alloc;
@@ -64,7 +63,6 @@ public class UnpooledHeapByteBuf extends AbstractReferenceCountedByteBuf {
 
   /**
    * Creates a new heap buffer with an existing byte array.
-   *
    * @param initialArray the initial underlying byte array
    * @param maxCapacity  the max capacity of the underlying byte array
    */
@@ -76,7 +74,7 @@ public class UnpooledHeapByteBuf extends AbstractReferenceCountedByteBuf {
 
     if (initialArray.length > maxCapacity) {
       throw new IllegalArgumentException(String.format(
-          "initialCapacity(%d) > maxCapacity(%d)", initialArray.length, maxCapacity));
+        "initialCapacity(%d) > maxCapacity(%d)", initialArray.length, maxCapacity));
     }
 
     this.alloc = alloc;

@@ -38,14 +38,13 @@ import static java.nio.channels.SelectionKey.OP_ACCEPT;
 
 /**
  * Common base for Netty Byte/Message UDT Stream/Datagram acceptors.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated
 public abstract class NioUdtAcceptorChannel extends AbstractNioMessageChannel implements UdtServerChannel {
 
   protected static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(NioUdtAcceptorChannel.class);
+    InternalLoggerFactory.getInstance(NioUdtAcceptorChannel.class);
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false, 16);
 

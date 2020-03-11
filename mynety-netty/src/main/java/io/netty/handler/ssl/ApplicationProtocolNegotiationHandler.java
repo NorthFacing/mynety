@@ -15,7 +15,11 @@
  */
 package io.netty.handler.ssl;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -58,13 +62,12 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 public abstract class ApplicationProtocolNegotiationHandler extends ChannelInboundHandlerAdapter {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(ApplicationProtocolNegotiationHandler.class);
+    InternalLoggerFactory.getInstance(ApplicationProtocolNegotiationHandler.class);
 
   private final String fallbackProtocol;
 
   /**
    * Creates a new instance with the specified fallback protocol name.
-   *
    * @param fallbackProtocol the name of the protocol to use when
    *                         ALPN/NPN negotiation fails or the client does not support ALPN/NPN
    */
@@ -82,7 +85,7 @@ public abstract class ApplicationProtocolNegotiationHandler extends ChannelInbou
           SslHandler sslHandler = ctx.pipeline().get(SslHandler.class);
           if (sslHandler == null) {
             throw new IllegalStateException("cannot find an SslHandler in the pipeline (required for "
-                + "application-level protocol negotiation)");
+              + "application-level protocol negotiation)");
           }
           String protocol = sslHandler.applicationProtocol();
           configurePipeline(ctx, protocol != null ? protocol : fallbackProtocol);
@@ -104,7 +107,6 @@ public abstract class ApplicationProtocolNegotiationHandler extends ChannelInbou
   /**
    * Invoked on successful initial SSL/TLS handshake. Implement this method to configure your pipeline
    * for the negotiated application-level protocol.
-   *
    * @param protocol the name of the negotiated application-level protocol, or
    *                 the fallback protocol name specified in the constructor call if negotiation failed or the client
    *                 isn't aware of ALPN/NPN extension

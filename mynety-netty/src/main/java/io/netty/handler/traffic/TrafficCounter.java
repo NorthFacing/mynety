@@ -128,7 +128,7 @@ public class TrafficCounter {
    * Delay between two captures
    */
   final AtomicLong checkInterval = new AtomicLong(
-      AbstractTrafficShapingHandler.DEFAULT_CHECK_INTERVAL);
+    AbstractTrafficShapingHandler.DEFAULT_CHECK_INTERVAL);
 
   // default 1 s
 
@@ -190,7 +190,7 @@ public class TrafficCounter {
       monitorActive = true;
       monitor = new TrafficMonitoringTask();
       scheduledFuture =
-          executor.scheduleAtFixedRate(monitor, 0, localCheckInterval, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(monitor, 0, localCheckInterval, TimeUnit.MILLISECONDS);
     }
   }
 
@@ -213,7 +213,6 @@ public class TrafficCounter {
 
   /**
    * Reset the accounting on Read and Write.
-   *
    * @param newLastTime the milliseconds unix timestamp that we should be considered up-to-date for.
    */
   synchronized void resetAccounting(long newLastTime) {
@@ -239,7 +238,6 @@ public class TrafficCounter {
   /**
    * Constructor with the {@link AbstractTrafficShapingHandler} that hosts it, the {@link ScheduledExecutorService}
    * to use, its name, the checkInterval between two computations in milliseconds.
-   *
    * @param executor      the underlying executor service for scheduling checks, might be null when used
    *                      from {@link GlobalChannelTrafficCounter}.
    * @param name          the name given to this monitor.
@@ -260,7 +258,6 @@ public class TrafficCounter {
   /**
    * Constructor with the {@link AbstractTrafficShapingHandler} that hosts it, the Timer to use, its
    * name, the checkInterval between two computations in millisecond.
-   *
    * @param trafficShapingHandler the associated AbstractTrafficShapingHandler.
    * @param executor              the underlying executor service for scheduling checks, might be null when used
    *                              from {@link GlobalChannelTrafficCounter}.
@@ -268,8 +265,8 @@ public class TrafficCounter {
    * @param checkInterval         the checkInterval in millisecond between two computations.
    */
   public TrafficCounter(
-      AbstractTrafficShapingHandler trafficShapingHandler, ScheduledExecutorService executor,
-      String name, long checkInterval) {
+    AbstractTrafficShapingHandler trafficShapingHandler, ScheduledExecutorService executor,
+    String name, long checkInterval) {
 
     if (trafficShapingHandler == null) {
       throw new IllegalArgumentException("trafficShapingHandler");
@@ -297,7 +294,6 @@ public class TrafficCounter {
 
   /**
    * Change checkInterval between two computations in millisecond.
-   *
    * @param newCheckInterval The new check interval (in milliseconds)
    */
   public void configure(long newCheckInterval) {
@@ -317,7 +313,6 @@ public class TrafficCounter {
 
   /**
    * Computes counters for Read.
-   *
    * @param recv the size in bytes to read
    */
   void bytesRecvFlowControl(long recv) {
@@ -327,7 +322,6 @@ public class TrafficCounter {
 
   /**
    * Computes counters for Write.
-   *
    * @param write the size in bytes to write
    */
   void bytesWriteFlowControl(long write) {
@@ -337,7 +331,6 @@ public class TrafficCounter {
 
   /**
    * Computes counters for Real Write.
-   *
    * @param write the size in bytes to write
    */
   void bytesRealWriteFlowControl(long write) {
@@ -457,7 +450,6 @@ public class TrafficCounter {
   /**
    * Returns the time to wait (if any) for the given length message, using the given limitTraffic and the max wait
    * time.
-   *
    * @param size         the recv size
    * @param limitTraffic the traffic limit in bytes per second.
    * @param maxTime      the max time in ms to wait in case of excess of traffic.
@@ -471,7 +463,6 @@ public class TrafficCounter {
   /**
    * Returns the time to wait (if any) for the given length message, using the given limitTraffic and the max wait
    * time.
-   *
    * @param size         the recv size
    * @param limitTraffic the traffic limit in bytes per second
    * @param maxTime      the max time in ms to wait in case of excess of traffic.
@@ -526,7 +517,6 @@ public class TrafficCounter {
   /**
    * Returns the time to wait (if any) for the given length message, using the given limitTraffic and
    * the max wait time.
-   *
    * @param size         the write size
    * @param limitTraffic the traffic limit in bytes per second.
    * @param maxTime      the max time in ms to wait in case of excess of traffic.
@@ -540,7 +530,6 @@ public class TrafficCounter {
   /**
    * Returns the time to wait (if any) for the given length message, using the given limitTraffic and
    * the max wait time.
-   *
    * @param size         the write size
    * @param limitTraffic the traffic limit in bytes per second.
    * @param maxTime      the max time in ms to wait in case of excess of traffic.
@@ -595,11 +584,11 @@ public class TrafficCounter {
   @Override
   public String toString() {
     return new StringBuilder(165).append("Monitor ").append(name)
-        .append(" Current Speed Read: ").append(lastReadThroughput >> 10).append(" KB/s, ")
-        .append("Asked Write: ").append(lastWriteThroughput >> 10).append(" KB/s, ")
-        .append("Real Write: ").append(realWriteThroughput >> 10).append(" KB/s, ")
-        .append("Current Read: ").append(currentReadBytes.get() >> 10).append(" KB, ")
-        .append("Current asked Write: ").append(currentWrittenBytes.get() >> 10).append(" KB, ")
-        .append("Current real Write: ").append(realWrittenBytes.get() >> 10).append(" KB").toString();
+      .append(" Current Speed Read: ").append(lastReadThroughput >> 10).append(" KB/s, ")
+      .append("Asked Write: ").append(lastWriteThroughput >> 10).append(" KB/s, ")
+      .append("Real Write: ").append(realWriteThroughput >> 10).append(" KB/s, ")
+      .append("Current Read: ").append(currentReadBytes.get() >> 10).append(" KB, ")
+      .append("Current asked Write: ").append(currentWrittenBytes.get() >> 10).append(" KB, ")
+      .append("Current real Write: ").append(realWrittenBytes.get() >> 10).append(" KB").toString();
   }
 }

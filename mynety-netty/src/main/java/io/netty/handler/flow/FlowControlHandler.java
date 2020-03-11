@@ -61,7 +61,6 @@ import java.util.Queue;
  *   }
  * }
  * }</pre>
- *
  * @see ChannelConfig#setAutoRead(boolean)
  */
 public class FlowControlHandler extends ChannelDuplexHandler {
@@ -171,7 +170,6 @@ public class FlowControlHandler extends ChannelDuplexHandler {
    * The {@code minConsume} argument is used to force {@code dequeue()} into
    * consuming that number of messages regardless of the channel's auto
    * reading configuration.
-   *
    * @see #read(ChannelHandlerContext)
    * @see #channelRead(ChannelHandlerContext, Object)
    */

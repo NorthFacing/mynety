@@ -87,7 +87,7 @@ final class ReadOnlyUnsafeDirectByteBuf extends ReadOnlyByteBufferBuf {
     }
     if (dstIndex < 0 || dstIndex > dst.length - length) {
       throw new IndexOutOfBoundsException(String.format(
-          "dstIndex: %d, length: %d (expected: range(0, %d))", dstIndex, length, dst.length));
+        "dstIndex: %d, length: %d (expected: range(0, %d))", dstIndex, length, dst.length));
     }
 
     if (length != 0) {

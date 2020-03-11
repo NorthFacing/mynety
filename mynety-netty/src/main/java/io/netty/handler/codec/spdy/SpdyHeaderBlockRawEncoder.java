@@ -52,7 +52,7 @@ public class SpdyHeaderBlockRawEncoder extends SpdyHeaderBlockEncoder {
     }
     if (numHeaders > SPDY_MAX_NV_LENGTH) {
       throw new IllegalArgumentException(
-          "header block contains too many headers");
+        "header block contains too many headers");
     }
     ByteBuf headerBlock = alloc.heapBuffer();
     writeLengthField(headerBlock, numHeaders);
@@ -75,7 +75,7 @@ public class SpdyHeaderBlockRawEncoder extends SpdyHeaderBlockEncoder {
       }
       if (valueLength > SPDY_MAX_NV_LENGTH) {
         throw new IllegalArgumentException(
-            "header exceeds allowable length: " + name);
+          "header exceeds allowable length: " + name);
       }
       if (valueLength > 0) {
         setLengthField(headerBlock, savedIndex, valueLength);

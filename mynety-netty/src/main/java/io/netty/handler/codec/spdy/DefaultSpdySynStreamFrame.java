@@ -23,7 +23,7 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
  * The default {@link SpdySynStreamFrame} implementation.
  */
 public class DefaultSpdySynStreamFrame extends DefaultSpdyHeadersFrame
-    implements SpdySynStreamFrame {
+  implements SpdySynStreamFrame {
 
   private int associatedStreamId;
   private byte priority;
@@ -31,7 +31,6 @@ public class DefaultSpdySynStreamFrame extends DefaultSpdyHeadersFrame
 
   /**
    * Creates a new instance.
-   *
    * @param streamId           the Stream-ID of this frame
    * @param associatedStreamId the Associated-To-Stream-ID of this frame
    * @param priority           the priority of the stream
@@ -42,7 +41,6 @@ public class DefaultSpdySynStreamFrame extends DefaultSpdyHeadersFrame
 
   /**
    * Creates a new instance.
-   *
    * @param streamId           the Stream-ID of this frame
    * @param associatedStreamId the Associated-To-Stream-ID of this frame
    * @param priority           the priority of the stream
@@ -93,7 +91,7 @@ public class DefaultSpdySynStreamFrame extends DefaultSpdyHeadersFrame
   public SpdySynStreamFrame setPriority(byte priority) {
     if (priority < 0 || priority > 7) {
       throw new IllegalArgumentException(
-          "Priority must be between 0 and 7 inclusive: " + priority);
+        "Priority must be between 0 and 7 inclusive: " + priority);
     }
     this.priority = priority;
     return this;
@@ -113,26 +111,26 @@ public class DefaultSpdySynStreamFrame extends DefaultSpdyHeadersFrame
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append("(last: ")
-        .append(isLast())
-        .append("; unidirectional: ")
-        .append(isUnidirectional())
-        .append(')')
-        .append(StringUtil.NEWLINE)
-        .append("--> Stream-ID = ")
-        .append(streamId())
-        .append(StringUtil.NEWLINE);
+      .append(StringUtil.simpleClassName(this))
+      .append("(last: ")
+      .append(isLast())
+      .append("; unidirectional: ")
+      .append(isUnidirectional())
+      .append(')')
+      .append(StringUtil.NEWLINE)
+      .append("--> Stream-ID = ")
+      .append(streamId())
+      .append(StringUtil.NEWLINE);
     if (associatedStreamId != 0) {
       buf.append("--> Associated-To-Stream-ID = ")
-          .append(associatedStreamId())
-          .append(StringUtil.NEWLINE);
+        .append(associatedStreamId())
+        .append(StringUtil.NEWLINE);
     }
     buf.append("--> Priority = ")
-        .append(priority())
-        .append(StringUtil.NEWLINE)
-        .append("--> Headers:")
-        .append(StringUtil.NEWLINE);
+      .append(priority())
+      .append(StringUtil.NEWLINE)
+      .append("--> Headers:")
+      .append(StringUtil.NEWLINE);
     appendHeaders(buf);
 
     // Remove the last newline.

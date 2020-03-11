@@ -27,7 +27,6 @@ public final class MathUtil {
    *
    * <p>If the value is {@code <= 0} then 1 will be returned.
    * This method is not suitable for {@link Integer#MIN_VALUE} or numbers greater than 2^30.
-   *
    * @param value from which to search for next power of 2
    * @return The next power of 2 or the value itself if it is a power of 2
    */
@@ -40,7 +39,6 @@ public final class MathUtil {
    * Fast method of finding the next power of 2 greater than or equal to the supplied value.
    * <p>This method will do runtime bounds checking and call {@link #findNextPositivePowerOfTwo(int)} if within a
    * valid range.
-   *
    * @param value from which to search for next power of 2
    * @return The next power of 2 or the value itself if it is a power of 2.
    * <p>Special cases for return values are as follows:
@@ -55,7 +53,6 @@ public final class MathUtil {
 
   /**
    * Determine if the requested {@code index} and {@code length} will fit within {@code capacity}.
-   *
    * @param index    The starting index.
    * @param length   The length which will be utilized (starting from {@code index}).
    * @param capacity The capacity that {@code index + length} is allowed to be within.
@@ -68,7 +65,6 @@ public final class MathUtil {
 
   /**
    * Compares two {@code int} values.
-   *
    * @param x the first {@code int} to compare
    * @param y the second {@code int} to compare
    * @return the value {@code 0} if {@code x == y};
@@ -82,7 +78,6 @@ public final class MathUtil {
 
   /**
    * Compare two {@code long} values.
-   *
    * @param x the first {@code long} to compare.
    * @param y the second {@code long} to compare.
    * @return <ul>

@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * An socks init request.
- *
  * @see SocksInitResponse
  * @see SocksInitRequestDecoder
  */
@@ -39,7 +38,6 @@ public final class SocksInitRequest extends SocksRequest {
 
   /**
    * Returns the List<{@link SocksAuthScheme}> of this {@link SocksInitRequest}
-   *
    * @return The List<{@link SocksAuthScheme}> of this {@link SocksInitRequest}
    */
   public List<SocksAuthScheme> authSchemes() {

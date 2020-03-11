@@ -18,7 +18,12 @@ package io.netty.channel;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Handles an I/O event or intercepts an I/O operation, and forwards it to its next handler in
@@ -185,7 +190,6 @@ public interface ChannelHandler {
 
   /**
    * Gets called if a {@link Throwable} was thrown.
-   *
    * @deprecated if you want to handle this event you should implement {@link ChannelInboundHandler} and
    * implement the method there.
    */

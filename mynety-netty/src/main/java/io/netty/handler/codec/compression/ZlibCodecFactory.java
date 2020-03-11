@@ -35,7 +35,7 @@ public final class ZlibCodecFactory {
 
   static {
     noJdkZlibDecoder = SystemPropertyUtil.getBoolean("io.netty.noJdkZlibDecoder",
-        PlatformDependent.javaVersion() < 7);
+      PlatformDependent.javaVersion() < 7);
     logger.debug("-Dio.netty.noJdkZlibDecoder: {}", noJdkZlibDecoder);
 
     noJdkZlibEncoder = SystemPropertyUtil.getBoolean("io.netty.noJdkZlibEncoder", false);
@@ -77,7 +77,7 @@ public final class ZlibCodecFactory {
 
   public static ZlibEncoder newZlibEncoder(ZlibWrapper wrapper, int compressionLevel, int windowBits, int memLevel) {
     if (PlatformDependent.javaVersion() < 7 || noJdkZlibEncoder ||
-        windowBits != DEFAULT_JDK_WINDOW_SIZE || memLevel != DEFAULT_JDK_MEM_LEVEL) {
+      windowBits != DEFAULT_JDK_WINDOW_SIZE || memLevel != DEFAULT_JDK_MEM_LEVEL) {
       return new JZlibEncoder(wrapper, compressionLevel, windowBits, memLevel);
     } else {
       return new JdkZlibEncoder(wrapper, compressionLevel);
@@ -102,7 +102,7 @@ public final class ZlibCodecFactory {
 
   public static ZlibEncoder newZlibEncoder(int compressionLevel, int windowBits, int memLevel, byte[] dictionary) {
     if (PlatformDependent.javaVersion() < 7 || noJdkZlibEncoder ||
-        windowBits != DEFAULT_JDK_WINDOW_SIZE || memLevel != DEFAULT_JDK_MEM_LEVEL) {
+      windowBits != DEFAULT_JDK_WINDOW_SIZE || memLevel != DEFAULT_JDK_MEM_LEVEL) {
       return new JZlibEncoder(compressionLevel, windowBits, memLevel, dictionary);
     } else {
       return new JdkZlibEncoder(compressionLevel, dictionary);

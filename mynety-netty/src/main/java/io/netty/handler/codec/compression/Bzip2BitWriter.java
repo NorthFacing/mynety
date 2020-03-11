@@ -35,7 +35,6 @@ final class Bzip2BitWriter {
 
   /**
    * Writes up to 32 bits to the output {@link ByteBuf}.
-   *
    * @param count The number of bits to write (maximum {@code 32} as a size of {@code int})
    * @param value The bits to write
    */
@@ -58,7 +57,6 @@ final class Bzip2BitWriter {
 
   /**
    * Writes a single bit to the output {@link ByteBuf}.
-   *
    * @param value The bit to write
    */
   void writeBoolean(ByteBuf out, final boolean value) {
@@ -77,7 +75,6 @@ final class Bzip2BitWriter {
   /**
    * Writes a zero-terminated unary number to the output {@link ByteBuf}.
    * Example of the output for value = 6: {@code 1111110}
-   *
    * @param value The number of {@code 1} to write
    */
   void writeUnary(ByteBuf out, int value) {
@@ -92,7 +89,6 @@ final class Bzip2BitWriter {
 
   /**
    * Writes an integer as 32 bits to the output {@link ByteBuf}.
-   *
    * @param value The integer to write
    */
   void writeInt(ByteBuf out, final int value) {

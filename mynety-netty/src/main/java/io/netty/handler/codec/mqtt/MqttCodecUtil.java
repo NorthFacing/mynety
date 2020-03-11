@@ -41,7 +41,7 @@ final class MqttCodecUtil {
   static boolean isValidClientId(MqttVersion mqttVersion, String clientId) {
     if (mqttVersion == MqttVersion.MQTT_3_1) {
       return clientId != null && clientId.length() >= MIN_CLIENT_ID_LENGTH &&
-          clientId.length() <= MAX_CLIENT_ID_LENGTH;
+        clientId.length() <= MAX_CLIENT_ID_LENGTH;
     }
     if (mqttVersion == MqttVersion.MQTT_3_1_1) {
       // In 3.1.3.1 Client Identifier of MQTT 3.1.1 specification, The Server MAY allow ClientId’s
@@ -77,14 +77,14 @@ final class MqttCodecUtil {
       case PINGRESP:
       case DISCONNECT:
         if (mqttFixedHeader.isDup() ||
-            mqttFixedHeader.qosLevel() != MqttQoS.AT_MOST_ONCE ||
-            mqttFixedHeader.isRetain()) {
+          mqttFixedHeader.qosLevel() != MqttQoS.AT_MOST_ONCE ||
+          mqttFixedHeader.isRetain()) {
           return new MqttFixedHeader(
-              mqttFixedHeader.messageType(),
-              false,
-              MqttQoS.AT_MOST_ONCE,
-              false,
-              mqttFixedHeader.remainingLength());
+            mqttFixedHeader.messageType(),
+            false,
+            MqttQoS.AT_MOST_ONCE,
+            false,
+            mqttFixedHeader.remainingLength());
         }
         return mqttFixedHeader;
       case PUBREL:
@@ -92,11 +92,11 @@ final class MqttCodecUtil {
       case UNSUBSCRIBE:
         if (mqttFixedHeader.isRetain()) {
           return new MqttFixedHeader(
-              mqttFixedHeader.messageType(),
-              mqttFixedHeader.isDup(),
-              mqttFixedHeader.qosLevel(),
-              false,
-              mqttFixedHeader.remainingLength());
+            mqttFixedHeader.messageType(),
+            mqttFixedHeader.isDup(),
+            mqttFixedHeader.qosLevel(),
+            false,
+            mqttFixedHeader.remainingLength());
         }
         return mqttFixedHeader;
       default:

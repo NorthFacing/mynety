@@ -26,7 +26,6 @@ import java.util.List;
 
 /**
  * Abstract base class for OIO which reads and writes objects from/to a Socket
- *
  * @deprecated use NIO / EPOLL / KQUEUE transport.
  */
 @Deprecated

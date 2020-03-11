@@ -15,7 +15,11 @@
  */
 package io.netty.channel.kqueue;
 
-import io.netty.channel.*;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.EventLoopTaskQueueFactory;
+import io.netty.channel.SelectStrategy;
+import io.netty.channel.SingleThreadEventLoop;
 import io.netty.channel.kqueue.AbstractKQueueChannel.AbstractKQueueUnsafe;
 import io.netty.channel.unix.FileDescriptor;
 import io.netty.channel.unix.IovArray;
@@ -41,7 +45,7 @@ import static java.lang.Math.min;
 final class KQueueEventLoop extends SingleThreadEventLoop {
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(KQueueEventLoop.class);
   private static final AtomicIntegerFieldUpdater<KQueueEventLoop> WAKEN_UP_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(KQueueEventLoop.class, "wakenUp");
+    AtomicIntegerFieldUpdater.newUpdater(KQueueEventLoop.class, "wakenUp");
   private static final int KQUEUE_WAKE_UP_IDENT = 0;
 
   static {
@@ -71,7 +75,7 @@ final class KQueueEventLoop extends SingleThreadEventLoop {
                   SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler,
                   EventLoopTaskQueueFactory queueFactory) {
     super(parent, executor, false, newTaskQueue(queueFactory), newTaskQueue(queueFactory),
-        rejectedExecutionHandler);
+      rejectedExecutionHandler);
     selectStrategy = ObjectUtil.checkNotNull(strategy, "strategy");
     this.kqueueFd = Native.newKQueue();
     if (maxEvents == 0) {
@@ -90,7 +94,7 @@ final class KQueueEventLoop extends SingleThreadEventLoop {
   }
 
   private static Queue<Runnable> newTaskQueue(
-      EventLoopTaskQueueFactory queueFactory) {
+    EventLoopTaskQueueFactory queueFactory) {
     if (queueFactory == null) {
       return newTaskQueue0(DEFAULT_MAX_PENDING_TASKS);
     }
@@ -184,7 +188,7 @@ final class KQueueEventLoop extends SingleThreadEventLoop {
         // EV_ERROR is returned if the FD is closed synchronously (which removes from kqueue) and then
         // we later attempt to delete the filters from kqueue.
         assert filter != Native.EVFILT_USER ||
-            (filter == Native.EVFILT_USER && fd == KQUEUE_WAKE_UP_IDENT);
+          (filter == Native.EVFILT_USER && fd == KQUEUE_WAKE_UP_IDENT);
         continue;
       }
 
@@ -318,7 +322,7 @@ final class KQueueEventLoop extends SingleThreadEventLoop {
   private static Queue<Runnable> newTaskQueue0(int maxPendingTasks) {
     // This event loop never calls takeTask()
     return maxPendingTasks == Integer.MAX_VALUE ? PlatformDependent.<Runnable>newMpscQueue()
-        : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
+      : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
   }
 
   /**

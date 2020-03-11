@@ -40,14 +40,14 @@ public final class SecureChatClient {
   public static void main(String[] args) throws Exception {
     // Configure SSL.
     final SslContext sslCtx = SslContextBuilder.forClient()
-        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+      .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
 
     EventLoopGroup group = new NioEventLoopGroup();
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new SecureChatClientInitializer(sslCtx));
+        .channel(NioSocketChannel.class)
+        .handler(new SecureChatClientInitializer(sslCtx));
 
       // Start the connection attempt.
       Channel ch = b.connect(HOST, PORT).sync().channel();

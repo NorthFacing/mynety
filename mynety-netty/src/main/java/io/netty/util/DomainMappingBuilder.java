@@ -18,7 +18,6 @@ package io.netty.util;
 
 /**
  * Builder for immutable {@link DomainNameMapping} instances.
- *
  * @param <V> concrete type of value objects
  * @deprecated Use {@link DomainNameMappingBuilder} instead.
  */
@@ -29,7 +28,6 @@ public final class DomainMappingBuilder<V> {
 
   /**
    * Constructor with default initial capacity of the map holding the mappings
-   *
    * @param defaultValue the default value for {@link DomainNameMapping#map(String)} to return
    *                     when nothing matches the input
    */
@@ -39,7 +37,6 @@ public final class DomainMappingBuilder<V> {
 
   /**
    * Constructor with initial capacity of the map holding the mappings
-   *
    * @param initialCapacity initial capacity for the internal map
    * @param defaultValue    the default value for {@link DomainNameMapping#map(String)} to return
    *                        when nothing matches the input
@@ -55,7 +52,6 @@ public final class DomainMappingBuilder<V> {
    * <a href="http://en.wikipedia.org/wiki/Wildcard_DNS_record">DNS wildcard</a> is supported as hostname.
    * For example, you can use {@code *.netty.io} to match {@code netty.io} and {@code downloads.netty.io}.
    * </p>
-   *
    * @param hostname the host name (optionally wildcard)
    * @param output   the output value that will be returned by {@link DomainNameMapping#map(String)}
    *                 when the specified host name matches the specified input host name
@@ -68,7 +64,6 @@ public final class DomainMappingBuilder<V> {
   /**
    * Creates a new instance of immutable {@link DomainNameMapping}
    * Attempts to add new mappings to the result object will cause {@link UnsupportedOperationException} to be thrown
-   *
    * @return new {@link DomainNameMapping} instance
    */
   public DomainNameMapping<V> build() {

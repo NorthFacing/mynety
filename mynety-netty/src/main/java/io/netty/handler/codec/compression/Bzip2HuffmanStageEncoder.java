@@ -95,7 +95,6 @@ final class Bzip2HuffmanStageEncoder {
 
   /**
    * Selects an appropriate table count for a given MTF length.
-   *
    * @param mtfLength The length to select a table count for
    * @return The selected table count
    */
@@ -117,7 +116,6 @@ final class Bzip2HuffmanStageEncoder {
 
   /**
    * Generate a Huffman code length table for a given list of symbol frequencies.
-   *
    * @param alphabetSize      The total number of symbols
    * @param symbolFrequencies The frequencies of the symbols
    * @param codeLengths       The array to which the generated code lengths should be written
@@ -202,7 +200,6 @@ final class Bzip2HuffmanStageEncoder {
    * lengths and the block data encoded with them will converge towards a minimum.<br>
    * If the data is highly incompressible, it is possible that the total encoded size will
    * instead diverge (increase) slightly.<br>
-   *
    * @param storeSelectors If {@code true}, write out the (final) chosen selectors
    */
   private void optimiseSelectorsAndHuffmanTables(final boolean storeSelectors) {

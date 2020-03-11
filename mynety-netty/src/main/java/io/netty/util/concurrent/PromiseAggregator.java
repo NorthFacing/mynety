@@ -37,7 +37,6 @@ public class PromiseAggregator<V, F extends Future<V>> implements GenericFutureL
 
   /**
    * Creates a new instance.
-   *
    * @param aggregatePromise the {@link Promise} to notify
    * @param failPending      {@code true} to fail pending promises, false to leave them unaffected
    */

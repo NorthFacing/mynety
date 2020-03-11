@@ -46,7 +46,6 @@ public enum HAProxyCommand {
 
   /**
    * Returns the {@link HAProxyCommand} represented by the lowest 4 bits of the specified byte.
-   *
    * @param verCmdByte protocol version and command byte
    */
   public static HAProxyCommand valueOf(byte verCmdByte) {

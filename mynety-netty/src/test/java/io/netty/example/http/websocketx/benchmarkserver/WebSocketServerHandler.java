@@ -101,7 +101,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     // Handshake
     WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-        getWebSocketLocation(req), null, true, 5 * 1024 * 1024);
+      getWebSocketLocation(req), null, true, 5 * 1024 * 1024);
     handshaker = wsFactory.newHandshaker(req);
     if (handshaker == null) {
       WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());
@@ -133,7 +133,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
   }
 
   private static void sendHttpResponse(
-      ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
+    ChannelHandlerContext ctx, FullHttpRequest req, FullHttpResponse res) {
     // Generate an error page if response getStatus code is not OK (200).
     if (res.status().code() != 200) {
       ByteBuf buf = Unpooled.copiedBuffer(res.status().toString(), CharsetUtil.UTF_8);

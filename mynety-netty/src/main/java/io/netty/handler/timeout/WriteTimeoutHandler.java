@@ -16,7 +16,14 @@
 package io.netty.handler.timeout;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPromise;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +59,6 @@ import java.util.concurrent.TimeUnit;
  * bootstrap.childHandler(new MyChannelInitializer());
  * ...
  * </pre>
- *
  * @see ReadTimeoutHandler
  * @see IdleStateHandler
  */
@@ -70,7 +76,6 @@ public class WriteTimeoutHandler extends ChannelOutboundHandlerAdapter {
 
   /**
    * Creates a new instance.
-   *
    * @param timeoutSeconds write timeout in seconds
    */
   public WriteTimeoutHandler(int timeoutSeconds) {
@@ -79,7 +84,6 @@ public class WriteTimeoutHandler extends ChannelOutboundHandlerAdapter {
 
   /**
    * Creates a new instance.
-   *
    * @param timeout write timeout
    * @param unit    the {@link TimeUnit} of {@code timeout}
    */

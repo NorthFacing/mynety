@@ -21,7 +21,11 @@ import io.netty.util.collection.IntObjectHashMap;
 import io.netty.util.collection.IntObjectMap;
 import io.netty.util.internal.PlatformDependent;
 
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +36,7 @@ final class DnsQueryContextManager {
    * {@link DnsQueryContext}.
    */
   final Map<InetSocketAddress, IntObjectMap<DnsQueryContext>> map =
-      new HashMap<InetSocketAddress, IntObjectMap<DnsQueryContext>>();
+    new HashMap<InetSocketAddress, IntObjectMap<DnsQueryContext>>();
 
   int add(DnsQueryContext qCtx) {
     final IntObjectMap<DnsQueryContext> contexts = getOrCreateContextMap(qCtx.nameServerAddr());

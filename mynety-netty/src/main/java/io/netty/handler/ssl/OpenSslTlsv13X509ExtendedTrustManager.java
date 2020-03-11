@@ -18,7 +18,11 @@ package io.netty.handler.ssl;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.SuppressJava6Requirement;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSessionContext;
+import javax.net.ssl.X509ExtendedTrustManager;
 import java.net.Socket;
 import java.security.Principal;
 import java.security.cert.Certificate;
@@ -50,13 +54,13 @@ final class OpenSslTlsv13X509ExtendedTrustManager extends X509ExtendedTrustManag
 
   @Override
   public void checkClientTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
-      throws CertificateException {
+    throws CertificateException {
     tm.checkClientTrusted(x509Certificates, s, socket);
   }
 
   @Override
   public void checkServerTrusted(X509Certificate[] x509Certificates, String s, Socket socket)
-      throws CertificateException {
+    throws CertificateException {
     tm.checkServerTrusted(x509Certificates, s, socket);
   }
 
@@ -156,7 +160,7 @@ final class OpenSslTlsv13X509ExtendedTrustManager extends X509ExtendedTrustManag
 
               @Override
               public javax.security.cert.X509Certificate[] getPeerCertificateChain()
-                  throws SSLPeerUnverifiedException {
+                throws SSLPeerUnverifiedException {
                 return session.getPeerCertificateChain();
               }
 
@@ -209,13 +213,13 @@ final class OpenSslTlsv13X509ExtendedTrustManager extends X509ExtendedTrustManag
 
   @Override
   public void checkClientTrusted(X509Certificate[] x509Certificates, final String s, SSLEngine sslEngine)
-      throws CertificateException {
+    throws CertificateException {
     tm.checkClientTrusted(x509Certificates, s, wrapEngine(sslEngine));
   }
 
   @Override
   public void checkServerTrusted(X509Certificate[] x509Certificates, String s, SSLEngine sslEngine)
-      throws CertificateException {
+    throws CertificateException {
     tm.checkServerTrusted(x509Certificates, s, wrapEngine(sslEngine));
   }
 

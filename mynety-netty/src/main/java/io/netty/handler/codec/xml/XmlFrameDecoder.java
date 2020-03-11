@@ -187,7 +187,7 @@ public class XmlFrameDecoder extends ByteToMessageDecoder {
         xmlElementLength = in.readableBytes();
       }
       final ByteBuf frame =
-          extractFrame(in, readerIndex + leadingWhiteSpaceCount, xmlElementLength - leadingWhiteSpaceCount);
+        extractFrame(in, readerIndex + leadingWhiteSpaceCount, xmlElementLength - leadingWhiteSpaceCount);
       in.skipBytes(xmlElementLength);
       out.add(frame);
     }
@@ -196,10 +196,10 @@ public class XmlFrameDecoder extends ByteToMessageDecoder {
   private void fail(long frameLength) {
     if (frameLength > 0) {
       throw new TooLongFrameException(
-          "frame length exceeds " + maxFrameLength + ": " + frameLength + " - discarded");
+        "frame length exceeds " + maxFrameLength + ": " + frameLength + " - discarded");
     } else {
       throw new TooLongFrameException(
-          "frame length exceeds " + maxFrameLength + " - discarding");
+        "frame length exceeds " + maxFrameLength + " - discarding");
     }
   }
 
@@ -218,7 +218,6 @@ public class XmlFrameDecoder extends ByteToMessageDecoder {
    * Please refer to the
    * <a href="http://www.w3.org/TR/2004/REC-xml11-20040204/#NT-NameStartChar">NameStartChar</a>
    * formal definition in the W3C XML spec for further info.
-   *
    * @param b the input char
    * @return true if the char is a valid start char
    */
@@ -228,19 +227,19 @@ public class XmlFrameDecoder extends ByteToMessageDecoder {
 
   private static boolean isCommentBlockStart(final ByteBuf in, final int i) {
     return i < in.writerIndex() - 3
-        && in.getByte(i + 2) == '-'
-        && in.getByte(i + 3) == '-';
+      && in.getByte(i + 2) == '-'
+      && in.getByte(i + 3) == '-';
   }
 
   private static boolean isCDATABlockStart(final ByteBuf in, final int i) {
     return i < in.writerIndex() - 8
-        && in.getByte(i + 2) == '['
-        && in.getByte(i + 3) == 'C'
-        && in.getByte(i + 4) == 'D'
-        && in.getByte(i + 5) == 'A'
-        && in.getByte(i + 6) == 'T'
-        && in.getByte(i + 7) == 'A'
-        && in.getByte(i + 8) == '[';
+      && in.getByte(i + 2) == '['
+      && in.getByte(i + 3) == 'C'
+      && in.getByte(i + 4) == 'D'
+      && in.getByte(i + 5) == 'A'
+      && in.getByte(i + 6) == 'T'
+      && in.getByte(i + 7) == 'A'
+      && in.getByte(i + 8) == '[';
   }
 
 }

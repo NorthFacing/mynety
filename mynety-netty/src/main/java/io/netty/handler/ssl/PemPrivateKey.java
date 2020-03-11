@@ -33,7 +33,6 @@ import java.security.PrivateKey;
  * <p>
  * All methods other than what's implemented in {@link PemEncoded} and {@link Destroyable}
  * throw {@link UnsupportedOperationException}s.
- *
  * @see PemEncoded
  * @see OpenSslContext
  * @see #valueOf(byte[])
@@ -207,7 +206,6 @@ public final class PemPrivateKey extends AbstractReferenceCounted implements Pri
    * NOTE: This is a JDK8 interface/method. Due to backwards compatibility
    * reasons it's not possible to slap the {@code @Override} annotation onto
    * this method.
-   *
    * @see Destroyable#destroy()
    */
   @Override
@@ -219,7 +217,6 @@ public final class PemPrivateKey extends AbstractReferenceCounted implements Pri
    * NOTE: This is a JDK8 interface/method. Due to backwards compatibility
    * reasons it's not possible to slap the {@code @Override} annotation onto
    * this method.
-   *
    * @see Destroyable#isDestroyed()
    */
   @Override

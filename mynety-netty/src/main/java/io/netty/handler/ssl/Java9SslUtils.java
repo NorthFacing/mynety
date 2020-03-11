@@ -75,12 +75,12 @@ final class Java9SslUtils {
       setApplicationProtocols.invoke(engine.getSSLParameters(), new Object[]{EmptyArrays.EMPTY_STRINGS});
 
       setHandshakeApplicationProtocolSelector =
-          AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-            @Override
-            public Method run() throws Exception {
-              return SSLEngine.class.getMethod("setHandshakeApplicationProtocolSelector", BiFunction.class);
-            }
-          });
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+          @Override
+          public Method run() throws Exception {
+            return SSLEngine.class.getMethod("setHandshakeApplicationProtocolSelector", BiFunction.class);
+          }
+        });
       setHandshakeApplicationProtocolSelector.invoke(engine, new BiFunction<SSLEngine, List<String>, String>() {
         @Override
         public String apply(SSLEngine sslEngine, List<String> strings) {
@@ -89,16 +89,16 @@ final class Java9SslUtils {
       });
 
       getHandshakeApplicationProtocolSelector =
-          AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
-            @Override
-            public Method run() throws Exception {
-              return SSLEngine.class.getMethod("getHandshakeApplicationProtocolSelector");
-            }
-          });
+        AccessController.doPrivileged(new PrivilegedExceptionAction<Method>() {
+          @Override
+          public Method run() throws Exception {
+            return SSLEngine.class.getMethod("getHandshakeApplicationProtocolSelector");
+          }
+        });
       getHandshakeApplicationProtocolSelector.invoke(engine);
     } catch (Throwable t) {
       logger.error("Unable to initialize Java9SslUtils, but the detected javaVersion was: {}",
-          PlatformDependent.javaVersion(), t);
+        PlatformDependent.javaVersion(), t);
       getHandshakeApplicationProtocol = null;
       getApplicationProtocol = null;
       setApplicationProtocols = null;
@@ -154,7 +154,7 @@ final class Java9SslUtils {
   }
 
   static void setHandshakeApplicationProtocolSelector(
-      SSLEngine engine, BiFunction<SSLEngine, List<String>, String> selector) {
+    SSLEngine engine, BiFunction<SSLEngine, List<String>, String> selector) {
     try {
       SET_HANDSHAKE_APPLICATION_PROTOCOL_SELECTOR.invoke(engine, selector);
     } catch (UnsupportedOperationException ex) {
@@ -167,7 +167,7 @@ final class Java9SslUtils {
   static BiFunction<SSLEngine, List<String>, String> getHandshakeApplicationProtocolSelector(SSLEngine engine) {
     try {
       return (BiFunction<SSLEngine, List<String>, String>)
-          GET_HANDSHAKE_APPLICATION_PROTOCOL_SELECTOR.invoke(engine);
+        GET_HANDSHAKE_APPLICATION_PROTOCOL_SELECTOR.invoke(engine);
     } catch (UnsupportedOperationException ex) {
       throw ex;
     } catch (Exception ex) {

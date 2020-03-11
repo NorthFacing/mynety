@@ -15,7 +15,12 @@
  */
 package io.netty.channel.epoll;
 
-import io.netty.channel.*;
+import io.netty.channel.DefaultSelectStrategyFactory;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.EventLoopTaskQueueFactory;
+import io.netty.channel.MultithreadEventLoopGroup;
+import io.netty.channel.SelectStrategyFactory;
 import io.netty.util.concurrent.EventExecutorChooserFactory;
 import io.netty.util.concurrent.RejectedExecutionHandler;
 import io.netty.util.concurrent.RejectedExecutionHandlers;
@@ -78,7 +83,6 @@ public final class EpollEventLoopGroup extends MultithreadEventLoopGroup {
   /**
    * Create a new instance using the specified number of threads, the given {@link ThreadFactory} and the given
    * maximal amount of epoll events to handle per epollWait(...).
-   *
    * @deprecated Use {@link #EpollEventLoopGroup(int)} or {@link #EpollEventLoopGroup(int, ThreadFactory)}
    */
   @Deprecated
@@ -89,7 +93,6 @@ public final class EpollEventLoopGroup extends MultithreadEventLoopGroup {
   /**
    * Create a new instance using the specified number of threads, the given {@link ThreadFactory} and the given
    * maximal amount of epoll events to handle per epollWait(...).
-   *
    * @deprecated Use {@link #EpollEventLoopGroup(int)}, {@link #EpollEventLoopGroup(int, ThreadFactory)}, or
    * {@link #EpollEventLoopGroup(int, SelectStrategyFactory)}
    */
@@ -135,7 +138,7 @@ public final class EpollEventLoopGroup extends MultithreadEventLoopGroup {
   protected EventLoop newChild(Executor executor, Object... args) throws Exception {
     EventLoopTaskQueueFactory queueFactory = args.length == 4 ? (EventLoopTaskQueueFactory) args[3] : null;
     return new EpollEventLoop(this, executor, (Integer) args[0],
-        ((SelectStrategyFactory) args[1]).newSelectStrategy(),
-        (RejectedExecutionHandler) args[2], queueFactory);
+      ((SelectStrategyFactory) args[1]).newSelectStrategy(),
+      (RejectedExecutionHandler) args[2], queueFactory);
   }
 }

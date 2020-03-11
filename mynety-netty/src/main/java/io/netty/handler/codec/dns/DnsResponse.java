@@ -32,7 +32,6 @@ public interface DnsResponse extends DnsMessage {
   /**
    * Set to {@code true} if responding server is authoritative for the domain
    * name in the query message.
-   *
    * @param authoritativeAnswer flag for authoritative answer
    */
   DnsResponse setAuthoritativeAnswer(boolean authoritativeAnswer);
@@ -46,7 +45,6 @@ public interface DnsResponse extends DnsMessage {
   /**
    * Set to {@code true} if response has been truncated (usually happens for
    * responses over 512 bytes).
-   *
    * @param truncated flag for truncation
    */
   DnsResponse setTruncated(boolean truncated);
@@ -58,7 +56,6 @@ public interface DnsResponse extends DnsMessage {
 
   /**
    * Set to {@code true} if DNS server can handle recursive queries.
-   *
    * @param recursionAvailable flag for recursion availability
    */
   DnsResponse setRecursionAvailable(boolean recursionAvailable);
@@ -70,7 +67,6 @@ public interface DnsResponse extends DnsMessage {
 
   /**
    * Sets the response code for this message.
-   *
    * @param code the response code
    */
   DnsResponse setCode(DnsResponseCode code);

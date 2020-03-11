@@ -24,24 +24,23 @@ import io.netty.util.internal.StringUtil;
  */
 public class IdleStateEvent {
   public static final IdleStateEvent FIRST_READER_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.READER_IDLE, true);
+    new DefaultIdleStateEvent(IdleState.READER_IDLE, true);
   public static final IdleStateEvent READER_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.READER_IDLE, false);
+    new DefaultIdleStateEvent(IdleState.READER_IDLE, false);
   public static final IdleStateEvent FIRST_WRITER_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.WRITER_IDLE, true);
+    new DefaultIdleStateEvent(IdleState.WRITER_IDLE, true);
   public static final IdleStateEvent WRITER_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.WRITER_IDLE, false);
+    new DefaultIdleStateEvent(IdleState.WRITER_IDLE, false);
   public static final IdleStateEvent FIRST_ALL_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.ALL_IDLE, true);
+    new DefaultIdleStateEvent(IdleState.ALL_IDLE, true);
   public static final IdleStateEvent ALL_IDLE_STATE_EVENT =
-      new DefaultIdleStateEvent(IdleState.ALL_IDLE, false);
+    new DefaultIdleStateEvent(IdleState.ALL_IDLE, false);
 
   private final IdleState state;
   private final boolean first;
 
   /**
    * Constructor for sub-classes.
-   *
    * @param state the {@link IdleStateEvent} which triggered the event.
    * @param first {@code true} if its the first idle event for the {@link IdleStateEvent}.
    */

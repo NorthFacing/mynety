@@ -105,7 +105,7 @@ public final class IovArray implements MessageProcessor {
       for (ByteBuffer nioBuffer : buffers) {
         final int remaining = nioBuffer.remaining();
         if (remaining != 0 &&
-            (!add(Buffer.memoryAddress(nioBuffer) + nioBuffer.position(), remaining) || count == IOV_MAX)) {
+          (!add(Buffer.memoryAddress(nioBuffer) + nioBuffer.position(), remaining) || count == IOV_MAX)) {
           return false;
         }
       }
@@ -177,7 +177,6 @@ public final class IovArray implements MessageProcessor {
    * <p>
    * In order to ensure some progress is made at least one {@link ByteBuf} will be accepted even if it's size exceeds
    * this value.
-   *
    * @param maxBytes the maximum amount of bytes that can be added to this {@link IovArray}.
    */
   public void maxBytes(long maxBytes) {
@@ -186,7 +185,6 @@ public final class IovArray implements MessageProcessor {
 
   /**
    * Get the maximum amount of bytes that can be added to this {@link IovArray}.
-   *
    * @return the maximum amount of bytes that can be added to this {@link IovArray}.
    */
   public long maxBytes() {

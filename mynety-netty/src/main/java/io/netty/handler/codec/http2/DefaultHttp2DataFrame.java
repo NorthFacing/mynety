@@ -36,7 +36,6 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
 
   /**
    * Equivalent to {@code new DefaultHttp2DataFrame(content, false)}.
-   *
    * @param content non-{@code null} payload
    */
   public DefaultHttp2DataFrame(ByteBuf content) {
@@ -45,7 +44,6 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
 
   /**
    * Equivalent to {@code new DefaultHttp2DataFrame(Unpooled.EMPTY_BUFFER, endStream)}.
-   *
    * @param endStream whether this data should terminate the stream
    */
   public DefaultHttp2DataFrame(boolean endStream) {
@@ -54,7 +52,6 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
 
   /**
    * Equivalent to {@code new DefaultHttp2DataFrame(content, endStream, 0)}.
-   *
    * @param content   non-{@code null} payload
    * @param endStream whether this data should terminate the stream
    */
@@ -64,7 +61,6 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
 
   /**
    * Construct a new data message.
-   *
    * @param content   non-{@code null} payload
    * @param endStream whether this data should terminate the stream
    * @param padding   additional bytes that should be added to obscure the true content size. Must be between 0 and
@@ -165,7 +161,7 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + "(stream=" + stream() + ", content=" + content
-        + ", endStream=" + endStream + ", padding=" + padding + ')';
+      + ", endStream=" + endStream + ", padding=" + padding + ')';
   }
 
   @Override
@@ -187,7 +183,7 @@ public final class DefaultHttp2DataFrame extends AbstractHttp2StreamFrame implem
     }
     DefaultHttp2DataFrame other = (DefaultHttp2DataFrame) o;
     return super.equals(other) && content.equals(other.content())
-        && endStream == other.endStream && padding == other.padding;
+      && endStream == other.endStream && padding == other.padding;
   }
 
   @Override

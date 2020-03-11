@@ -66,7 +66,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 203 Non-Authoritative Information (since HTTP/1.1)
    */
   public static final HttpResponseStatus NON_AUTHORITATIVE_INFORMATION =
-      newStatus(203, "Non-Authoritative Information");
+    newStatus(203, "Non-Authoritative Information");
 
   /**
    * 204 No Content
@@ -167,7 +167,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 407 Proxy Authentication Required
    */
   public static final HttpResponseStatus PROXY_AUTHENTICATION_REQUIRED =
-      newStatus(407, "Proxy Authentication Required");
+    newStatus(407, "Proxy Authentication Required");
 
   /**
    * 408 Request Timeout
@@ -198,7 +198,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 413 Request Entity Too Large
    */
   public static final HttpResponseStatus REQUEST_ENTITY_TOO_LARGE =
-      newStatus(413, "Request Entity Too Large");
+    newStatus(413, "Request Entity Too Large");
 
   /**
    * 414 Request-URI Too Long
@@ -214,7 +214,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 416 Requested Range Not Satisfiable
    */
   public static final HttpResponseStatus REQUESTED_RANGE_NOT_SATISFIABLE =
-      newStatus(416, "Requested Range Not Satisfiable");
+    newStatus(416, "Requested Range Not Satisfiable");
 
   /**
    * 417 Expectation Failed
@@ -223,7 +223,6 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
 
   /**
    * 421 Misdirected Request
-   *
    * @see <a href="https://tools.ietf.org/html/rfc7540#section-9.1.2">421 (Misdirected Request) Status Code</a>
    */
   public static final HttpResponseStatus MISDIRECTED_REQUEST = newStatus(421, "Misdirected Request");
@@ -267,7 +266,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 431 Request Header Fields Too Large (RFC6585)
    */
   public static final HttpResponseStatus REQUEST_HEADER_FIELDS_TOO_LARGE =
-      newStatus(431, "Request Header Fields Too Large");
+    newStatus(431, "Request Header Fields Too Large");
 
   /**
    * 500 Internal Server Error
@@ -298,7 +297,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 505 HTTP Version Not Supported
    */
   public static final HttpResponseStatus HTTP_VERSION_NOT_SUPPORTED =
-      newStatus(505, "HTTP Version Not Supported");
+    newStatus(505, "HTTP Version Not Supported");
 
   /**
    * 506 Variant Also Negotiates (RFC2295)
@@ -319,7 +318,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * 511 Network Authentication Required (RFC6585)
    */
   public static final HttpResponseStatus NETWORK_AUTHENTICATION_REQUIRED =
-      newStatus(511, "Network Authentication Required");
+    newStatus(511, "Network Authentication Required");
 
   private static HttpResponseStatus newStatus(int statusCode, String reasonPhrase) {
     return new HttpResponseStatus(statusCode, reasonPhrase, true);
@@ -457,7 +456,6 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * Returns the {@link HttpResponseStatus} represented by the specified {@code code} and {@code reasonPhrase}.
    * If the specified code is a standard HTTP status {@code code} and {@code reasonPhrase}, a cached instance
    * will be returned. Otherwise, a new instance will be returned.
-   *
    * @param code         The response code value.
    * @param reasonPhrase The response code reason phrase.
    * @return the {@link HttpResponseStatus} represented by the specified {@code code} and {@code reasonPhrase}.
@@ -465,7 +463,7 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
   public static HttpResponseStatus valueOf(int code, String reasonPhrase) {
     HttpResponseStatus responseStatus = valueOf0(code);
     return responseStatus != null && responseStatus.reasonPhrase().contentEquals(reasonPhrase) ? responseStatus :
-        new HttpResponseStatus(code, reasonPhrase);
+      new HttpResponseStatus(code, reasonPhrase);
   }
 
   /**
@@ -474,7 +472,6 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * <li>{@code statusCode} (e.g. 200)</li>
    * <li>{@code statusCode} {@code reasonPhrase} (e.g. 404 Not Found)</li>
    * </ul>
-   *
    * @throws IllegalArgumentException if the specified status line is malformed
    */
   public static HttpResponseStatus parseLine(CharSequence line) {
@@ -487,14 +484,13 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * <li>{@code statusCode} (e.g. 200)</li>
    * <li>{@code statusCode} {@code reasonPhrase} (e.g. 404 Not Found)</li>
    * </ul>
-   *
    * @throws IllegalArgumentException if the specified status line is malformed
    */
   public static HttpResponseStatus parseLine(String line) {
     try {
       int space = line.indexOf(' ');
       return space == -1 ? valueOf(parseInt(line)) :
-          valueOf(parseInt(line.substring(0, space)), line.substring(space + 1));
+        valueOf(parseInt(line.substring(0, space)), line.substring(space + 1));
     } catch (Exception e) {
       throw new IllegalArgumentException("malformed status line: " + line, e);
     }
@@ -506,7 +502,6 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
    * <li>{@code statusCode} (e.g. 200)</li>
    * <li>{@code statusCode} {@code reasonPhrase} (e.g. 404 Not Found)</li>
    * </ul>
-   *
    * @throws IllegalArgumentException if the specified status line is malformed
    */
   public static HttpResponseStatus parseLine(AsciiString line) {
@@ -553,8 +548,8 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
         case '\n':
         case '\r':
           throw new IllegalArgumentException(
-              "reasonPhrase contains one of the following prohibited characters: " +
-                  "\\r\\n: " + reasonPhrase);
+            "reasonPhrase contains one of the following prohibited characters: " +
+              "\\r\\n: " + reasonPhrase);
       }
     }
 
@@ -631,10 +626,10 @@ public class HttpResponseStatus implements Comparable<HttpResponseStatus> {
   @Override
   public String toString() {
     return new StringBuilder(reasonPhrase.length() + 4)
-        .append(codeAsText)
-        .append(' ')
-        .append(reasonPhrase)
-        .toString();
+      .append(codeAsText)
+      .append(' ')
+      .append(reasonPhrase)
+      .toString();
   }
 
   void encode(ByteBuf buf) {

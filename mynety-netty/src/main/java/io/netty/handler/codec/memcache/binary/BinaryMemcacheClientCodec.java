@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @UnstableApi
 public final class BinaryMemcacheClientCodec extends
-    CombinedChannelDuplexHandler<BinaryMemcacheResponseDecoder, BinaryMemcacheRequestEncoder> {
+  CombinedChannelDuplexHandler<BinaryMemcacheResponseDecoder, BinaryMemcacheRequestEncoder> {
 
   private final boolean failOnMissingResponse;
   private final AtomicLong requestResponseCounter = new AtomicLong();
@@ -52,7 +52,6 @@ public final class BinaryMemcacheClientCodec extends
 
   /**
    * Create a new {@link BinaryMemcacheClientCodec} and set a custom chunk size.
-   *
    * @param decodeChunkSize the maximum chunk size.
    */
   public BinaryMemcacheClientCodec(int decodeChunkSize) {
@@ -61,7 +60,6 @@ public final class BinaryMemcacheClientCodec extends
 
   /**
    * Create a new {@link BinaryMemcacheClientCodec} with custom settings.
-   *
    * @param decodeChunkSize       the maximum chunk size.
    * @param failOnMissingResponse report if after close there are outstanding requests.
    */
@@ -112,8 +110,8 @@ public final class BinaryMemcacheClientCodec extends
         long missingResponses = requestResponseCounter.get();
         if (missingResponses > 0) {
           ctx.fireExceptionCaught(new PrematureChannelClosureException(
-              "channel gone inactive with " + missingResponses +
-                  " missing response(s)"));
+            "channel gone inactive with " + missingResponses +
+              " missing response(s)"));
         }
       }
     }

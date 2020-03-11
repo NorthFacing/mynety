@@ -27,11 +27,10 @@ import io.netty.handler.codec.TooLongFrameException;
  * just get forwarded to the next handler in the pipeline.
  */
 public class WebSocketFrameAggregator
-    extends MessageAggregator<WebSocketFrame, WebSocketFrame, ContinuationWebSocketFrame, WebSocketFrame> {
+  extends MessageAggregator<WebSocketFrame, WebSocketFrame, ContinuationWebSocketFrame, WebSocketFrame> {
 
   /**
    * Creates a new instance
-   *
    * @param maxContentLength If the size of the aggregated frame exceeds this value,
    *                         a {@link TooLongFrameException} is thrown.
    */

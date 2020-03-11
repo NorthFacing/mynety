@@ -26,7 +26,6 @@ final class SucceededChannelFuture extends CompleteChannelFuture {
 
   /**
    * Creates a new instance.
-   *
    * @param channel the {@link Channel} associated with this future
    */
   SucceededChannelFuture(Channel channel, EventExecutor executor) {

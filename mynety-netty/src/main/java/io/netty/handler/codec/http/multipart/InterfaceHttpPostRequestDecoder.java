@@ -27,7 +27,6 @@ import java.util.List;
 public interface InterfaceHttpPostRequestDecoder {
   /**
    * True if this request is a Multipart request
-   *
    * @return True if this request is a Multipart request
    */
   boolean isMultipart();
@@ -49,7 +48,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return the list of HttpDatas from Body part for POST getMethod
    * @throws HttpPostRequestDecoder.NotEnoughDataDecoderException Need more chunks
    */
@@ -61,7 +59,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return All Body HttpDatas with the given name (ignore case)
    * @throws HttpPostRequestDecoder.NotEnoughDataDecoderException need more chunks
    */
@@ -73,7 +70,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * <p>
    * If chunked, all chunks must have been offered using offer() getMethod. If
    * not, NotEnoughDataDecoderException will be raised.
-   *
    * @return The first Body InterfaceHttpData with the given name (ignore
    * case)
    * @throws HttpPostRequestDecoder.NotEnoughDataDecoderException need more chunks
@@ -82,7 +78,6 @@ public interface InterfaceHttpPostRequestDecoder {
 
   /**
    * Initialized the internals from a new chunk
-   *
    * @param content the new received chunk
    * @throws HttpPostRequestDecoder.ErrorDataDecoderException if there is a problem with the charset decoding or other
    *                                                          errors
@@ -94,7 +89,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * InterfaceHttpData from the Body.
    * <p>
    * This getMethod works for chunked and not chunked request.
-   *
    * @return True if at current getStatus, there is a decoded InterfaceHttpData
    * @throws HttpPostRequestDecoder.EndOfDataDecoderException No more data will be available
    */
@@ -107,7 +101,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * <p>
    * Be sure to call {@link InterfaceHttpData#release()} after you are done
    * with processing to make sure to not leak any resources
-   *
    * @return the next available InterfaceHttpData or null if none
    * @throws HttpPostRequestDecoder.EndOfDataDecoderException No more data will be available
    */
@@ -118,7 +111,6 @@ public interface InterfaceHttpPostRequestDecoder {
    * meaning all data are not yet within, or null if there is no InterfaceHttpData
    * currently in decoding status (either because none yet decoded or none currently partially
    * decoded). Full decoded ones are accessible through hasNext() and next() methods.
-   *
    * @return the current InterfaceHttpData if currently in decoding status or null if none.
    */
   InterfaceHttpData currentPartialHttpData();

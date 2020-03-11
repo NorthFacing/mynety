@@ -18,7 +18,11 @@ package io.netty.buffer;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.StringUtil;
 
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * An {@link InputStream} which reads data from a {@link ByteBuf}.
@@ -33,7 +37,6 @@ import java.io.*;
  * This stream implements {@link DataInput} for your convenience.
  * The endianness of the stream is not always big endian but depends on
  * the endianness of the underlying buffer.
- *
  * @see ByteBufOutputStream
  */
 public class ByteBufInputStream extends InputStream implements DataInput {
@@ -53,7 +56,6 @@ public class ByteBufInputStream extends InputStream implements DataInput {
    * Creates a new stream which reads data from the specified {@code buffer}
    * starting at the current {@code readerIndex} and ending at the current
    * {@code writerIndex}.
-   *
    * @param buffer The buffer which provides the content for this {@link InputStream}.
    */
   public ByteBufInputStream(ByteBuf buffer) {
@@ -64,7 +66,6 @@ public class ByteBufInputStream extends InputStream implements DataInput {
    * Creates a new stream which reads data from the specified {@code buffer}
    * starting at the current {@code readerIndex} and ending at
    * {@code readerIndex + length}.
-   *
    * @param buffer The buffer which provides the content for this {@link InputStream}.
    * @param length The length of the buffer to use for this {@link InputStream}.
    * @throws IndexOutOfBoundsException if {@code readerIndex + length} is greater than
@@ -78,7 +79,6 @@ public class ByteBufInputStream extends InputStream implements DataInput {
    * Creates a new stream which reads data from the specified {@code buffer}
    * starting at the current {@code readerIndex} and ending at the current
    * {@code writerIndex}.
-   *
    * @param buffer         The buffer which provides the content for this {@link InputStream}.
    * @param releaseOnClose {@code true} means that when {@link #close()} is called then {@link ByteBuf#release()} will
    *                       be called on {@code buffer}.
@@ -91,7 +91,6 @@ public class ByteBufInputStream extends InputStream implements DataInput {
    * Creates a new stream which reads data from the specified {@code buffer}
    * starting at the current {@code readerIndex} and ending at
    * {@code readerIndex + length}.
-   *
    * @param buffer         The buffer which provides the content for this {@link InputStream}.
    * @param length         The length of the buffer to use for this {@link InputStream}.
    * @param releaseOnClose {@code true} means that when {@link #close()} is called then {@link ByteBuf#release()} will
@@ -114,7 +113,7 @@ public class ByteBufInputStream extends InputStream implements DataInput {
         buffer.release();
       }
       throw new IndexOutOfBoundsException("Too many bytes to be read - Needs "
-          + length + ", maximum is " + buffer.readableBytes());
+        + length + ", maximum is " + buffer.readableBytes());
     }
 
     this.releaseOnClose = releaseOnClose;
@@ -320,7 +319,7 @@ public class ByteBufInputStream extends InputStream implements DataInput {
     }
     if (fieldSize > available()) {
       throw new EOFException("fieldSize is too long! Length is " + fieldSize
-          + ", but maximum is " + available());
+        + ", but maximum is " + available());
     }
   }
 }

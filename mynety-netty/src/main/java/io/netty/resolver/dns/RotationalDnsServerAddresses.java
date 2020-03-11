@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 final class RotationalDnsServerAddresses extends DefaultDnsServerAddresses {
 
   private static final AtomicIntegerFieldUpdater<RotationalDnsServerAddresses> startIdxUpdater =
-      AtomicIntegerFieldUpdater.newUpdater(RotationalDnsServerAddresses.class, "startIdx");
+    AtomicIntegerFieldUpdater.newUpdater(RotationalDnsServerAddresses.class, "startIdx");
 
   @SuppressWarnings("UnusedDeclaration")
   private volatile int startIdx;

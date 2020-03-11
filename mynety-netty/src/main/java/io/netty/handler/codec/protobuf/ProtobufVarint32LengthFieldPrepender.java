@@ -33,7 +33,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
  * |  (300 bytes)  |               | 0xAC02 |  (300 bytes)  |
  * +---------------+               +--------+---------------+
  * </pre> *
- *
  * @see CodedOutputStream
  * @see CodedOutputByteBufferNano
  */
@@ -42,7 +41,7 @@ public class ProtobufVarint32LengthFieldPrepender extends MessageToByteEncoder<B
 
   @Override
   protected void encode(
-      ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
+    ChannelHandlerContext ctx, ByteBuf msg, ByteBuf out) throws Exception {
     int bodyLen = msg.readableBytes();
     int headerLen = computeRawVarint32Size(bodyLen);
     out.ensureWritable(headerLen + bodyLen);
@@ -52,7 +51,6 @@ public class ProtobufVarint32LengthFieldPrepender extends MessageToByteEncoder<B
 
   /**
    * Writes protobuf varint32 to (@link ByteBuf).
-   *
    * @param out   to be written to
    * @param value to be written
    */
@@ -70,7 +68,6 @@ public class ProtobufVarint32LengthFieldPrepender extends MessageToByteEncoder<B
 
   /**
    * Computes size of protobuf varint32 after encoding.
-   *
    * @param value which is to be encoded.
    * @return size of value encoded as protobuf varint32.
    */

@@ -32,7 +32,7 @@ import java.util.concurrent.ThreadFactory;
 public abstract class SingleThreadEventLoop extends SingleThreadEventExecutor implements EventLoop {
 
   protected static final int DEFAULT_MAX_PENDING_TASKS = Math.max(16,
-      SystemPropertyUtil.getInt("io.netty.eventLoop.maxPendingTasks", Integer.MAX_VALUE));
+    SystemPropertyUtil.getInt("io.netty.eventLoop.maxPendingTasks", Integer.MAX_VALUE));
 
   private final Queue<Runnable> tailTasks;
 
@@ -103,7 +103,6 @@ public abstract class SingleThreadEventLoop extends SingleThreadEventExecutor im
 
   /**
    * Adds a task to be run once at the end of next (or current) {@code eventloop} iteration.
-   *
    * @param task to be added.
    */
   @UnstableApi
@@ -124,7 +123,6 @@ public abstract class SingleThreadEventLoop extends SingleThreadEventExecutor im
 
   /**
    * Removes a task that was added previously via {@link #executeAfterEventLoopIteration(Runnable)}.
-   *
    * @param task to be removed.
    * @return {@code true} if the task was removed as a result of this call.
    */

@@ -104,7 +104,7 @@ public class ProtobufDecoder extends MessageToMessageDecoder<ByteBuf> {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out)
-      throws Exception {
+    throws Exception {
     final byte[] array;
     final int offset;
     final int length = msg.readableBytes();
@@ -125,10 +125,10 @@ public class ProtobufDecoder extends MessageToMessageDecoder<ByteBuf> {
     } else {
       if (HAS_PARSER) {
         out.add(prototype.getParserForType().parseFrom(
-            array, offset, length, extensionRegistry));
+          array, offset, length, extensionRegistry));
       } else {
         out.add(prototype.newBuilderForType().mergeFrom(
-            array, offset, length, extensionRegistry).build());
+          array, offset, length, extensionRegistry).build());
       }
     }
   }

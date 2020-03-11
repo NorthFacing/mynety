@@ -108,17 +108,17 @@ public final class Base64 {
   }
 
   public static ByteBuf encode(
-      ByteBuf src, int off, int len, boolean breakLines) {
+    ByteBuf src, int off, int len, boolean breakLines) {
     return encode(src, off, len, breakLines, Base64Dialect.STANDARD);
   }
 
   public static ByteBuf encode(
-      ByteBuf src, int off, int len, boolean breakLines, Base64Dialect dialect) {
+    ByteBuf src, int off, int len, boolean breakLines, Base64Dialect dialect) {
     return encode(src, off, len, breakLines, dialect, src.alloc());
   }
 
   public static ByteBuf encode(
-      ByteBuf src, int off, int len, boolean breakLines, Base64Dialect dialect, ByteBufAllocator allocator) {
+    ByteBuf src, int off, int len, boolean breakLines, Base64Dialect dialect, ByteBufAllocator allocator) {
     if (src == null) {
       throw new NullPointerException("src");
     }
@@ -158,7 +158,7 @@ public final class Base64 {
   }
 
   private static void encode3to4(
-      ByteBuf src, int srcOffset, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
+    ByteBuf src, int srcOffset, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
     //           1         2         3
     // 01234567890123456789012345678901 Bit position
     // --------000000001111111122222222 Array position from threeBytes
@@ -237,26 +237,26 @@ public final class Base64 {
   }
 
   private static void encode3to4BigEndian(
-      int inBuff, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
+    int inBuff, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
     // Packing bytes into an int to reduce bound and reference count checking.
     switch (numSigBytes) {
       case 3:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] << 24 |
-            alphabet[inBuff >>> 12 & 0x3f] << 16 |
-            alphabet[inBuff >>> 6 & 0x3f] << 8 |
-            alphabet[inBuff & 0x3f]);
+          alphabet[inBuff >>> 12 & 0x3f] << 16 |
+          alphabet[inBuff >>> 6 & 0x3f] << 8 |
+          alphabet[inBuff & 0x3f]);
         break;
       case 2:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] << 24 |
-            alphabet[inBuff >>> 12 & 0x3f] << 16 |
-            alphabet[inBuff >>> 6 & 0x3f] << 8 |
-            EQUALS_SIGN);
+          alphabet[inBuff >>> 12 & 0x3f] << 16 |
+          alphabet[inBuff >>> 6 & 0x3f] << 8 |
+          EQUALS_SIGN);
         break;
       case 1:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] << 24 |
-            alphabet[inBuff >>> 12 & 0x3f] << 16 |
-            EQUALS_SIGN << 8 |
-            EQUALS_SIGN);
+          alphabet[inBuff >>> 12 & 0x3f] << 16 |
+          EQUALS_SIGN << 8 |
+          EQUALS_SIGN);
         break;
       default:
         // NOOP
@@ -265,26 +265,26 @@ public final class Base64 {
   }
 
   private static void encode3to4LittleEndian(
-      int inBuff, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
+    int inBuff, int numSigBytes, ByteBuf dest, int destOffset, byte[] alphabet) {
     // Packing bytes into an int to reduce bound and reference count checking.
     switch (numSigBytes) {
       case 3:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] |
-            alphabet[inBuff >>> 12 & 0x3f] << 8 |
-            alphabet[inBuff >>> 6 & 0x3f] << 16 |
-            alphabet[inBuff & 0x3f] << 24);
+          alphabet[inBuff >>> 12 & 0x3f] << 8 |
+          alphabet[inBuff >>> 6 & 0x3f] << 16 |
+          alphabet[inBuff & 0x3f] << 24);
         break;
       case 2:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] |
-            alphabet[inBuff >>> 12 & 0x3f] << 8 |
-            alphabet[inBuff >>> 6 & 0x3f] << 16 |
-            EQUALS_SIGN << 24);
+          alphabet[inBuff >>> 12 & 0x3f] << 8 |
+          alphabet[inBuff >>> 6 & 0x3f] << 16 |
+          EQUALS_SIGN << 24);
         break;
       case 1:
         dest.setInt(destOffset, alphabet[inBuff >>> 18] |
-            alphabet[inBuff >>> 12 & 0x3f] << 8 |
-            EQUALS_SIGN << 16 |
-            EQUALS_SIGN << 24);
+          alphabet[inBuff >>> 12 & 0x3f] << 8 |
+          EQUALS_SIGN << 16 |
+          EQUALS_SIGN << 24);
         break;
       default:
         // NOOP
@@ -307,17 +307,17 @@ public final class Base64 {
   }
 
   public static ByteBuf decode(
-      ByteBuf src, int off, int len) {
+    ByteBuf src, int off, int len) {
     return decode(src, off, len, Base64Dialect.STANDARD);
   }
 
   public static ByteBuf decode(
-      ByteBuf src, int off, int len, Base64Dialect dialect) {
+    ByteBuf src, int off, int len, Base64Dialect dialect) {
     return decode(src, off, len, dialect, src.alloc());
   }
 
   public static ByteBuf decode(
-      ByteBuf src, int off, int len, Base64Dialect dialect, ByteBufAllocator allocator) {
+    ByteBuf src, int off, int len, Base64Dialect dialect, ByteBufAllocator allocator) {
     if (src == null) {
       throw new NullPointerException("src");
     }
@@ -374,7 +374,7 @@ public final class Base64 {
         }
       }
       throw new IllegalArgumentException(
-          "invalid Base64 input character: " + (short) (value & 0xFF) + " (decimal)");
+        "invalid Base64 input character: " + (short) (value & 0xFF) + " (decimal)");
     }
 
     private static int decode4to3(byte[] src, ByteBuf dest, int destOffset, byte[] decodabet) {
@@ -403,11 +403,11 @@ public final class Base64 {
             // The decodabet bytes are meant to straddle byte boundaries and so we must carefully mask out
             // the bits we care about.
             decodedValue = ((decodabet[src0] & 0x3f) << 2 | (b1 & 0xf0) >> 4) << 8 |
-                (b1 & 0xf) << 4 | (decodabet[src2] & 0xfc) >>> 2;
+              (b1 & 0xf) << 4 | (decodabet[src2] & 0xfc) >>> 2;
           } else {
             // This is just a simple byte swap of the operation above.
             decodedValue = (decodabet[src0] & 0x3f) << 2 | (b1 & 0xf0) >> 4 |
-                ((b1 & 0xf) << 4 | (decodabet[src2] & 0xfc) >>> 2) << 8;
+              ((b1 & 0xf) << 4 | (decodabet[src2] & 0xfc) >>> 2) << 8;
           }
         } catch (IndexOutOfBoundsException ignored) {
           throw new IllegalArgumentException("not encoded in Base64");
@@ -420,9 +420,9 @@ public final class Base64 {
       try {
         if (dest.order() == ByteOrder.BIG_ENDIAN) {
           decodedValue = (decodabet[src0] & 0x3f) << 18 |
-              (decodabet[src1] & 0xff) << 12 |
-              (decodabet[src2] & 0xff) << 6 |
-              decodabet[src3] & 0xff;
+            (decodabet[src1] & 0xff) << 12 |
+            (decodabet[src2] & 0xff) << 6 |
+            decodabet[src3] & 0xff;
         } else {
           final byte b1 = decodabet[src1];
           final byte b2 = decodabet[src2];
@@ -432,15 +432,15 @@ public final class Base64 {
           // 2. The contents straddles byte boundaries. This means bytes will be pulled apart during the byte
           //    swapping process.
           decodedValue = (decodabet[src0] & 0x3f) << 2 |
-              // The bottom half of b1 remains in the middle.
-              (b1 & 0xf) << 12 |
-              // The top half of b1 are the least significant bits after the swap.
-              (b1 & 0xf0) >>> 4 |
-              // The bottom 2 bits of b2 will be the most significant bits after the swap.
-              (b2 & 0x3) << 22 |
-              // The remaining 6 bits of b2 remain in the middle.
-              (b2 & 0xfc) << 6 |
-              (decodabet[src3] & 0xff) << 16;
+            // The bottom half of b1 remains in the middle.
+            (b1 & 0xf) << 12 |
+            // The top half of b1 are the least significant bits after the swap.
+            (b1 & 0xf0) >>> 4 |
+            // The bottom 2 bits of b2 will be the most significant bits after the swap.
+            (b2 & 0x3) << 22 |
+            // The remaining 6 bits of b2 remain in the middle.
+            (b2 & 0xfc) << 6 |
+            (decodabet[src3] & 0xff) << 16;
         }
       } catch (IndexOutOfBoundsException ignored) {
         throw new IllegalArgumentException("not encoded in Base64");

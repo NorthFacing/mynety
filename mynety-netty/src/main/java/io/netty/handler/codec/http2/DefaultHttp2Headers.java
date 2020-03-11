@@ -24,11 +24,13 @@ import io.netty.util.internal.UnstableApi;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.handler.codec.http2.Http2Headers.PseudoHeaderName.hasPseudoHeaderFormat;
-import static io.netty.util.AsciiString.*;
+import static io.netty.util.AsciiString.CASE_INSENSITIVE_HASHER;
+import static io.netty.util.AsciiString.CASE_SENSITIVE_HASHER;
+import static io.netty.util.AsciiString.isUpperCase;
 
 @UnstableApi
 public class DefaultHttp2Headers
-    extends DefaultHeaders<CharSequence, CharSequence, Http2Headers> implements Http2Headers {
+  extends DefaultHeaders<CharSequence, CharSequence, Http2Headers> implements Http2Headers {
   private static final ByteProcessor HTTP2_NAME_VALIDATOR_PROCESSOR = new ByteProcessor() {
     @Override
     public boolean process(byte value) {
@@ -40,7 +42,7 @@ public class DefaultHttp2Headers
     public void validateName(CharSequence name) {
       if (name == null || name.length() == 0) {
         PlatformDependent.throwException(connectionError(PROTOCOL_ERROR,
-            "empty headers are not allowed [%s]", name));
+          "empty headers are not allowed [%s]", name));
       }
       if (name instanceof AsciiString) {
         final int index;
@@ -51,19 +53,19 @@ public class DefaultHttp2Headers
           return;
         } catch (Throwable t) {
           PlatformDependent.throwException(connectionError(PROTOCOL_ERROR, t,
-              "unexpected error. invalid header name [%s]", name));
+            "unexpected error. invalid header name [%s]", name));
           return;
         }
 
         if (index != -1) {
           PlatformDependent.throwException(connectionError(PROTOCOL_ERROR,
-              "invalid header name [%s]", name));
+            "invalid header name [%s]", name));
         }
       } else {
         for (int i = 0; i < name.length(); ++i) {
           if (isUpperCase(name.charAt(i))) {
             PlatformDependent.throwException(connectionError(PROTOCOL_ERROR,
-                "invalid header name [%s]", name));
+              "invalid header name [%s]", name));
           }
         }
       }
@@ -84,7 +86,6 @@ public class DefaultHttp2Headers
 
   /**
    * Create a new instance.
-   *
    * @param validate {@code true} to validate header names according to
    *                 <a href="https://tools.ietf.org/html/rfc7540">rfc7540</a>. {@code false} to not validate header names.
    */
@@ -93,13 +94,12 @@ public class DefaultHttp2Headers
     // Case sensitive compare is used because it is cheaper, and header validation can be used to catch invalid
     // headers.
     super(CASE_SENSITIVE_HASHER,
-        CharSequenceValueConverter.INSTANCE,
-        validate ? HTTP2_NAME_VALIDATOR : NameValidator.NOT_NULL);
+      CharSequenceValueConverter.INSTANCE,
+      validate ? HTTP2_NAME_VALIDATOR : NameValidator.NOT_NULL);
   }
 
   /**
    * Create a new instance.
-   *
    * @param validate      {@code true} to validate header names according to
    *                      <a href="https://tools.ietf.org/html/rfc7540">rfc7540</a>. {@code false} to not validate header names.
    * @param arraySizeHint A hint as to how large the hash data structure should be.
@@ -110,9 +110,9 @@ public class DefaultHttp2Headers
     // Case sensitive compare is used because it is cheaper, and header validation can be used to catch invalid
     // headers.
     super(CASE_SENSITIVE_HASHER,
-        CharSequenceValueConverter.INSTANCE,
-        validate ? HTTP2_NAME_VALIDATOR : NameValidator.NOT_NULL,
-        arraySizeHint);
+      CharSequenceValueConverter.INSTANCE,
+      validate ? HTTP2_NAME_VALIDATOR : NameValidator.NOT_NULL,
+      arraySizeHint);
   }
 
   @Override

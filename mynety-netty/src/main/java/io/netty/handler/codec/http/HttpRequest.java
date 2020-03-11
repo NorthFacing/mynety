@@ -28,7 +28,6 @@ package io.netty.handler.codec.http;
  * {@link io.netty.handler.codec.http.cookie.ClientCookieDecoder},
  * {@link io.netty.handler.codec.http.cookie.ServerCookieEncoder},
  * and {@link io.netty.handler.codec.http.cookie.ClientCookieEncoder}.
- *
  * @see HttpResponse
  * @see io.netty.handler.codec.http.cookie.ServerCookieDecoder
  * @see io.netty.handler.codec.http.cookie.ClientCookieDecoder
@@ -45,7 +44,6 @@ public interface HttpRequest extends HttpMessage {
 
   /**
    * Returns the {@link HttpMethod} of this {@link HttpRequest}.
-   *
    * @return The {@link HttpMethod} of this {@link HttpRequest}
    */
   HttpMethod method();
@@ -63,7 +61,6 @@ public interface HttpRequest extends HttpMessage {
 
   /**
    * Returns the requested URI (or alternatively, path)
-   *
    * @return The URI being requested
    */
   String uri();

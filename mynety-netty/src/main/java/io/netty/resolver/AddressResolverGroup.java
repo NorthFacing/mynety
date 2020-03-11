@@ -41,7 +41,7 @@ public abstract class AddressResolverGroup<T extends SocketAddress> implements C
    * Note that we do not use a {@link ConcurrentMap} here because it is usually expensive to instantiate a resolver.
    */
   private final Map<EventExecutor, AddressResolver<T>> resolvers =
-      new IdentityHashMap<EventExecutor, AddressResolver<T>>();
+    new IdentityHashMap<EventExecutor, AddressResolver<T>>();
 
   protected AddressResolverGroup() {
   }

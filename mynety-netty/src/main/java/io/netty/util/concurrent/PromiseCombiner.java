@@ -77,7 +77,6 @@ public final class PromiseCombiner {
   /**
    * The {@link EventExecutor} to use for notifications. You must call {@link #add(Future)}, {@link #addAll(Future[])}
    * and {@link #finish(Promise)} from within the {@link EventExecutor} thread.
-   *
    * @param executor the {@link EventExecutor} to use for notifications.
    */
   public PromiseCombiner(EventExecutor executor) {
@@ -87,7 +86,6 @@ public final class PromiseCombiner {
   /**
    * Adds a new promise to be combined. New promises may be added until an aggregate promise is added via the
    * {@link PromiseCombiner#finish(Promise)} method.
-   *
    * @param promise the promise to add to this promise combiner
    * @deprecated Replaced by {@link PromiseCombiner#add(Future)}.
    */
@@ -99,7 +97,6 @@ public final class PromiseCombiner {
   /**
    * Adds a new future to be combined. New futures may be added until an aggregate promise is added via the
    * {@link PromiseCombiner#finish(Promise)} method.
-   *
    * @param future the future to add to this promise combiner
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -113,7 +110,6 @@ public final class PromiseCombiner {
   /**
    * Adds new promises to be combined. New promises may be added until an aggregate promise is added via the
    * {@link PromiseCombiner#finish(Promise)} method.
-   *
    * @param promises the promises to add to this promise combiner
    * @deprecated Replaced by {@link PromiseCombiner#addAll(Future[])}
    */
@@ -125,7 +121,6 @@ public final class PromiseCombiner {
   /**
    * Adds new futures to be combined. New futures may be added until an aggregate promise is added via the
    * {@link PromiseCombiner#finish(Promise)} method.
-   *
    * @param futures the futures to add to this promise combiner
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -143,7 +138,6 @@ public final class PromiseCombiner {
    *
    * <p>After this method is called, no more futures may be added via the {@link PromiseCombiner#add(Future)} or
    * {@link PromiseCombiner#addAll(Future[])} methods.</p>
-   *
    * @param aggregatePromise the promise to notify when all combined futures have finished
    */
   public void finish(Promise<Void> aggregatePromise) {

@@ -61,7 +61,6 @@ public abstract class MessageToMessageDecoder<I> extends ChannelInboundHandlerAd
 
   /**
    * Create a new instance
-   *
    * @param inboundMessageType The type of messages to match and so decode
    */
   protected MessageToMessageDecoder(Class<? extends I> inboundMessageType) {
@@ -107,7 +106,6 @@ public abstract class MessageToMessageDecoder<I> extends ChannelInboundHandlerAd
   /**
    * Decode from one message to an other. This method will be called for each written message that can be handled
    * by this decoder.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link MessageToMessageDecoder} belongs to
    * @param msg the message to decode to an other one
    * @param out the {@link List} to which decoded messages should be added

@@ -31,7 +31,7 @@ import java.util.List;
 
 final class DirContextUtils {
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(DirContextUtils.class);
+    InternalLoggerFactory.getInstance(DirContextUtils.class);
 
   private DirContextUtils() {
   }
@@ -59,13 +59,13 @@ final class DirContextUtils {
 
             if (host == null || host.isEmpty()) {
               logger.debug(
-                  "Skipping a nameserver URI as host portion could not be extracted: {}", server);
+                "Skipping a nameserver URI as host portion could not be extracted: {}", server);
               // If the host portion can not be parsed we should just skip this entry.
               continue;
             }
             int port = uri.getPort();
             defaultNameServers.add(SocketUtils.socketAddress(uri.getHost(), port == -1 ?
-                defaultPort : port));
+              defaultPort : port));
           } catch (URISyntaxException e) {
             logger.debug("Skipping a malformed nameserver URI: {}", server, e);
           }

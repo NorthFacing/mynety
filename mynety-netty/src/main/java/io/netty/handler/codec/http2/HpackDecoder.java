@@ -35,7 +35,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http2.HpackUtil.IndexType;
 import io.netty.util.AsciiString;
 
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MAX_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_LIST_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.MIN_HEADER_TABLE_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.headerListSizeExceeded;
 import static io.netty.handler.codec.http2.Http2Error.COMPRESSION_ERROR;
 import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
@@ -48,31 +53,31 @@ import static io.netty.util.internal.ThrowableUtil.unknownStackTrace;
 
 final class HpackDecoder {
   private static final Http2Exception DECODE_ULE_128_DECOMPRESSION_EXCEPTION = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - decompression failure",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class,
-      "decodeULE128(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - decompression failure",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class,
+    "decodeULE128(..)");
   private static final Http2Exception DECODE_ULE_128_TO_LONG_DECOMPRESSION_EXCEPTION = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - long overflow",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decodeULE128(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - long overflow",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decodeULE128(..)");
   private static final Http2Exception DECODE_ULE_128_TO_INT_DECOMPRESSION_EXCEPTION = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - int overflow",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decodeULE128ToInt(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - int overflow",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decodeULE128ToInt(..)");
   private static final Http2Exception DECODE_ILLEGAL_INDEX_VALUE = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decode(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decode(..)");
   private static final Http2Exception INDEX_HEADER_ILLEGAL_INDEX_VALUE = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "indexHeader(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "indexHeader(..)");
   private static final Http2Exception READ_NAME_ILLEGAL_INDEX_VALUE = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "readName(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - illegal index value",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "readName(..)");
   private static final Http2Exception INVALID_MAX_DYNAMIC_TABLE_SIZE = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - invalid max dynamic table size",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class,
-      "setDynamicTableSize(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - invalid max dynamic table size",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class,
+    "setDynamicTableSize(..)");
   private static final Http2Exception MAX_DYNAMIC_TABLE_SIZE_CHANGE_REQUIRED = unknownStackTrace(
-      Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - max dynamic table size change required",
-          Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decode(..)");
+    Http2Exception.newStatic(COMPRESSION_ERROR, "HPACK - max dynamic table size change required",
+      Http2Exception.ShutdownHint.HARD_SHUTDOWN), HpackDecoder.class, "decode(..)");
   private static final byte READ_HEADER_REPRESENTATION = 0;
   private static final byte READ_MAX_DYNAMIC_TABLE_SIZE = 1;
   private static final byte READ_INDEXED_HEADER = 2;
@@ -93,7 +98,6 @@ final class HpackDecoder {
 
   /**
    * Create a new instance.
-   *
    * @param maxHeaderListSize This is the only setting that can be configured before notifying the peer.
    *                          This is because <a href="https://tools.ietf.org/html/rfc7540#section-6.5.1">SETTINGS_MAX_HEADER_LIST_SIZE</a>
    *                          allows a lower than advertised limit from being enforced, and the default limit is unlimited
@@ -306,7 +310,7 @@ final class HpackDecoder {
   public void setMaxHeaderTableSize(long maxHeaderTableSize) throws Http2Exception {
     if (maxHeaderTableSize < MIN_HEADER_TABLE_SIZE || maxHeaderTableSize > MAX_HEADER_TABLE_SIZE) {
       throw connectionError(PROTOCOL_ERROR, "Header Table Size must be >= %d and <= %d but was %d",
-          MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderTableSize);
+        MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderTableSize);
     }
     maxDynamicTableSize = maxHeaderTableSize;
     if (maxDynamicTableSize < encoderMaxDynamicTableSize) {
@@ -329,7 +333,7 @@ final class HpackDecoder {
   public void setMaxHeaderListSize(long maxHeaderListSize) throws Http2Exception {
     if (maxHeaderListSize < MIN_HEADER_LIST_SIZE || maxHeaderListSize > MAX_HEADER_LIST_SIZE) {
       throw connectionError(PROTOCOL_ERROR, "Header List Size must be >= %d and <= %d but was %d",
-          MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderListSize);
+        MIN_HEADER_TABLE_SIZE, MAX_HEADER_TABLE_SIZE, maxHeaderListSize);
     }
     this.maxHeaderListSize = maxHeaderListSize;
   }
@@ -381,7 +385,7 @@ final class HpackDecoder {
     if (hasPseudoHeaderFormat(name)) {
       if (previousHeaderType == HeaderType.REGULAR_HEADER) {
         throw streamError(streamId, PROTOCOL_ERROR,
-            "Pseudo-header field '%s' found after regular header.", name);
+          "Pseudo-header field '%s' found after regular header.", name);
       }
 
       final Http2Headers.PseudoHeaderName pseudoHeader = getPseudoHeader(name);
@@ -390,7 +394,7 @@ final class HpackDecoder {
       }
 
       final HeaderType currentHeaderType = pseudoHeader.isRequestOnly() ?
-          HeaderType.REQUEST_PSEUDO_HEADER : HeaderType.RESPONSE_PSEUDO_HEADER;
+        HeaderType.REQUEST_PSEUDO_HEADER : HeaderType.RESPONSE_PSEUDO_HEADER;
       if (previousHeaderType != null && currentHeaderType != previousHeaderType) {
         throw streamError(streamId, PROTOCOL_ERROR, "Mix of request and response pseudo-headers.");
       }

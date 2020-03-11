@@ -163,17 +163,17 @@ class SimpleLeakAwareByteBuf extends WrappedByteBuf {
   }
 
   private SimpleLeakAwareByteBuf newSharedLeakAwareByteBuf(
-      ByteBuf wrapped) {
+    ByteBuf wrapped) {
     return newLeakAwareByteBuf(wrapped, trackedByteBuf, leak);
   }
 
   private SimpleLeakAwareByteBuf newLeakAwareByteBuf(
-      ByteBuf wrapped, ResourceLeakTracker<ByteBuf> leakTracker) {
+    ByteBuf wrapped, ResourceLeakTracker<ByteBuf> leakTracker) {
     return newLeakAwareByteBuf(wrapped, wrapped, leakTracker);
   }
 
   protected SimpleLeakAwareByteBuf newLeakAwareByteBuf(
-      ByteBuf buf, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
+    ByteBuf buf, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
     return new SimpleLeakAwareByteBuf(buf, trackedByteBuf, leakTracker);
   }
 }

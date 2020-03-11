@@ -16,7 +16,11 @@
 package io.netty.channel.kqueue;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.SocketChannelConfig;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.UnstableApi;
@@ -24,7 +28,14 @@ import io.netty.util.internal.UnstableApi;
 import java.io.IOException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.*;
+import static io.netty.channel.ChannelOption.ALLOW_HALF_CLOSURE;
+import static io.netty.channel.ChannelOption.IP_TOS;
+import static io.netty.channel.ChannelOption.SO_KEEPALIVE;
+import static io.netty.channel.ChannelOption.SO_LINGER;
+import static io.netty.channel.ChannelOption.SO_RCVBUF;
+import static io.netty.channel.ChannelOption.SO_REUSEADDR;
+import static io.netty.channel.ChannelOption.SO_SNDBUF;
+import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static io.netty.channel.kqueue.KQueueChannelOption.SO_SNDLOWAT;
 import static io.netty.channel.kqueue.KQueueChannelOption.TCP_NOPUSH;
 
@@ -43,9 +54,9 @@ public final class KQueueSocketChannelConfig extends KQueueChannelConfig impleme
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
-        ALLOW_HALF_CLOSURE, SO_SNDLOWAT, TCP_NOPUSH);
+      super.getOptions(),
+      SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
+      ALLOW_HALF_CLOSURE, SO_SNDLOWAT, TCP_NOPUSH);
   }
 
   @SuppressWarnings("unchecked")
@@ -294,7 +305,7 @@ public final class KQueueSocketChannelConfig extends KQueueChannelConfig impleme
 
   @Override
   public KQueueSocketChannelConfig setPerformancePreferences(
-      int connectionTime, int latency, int bandwidth) {
+    int connectionTime, int latency, int bandwidth) {
     return this;
   }
 

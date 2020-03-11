@@ -32,7 +32,7 @@ public final class DefaultSocks5CommandRequest extends AbstractSocks5Message imp
   private final int dstPort;
 
   public DefaultSocks5CommandRequest(
-      Socks5CommandType type, Socks5AddressType dstAddrType, String dstAddr, int dstPort) {
+    Socks5CommandType type, Socks5AddressType dstAddrType, String dstAddr, int dstPort) {
 
     if (type == null) {
       throw new NullPointerException("type");

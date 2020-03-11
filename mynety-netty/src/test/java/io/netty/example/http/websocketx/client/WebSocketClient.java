@@ -85,7 +85,7 @@ public final class WebSocketClient {
     final SslContext sslCtx;
     if (ssl) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -96,27 +96,27 @@ public final class WebSocketClient {
       // If you change it to V00, ping is not supported and remember to change
       // HttpResponseDecoder to WebSocketHttpResponseDecoder in the pipeline.
       final WebSocketClientHandler handler =
-          new WebSocketClientHandler(
-              WebSocketClientHandshakerFactory.newHandshaker(
-                  uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
+        new WebSocketClientHandler(
+          WebSocketClientHandshakerFactory.newHandshaker(
+            uri, WebSocketVersion.V13, null, true, new DefaultHttpHeaders()));
 
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new ChannelInitializer<SocketChannel>() {
-            @Override
-            protected void initChannel(SocketChannel ch) {
-              ChannelPipeline p = ch.pipeline();
-              if (sslCtx != null) {
-                p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
-              }
-              p.addLast(
-                  new HttpClientCodec(),
-                  new HttpObjectAggregator(8192),
-                  WebSocketClientCompressionHandler.INSTANCE,
-                  handler);
+        .channel(NioSocketChannel.class)
+        .handler(new ChannelInitializer<SocketChannel>() {
+          @Override
+          protected void initChannel(SocketChannel ch) {
+            ChannelPipeline p = ch.pipeline();
+            if (sslCtx != null) {
+              p.addLast(sslCtx.newHandler(ch.alloc(), host, port));
             }
-          });
+            p.addLast(
+              new HttpClientCodec(),
+              new HttpObjectAggregator(8192),
+              WebSocketClientCompressionHandler.INSTANCE,
+              handler);
+          }
+        });
 
       Channel ch = b.connect(uri.getHost(), port).sync().channel();
       handler.handshakeFuture().sync();

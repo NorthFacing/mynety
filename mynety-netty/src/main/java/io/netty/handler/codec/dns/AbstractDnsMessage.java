@@ -15,7 +15,12 @@
  */
 package io.netty.handler.codec.dns;
 
-import io.netty.util.*;
+import io.netty.util.AbstractReferenceCounted;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ReferenceCounted;
+import io.netty.util.ResourceLeakDetector;
+import io.netty.util.ResourceLeakDetectorFactory;
+import io.netty.util.ResourceLeakTracker;
 import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.UnstableApi;
 
@@ -31,7 +36,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 public abstract class AbstractDnsMessage extends AbstractReferenceCounted implements DnsMessage {
 
   private static final ResourceLeakDetector<DnsMessage> leakDetector =
-      ResourceLeakDetectorFactory.instance().newResourceLeakDetector(DnsMessage.class);
+    ResourceLeakDetectorFactory.instance().newResourceLeakDetector(DnsMessage.class);
 
   private static final int SECTION_QUESTION = DnsSection.QUESTION.ordinal();
   private static final int SECTION_COUNT = 4;
@@ -446,7 +451,7 @@ public abstract class AbstractDnsMessage extends AbstractReferenceCounted implem
   private static DnsRecord checkQuestion(int section, DnsRecord record) {
     if (section == SECTION_QUESTION && !(checkNotNull(record, "record") instanceof DnsQuestion)) {
       throw new IllegalArgumentException(
-          "record: " + record + " (expected: " + StringUtil.simpleClassName(DnsQuestion.class) + ')');
+        "record: " + record + " (expected: " + StringUtil.simpleClassName(DnsQuestion.class) + ')');
     }
     return record;
   }

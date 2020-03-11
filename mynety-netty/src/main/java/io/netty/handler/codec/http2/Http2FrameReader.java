@@ -47,7 +47,7 @@ public interface Http2FrameReader extends Closeable {
    * read the frame, notifies the listener of the read frame.
    */
   void readFrame(ChannelHandlerContext ctx, ByteBuf input, Http2FrameListener listener)
-      throws Http2Exception;
+    throws Http2Exception;
 
   /**
    * Get the configuration related elements for this {@link Http2FrameReader}

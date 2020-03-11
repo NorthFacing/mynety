@@ -52,7 +52,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
   private static final byte[] ZERO_CRLF_CRLF = {'0', CR, LF, CR, LF};
   private static final ByteBuf CRLF_BUF = unreleasableBuffer(directBuffer(2).writeByte(CR).writeByte(LF));
   private static final ByteBuf ZERO_CRLF_CRLF_BUF = unreleasableBuffer(directBuffer(ZERO_CRLF_CRLF.length)
-      .writeBytes(ZERO_CRLF_CRLF));
+    .writeBytes(ZERO_CRLF_CRLF));
   private static final float HEADERS_WEIGHT_NEW = 1 / 5f;
   private static final float HEADERS_WEIGHT_HISTORICAL = 1 - HEADERS_WEIGHT_NEW;
   private static final float TRAILERS_WEIGHT_NEW = HEADERS_WEIGHT_NEW;
@@ -84,7 +84,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
     if (msg instanceof HttpMessage) {
       if (state != ST_INIT) {
         throw new IllegalStateException("unexpected message type: " + StringUtil.simpleClassName(msg)
-            + ", state: " + state);
+          + ", state: " + state);
       }
 
       @SuppressWarnings({"unchecked", "CastConflictsWithInstanceof"})
@@ -94,7 +94,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
       // Encode the message.
       encodeInitialLine(buf, m);
       state = isContentAlwaysEmpty(m) ? ST_CONTENT_ALWAYS_EMPTY :
-          HttpUtil.isTransferEncodingChunked(m) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
+        HttpUtil.isTransferEncodingChunked(m) ? ST_CONTENT_CHUNK : ST_CONTENT_NON_CHUNK;
 
       sanitizeHeadersBeforeEncode(m, state == ST_CONTENT_ALWAYS_EMPTY);
 
@@ -102,7 +102,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
       ByteBufUtil.writeShortBE(buf, CRLF_SHORT);
 
       headersEncodedSizeAccumulator = HEADERS_WEIGHT_NEW * padSizeForAccumulation(buf.readableBytes()) +
-          HEADERS_WEIGHT_HISTORICAL * headersEncodedSizeAccumulator;
+        HEADERS_WEIGHT_HISTORICAL * headersEncodedSizeAccumulator;
     }
 
     // Bypass the encoder in case of an empty buffer, so that the following idiom works:
@@ -213,7 +213,7 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
         encodeHeaders(headers, buf);
         ByteBufUtil.writeShortBE(buf, CRLF_SHORT);
         trailersEncodedSizeAccumulator = TRAILERS_WEIGHT_NEW * padSizeForAccumulation(buf.readableBytes()) +
-            TRAILERS_WEIGHT_HISTORICAL * trailersEncodedSizeAccumulator;
+          TRAILERS_WEIGHT_HISTORICAL * trailersEncodedSizeAccumulator;
         out.add(buf);
       }
     } else if (contentLength == 0) {
@@ -233,7 +233,6 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
   /**
    * Determine whether a message has a content or not. Some message may have headers indicating
    * a content without having an actual content, e.g the response to an HEAD or CONNECT request.
-   *
    * @param msg the message to test
    * @return {@code true} to signal the message has no content
    */
@@ -275,7 +274,6 @@ public abstract class HttpObjectEncoder<H extends HttpMessage> extends MessageTo
   /**
    * Add some additional overhead to the buffer. The rational is that it is better to slightly over allocate and waste
    * some memory, rather than under allocate and require a resize/copy.
-   *
    * @param readableBytes The readable bytes in the buffer.
    * @return The {@code readableBytes} with some additional padding.
    */

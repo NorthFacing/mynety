@@ -56,7 +56,7 @@ public abstract class XmlContent {
   @Override
   public String toString() {
     return "XmlContent{" +
-        "data='" + data + '\'' +
-        '}';
+      "data='" + data + '\'' +
+      '}';
   }
 }

@@ -59,7 +59,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the FINEST level?
-   *
    * @return True if this Logger is enabled for level FINEST, false otherwise.
    */
   @Override
@@ -69,7 +68,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at level FINEST.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -87,7 +85,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for level FINEST.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -107,7 +104,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the FINEST level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -128,7 +124,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the FINEST level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -142,7 +137,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log an exception (throwable) at level FINEST with an accompanying message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -155,7 +149,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the FINE level?
-   *
    * @return True if this Logger is enabled for level FINE, false otherwise.
    */
   @Override
@@ -165,7 +158,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at level FINE.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -182,7 +174,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for level FINE.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -202,7 +193,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the FINE level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -223,7 +213,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the FINE level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -237,7 +226,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log an exception (throwable) at level FINE with an accompanying message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -250,7 +238,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the INFO level?
-   *
    * @return True if this Logger is enabled for the INFO level, false otherwise.
    */
   @Override
@@ -260,7 +247,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the INFO level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -277,7 +263,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -297,7 +282,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -318,7 +302,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -333,7 +316,6 @@ class JdkLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the INFO level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -346,7 +328,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the WARNING level?
-   *
    * @return True if this Logger is enabled for the WARNING level, false
    * otherwise.
    */
@@ -357,7 +338,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the WARNING level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -375,7 +355,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARNING level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -395,7 +374,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARNING level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -416,7 +394,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARNING level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -431,7 +408,6 @@ class JdkLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the WARNING level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -444,7 +420,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for level SEVERE?
-   *
    * @return True if this Logger is enabled for level SEVERE, false otherwise.
    */
   @Override
@@ -454,7 +429,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the SEVERE level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -472,7 +446,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the SEVERE level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -492,7 +465,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the SEVERE level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -513,7 +485,6 @@ class JdkLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the SEVERE level.
    * </p>
-   *
    * @param format    the format string
    * @param arguments an array of arguments
    */
@@ -528,7 +499,6 @@ class JdkLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the SEVERE level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -560,7 +530,6 @@ class JdkLogger extends AbstractInternalLogger {
 
   /**
    * Fill in caller data if possible.
-   *
    * @param record The record to update
    */
   private static void fillCallerData(String callerFQCN, LogRecord record) {

@@ -43,6 +43,6 @@ public final class CharSequenceMap<V> extends DefaultHeaders<CharSequence, V, Ch
   @SuppressWarnings("unchecked")
   public CharSequenceMap(boolean caseSensitive, ValueConverter<V> valueConverter, int arraySizeHint) {
     super(caseSensitive ? CASE_SENSITIVE_HASHER : CASE_INSENSITIVE_HASHER, valueConverter,
-        NameValidator.NOT_NULL, arraySizeHint);
+      NameValidator.NOT_NULL, arraySizeHint);
   }
 }

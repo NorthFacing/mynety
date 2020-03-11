@@ -30,7 +30,7 @@ public final class HttpHeaderValues {
    * {@code "application/x-www-form-urlencoded"}
    */
   public static final AsciiString APPLICATION_X_WWW_FORM_URLENCODED =
-      AsciiString.cached("application/x-www-form-urlencoded");
+    AsciiString.cached("application/x-www-form-urlencoded");
   /**
    * {@code "application/octet-stream"}
    */

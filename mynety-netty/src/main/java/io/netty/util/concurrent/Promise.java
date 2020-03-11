@@ -31,7 +31,6 @@ public interface Promise<V> extends Future<V> {
   /**
    * Marks this future as a success and notifies all
    * listeners.
-   *
    * @return {@code true} if and only if successfully marked this future as
    * a success. Otherwise {@code false} because this future is
    * already marked as either a success or a failure.
@@ -49,7 +48,6 @@ public interface Promise<V> extends Future<V> {
   /**
    * Marks this future as a failure and notifies all
    * listeners.
-   *
    * @return {@code true} if and only if successfully marked this future as
    * a failure. Otherwise {@code false} because this future is
    * already marked as either a success or a failure.
@@ -58,7 +56,6 @@ public interface Promise<V> extends Future<V> {
 
   /**
    * Make this future impossible to cancel.
-   *
    * @return {@code true} if and only if successfully marked this future as uncancellable or it is already done
    * without being cancelled.  {@code false} if this future has been cancelled already.
    */

@@ -34,7 +34,6 @@ final class DnsAddressDecoder {
 
   /**
    * Decodes an {@link InetAddress} from an A or AAAA {@link DnsRawRecord}.
-   *
    * @param record    the {@link DnsRecord}, most likely a {@link DnsRawRecord}
    * @param name      the host name of the decoded address
    * @param decodeIdn whether to convert {@code name} to a unicode host name

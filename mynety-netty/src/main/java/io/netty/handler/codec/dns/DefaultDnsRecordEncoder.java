@@ -23,7 +23,6 @@ import io.netty.util.internal.UnstableApi;
 
 /**
  * The default {@link DnsRecordEncoder} implementation.
- *
  * @see DefaultDnsRecordDecoder
  */
 @UnstableApi
@@ -88,20 +87,20 @@ public class DefaultDnsRecordEncoder implements DnsRecordEncoder {
     int addressBits = bytes.length << 3;
     if (addressBits < sourcePrefixLength || sourcePrefixLength < 0) {
       throw new IllegalArgumentException(sourcePrefixLength + ": " +
-          sourcePrefixLength + " (expected: 0 >= " + addressBits + ')');
+        sourcePrefixLength + " (expected: 0 >= " + addressBits + ')');
     }
 
     // See http://www.iana.org/assignments/address-family-numbers/address-family-numbers.xhtml
     final short addressNumber = (short) (bytes.length == 4 ?
-        InternetProtocolFamily.IPv4.addressNumber() : InternetProtocolFamily.IPv6.addressNumber());
+      InternetProtocolFamily.IPv4.addressNumber() : InternetProtocolFamily.IPv6.addressNumber());
     int payloadLength = calculateEcsAddressLength(sourcePrefixLength, lowOrderBitsToPreserve);
 
     int fullPayloadLength = 2 + // OPTION-CODE
-        2 + // OPTION-LENGTH
-        2 + // FAMILY
-        1 + // SOURCE PREFIX-LENGTH
-        1 + // SCOPE PREFIX-LENGTH
-        payloadLength; //  ADDRESS...
+      2 + // OPTION-LENGTH
+      2 + // FAMILY
+      1 + // SOURCE PREFIX-LENGTH
+      1 + // SCOPE PREFIX-LENGTH
+      payloadLength; //  ADDRESS...
 
     out.writeShort(fullPayloadLength);
     out.writeShort(8); // This is the defined type for ECS.

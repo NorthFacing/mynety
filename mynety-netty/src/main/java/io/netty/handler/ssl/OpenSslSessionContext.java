@@ -67,7 +67,6 @@ public abstract class OpenSslSessionContext implements SSLSessionContext {
 
   /**
    * Sets the SSL session ticket keys of this context.
-   *
    * @deprecated use {@link #setTicketKeys(OpenSslSessionTicketKey...)}.
    */
   @Deprecated

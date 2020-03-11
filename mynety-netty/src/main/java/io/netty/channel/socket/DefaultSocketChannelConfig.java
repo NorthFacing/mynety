@@ -16,20 +16,32 @@
 package io.netty.channel.socket;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.util.internal.PlatformDependent;
 
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Map;
 
-import static io.netty.channel.ChannelOption.*;
+import static io.netty.channel.ChannelOption.ALLOW_HALF_CLOSURE;
+import static io.netty.channel.ChannelOption.IP_TOS;
+import static io.netty.channel.ChannelOption.SO_KEEPALIVE;
+import static io.netty.channel.ChannelOption.SO_LINGER;
+import static io.netty.channel.ChannelOption.SO_RCVBUF;
+import static io.netty.channel.ChannelOption.SO_REUSEADDR;
+import static io.netty.channel.ChannelOption.SO_SNDBUF;
+import static io.netty.channel.ChannelOption.TCP_NODELAY;
 
 /**
  * The default {@link SocketChannelConfig} implementation.
  */
 public class DefaultSocketChannelConfig extends DefaultChannelConfig
-    implements SocketChannelConfig {
+  implements SocketChannelConfig {
 
   protected final Socket javaSocket;
   private volatile boolean allowHalfClosure;
@@ -57,9 +69,9 @@ public class DefaultSocketChannelConfig extends DefaultChannelConfig
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
-        ALLOW_HALF_CLOSURE);
+      super.getOptions(),
+      SO_RCVBUF, SO_SNDBUF, TCP_NODELAY, SO_KEEPALIVE, SO_REUSEADDR, SO_LINGER, IP_TOS,
+      ALLOW_HALF_CLOSURE);
   }
 
   @SuppressWarnings("unchecked")
@@ -195,7 +207,7 @@ public class DefaultSocketChannelConfig extends DefaultChannelConfig
 
   @Override
   public SocketChannelConfig setPerformancePreferences(
-      int connectionTime, int latency, int bandwidth) {
+    int connectionTime, int latency, int bandwidth) {
     javaSocket.setPerformancePreferences(connectionTime, latency, bandwidth);
     return this;
   }

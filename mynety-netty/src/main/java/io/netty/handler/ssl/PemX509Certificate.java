@@ -38,7 +38,6 @@ import java.util.Set;
  * <p>
  * All methods other than what's implemented in {@link PemEncoded}'s throw
  * {@link UnsupportedOperationException}s.
- *
  * @see PemEncoded
  * @see OpenSslContext
  * @see #valueOf(byte[])
@@ -132,7 +131,7 @@ public final class PemX509Certificate extends X509Certificate implements PemEnco
           // certificates can vary a lot so it'll be off a bit depending
           // on the number of elements in the array (count argument).
           pem = newBuffer(allocator, useDirect,
-              (BEGIN_CERT.length + base64.readableBytes() + END_CERT.length) * count);
+            (BEGIN_CERT.length + base64.readableBytes() + END_CERT.length) * count);
         }
 
         pem.writeBytes(BEGIN_CERT);

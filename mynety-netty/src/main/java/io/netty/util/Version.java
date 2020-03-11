@@ -22,7 +22,12 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Retrieves the version information of available Netty artifacts.
@@ -44,7 +49,6 @@ public final class Version {
   /**
    * Retrieves the version information of Netty artifacts using the current
    * {@linkplain Thread#getContextClassLoader() context class loader}.
-   *
    * @return A {@link Map} whose keys are Maven artifact IDs and whose values are {@link Version}s
    */
   public static Map<String, Version> identify() {
@@ -53,7 +57,6 @@ public final class Version {
 
   /**
    * Retrieves the version information of Netty artifacts using the specified {@link ClassLoader}.
-   *
    * @return A {@link Map} whose keys are Maven artifact IDs and whose values are {@link Version}s
    */
   public static Map<String, Version> identify(ClassLoader classLoader) {
@@ -96,11 +99,11 @@ public final class Version {
 
       // Skip the entries without required information.
       if (!props.containsKey(artifactId + PROP_VERSION) ||
-          !props.containsKey(artifactId + PROP_BUILD_DATE) ||
-          !props.containsKey(artifactId + PROP_COMMIT_DATE) ||
-          !props.containsKey(artifactId + PROP_SHORT_COMMIT_HASH) ||
-          !props.containsKey(artifactId + PROP_LONG_COMMIT_HASH) ||
-          !props.containsKey(artifactId + PROP_REPO_STATUS)) {
+        !props.containsKey(artifactId + PROP_BUILD_DATE) ||
+        !props.containsKey(artifactId + PROP_COMMIT_DATE) ||
+        !props.containsKey(artifactId + PROP_SHORT_COMMIT_HASH) ||
+        !props.containsKey(artifactId + PROP_LONG_COMMIT_HASH) ||
+        !props.containsKey(artifactId + PROP_REPO_STATUS)) {
         continue;
       }
 
@@ -110,15 +113,15 @@ public final class Version {
     Map<String, Version> versions = new TreeMap<String, Version>();
     for (String artifactId : artifactIds) {
       versions.put(
+        artifactId,
+        new Version(
           artifactId,
-          new Version(
-              artifactId,
-              props.getProperty(artifactId + PROP_VERSION),
-              parseIso8601(props.getProperty(artifactId + PROP_BUILD_DATE)),
-              parseIso8601(props.getProperty(artifactId + PROP_COMMIT_DATE)),
-              props.getProperty(artifactId + PROP_SHORT_COMMIT_HASH),
-              props.getProperty(artifactId + PROP_LONG_COMMIT_HASH),
-              props.getProperty(artifactId + PROP_REPO_STATUS)));
+          props.getProperty(artifactId + PROP_VERSION),
+          parseIso8601(props.getProperty(artifactId + PROP_BUILD_DATE)),
+          parseIso8601(props.getProperty(artifactId + PROP_COMMIT_DATE)),
+          props.getProperty(artifactId + PROP_SHORT_COMMIT_HASH),
+          props.getProperty(artifactId + PROP_LONG_COMMIT_HASH),
+          props.getProperty(artifactId + PROP_REPO_STATUS)));
     }
 
     return versions;
@@ -150,9 +153,9 @@ public final class Version {
   private final String repositoryStatus;
 
   private Version(
-      String artifactId, String artifactVersion,
-      long buildTimeMillis, long commitTimeMillis,
-      String shortCommitHash, String longCommitHash, String repositoryStatus) {
+    String artifactId, String artifactVersion,
+    long buildTimeMillis, long commitTimeMillis,
+    String shortCommitHash, String longCommitHash, String repositoryStatus) {
     this.artifactId = artifactId;
     this.artifactVersion = artifactVersion;
     this.buildTimeMillis = buildTimeMillis;
@@ -193,6 +196,6 @@ public final class Version {
   @Override
   public String toString() {
     return artifactId + '-' + artifactVersion + '.' + shortCommitHash +
-        ("clean".equals(repositoryStatus) ? "" : " (repository: " + repositoryStatus + ')');
+      ("clean".equals(repositoryStatus) ? "" : " (repository: " + repositoryStatus + ')');
   }
 }

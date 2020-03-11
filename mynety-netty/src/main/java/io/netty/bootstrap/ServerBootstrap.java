@@ -15,7 +15,18 @@
  */
 package io.netty.bootstrap;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.ServerChannel;
 import io.netty.util.AttributeKey;
 import io.netty.util.internal.ObjectUtil;
 import io.netty.util.internal.logging.InternalLogger;
@@ -120,7 +131,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
     final EventLoopGroup currentChildGroup = childGroup;
     final ChannelHandler currentChildHandler = childHandler;
     final Entry<ChannelOption<?>, Object>[] currentChildOptions =
-        childOptions.entrySet().toArray(newOptionArray(0));
+      childOptions.entrySet().toArray(newOptionArray(0));
     final Entry<AttributeKey<?>, Object>[] currentChildAttrs = childAttrs.entrySet().toArray(newAttrArray(0));
 
     p.addLast(new ChannelInitializer<Channel>() {
@@ -136,7 +147,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
           @Override
           public void run() {
             pipeline.addLast(new ServerBootstrapAcceptor(
-                ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
+              ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
           }
         });
       }
@@ -165,8 +176,8 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
     private final Runnable enableAutoReadTask;
 
     ServerBootstrapAcceptor(
-        final Channel channel, EventLoopGroup childGroup, ChannelHandler childHandler,
-        Entry<ChannelOption<?>, Object>[] childOptions, Entry<AttributeKey<?>, Object>[] childAttrs) {
+      final Channel channel, EventLoopGroup childGroup, ChannelHandler childHandler,
+      Entry<ChannelOption<?>, Object>[] childOptions, Entry<AttributeKey<?>, Object>[] childAttrs) {
       this.childGroup = childGroup;
       this.childHandler = childHandler;
       this.childOptions = childOptions;
@@ -238,7 +249,6 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
   /**
    * Return the configured {@link EventLoopGroup} which will be used for the child channels or {@code null}
    * if non is configured yet.
-   *
    * @deprecated Use {@link #config()} instead.
    */
   @Deprecated

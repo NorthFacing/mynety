@@ -24,7 +24,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 final class TraceDnsQueryLifeCycleObserverFactory implements DnsQueryLifecycleObserverFactory {
   private static final InternalLogger DEFAULT_LOGGER =
-      InternalLoggerFactory.getInstance(TraceDnsQueryLifeCycleObserverFactory.class);
+    InternalLoggerFactory.getInstance(TraceDnsQueryLifeCycleObserverFactory.class);
   private static final InternalLogLevel DEFAULT_LEVEL = InternalLogLevel.DEBUG;
   private final InternalLogger logger;
   private final InternalLogLevel level;

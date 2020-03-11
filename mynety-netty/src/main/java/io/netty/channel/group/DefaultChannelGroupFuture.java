@@ -18,9 +18,20 @@ package io.netty.channel.group;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.util.concurrent.*;
+import io.netty.util.concurrent.BlockingOperationException;
+import io.netty.util.concurrent.DefaultPromise;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.concurrent.ImmediateEventExecutor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -52,7 +63,7 @@ final class DefaultChannelGroupFuture extends DefaultPromise<Void> implements Ch
       if (callSetDone) {
         if (failureCount > 0) {
           List<Map.Entry<Channel, Throwable>> failed =
-              new ArrayList<Map.Entry<Channel, Throwable>>(failureCount);
+            new ArrayList<Map.Entry<Channel, Throwable>>(failureCount);
           for (ChannelFuture f : futures.values()) {
             if (!f.isSuccess()) {
               failed.add(new DefaultEntry<Channel, Throwable>(f.channel(), f.cause()));
@@ -156,7 +167,7 @@ final class DefaultChannelGroupFuture extends DefaultPromise<Void> implements Ch
 
   @Override
   public DefaultChannelGroupFuture removeListeners(
-      GenericFutureListener<? extends Future<? super Void>>... listeners) {
+    GenericFutureListener<? extends Future<? super Void>>... listeners) {
     super.removeListeners(listeners);
     return this;
   }

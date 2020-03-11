@@ -15,7 +15,11 @@
  */
 package io.netty.channel.epoll;
 
-import io.netty.channel.*;
+import io.netty.channel.EventLoop;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.EventLoopTaskQueueFactory;
+import io.netty.channel.SelectStrategy;
+import io.netty.channel.SingleThreadEventLoop;
 import io.netty.channel.epoll.AbstractEpollChannel.AbstractEpollUnsafe;
 import io.netty.channel.unix.FileDescriptor;
 import io.netty.channel.unix.IovArray;
@@ -84,7 +88,7 @@ class EpollEventLoop extends SingleThreadEventLoop {
                  SelectStrategy strategy, RejectedExecutionHandler rejectedExecutionHandler,
                  EventLoopTaskQueueFactory queueFactory) {
     super(parent, executor, false, newTaskQueue(queueFactory), newTaskQueue(queueFactory),
-        rejectedExecutionHandler);
+      rejectedExecutionHandler);
     selectStrategy = ObjectUtil.checkNotNull(strategy, "strategy");
     if (maxEvents == 0) {
       allowGrowing = true;
@@ -144,7 +148,7 @@ class EpollEventLoop extends SingleThreadEventLoop {
   }
 
   private static Queue<Runnable> newTaskQueue(
-      EventLoopTaskQueueFactory queueFactory) {
+    EventLoopTaskQueueFactory queueFactory) {
     if (queueFactory == null) {
       return newTaskQueue0(DEFAULT_MAX_PENDING_TASKS);
     }
@@ -273,7 +277,7 @@ class EpollEventLoop extends SingleThreadEventLoop {
   private static Queue<Runnable> newTaskQueue0(int maxPendingTasks) {
     // This event loop never calls takeTask()
     return maxPendingTasks == Integer.MAX_VALUE ? PlatformDependent.<Runnable>newMpscQueue()
-        : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
+      : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
   }
 
   /**

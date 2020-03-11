@@ -214,11 +214,10 @@ import java.util.NoSuchElementException;
  * after the exchange.
  */
 public interface ChannelPipeline
-    extends ChannelInboundInvoker, ChannelOutboundInvoker, Iterable<Entry<String, ChannelHandler>> {
+  extends ChannelInboundInvoker, ChannelOutboundInvoker, Iterable<Entry<String, ChannelHandler>> {
 
   /**
    * Inserts a {@link ChannelHandler} at the first position of this pipeline.
-   *
    * @param name    the name of the handler to insert first
    * @param handler the handler to insert first
    * @throws IllegalArgumentException if there's an entry with the same name already in the pipeline
@@ -228,7 +227,6 @@ public interface ChannelPipeline
 
   /**
    * Inserts a {@link ChannelHandler} at the first position of this pipeline.
-   *
    * @param group   the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}
    *                methods
    * @param name    the name of the handler to insert first
@@ -240,7 +238,6 @@ public interface ChannelPipeline
 
   /**
    * Appends a {@link ChannelHandler} at the last position of this pipeline.
-   *
    * @param name    the name of the handler to append
    * @param handler the handler to append
    * @throws IllegalArgumentException if there's an entry with the same name already in the pipeline
@@ -250,7 +247,6 @@ public interface ChannelPipeline
 
   /**
    * Appends a {@link ChannelHandler} at the last position of this pipeline.
-   *
    * @param group   the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}
    *                methods
    * @param name    the name of the handler to append
@@ -263,7 +259,6 @@ public interface ChannelPipeline
   /**
    * Inserts a {@link ChannelHandler} before an existing handler of this
    * pipeline.
-   *
    * @param baseName the name of the existing handler
    * @param name     the name of the handler to insert before
    * @param handler  the handler to insert before
@@ -276,7 +271,6 @@ public interface ChannelPipeline
   /**
    * Inserts a {@link ChannelHandler} before an existing handler of this
    * pipeline.
-   *
    * @param group    the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}
    *                 methods
    * @param baseName the name of the existing handler
@@ -291,7 +285,6 @@ public interface ChannelPipeline
   /**
    * Inserts a {@link ChannelHandler} after an existing handler of this
    * pipeline.
-   *
    * @param baseName the name of the existing handler
    * @param name     the name of the handler to insert after
    * @param handler  the handler to insert after
@@ -304,7 +297,6 @@ public interface ChannelPipeline
   /**
    * Inserts a {@link ChannelHandler} after an existing handler of this
    * pipeline.
-   *
    * @param group    the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}
    *                 methods
    * @param baseName the name of the existing handler
@@ -318,14 +310,12 @@ public interface ChannelPipeline
 
   /**
    * Inserts {@link ChannelHandler}s at the first position of this pipeline.
-   *
    * @param handlers the handlers to insert first
    */
   ChannelPipeline addFirst(ChannelHandler... handlers);
 
   /**
    * Inserts {@link ChannelHandler}s at the first position of this pipeline.
-   *
    * @param group    the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}s
    *                 methods.
    * @param handlers the handlers to insert first
@@ -334,14 +324,12 @@ public interface ChannelPipeline
 
   /**
    * Inserts {@link ChannelHandler}s at the last position of this pipeline.
-   *
    * @param handlers the handlers to insert last
    */
   ChannelPipeline addLast(ChannelHandler... handlers);
 
   /**
    * Inserts {@link ChannelHandler}s at the last position of this pipeline.
-   *
    * @param group    the {@link EventExecutorGroup} which will be used to execute the {@link ChannelHandler}s
    *                 methods.
    * @param handlers the handlers to insert last
@@ -350,7 +338,6 @@ public interface ChannelPipeline
 
   /**
    * Removes the specified {@link ChannelHandler} from this pipeline.
-   *
    * @param handler the {@link ChannelHandler} to remove
    * @throws NoSuchElementException if there's no such handler in this pipeline
    * @throws NullPointerException   if the specified handler is {@code null}
@@ -359,7 +346,6 @@ public interface ChannelPipeline
 
   /**
    * Removes the {@link ChannelHandler} with the specified name from this pipeline.
-   *
    * @param name the name under which the {@link ChannelHandler} was stored.
    * @return the removed handler
    * @throws NoSuchElementException if there's no such handler with the specified name in this pipeline
@@ -369,7 +355,6 @@ public interface ChannelPipeline
 
   /**
    * Removes the {@link ChannelHandler} of the specified type from this pipeline.
-   *
    * @param <T>         the type of the handler
    * @param handlerType the type of the handler
    * @return the removed handler
@@ -380,7 +365,6 @@ public interface ChannelPipeline
 
   /**
    * Removes the first {@link ChannelHandler} in this pipeline.
-   *
    * @return the removed handler
    * @throws NoSuchElementException if this pipeline is empty
    */
@@ -388,7 +372,6 @@ public interface ChannelPipeline
 
   /**
    * Removes the last {@link ChannelHandler} in this pipeline.
-   *
    * @return the removed handler
    * @throws NoSuchElementException if this pipeline is empty
    */
@@ -396,7 +379,6 @@ public interface ChannelPipeline
 
   /**
    * Replaces the specified {@link ChannelHandler} with a new handler in this pipeline.
-   *
    * @param oldHandler the {@link ChannelHandler} to be replaced
    * @param newName    the name under which the replacement should be added
    * @param newHandler the {@link ChannelHandler} which is used as replacement
@@ -411,7 +393,6 @@ public interface ChannelPipeline
 
   /**
    * Replaces the {@link ChannelHandler} of the specified name with a new handler in this pipeline.
-   *
    * @param oldName    the name of the {@link ChannelHandler} to be replaced
    * @param newName    the name under which the replacement should be added
    * @param newHandler the {@link ChannelHandler} which is used as replacement
@@ -426,7 +407,6 @@ public interface ChannelPipeline
 
   /**
    * Replaces the {@link ChannelHandler} of the specified type with a new handler in this pipeline.
-   *
    * @param oldHandlerType the type of the handler to be removed
    * @param newName        the name under which the replacement should be added
    * @param newHandler     the {@link ChannelHandler} which is used as replacement
@@ -443,28 +423,24 @@ public interface ChannelPipeline
 
   /**
    * Returns the first {@link ChannelHandler} in this pipeline.
-   *
    * @return the first handler.  {@code null} if this pipeline is empty.
    */
   ChannelHandler first();
 
   /**
    * Returns the context of the first {@link ChannelHandler} in this pipeline.
-   *
    * @return the context of the first handler.  {@code null} if this pipeline is empty.
    */
   ChannelHandlerContext firstContext();
 
   /**
    * Returns the last {@link ChannelHandler} in this pipeline.
-   *
    * @return the last handler.  {@code null} if this pipeline is empty.
    */
   ChannelHandler last();
 
   /**
    * Returns the context of the last {@link ChannelHandler} in this pipeline.
-   *
    * @return the context of the last handler.  {@code null} if this pipeline is empty.
    */
   ChannelHandlerContext lastContext();
@@ -472,7 +448,6 @@ public interface ChannelPipeline
   /**
    * Returns the {@link ChannelHandler} with the specified name in this
    * pipeline.
-   *
    * @return the handler with the specified name.
    * {@code null} if there's no such handler in this pipeline.
    */
@@ -481,7 +456,6 @@ public interface ChannelPipeline
   /**
    * Returns the {@link ChannelHandler} of the specified type in this
    * pipeline.
-   *
    * @return the handler of the specified handler type.
    * {@code null} if there's no such handler in this pipeline.
    */
@@ -490,7 +464,6 @@ public interface ChannelPipeline
   /**
    * Returns the context object of the specified {@link ChannelHandler} in
    * this pipeline.
-   *
    * @return the context object of the specified handler.
    * {@code null} if there's no such handler in this pipeline.
    */
@@ -499,7 +472,6 @@ public interface ChannelPipeline
   /**
    * Returns the context object of the {@link ChannelHandler} with the
    * specified name in this pipeline.
-   *
    * @return the context object of the handler with the specified name.
    * {@code null} if there's no such handler in this pipeline.
    */
@@ -508,7 +480,6 @@ public interface ChannelPipeline
   /**
    * Returns the context object of the {@link ChannelHandler} of the
    * specified type in this pipeline.
-   *
    * @return the context object of the handler of the specified type.
    * {@code null} if there's no such handler in this pipeline.
    */
@@ -516,7 +487,6 @@ public interface ChannelPipeline
 
   /**
    * Returns the {@link Channel} that this pipeline is attached to.
-   *
    * @return the channel. {@code null} if this pipeline is not attached yet.
    */
   Channel channel();

@@ -33,7 +33,12 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.CharBuffer;
-import java.nio.charset.*;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CoderResult;
+import java.nio.charset.CodingErrorAction;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -61,14 +66,14 @@ public final class ByteBufUtil {
   private static final int MAX_CHAR_BUFFER_SIZE;
   private static final int THREAD_LOCAL_BUFFER_SIZE;
   private static final int MAX_BYTES_PER_CHAR_UTF8 =
-      (int) CharsetUtil.encoder(CharsetUtil.UTF_8).maxBytesPerChar();
+    (int) CharsetUtil.encoder(CharsetUtil.UTF_8).maxBytesPerChar();
 
   static final int WRITE_CHUNK_SIZE = 8192;
   static final ByteBufAllocator DEFAULT_ALLOCATOR;
 
   static {
     String allocType = SystemPropertyUtil.get(
-        "io.netty.allocator.type", PlatformDependent.isAndroid() ? "unpooled" : "pooled");
+      "io.netty.allocator.type", PlatformDependent.isAndroid() ? "unpooled" : "pooled");
     allocType = allocType.toLowerCase(Locale.US).trim();
 
     ByteBufAllocator alloc;
@@ -99,7 +104,7 @@ public final class ByteBufUtil {
    */
   static byte[] threadLocalTempArray(int minLength) {
     return minLength <= MAX_TL_ARRAY_LEN ? BYTE_ARRAYS.get()
-        : PlatformDependent.allocateUninitializedArray(minLength);
+      : PlatformDependent.allocateUninitializedArray(minLength);
   }
 
   /**
@@ -158,7 +163,6 @@ public final class ByteBufUtil {
   /**
    * Used to determine if the return value of {@link ByteBuf#ensureWritable(int, boolean)} means that there is
    * adequate space and a write operation will succeed.
-   *
    * @param ensureWritableResult The return value from {@link ByteBuf#ensureWritable(int, boolean)}.
    * @return {@code true} if {@code ensureWritableResult} means that there is adequate space and a write operation
    * will succeed.
@@ -209,8 +213,8 @@ public final class ByteBufUtil {
     int attempts = haystack.readableBytes() - needle.readableBytes() + 1;
     for (int i = 0; i < attempts; i++) {
       if (equals(needle, needle.readerIndex(),
-          haystack, haystack.readerIndex() + i,
-          needle.readableBytes())) {
+        haystack, haystack.readerIndex() + i,
+        needle.readableBytes())) {
         return haystack.readerIndex() + i;
       }
     }
@@ -298,10 +302,10 @@ public final class ByteBufUtil {
 
       if (bufferA.order() == bufferB.order()) {
         res = bufferAIsBigEndian ? compareUintBigEndian(bufferA, bufferB, aIndex, bIndex, uintCountIncrement) :
-            compareUintLittleEndian(bufferA, bufferB, aIndex, bIndex, uintCountIncrement);
+          compareUintLittleEndian(bufferA, bufferB, aIndex, bIndex, uintCountIncrement);
       } else {
         res = bufferAIsBigEndian ? compareUintBigEndianA(bufferA, bufferB, aIndex, bIndex, uintCountIncrement) :
-            compareUintBigEndianB(bufferA, bufferB, aIndex, bIndex, uintCountIncrement);
+          compareUintBigEndianB(bufferA, bufferB, aIndex, bIndex, uintCountIncrement);
       }
       if (res != 0) {
         // Ensure we not overflow when cast
@@ -322,7 +326,7 @@ public final class ByteBufUtil {
   }
 
   private static long compareUintBigEndian(
-      ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
+    ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
     for (int aEnd = aIndex + uintCountIncrement; aIndex < aEnd; aIndex += 4, bIndex += 4) {
       long comp = bufferA.getUnsignedInt(aIndex) - bufferB.getUnsignedInt(bIndex);
       if (comp != 0) {
@@ -333,7 +337,7 @@ public final class ByteBufUtil {
   }
 
   private static long compareUintLittleEndian(
-      ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
+    ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
     for (int aEnd = aIndex + uintCountIncrement; aIndex < aEnd; aIndex += 4, bIndex += 4) {
       long comp = bufferA.getUnsignedIntLE(aIndex) - bufferB.getUnsignedIntLE(bIndex);
       if (comp != 0) {
@@ -344,7 +348,7 @@ public final class ByteBufUtil {
   }
 
   private static long compareUintBigEndianA(
-      ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
+    ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
     for (int aEnd = aIndex + uintCountIncrement; aIndex < aEnd; aIndex += 4, bIndex += 4) {
       long comp = bufferA.getUnsignedInt(aIndex) - bufferB.getUnsignedIntLE(bIndex);
       if (comp != 0) {
@@ -355,7 +359,7 @@ public final class ByteBufUtil {
   }
 
   private static long compareUintBigEndianB(
-      ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
+    ByteBuf bufferA, ByteBuf bufferB, int aIndex, int bIndex, int uintCountIncrement) {
     for (int aEnd = aIndex + uintCountIncrement; aIndex < aEnd; aIndex += 4, bIndex += 4) {
       long comp = bufferA.getUnsignedIntLE(aIndex) - bufferB.getUnsignedInt(bIndex);
       if (comp != 0) {
@@ -472,7 +476,7 @@ public final class ByteBufUtil {
   private static CharSequence checkCharSequenceBounds(CharSequence seq, int start, int end) {
     if (MathUtil.isOutOfBounds(start, end - start, seq.length())) {
       throw new IndexOutOfBoundsException("expected: 0 <= start(" + start + ") <= end (" + end
-          + ") <= seq.length(" + seq.length() + ')');
+        + ") <= seq.length(" + seq.length() + ')');
     }
     return seq;
   }
@@ -480,7 +484,6 @@ public final class ByteBufUtil {
   /**
    * Encode a {@link CharSequence} in <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a> and write
    * it to a {@link ByteBuf} allocated with {@code alloc}.
-   *
    * @param alloc The allocator used to allocate a new {@link ByteBuf}.
    * @param seq   The characters to write into a buffer.
    * @return The {@link ByteBuf} which contains the <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a> encoded
@@ -532,7 +535,6 @@ public final class ByteBufUtil {
    * Equivalent to <code>{@link #reserveAndWriteUtf8(ByteBuf, CharSequence, int)
    * reserveAndWriteUtf8(buf, seq.subSequence(start, end), reserveBytes)}</code> but avoids
    * subsequence object allocation if possible.
-   *
    * @return actual number of bytes written
    */
   public static int reserveAndWriteUtf8(ByteBuf buf, CharSequence seq, int start, int end, int reserveBytes) {
@@ -699,7 +701,6 @@ public final class ByteBufUtil {
   /**
    * Encode a {@link CharSequence} in <a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a> and write
    * it to a {@link ByteBuf} allocated with {@code alloc}.
-   *
    * @param alloc The allocator used to allocate a new {@link ByteBuf}.
    * @param seq   The characters to write into a buffer.
    * @return The {@link ByteBuf} which contains the <a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a> encoded
@@ -770,7 +771,6 @@ public final class ByteBufUtil {
   /**
    * Encode the given {@link CharBuffer} using the given {@link Charset} into a new {@link ByteBuf} which
    * is allocated via the {@link ByteBufAllocator}.
-   *
    * @param alloc         The {@link ByteBufAllocator} to allocate {@link ByteBuf}.
    * @param src           The {@link CharBuffer} to encode.
    * @param charset       The specified {@link Charset}.
@@ -839,7 +839,6 @@ public final class ByteBufUtil {
 
   /**
    * Returns a cached thread-local direct buffer, if available.
-   *
    * @return a cached thread-local direct buffer, if available.  {@code null} otherwise.
    */
   public static ByteBuf threadLocalDirectBuffer() {
@@ -880,7 +879,7 @@ public final class ByteBufUtil {
     int capacity = buf.capacity();
     if (isOutOfBounds(start, length, capacity)) {
       throw new IndexOutOfBoundsException("expected: " + "0 <= start(" + start + ") <= start + length(" + length
-          + ") <= " + "buf.capacity(" + capacity + ')');
+        + ") <= " + "buf.capacity(" + capacity + ')');
     }
 
     if (buf.hasArray()) {
@@ -899,7 +898,6 @@ public final class ByteBufUtil {
 
   /**
    * Copies the all content of {@code src} to a {@link ByteBuf} using {@link ByteBuf#writeBytes(byte[], int, int)}.
-   *
    * @param src the source string to copy
    * @param dst the destination buffer
    */
@@ -911,7 +909,6 @@ public final class ByteBufUtil {
    * Copies the content of {@code src} to a {@link ByteBuf} using {@link ByteBuf#setBytes(int, byte[], int, int)}.
    * Unlike the {@link #copy(AsciiString, ByteBuf)} and {@link #copy(AsciiString, int, ByteBuf, int)} methods,
    * this method do not increase a {@code writerIndex} of {@code dst} buffer.
-   *
    * @param src    the source string to copy
    * @param srcIdx the starting offset of characters to copy
    * @param dst    the destination buffer
@@ -921,7 +918,7 @@ public final class ByteBufUtil {
   public static void copy(AsciiString src, int srcIdx, ByteBuf dst, int dstIdx, int length) {
     if (isOutOfBounds(srcIdx, length, src.length())) {
       throw new IndexOutOfBoundsException("expected: " + "0 <= srcIdx(" + srcIdx + ") <= srcIdx + length("
-          + length + ") <= srcLen(" + src.length() + ')');
+        + length + ") <= srcLen(" + src.length() + ')');
     }
 
     checkNotNull(dst, "dst").setBytes(dstIdx, src.array(), srcIdx + src.arrayOffset(), length);
@@ -929,7 +926,6 @@ public final class ByteBufUtil {
 
   /**
    * Copies the content of {@code src} to a {@link ByteBuf} using {@link ByteBuf#writeBytes(byte[], int, int)}.
-   *
    * @param src    the source string to copy
    * @param srcIdx the starting offset of characters to copy
    * @param dst    the destination buffer
@@ -938,7 +934,7 @@ public final class ByteBufUtil {
   public static void copy(AsciiString src, int srcIdx, ByteBuf dst, int length) {
     if (isOutOfBounds(srcIdx, length, src.length())) {
       throw new IndexOutOfBoundsException("expected: " + "0 <= srcIdx(" + srcIdx + ") <= srcIdx + length("
-          + length + ") <= srcLen(" + src.length() + ')');
+        + length + ") <= srcLen(" + src.length() + ')');
     }
 
     checkNotNull(dst, "dst").writeBytes(src.array(), srcIdx + src.arrayOffset(), length);
@@ -1053,8 +1049,8 @@ public final class ByteBufUtil {
       int dstIdx = 0;
       for (; srcIdx < endIndex; srcIdx++, dstIdx += 2) {
         System.arraycopy(
-            HEXDUMP_TABLE, buffer.getUnsignedByte(srcIdx) << 1,
-            buf, dstIdx, 2);
+          HEXDUMP_TABLE, buffer.getUnsignedByte(srcIdx) << 1,
+          buf, dstIdx, 2);
       }
 
       return new String(buf);
@@ -1073,8 +1069,8 @@ public final class ByteBufUtil {
       int dstIdx = 0;
       for (; srcIdx < endIndex; srcIdx++, dstIdx += 2) {
         System.arraycopy(
-            HEXDUMP_TABLE, (array[srcIdx] & 0xFF) << 1,
-            buf, dstIdx, 2);
+          HEXDUMP_TABLE, (array[srcIdx] & 0xFF) << 1,
+          buf, dstIdx, 2);
       }
 
       return new String(buf);
@@ -1094,16 +1090,16 @@ public final class ByteBufUtil {
     private static void appendPrettyHexDump(StringBuilder dump, ByteBuf buf, int offset, int length) {
       if (isOutOfBounds(offset, length, buf.capacity())) {
         throw new IndexOutOfBoundsException(
-            "expected: " + "0 <= offset(" + offset + ") <= offset + length(" + length
-                + ") <= " + "buf.capacity(" + buf.capacity() + ')');
+          "expected: " + "0 <= offset(" + offset + ") <= offset + length(" + length
+            + ") <= " + "buf.capacity(" + buf.capacity() + ')');
       }
       if (length == 0) {
         return;
       }
       dump.append(
-          "         +-------------------------------------------------+" +
-              NEWLINE + "         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |" +
-              NEWLINE + "+--------+-------------------------------------------------+----------------+");
+        "         +-------------------------------------------------+" +
+          NEWLINE + "         |  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f |" +
+          NEWLINE + "+--------+-------------------------------------------------+----------------+");
 
       final int startIndex = offset;
       final int fullRows = length >>> 4;
@@ -1152,7 +1148,7 @@ public final class ByteBufUtil {
       }
 
       dump.append(NEWLINE +
-          "+--------+-------------------------------------------------+----------------+");
+        "+--------+-------------------------------------------------+----------------+");
     }
 
     private static void appendHexDumpRowPrefix(StringBuilder dump, int row, int rowStartIndex) {
@@ -1170,12 +1166,12 @@ public final class ByteBufUtil {
   static final class ThreadLocalUnsafeDirectByteBuf extends UnpooledUnsafeDirectByteBuf {
 
     private static final Recycler<ThreadLocalUnsafeDirectByteBuf> RECYCLER =
-        new Recycler<ThreadLocalUnsafeDirectByteBuf>() {
-          @Override
-          protected ThreadLocalUnsafeDirectByteBuf newObject(Handle<ThreadLocalUnsafeDirectByteBuf> handle) {
-            return new ThreadLocalUnsafeDirectByteBuf(handle);
-          }
-        };
+      new Recycler<ThreadLocalUnsafeDirectByteBuf>() {
+        @Override
+        protected ThreadLocalUnsafeDirectByteBuf newObject(Handle<ThreadLocalUnsafeDirectByteBuf> handle) {
+          return new ThreadLocalUnsafeDirectByteBuf(handle);
+        }
+      };
 
     static ThreadLocalUnsafeDirectByteBuf newInstance() {
       ThreadLocalUnsafeDirectByteBuf buf = RECYCLER.get();
@@ -1237,7 +1233,6 @@ public final class ByteBufUtil {
   /**
    * Returns {@code true} if the given {@link ByteBuf} is valid text using the given {@link Charset},
    * otherwise return {@code false}.
-   *
    * @param buf     The given {@link ByteBuf}.
    * @param charset The specified {@link Charset}.
    */
@@ -1248,7 +1243,6 @@ public final class ByteBufUtil {
   /**
    * Returns {@code true} if the specified {@link ByteBuf} starting at {@code index} with {@code length} is valid
    * text using the given {@link Charset}, otherwise return {@code false}.
-   *
    * @param buf     The given {@link ByteBuf}.
    * @param index   The start index of the specified buffer.
    * @param length  The length of the specified buffer.
@@ -1300,7 +1294,6 @@ public final class ByteBufUtil {
   /**
    * Returns {@code true} if the specified {@link ByteBuf} starting at {@code index} with {@code length} is valid
    * ASCII text, otherwise return {@code false}.
-   *
    * @param buf    The given {@link ByteBuf}.
    * @param index  The start index of the specified buffer.
    * @param length The length of the specified buffer.
@@ -1312,7 +1305,6 @@ public final class ByteBufUtil {
   /**
    * Returns {@code true} if the specified {@link ByteBuf} starting at {@code index} with {@code length} is valid
    * UTF8 text, otherwise return {@code false}.
-   *
    * @param buf    The given {@link ByteBuf}.
    * @param index  The start index of the specified buffer.
    * @param length The length of the specified buffer.
@@ -1417,8 +1409,8 @@ public final class ByteBufUtil {
           return false;
         }
         if ((b1 & 0xFF) > 0xF4 // b1 invalid
-            || (b1 & 0xFF) == 0xF0 && (b2 & 0xFF) < 0x90    // b2 out of lower bound
-            || (b1 & 0xFF) == 0xF4 && (b2 & 0xFF) > 0x8F) { // b2 out of upper bound
+          || (b1 & 0xFF) == 0xF0 && (b2 & 0xFF) < 0x90    // b2 out of lower bound
+          || (b1 & 0xFF) == 0xF4 && (b2 & 0xFF) > 0x8F) { // b2 out of upper bound
           return false;
         }
       } else {
@@ -1433,7 +1425,7 @@ public final class ByteBufUtil {
    * {@code length}. The position and limit of the given {@link ByteBuffer} may be adjusted.
    */
   static void readBytes(ByteBufAllocator allocator, ByteBuffer buffer, int position, int length, OutputStream out)
-      throws IOException {
+    throws IOException {
     if (buffer.hasArray()) {
       out.write(buffer.array(), position + buffer.arrayOffset(), length);
     } else {
@@ -1457,7 +1449,7 @@ public final class ByteBufUtil {
   }
 
   private static void getBytes(ByteBuffer inBuffer, byte[] in, int inOffset, int inLen, OutputStream out, int outLen)
-      throws IOException {
+    throws IOException {
     do {
       int len = Math.min(inLen, outLen);
       inBuffer.get(in, inOffset, len);

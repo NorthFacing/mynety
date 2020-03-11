@@ -44,7 +44,7 @@ final class Http2ControlFrameLimitEncoder extends DecoratingHttp2ConnectionEncod
   Http2ControlFrameLimitEncoder(Http2ConnectionEncoder delegate, int maxOutstandingControlFrames) {
     super(delegate);
     this.maxOutstandingControlFrames = ObjectUtil.checkPositive(maxOutstandingControlFrames,
-        "maxOutstandingControlFrames");
+      "maxOutstandingControlFrames");
   }
 
   @Override
@@ -77,7 +77,7 @@ final class Http2ControlFrameLimitEncoder extends DecoratingHttp2ConnectionEncod
 
   @Override
   public ChannelFuture writeRstStream(
-      ChannelHandlerContext ctx, int streamId, long errorCode, ChannelPromise promise) {
+    ChannelHandlerContext ctx, int streamId, long errorCode, ChannelPromise promise) {
     ChannelPromise newPromise = handleOutstandingControlFrames(ctx, promise);
     if (newPromise == null) {
       return promise;
@@ -94,9 +94,9 @@ final class Http2ControlFrameLimitEncoder extends DecoratingHttp2ConnectionEncod
       if (outstandingControlFrames == maxOutstandingControlFrames) {
         limitReached = true;
         Http2Exception exception = Http2Exception.connectionError(Http2Error.ENHANCE_YOUR_CALM,
-            "Maximum number %d of outstanding control frames reached", maxOutstandingControlFrames);
+          "Maximum number %d of outstanding control frames reached", maxOutstandingControlFrames);
         logger.info("Maximum number {} of outstanding control frames reached. Closing channel {}",
-            maxOutstandingControlFrames, ctx.channel(), exception);
+          maxOutstandingControlFrames, ctx.channel(), exception);
 
         // First notify the Http2LifecycleManager and then close the connection.
         lifecycleManager.onError(ctx, true, exception);

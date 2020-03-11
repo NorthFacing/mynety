@@ -29,13 +29,30 @@ import io.netty.util.internal.UnstableApi;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 
 import static io.netty.handler.codec.http2.Http2CodecUtil.CONNECTION_STREAM_ID;
 import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_MAX_RESERVED_STREAMS;
-import static io.netty.handler.codec.http2.Http2Error.*;
-import static io.netty.handler.codec.http2.Http2Exception.*;
-import static io.netty.handler.codec.http2.Http2Stream.State.*;
+import static io.netty.handler.codec.http2.Http2Error.INTERNAL_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.REFUSED_STREAM;
+import static io.netty.handler.codec.http2.Http2Exception.closedStreamError;
+import static io.netty.handler.codec.http2.Http2Exception.connectionError;
+import static io.netty.handler.codec.http2.Http2Exception.streamError;
+import static io.netty.handler.codec.http2.Http2Stream.State.CLOSED;
+import static io.netty.handler.codec.http2.Http2Stream.State.HALF_CLOSED_LOCAL;
+import static io.netty.handler.codec.http2.Http2Stream.State.HALF_CLOSED_REMOTE;
+import static io.netty.handler.codec.http2.Http2Stream.State.IDLE;
+import static io.netty.handler.codec.http2.Http2Stream.State.OPEN;
+import static io.netty.handler.codec.http2.Http2Stream.State.RESERVED_LOCAL;
+import static io.netty.handler.codec.http2.Http2Stream.State.RESERVED_REMOTE;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 import static java.lang.Integer.MAX_VALUE;
@@ -67,7 +84,6 @@ public class DefaultHttp2Connection implements Http2Connection {
 
   /**
    * Creates a new connection with the given settings.
-   *
    * @param server whether or not this end-point is the server-side of the HTTP/2 connection.
    */
   public DefaultHttp2Connection(boolean server) {
@@ -76,7 +92,6 @@ public class DefaultHttp2Connection implements Http2Connection {
 
   /**
    * Creates a new connection with the given settings.
-   *
    * @param server             whether or not this end-point is the server-side of the HTTP/2 connection.
    * @param maxReservedStreams The maximum amount of streams which can exist in the reserved state for each endpoint.
    */
@@ -212,7 +227,7 @@ public class DefaultHttp2Connection implements Http2Connection {
   public void goAwayReceived(final int lastKnownStream, long errorCode, ByteBuf debugData) throws Http2Exception {
     if (localEndpoint.lastStreamKnownByPeer() >= 0 && localEndpoint.lastStreamKnownByPeer() < lastKnownStream) {
       throw connectionError(PROTOCOL_ERROR, "lastStreamId MUST NOT increase. Current value: %d new value: %d",
-          localEndpoint.lastStreamKnownByPeer(), lastKnownStream);
+        localEndpoint.lastStreamKnownByPeer(), lastKnownStream);
     }
 
     localEndpoint.lastStreamKnownByPeer(lastKnownStream);
@@ -242,8 +257,8 @@ public class DefaultHttp2Connection implements Http2Connection {
       }
       if (lastKnownStream > remoteEndpoint.lastStreamKnownByPeer()) {
         throw connectionError(PROTOCOL_ERROR, "Last stream identifier must not increase between " +
-                "sending multiple GOAWAY frames (was '%d', is '%d').",
-            remoteEndpoint.lastStreamKnownByPeer(), lastKnownStream);
+            "sending multiple GOAWAY frames (was '%d', is '%d').",
+          remoteEndpoint.lastStreamKnownByPeer(), lastKnownStream);
       }
     }
 
@@ -282,7 +297,6 @@ public class DefaultHttp2Connection implements Http2Connection {
 
   /**
    * Remove a stream from the {@link #streamMap}.
-   *
    * @param stream the stream to remove.
    * @param itr    an iterator that may be pointing to the stream during iteration and {@link Iterator#remove()} will be
    *               used if non-{@code null}.
@@ -312,7 +326,7 @@ public class DefaultHttp2Connection implements Http2Connection {
   }
 
   static State activeState(int streamId, State initialState, boolean isLocal, boolean halfClosed)
-      throws Http2Exception {
+    throws Http2Exception {
     switch (initialState) {
       case IDLE:
         return halfClosed ? isLocal ? HALF_CLOSED_LOCAL : HALF_CLOSED_REMOTE : OPEN;
@@ -322,7 +336,7 @@ public class DefaultHttp2Connection implements Http2Connection {
         return HALF_CLOSED_LOCAL;
       default:
         throw streamError(streamId, PROTOCOL_ERROR, "Attempting to open a stream in an invalid state: "
-            + initialState);
+          + initialState);
     }
   }
 
@@ -353,7 +367,6 @@ public class DefaultHttp2Connection implements Http2Connection {
 
   /**
    * Verifies that the key is valid and returns it as the internal {@link DefaultPropertyKey} type.
-   *
    * @throws NullPointerException     if the key is {@code null}.
    * @throws ClassCastException       if the key is not of type {@link DefaultPropertyKey}.
    * @throws IllegalArgumentException if the key was not created by this connection.
@@ -858,21 +871,21 @@ public class DefaultHttp2Connection implements Http2Connection {
       assert state != IDLE;
       if (lastStreamKnownByPeer >= 0 && streamId > lastStreamKnownByPeer) {
         throw streamError(streamId, REFUSED_STREAM,
-            "Cannot create stream %d greater than Last-Stream-ID %d from GOAWAY.",
-            streamId, lastStreamKnownByPeer);
+          "Cannot create stream %d greater than Last-Stream-ID %d from GOAWAY.",
+          streamId, lastStreamKnownByPeer);
       }
       if (!isValidStreamId(streamId)) {
         if (streamId < 0) {
           throw new Http2NoMoreStreamIdsException();
         }
         throw connectionError(PROTOCOL_ERROR, "Request stream %d is not correct for %s connection", streamId,
-            server ? "server" : "client");
+          server ? "server" : "client");
       }
       // This check must be after all id validated checks, but before the max streams check because it may be
       // recoverable to some degree for handling frames which can be sent on closed streams.
       if (streamId < nextStreamIdToCreate) {
         throw closedStreamError(PROTOCOL_ERROR, "Request stream %d is behind the next expected stream %d",
-            streamId, nextStreamIdToCreate);
+          streamId, nextStreamIdToCreate);
       }
       if (nextStreamIdToCreate <= 0) {
         throw connectionError(REFUSED_STREAM, "Stream IDs are exhausted for this endpoint.");
@@ -883,7 +896,7 @@ public class DefaultHttp2Connection implements Http2Connection {
       }
       if (isClosed()) {
         throw connectionError(INTERNAL_ERROR, "Attempted to create stream id %d after connection was closed",
-            streamId);
+          streamId);
       }
     }
 

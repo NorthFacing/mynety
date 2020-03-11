@@ -63,7 +63,6 @@ public final class RedisDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance with default {@code maxInlineMessageLength} and {@code messagePool}.
-   *
    * @param decodeInlineCommands if {@code true}, inline commands will be decoded.
    */
   public RedisDecoder(boolean decodeInlineCommands) {
@@ -72,7 +71,6 @@ public final class RedisDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance with inline command decoding disabled.
-   *
    * @param maxInlineMessageLength the maximum length of inline message.
    * @param messagePool            the predefined message pool.
    */
@@ -82,7 +80,6 @@ public final class RedisDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance.
-   *
    * @param maxInlineMessageLength the maximum length of inline message.
    * @param messagePool            the predefined message pool.
    * @param decodeInlineCommands   if {@code true}, inline commands will be decoded.
@@ -90,7 +87,7 @@ public final class RedisDecoder extends ByteToMessageDecoder {
   public RedisDecoder(int maxInlineMessageLength, RedisMessagePool messagePool, boolean decodeInlineCommands) {
     if (maxInlineMessageLength <= 0 || maxInlineMessageLength > RedisConstants.REDIS_MESSAGE_MAX_LENGTH) {
       throw new RedisCodecException("maxInlineMessageLength: " + maxInlineMessageLength +
-          " (expected: <= " + RedisConstants.REDIS_MESSAGE_MAX_LENGTH + ")");
+        " (expected: <= " + RedisConstants.REDIS_MESSAGE_MAX_LENGTH + ")");
     }
     this.maxInlineMessageLength = maxInlineMessageLength;
     this.messagePool = messagePool;
@@ -160,7 +157,7 @@ public final class RedisDecoder extends ByteToMessageDecoder {
     if (lineBytes == null) {
       if (in.readableBytes() > maxInlineMessageLength) {
         throw new RedisCodecException("length: " + in.readableBytes() +
-            " (expected: <= " + maxInlineMessageLength + ")");
+          " (expected: <= " + maxInlineMessageLength + ")");
       }
       return false;
     }
@@ -186,7 +183,7 @@ public final class RedisDecoder extends ByteToMessageDecoder {
       case BULK_STRING:
         if (length > RedisConstants.REDIS_MESSAGE_MAX_LENGTH) {
           throw new RedisCodecException("length: " + length + " (expected: <= " +
-              RedisConstants.REDIS_MESSAGE_MAX_LENGTH + ")");
+            RedisConstants.REDIS_MESSAGE_MAX_LENGTH + ")");
         }
         remainingBulkLength = (int) length; // range(int) is already checked.
         return decodeBulkString(in, out);
@@ -298,7 +295,7 @@ public final class RedisDecoder extends ByteToMessageDecoder {
     }
     if (readableBytes > RedisConstants.POSITIVE_LONG_MAX_LENGTH + extraOneByteForNegative) {
       throw new RedisCodecException("too many characters to be a valid RESP Integer: " +
-          byteBuf.toString(CharsetUtil.US_ASCII));
+        byteBuf.toString(CharsetUtil.US_ASCII));
     }
     if (negative) {
       return -parsePositiveNumber(byteBuf.skipBytes(extraOneByteForNegative));

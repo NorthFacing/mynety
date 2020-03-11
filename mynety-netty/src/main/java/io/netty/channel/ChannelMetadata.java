@@ -29,7 +29,6 @@ public final class ChannelMetadata {
 
   /**
    * Create a new instance
-   *
    * @param hasDisconnect {@code true} if and only if the channel has the {@code disconnect()} operation
    *                      that allows a user to disconnect and then call {@link Channel#connect(SocketAddress)}
    *                      again, such as UDP/IP.
@@ -40,7 +39,6 @@ public final class ChannelMetadata {
 
   /**
    * Create a new instance
-   *
    * @param hasDisconnect             {@code true} if and only if the channel has the {@code disconnect()} operation
    *                                  that allows a user to disconnect and then call {@link Channel#connect(SocketAddress)}
    *                                  again, such as UDP/IP.

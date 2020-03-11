@@ -163,7 +163,7 @@ final class ScheduledFutureTask<V> extends PromiseTask<V> implements ScheduledFu
             if (!isCancelled()) {
               // scheduledTaskQueue can never be null as we lazy init it before submit the task!
               Queue<ScheduledFutureTask<?>> scheduledTaskQueue =
-                  ((AbstractScheduledEventExecutor) executor()).scheduledTaskQueue;
+                ((AbstractScheduledEventExecutor) executor()).scheduledTaskQueue;
               assert scheduledTaskQueue != null;
               scheduledTaskQueue.add(this);
             }
@@ -177,7 +177,6 @@ final class ScheduledFutureTask<V> extends PromiseTask<V> implements ScheduledFu
 
   /**
    * {@inheritDoc}
-   *
    * @param mayInterruptIfRunning this value has no effect in this implementation.
    */
   @Override
@@ -199,10 +198,10 @@ final class ScheduledFutureTask<V> extends PromiseTask<V> implements ScheduledFu
     buf.setCharAt(buf.length() - 1, ',');
 
     return buf.append(" deadline: ")
-        .append(deadlineNanos)
-        .append(", period: ")
-        .append(periodNanos)
-        .append(')');
+      .append(deadlineNanos)
+      .append(", period: ")
+      .append(periodNanos)
+      .append(')');
   }
 
   @Override

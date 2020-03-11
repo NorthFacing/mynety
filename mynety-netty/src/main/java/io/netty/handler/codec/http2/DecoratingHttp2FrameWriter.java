@@ -50,7 +50,7 @@ public class DecoratingHttp2FrameWriter implements Http2FrameWriter {
                                     int streamDependency, short weight, boolean exclusive, int padding,
                                     boolean endStream, ChannelPromise promise) {
     return delegate
-        .writeHeaders(ctx, streamId, headers, streamDependency, weight, exclusive, padding, endStream, promise);
+      .writeHeaders(ctx, streamId, headers, streamDependency, weight, exclusive, padding, endStream, promise);
   }
 
   @Override

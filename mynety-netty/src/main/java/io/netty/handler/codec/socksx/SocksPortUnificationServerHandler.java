@@ -37,7 +37,7 @@ import java.util.List;
 public class SocksPortUnificationServerHandler extends ByteToMessageDecoder {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(SocksPortUnificationServerHandler.class);
+    InternalLoggerFactory.getInstance(SocksPortUnificationServerHandler.class);
 
   private final Socks5ServerEncoder socks5encoder;
 

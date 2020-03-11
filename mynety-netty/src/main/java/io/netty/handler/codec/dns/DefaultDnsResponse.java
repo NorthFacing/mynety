@@ -33,7 +33,6 @@ public class DefaultDnsResponse extends AbstractDnsMessage implements DnsRespons
   /**
    * Creates a new instance with the {@link DnsOpCode#QUERY} {@code opCode} and
    * the {@link DnsResponseCode#NOERROR} {@code RCODE}.
-   *
    * @param id the {@code ID} of the DNS response
    */
   public DefaultDnsResponse(int id) {
@@ -42,7 +41,6 @@ public class DefaultDnsResponse extends AbstractDnsMessage implements DnsRespons
 
   /**
    * Creates a new instance with the {@link DnsResponseCode#NOERROR} {@code RCODE}.
-   *
    * @param id     the {@code ID} of the DNS response
    * @param opCode the {@code opCode} of the DNS response
    */
@@ -52,7 +50,6 @@ public class DefaultDnsResponse extends AbstractDnsMessage implements DnsRespons
 
   /**
    * Creates a new instance.
-   *
    * @param id     the {@code ID} of the DNS response
    * @param opCode the {@code opCode} of the DNS response
    * @param code   the {@code RCODE} of the DNS response

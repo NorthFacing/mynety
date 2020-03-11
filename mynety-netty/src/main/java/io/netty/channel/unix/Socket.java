@@ -20,12 +20,22 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.NetUtil;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.PortUnreachableException;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.netty.channel.unix.Errors.*;
+import static io.netty.channel.unix.Errors.ERRNO_EAGAIN_NEGATIVE;
+import static io.netty.channel.unix.Errors.ERRNO_EINPROGRESS_NEGATIVE;
+import static io.netty.channel.unix.Errors.ERRNO_EWOULDBLOCK_NEGATIVE;
+import static io.netty.channel.unix.Errors.ERROR_ECONNREFUSED_NEGATIVE;
+import static io.netty.channel.unix.Errors.ioResult;
+import static io.netty.channel.unix.Errors.newIOException;
+import static io.netty.channel.unix.Errors.throwConnectException;
 import static io.netty.channel.unix.LimitsStaticallyReferencedJniMethods.udsSunPathSize;
 import static io.netty.channel.unix.NativeInetAddress.address;
 import static io.netty.channel.unix.NativeInetAddress.ipv4MappedIpv6Address;
@@ -118,7 +128,7 @@ public class Socket extends FileDescriptor {
   }
 
   public final int sendToAddress(long memoryAddress, int pos, int limit, InetAddress addr, int port)
-      throws IOException {
+    throws IOException {
     // just duplicate the toNativeInetAddress code here to minimize object creation as this method is expected
     // to be called frequently
     byte[] address;
@@ -377,8 +387,8 @@ public class Socket extends FileDescriptor {
   @Override
   public String toString() {
     return "Socket{" +
-        "fd=" + fd +
-        '}';
+      "fd=" + fd +
+      '}';
   }
 
   private static final AtomicBoolean INITIALIZED = new AtomicBoolean();
@@ -456,19 +466,19 @@ public class Socket extends FileDescriptor {
   private static native byte[] localAddress(int fd);
 
   private static native int sendTo(
-      int fd, boolean ipv6, ByteBuffer buf, int pos, int limit, byte[] address, int scopeId, int port);
+    int fd, boolean ipv6, ByteBuffer buf, int pos, int limit, byte[] address, int scopeId, int port);
 
   private static native int sendToAddress(
-      int fd, boolean ipv6, long memoryAddress, int pos, int limit, byte[] address, int scopeId, int port);
+    int fd, boolean ipv6, long memoryAddress, int pos, int limit, byte[] address, int scopeId, int port);
 
   private static native int sendToAddresses(
-      int fd, boolean ipv6, long memoryAddress, int length, byte[] address, int scopeId, int port);
+    int fd, boolean ipv6, long memoryAddress, int length, byte[] address, int scopeId, int port);
 
   private static native DatagramSocketAddress recvFrom(
-      int fd, ByteBuffer buf, int pos, int limit) throws IOException;
+    int fd, ByteBuffer buf, int pos, int limit) throws IOException;
 
   private static native DatagramSocketAddress recvFromAddress(
-      int fd, long memoryAddress, int pos, int limit) throws IOException;
+    int fd, long memoryAddress, int pos, int limit) throws IOException;
 
   private static native int recvFd(int fd);
 

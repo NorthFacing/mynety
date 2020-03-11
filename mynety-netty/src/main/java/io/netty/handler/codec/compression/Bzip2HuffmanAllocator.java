@@ -54,7 +54,6 @@ final class Bzip2HuffmanAllocator {
 
   /**
    * Fills the code array with extended parent pointers.
-   *
    * @param array The code length array
    */
   private static void setExtendedParentPointers(final int[] array) {
@@ -82,7 +81,6 @@ final class Bzip2HuffmanAllocator {
 
   /**
    * Finds the number of nodes to relocate in order to achieve a given code length limit.
-   *
    * @param array         The code length array
    * @param maximumLength The maximum bit length for the generated codes
    * @return The number of nodes to relocate
@@ -97,7 +95,6 @@ final class Bzip2HuffmanAllocator {
 
   /**
    * A final allocation pass with no code length limit.
-   *
    * @param array The code length array
    */
   private static void allocateNodeLengths(final int[] array) {
@@ -118,7 +115,6 @@ final class Bzip2HuffmanAllocator {
 
   /**
    * A final allocation pass that relocates nodes in order to achieve a maximum code length limit.
-   *
    * @param array       The code length array
    * @param nodesToMove The number of internal nodes to be relocated
    * @param insertDepth The depth at which to insert relocated nodes
@@ -155,7 +151,6 @@ final class Bzip2HuffmanAllocator {
 
   /**
    * Allocates Canonical Huffman code lengths in place based on a sorted frequency array.
-   *
    * @param array         On input, a sorted array of symbol frequencies; On output, an array of Canonical
    *                      Huffman code lengths
    * @param maximumLength The maximum code length. Must be at least {@code ceil(log2(array.length))}

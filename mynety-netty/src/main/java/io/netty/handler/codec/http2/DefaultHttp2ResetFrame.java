@@ -30,7 +30,6 @@ public final class DefaultHttp2ResetFrame extends AbstractHttp2StreamFrame imple
 
   /**
    * Construct a reset message.
-   *
    * @param error the non-{@code null} reason for reset
    */
   public DefaultHttp2ResetFrame(Http2Error error) {
@@ -39,7 +38,6 @@ public final class DefaultHttp2ResetFrame extends AbstractHttp2StreamFrame imple
 
   /**
    * Construct a reset message.
-   *
    * @param errorCode the reason for reset
    */
   public DefaultHttp2ResetFrame(long errorCode) {

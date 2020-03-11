@@ -78,7 +78,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the TRACE level?
-   *
    * @return True if this Logger is enabled for level TRACE, false otherwise.
    */
   @Override
@@ -92,7 +91,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at level TRACE.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -108,7 +106,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for level TRACE.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -117,7 +114,7 @@ class Log4JLogger extends AbstractInternalLogger {
     if (isTraceEnabled()) {
       FormattingTuple ft = MessageFormatter.format(format, arg);
       logger.log(FQCN, traceCapable ? Level.TRACE : Level.DEBUG, ft
-          .getMessage(), ft.getThrowable());
+        .getMessage(), ft.getThrowable());
     }
   }
 
@@ -129,7 +126,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the TRACE level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -139,7 +135,7 @@ class Log4JLogger extends AbstractInternalLogger {
     if (isTraceEnabled()) {
       FormattingTuple ft = MessageFormatter.format(format, argA, argB);
       logger.log(FQCN, traceCapable ? Level.TRACE : Level.DEBUG, ft
-          .getMessage(), ft.getThrowable());
+        .getMessage(), ft.getThrowable());
     }
   }
 
@@ -151,7 +147,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the TRACE level.
    * </p>
-   *
    * @param format    the format string
    * @param arguments an array of arguments
    */
@@ -160,13 +155,12 @@ class Log4JLogger extends AbstractInternalLogger {
     if (isTraceEnabled()) {
       FormattingTuple ft = MessageFormatter.arrayFormat(format, arguments);
       logger.log(FQCN, traceCapable ? Level.TRACE : Level.DEBUG, ft
-          .getMessage(), ft.getThrowable());
+        .getMessage(), ft.getThrowable());
     }
   }
 
   /**
    * Log an exception (throwable) at level TRACE with an accompanying message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -177,7 +171,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the DEBUG level?
-   *
    * @return True if this Logger is enabled for level DEBUG, false otherwise.
    */
   @Override
@@ -187,7 +180,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at level DEBUG.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -203,7 +195,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for level DEBUG.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -223,7 +214,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the DEBUG level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -244,7 +234,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the DEBUG level.
    * </p>
-   *
    * @param format    the format string
    * @param arguments an array of arguments
    */
@@ -258,7 +247,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log an exception (throwable) at level DEBUG with an accompanying message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -269,7 +257,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the INFO level?
-   *
    * @return True if this Logger is enabled for the INFO level, false otherwise.
    */
   @Override
@@ -279,7 +266,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the INFO level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -294,7 +280,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -314,7 +299,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -335,7 +319,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the INFO level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -350,7 +333,6 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the INFO level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -361,7 +343,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for the WARN level?
-   *
    * @return True if this Logger is enabled for the WARN level, false otherwise.
    */
   @Override
@@ -371,7 +352,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the WARN level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -387,7 +367,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARN level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -407,7 +386,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARN level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -428,7 +406,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the WARN level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -443,7 +420,6 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the WARN level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */
@@ -454,7 +430,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Is this logger instance enabled for level ERROR?
-   *
    * @return True if this Logger is enabled for level ERROR, false otherwise.
    */
   @Override
@@ -464,7 +439,6 @@ class Log4JLogger extends AbstractInternalLogger {
 
   /**
    * Log a message object at the ERROR level.
-   *
    * @param msg - the message object to be logged
    */
   @Override
@@ -480,7 +454,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the ERROR level.
    * </p>
-   *
    * @param format the format string
    * @param arg    the argument
    */
@@ -500,7 +473,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the ERROR level.
    * </p>
-   *
    * @param format the format string
    * @param argA   the first argument
    * @param argB   the second argument
@@ -521,7 +493,6 @@ class Log4JLogger extends AbstractInternalLogger {
    * This form avoids superfluous object creation when the logger is disabled
    * for the ERROR level.
    * </p>
-   *
    * @param format   the format string
    * @param argArray an array of arguments
    */
@@ -536,7 +507,6 @@ class Log4JLogger extends AbstractInternalLogger {
   /**
    * Log an exception (throwable) at the ERROR level with an accompanying
    * message.
-   *
    * @param msg the message accompanying the exception
    * @param t   the exception (throwable) to log
    */

@@ -78,7 +78,6 @@ public interface DnsMessage extends ReferenceCounted {
    * Returns the first record in the specified {@code section} of this DNS message.
    * When the specified {@code section} is {@link DnsSection#QUESTION}, the type of the returned record is
    * always {@link DnsQuestion}.
-   *
    * @return {@code null} if this message doesn't have any records in the specified {@code section}
    */
   <T extends DnsRecord> T recordAt(DnsSection section);
@@ -87,7 +86,6 @@ public interface DnsMessage extends ReferenceCounted {
    * Returns the record at the specified {@code index} of the specified {@code section} of this DNS message.
    * When the specified {@code section} is {@link DnsSection#QUESTION}, the type of the returned record is
    * always {@link DnsQuestion}.
-   *
    * @throws IndexOutOfBoundsException if the specified {@code index} is out of bounds
    */
   <T extends DnsRecord> T recordAt(DnsSection section, int index);
@@ -103,7 +101,6 @@ public interface DnsMessage extends ReferenceCounted {
    * Sets the specified {@code record} at the specified {@code index} of the specified {@code section}
    * of this DNS message. When the specified {@code section} is {@link DnsSection#QUESTION},
    * the specified {@code record} must be a {@link DnsQuestion}.
-   *
    * @return the old record
    * @throws IndexOutOfBoundsException if the specified {@code index} is out of bounds
    */
@@ -120,7 +117,6 @@ public interface DnsMessage extends ReferenceCounted {
    * Adds the specified {@code record} at the specified {@code index} of the specified {@code section}
    * of this DNS message. When the specified {@code section} is {@link DnsSection#QUESTION}, the specified
    * {@code record} must be a {@link DnsQuestion}.
-   *
    * @throws IndexOutOfBoundsException if the specified {@code index} is out of bounds
    */
   DnsMessage addRecord(DnsSection section, int index, DnsRecord record);
@@ -129,7 +125,6 @@ public interface DnsMessage extends ReferenceCounted {
    * Removes the record at the specified {@code index} of the specified {@code section} from this DNS message.
    * When the specified {@code section} is {@link DnsSection#QUESTION}, the type of the returned record is
    * always {@link DnsQuestion}.
-   *
    * @return the removed record
    */
   <T extends DnsRecord> T removeRecord(DnsSection section, int index);

@@ -32,7 +32,7 @@ public final class ProxyConnectionEvent {
    * Creates a new event that indicates a successful connection attempt to the destination address.
    */
   public ProxyConnectionEvent(
-      String protocol, String authScheme, SocketAddress proxyAddress, SocketAddress destinationAddress) {
+    String protocol, String authScheme, SocketAddress proxyAddress, SocketAddress destinationAddress) {
     if (protocol == null) {
       throw new NullPointerException("protocol");
     }
@@ -89,16 +89,16 @@ public final class ProxyConnectionEvent {
     }
 
     StringBuilder buf = new StringBuilder(128)
-        .append(StringUtil.simpleClassName(this))
-        .append('(')
-        .append(protocol)
-        .append(", ")
-        .append(authScheme)
-        .append(", ")
-        .append(proxyAddress)
-        .append(" => ")
-        .append(destinationAddress)
-        .append(')');
+      .append(StringUtil.simpleClassName(this))
+      .append('(')
+      .append(protocol)
+      .append(", ")
+      .append(authScheme)
+      .append(", ")
+      .append(proxyAddress)
+      .append(" => ")
+      .append(destinationAddress)
+      .append(')');
 
     return strVal = buf.toString();
   }

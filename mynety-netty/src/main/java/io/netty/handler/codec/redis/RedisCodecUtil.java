@@ -35,7 +35,7 @@ final class RedisCodecUtil {
    */
   static short makeShort(char first, char second) {
     return PlatformDependent.BIG_ENDIAN_NATIVE_ORDER ?
-        (short) ((second << 8) | first) : (short) ((first << 8) | second);
+      (short) ((second << 8) | first) : (short) ((first << 8) | second);
   }
 
   /**

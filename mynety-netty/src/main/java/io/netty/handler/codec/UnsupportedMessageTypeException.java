@@ -23,9 +23,9 @@ public class UnsupportedMessageTypeException extends CodecException {
   private static final long serialVersionUID = 2799598826487038726L;
 
   public UnsupportedMessageTypeException(
-      Object message, Class<?>... expectedTypes) {
+    Object message, Class<?>... expectedTypes) {
     super(message(
-        message == null ? "null" : message.getClass().getName(), expectedTypes));
+      message == null ? "null" : message.getClass().getName(), expectedTypes));
   }
 
   public UnsupportedMessageTypeException() {
@@ -44,7 +44,7 @@ public class UnsupportedMessageTypeException extends CodecException {
   }
 
   private static String message(
-      String actualType, Class<?>... expectedTypes) {
+    String actualType, Class<?>... expectedTypes) {
     StringBuilder buf = new StringBuilder(actualType);
 
     if (expectedTypes != null && expectedTypes.length > 0) {

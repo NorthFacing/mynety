@@ -36,13 +36,13 @@ final class CodecOutputList extends AbstractList<Object> implements RandomAccess
   };
 
   private static final FastThreadLocal<CodecOutputLists> CODEC_OUTPUT_LISTS_POOL =
-      new FastThreadLocal<CodecOutputLists>() {
-        @Override
-        protected CodecOutputLists initialValue() throws Exception {
-          // 16 CodecOutputList per Thread are cached.
-          return new CodecOutputLists(16);
-        }
-      };
+    new FastThreadLocal<CodecOutputLists>() {
+      @Override
+      protected CodecOutputLists initialValue() throws Exception {
+        // 16 CodecOutputList per Thread are cached.
+        return new CodecOutputLists(16);
+      }
+    };
 
   private interface CodecOutputListRecycler {
     void recycle(CodecOutputList codecOutputList);

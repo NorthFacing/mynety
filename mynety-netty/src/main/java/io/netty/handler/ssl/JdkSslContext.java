@@ -28,12 +28,27 @@ import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLSessionContext;
 import java.io.File;
 import java.io.IOException;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
-import static io.netty.handler.ssl.SslUtils.*;
+import static io.netty.handler.ssl.SslUtils.DEFAULT_CIPHER_SUITES;
+import static io.netty.handler.ssl.SslUtils.addIfSupported;
+import static io.netty.handler.ssl.SslUtils.useFallbackCiphersIfDefaultIsEmpty;
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
@@ -89,9 +104,9 @@ public class JdkSslContext extends SslContext {
     Collections.addAll(supportedProtocolsSet, supportedProtocols);
     List<String> protocols = new ArrayList<String>();
     addIfSupported(
-        supportedProtocolsSet, protocols,
-        // Do not include TLSv1.3 for now by default.
-        SslUtils.PROTOCOL_TLS_V1_2, SslUtils.PROTOCOL_TLS_V1_1, SslUtils.PROTOCOL_TLS_V1);
+      supportedProtocolsSet, protocols,
+      // Do not include TLSv1.3 for now by default.
+      SslUtils.PROTOCOL_TLS_V1_2, SslUtils.PROTOCOL_TLS_V1_1, SslUtils.PROTOCOL_TLS_V1);
 
     if (!protocols.isEmpty()) {
       return protocols.toArray(new String[0]);
@@ -155,7 +170,6 @@ public class JdkSslContext extends SslContext {
 
   /**
    * Creates a new {@link JdkSslContext} from a pre-configured {@link SSLContext}.
-   *
    * @param sslContext the {@link SSLContext} to use.
    * @param isClient   {@code true} if this context should create {@link SSLEngine}s for client-side usage.
    * @param clientAuth the {@link ClientAuth} to use. This will only be used when {@param isClient} is {@code false}.
@@ -166,12 +180,11 @@ public class JdkSslContext extends SslContext {
   public JdkSslContext(SSLContext sslContext, boolean isClient,
                        ClientAuth clientAuth) {
     this(sslContext, isClient, null, IdentityCipherSuiteFilter.INSTANCE,
-        JdkDefaultApplicationProtocolNegotiator.INSTANCE, clientAuth, null, false);
+      JdkDefaultApplicationProtocolNegotiator.INSTANCE, clientAuth, null, false);
   }
 
   /**
    * Creates a new {@link JdkSslContext} from a pre-configured {@link SSLContext}.
-   *
    * @param sslContext   the {@link SSLContext} to use.
    * @param isClient     {@code true} if this context should create {@link SSLEngine}s for client-side usage.
    * @param ciphers      the ciphers to use or {@code null} if the standard should be used.
@@ -190,7 +203,6 @@ public class JdkSslContext extends SslContext {
 
   /**
    * Creates a new {@link JdkSslContext} from a pre-configured {@link SSLContext}.
-   *
    * @param sslContext   the {@link SSLContext} to use.
    * @param isClient     {@code true} if this context should create {@link SSLEngine}s for client-side usage.
    * @param ciphers      the ciphers to use or {@code null} if the standard should be used.
@@ -209,13 +221,13 @@ public class JdkSslContext extends SslContext {
                        String[] protocols,
                        boolean startTls) {
     this(sslContext,
-        isClient,
-        ciphers,
-        cipherFilter,
-        toNegotiator(apn, !isClient),
-        clientAuth,
-        protocols == null ? null : protocols.clone(),
-        startTls);
+      isClient,
+      ciphers,
+      cipherFilter,
+      toNegotiator(apn, !isClient),
+      clientAuth,
+      protocols == null ? null : protocols.clone(),
+      startTls);
   }
 
   @SuppressWarnings("deprecation")
@@ -264,7 +276,7 @@ public class JdkSslContext extends SslContext {
     }
 
     cipherSuites = checkNotNull(cipherFilter, "cipherFilter").filterCipherSuites(
-        ciphers, defaultCiphers, supportedCiphers);
+      ciphers, defaultCiphers, supportedCiphers);
 
     unmodifiableCipherSuites = Collections.unmodifiableList(Arrays.asList(cipherSuites));
     this.isClient = isClient;
@@ -341,7 +353,7 @@ public class JdkSslContext extends SslContext {
     JdkApplicationProtocolNegotiator.SslEngineWrapperFactory factory = apn.wrapperFactory();
     if (factory instanceof JdkApplicationProtocolNegotiator.AllocatorAwareSslEngineWrapperFactory) {
       return ((JdkApplicationProtocolNegotiator.AllocatorAwareSslEngineWrapperFactory) factory)
-          .wrapSslEngine(engine, alloc, apn, isServer());
+        .wrapSslEngine(engine, alloc, apn, isServer());
     }
     return factory.wrapSslEngine(engine, apn, isServer());
   }
@@ -353,7 +365,6 @@ public class JdkSslContext extends SslContext {
 
   /**
    * Translate a {@link ApplicationProtocolConfig} object to a {@link JdkApplicationProtocolNegotiator} object.
-   *
    * @param config   The configuration which defines the translation
    * @param isServer {@code true} if a server {@code false} otherwise.
    * @return The results of the translation
@@ -376,7 +387,7 @@ public class JdkSslContext extends SslContext {
               return new JdkAlpnApplicationProtocolNegotiator(false, config.supportedProtocols());
             default:
               throw new UnsupportedOperationException(new StringBuilder("JDK provider does not support ")
-                  .append(config.selectorFailureBehavior()).append(" failure behavior").toString());
+                .append(config.selectorFailureBehavior()).append(" failure behavior").toString());
           }
         } else {
           switch (config.selectedListenerFailureBehavior()) {
@@ -386,7 +397,7 @@ public class JdkSslContext extends SslContext {
               return new JdkAlpnApplicationProtocolNegotiator(true, config.supportedProtocols());
             default:
               throw new UnsupportedOperationException(new StringBuilder("JDK provider does not support ")
-                  .append(config.selectedListenerFailureBehavior()).append(" failure behavior").toString());
+                .append(config.selectedListenerFailureBehavior()).append(" failure behavior").toString());
           }
         }
       case NPN:
@@ -398,7 +409,7 @@ public class JdkSslContext extends SslContext {
               return new JdkNpnApplicationProtocolNegotiator(true, config.supportedProtocols());
             default:
               throw new UnsupportedOperationException(new StringBuilder("JDK provider does not support ")
-                  .append(config.selectedListenerFailureBehavior()).append(" failure behavior").toString());
+                .append(config.selectedListenerFailureBehavior()).append(" failure behavior").toString());
           }
         } else {
           switch (config.selectorFailureBehavior()) {
@@ -408,18 +419,17 @@ public class JdkSslContext extends SslContext {
               return new JdkNpnApplicationProtocolNegotiator(false, config.supportedProtocols());
             default:
               throw new UnsupportedOperationException(new StringBuilder("JDK provider does not support ")
-                  .append(config.selectorFailureBehavior()).append(" failure behavior").toString());
+                .append(config.selectorFailureBehavior()).append(" failure behavior").toString());
           }
         }
       default:
         throw new UnsupportedOperationException(new StringBuilder("JDK provider does not support ")
-            .append(config.protocol()).append(" protocol").toString());
+          .append(config.protocol()).append(" protocol").toString());
     }
   }
 
   /**
    * Build a {@link KeyManagerFactory} based upon a key file, key file password, and a certificate chain.
-   *
    * @param certChainFile an X.509 certificate chain file in PEM format
    * @param keyFile       a PKCS#8 private key file in PEM format
    * @param keyPassword   the password of the {@code keyFile}.
@@ -430,9 +440,9 @@ public class JdkSslContext extends SslContext {
    */
   static KeyManagerFactory buildKeyManagerFactory(File certChainFile, File keyFile, String keyPassword,
                                                   KeyManagerFactory kmf, String keyStore)
-      throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException,
-      NoSuchPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException,
-      CertificateException, KeyException, IOException {
+    throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException,
+    NoSuchPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+    CertificateException, KeyException, IOException {
     String algorithm = Security.getProperty("ssl.KeyManagerFactory.algorithm");
     if (algorithm == null) {
       algorithm = "SunX509";
@@ -442,7 +452,6 @@ public class JdkSslContext extends SslContext {
 
   /**
    * Build a {@link KeyManagerFactory} based upon a key file, key file password, and a certificate chain.
-   *
    * @param certChainFile an X.509 certificate chain file in PEM format
    * @param keyFile       a PKCS#8 private key file in PEM format
    * @param keyPassword   the password of the {@code keyFile}.
@@ -454,16 +463,15 @@ public class JdkSslContext extends SslContext {
   @Deprecated
   protected static KeyManagerFactory buildKeyManagerFactory(File certChainFile, File keyFile, String keyPassword,
                                                             KeyManagerFactory kmf)
-      throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException,
-      NoSuchPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException,
-      CertificateException, KeyException, IOException {
+    throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException,
+    NoSuchPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException,
+    CertificateException, KeyException, IOException {
     return buildKeyManagerFactory(certChainFile, keyFile, keyPassword, kmf, KeyStore.getDefaultType());
   }
 
   /**
    * Build a {@link KeyManagerFactory} based upon a key algorithm, key file, key file password,
    * and a certificate chain.
-   *
    * @param certChainFile an X.509 certificate chain file in PEM format
    * @param keyAlgorithm  the standard name of the requested algorithm. See the Java Secure Socket Extension
    *                      Reference Guide for information about standard algorithm names.
@@ -478,17 +486,16 @@ public class JdkSslContext extends SslContext {
   static KeyManagerFactory buildKeyManagerFactory(File certChainFile,
                                                   String keyAlgorithm, File keyFile, String keyPassword, KeyManagerFactory kmf,
                                                   String keyStore)
-      throws KeyStoreException, NoSuchAlgorithmException, NoSuchPaddingException,
-      InvalidKeySpecException, InvalidAlgorithmParameterException, IOException,
-      CertificateException, KeyException, UnrecoverableKeyException {
+    throws KeyStoreException, NoSuchAlgorithmException, NoSuchPaddingException,
+    InvalidKeySpecException, InvalidAlgorithmParameterException, IOException,
+    CertificateException, KeyException, UnrecoverableKeyException {
     return buildKeyManagerFactory(toX509Certificates(certChainFile), keyAlgorithm,
-        toPrivateKey(keyFile, keyPassword), keyPassword, kmf, keyStore);
+      toPrivateKey(keyFile, keyPassword), keyPassword, kmf, keyStore);
   }
 
   /**
    * Build a {@link KeyManagerFactory} based upon a key algorithm, key file, key file password,
    * and a certificate chain.
-   *
    * @param certChainFile an buildKeyManagerFactory X.509 certificate chain file in PEM format
    * @param keyAlgorithm  the standard name of the requested algorithm. See the Java Secure Socket Extension
    *                      Reference Guide for information about standard algorithm names.
@@ -504,10 +511,10 @@ public class JdkSslContext extends SslContext {
   protected static KeyManagerFactory buildKeyManagerFactory(File certChainFile,
                                                             String keyAlgorithm, File keyFile,
                                                             String keyPassword, KeyManagerFactory kmf)
-      throws KeyStoreException, NoSuchAlgorithmException, NoSuchPaddingException,
-      InvalidKeySpecException, InvalidAlgorithmParameterException, IOException,
-      CertificateException, KeyException, UnrecoverableKeyException {
+    throws KeyStoreException, NoSuchAlgorithmException, NoSuchPaddingException,
+    InvalidKeySpecException, InvalidAlgorithmParameterException, IOException,
+    CertificateException, KeyException, UnrecoverableKeyException {
     return buildKeyManagerFactory(toX509Certificates(certChainFile), keyAlgorithm,
-        toPrivateKey(keyFile, keyPassword), keyPassword, kmf, KeyStore.getDefaultType());
+      toPrivateKey(keyFile, keyPassword), keyPassword, kmf, KeyStore.getDefaultType());
   }
 }

@@ -171,40 +171,40 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 public final class WebSocketCloseStatus implements Comparable<WebSocketCloseStatus> {
 
   public static final WebSocketCloseStatus NORMAL_CLOSURE =
-      new WebSocketCloseStatus(1000, "Bye");
+    new WebSocketCloseStatus(1000, "Bye");
 
   public static final WebSocketCloseStatus ENDPOINT_UNAVAILABLE =
-      new WebSocketCloseStatus(1001, "Endpoint unavailable");
+    new WebSocketCloseStatus(1001, "Endpoint unavailable");
 
   public static final WebSocketCloseStatus PROTOCOL_ERROR =
-      new WebSocketCloseStatus(1002, "Protocol error");
+    new WebSocketCloseStatus(1002, "Protocol error");
 
   public static final WebSocketCloseStatus INVALID_MESSAGE_TYPE =
-      new WebSocketCloseStatus(1003, "Invalid message type");
+    new WebSocketCloseStatus(1003, "Invalid message type");
 
   public static final WebSocketCloseStatus INVALID_PAYLOAD_DATA =
-      new WebSocketCloseStatus(1007, "Invalid payload data");
+    new WebSocketCloseStatus(1007, "Invalid payload data");
 
   public static final WebSocketCloseStatus POLICY_VIOLATION =
-      new WebSocketCloseStatus(1008, "Policy violation");
+    new WebSocketCloseStatus(1008, "Policy violation");
 
   public static final WebSocketCloseStatus MESSAGE_TOO_BIG =
-      new WebSocketCloseStatus(1009, "Message too big");
+    new WebSocketCloseStatus(1009, "Message too big");
 
   public static final WebSocketCloseStatus MANDATORY_EXTENSION =
-      new WebSocketCloseStatus(1010, "Mandatory extension");
+    new WebSocketCloseStatus(1010, "Mandatory extension");
 
   public static final WebSocketCloseStatus INTERNAL_SERVER_ERROR =
-      new WebSocketCloseStatus(1011, "Internal server error");
+    new WebSocketCloseStatus(1011, "Internal server error");
 
   public static final WebSocketCloseStatus SERVICE_RESTART =
-      new WebSocketCloseStatus(1012, "Service Restart");
+    new WebSocketCloseStatus(1012, "Service Restart");
 
   public static final WebSocketCloseStatus TRY_AGAIN_LATER =
-      new WebSocketCloseStatus(1013, "Try Again Later");
+    new WebSocketCloseStatus(1013, "Try Again Later");
 
   public static final WebSocketCloseStatus BAD_GATEWAY =
-      new WebSocketCloseStatus(1014, "Bad Gateway");
+    new WebSocketCloseStatus(1014, "Bad Gateway");
 
   // 1004, 1005, 1006, 1015 are reserved and should never be used by user
   //public static final WebSocketCloseStatus SPECIFIC_MEANING = register(1004, "...");
@@ -219,7 +219,7 @@ public final class WebSocketCloseStatus implements Comparable<WebSocketCloseStat
   public WebSocketCloseStatus(int statusCode, String reasonText) {
     if (!isValidStatusCode(statusCode)) {
       throw new IllegalArgumentException(
-          "WebSocket close status code does NOT comply with RFC-6455: " + statusCode);
+        "WebSocket close status code does NOT comply with RFC-6455: " + statusCode);
     }
     this.statusCode = statusCode;
     this.reasonText = checkNotNull(reasonText, "reasonText");
@@ -275,9 +275,9 @@ public final class WebSocketCloseStatus implements Comparable<WebSocketCloseStat
 
   public static boolean isValidStatusCode(int code) {
     return code < 0 ||
-        1000 <= code && code <= 1003 ||
-        1007 <= code && code <= 1014 ||
-        3000 <= code;
+      1000 <= code && code <= 1003 ||
+      1007 <= code && code <= 1014 ||
+      3000 <= code;
   }
 
   public static WebSocketCloseStatus valueOf(int code) {

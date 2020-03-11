@@ -20,9 +20,16 @@ import io.netty.handler.codec.http.cookie.CookieHeaderNames;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-import static io.netty.handler.codec.http.CookieUtil.*;
+import static io.netty.handler.codec.http.CookieUtil.firstInvalidCookieNameOctet;
+import static io.netty.handler.codec.http.CookieUtil.firstInvalidCookieValueOctet;
+import static io.netty.handler.codec.http.CookieUtil.unwrapValue;
 
 /**
  * @see io.netty.handler.codec.http.cookie.ClientCookieDecoder
@@ -70,7 +77,6 @@ public final class CookieDecoder {
 
   /**
    * Decodes the specified HTTP header value into {@link Cookie}s.
-   *
    * @return the decoded {@link Cookie}s
    */
   private Set<Cookie> doDecode(String header) {
@@ -191,7 +197,7 @@ public final class CookieDecoder {
   }
 
   private static void extractKeyValuePairs(
-      final String header, final List<String> names, final List<String> values) {
+    final String header, final List<String> names, final List<String> values) {
     final int headerLen = header.length();
     loop:
     for (int i = 0; ; ) {
@@ -341,7 +347,7 @@ public final class CookieDecoder {
     CharSequence unwrappedValue = unwrapValue(value);
     if (unwrappedValue == null) {
       logger.debug("Skipping cookie because starting quotes are not properly balanced in '{}'",
-          unwrappedValue);
+        unwrappedValue);
       return null;
     }
 
@@ -349,7 +355,7 @@ public final class CookieDecoder {
     if (strict && (invalidOctetPos = firstInvalidCookieNameOctet(name)) >= 0) {
       if (logger.isDebugEnabled()) {
         logger.debug("Skipping cookie because name '{}' contains invalid char '{}'",
-            name, name.charAt(invalidOctetPos));
+          name, name.charAt(invalidOctetPos));
       }
       return null;
     }
@@ -359,7 +365,7 @@ public final class CookieDecoder {
     if (strict && (invalidOctetPos = firstInvalidCookieValueOctet(unwrappedValue)) >= 0) {
       if (logger.isDebugEnabled()) {
         logger.debug("Skipping cookie because value '{}' contains invalid char '{}'",
-            unwrappedValue, unwrappedValue.charAt(invalidOctetPos));
+          unwrappedValue, unwrappedValue.charAt(invalidOctetPos));
       }
       return null;
     }

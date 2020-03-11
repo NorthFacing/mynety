@@ -96,12 +96,11 @@ public abstract class MessageToMessageCodec<INBOUND_IN, OUTBOUND_IN> extends Cha
 
   /**
    * Create a new instance.
-   *
    * @param inboundMessageType  The type of messages to decode
    * @param outboundMessageType The type of messages to encode
    */
   protected MessageToMessageCodec(
-      Class<? extends INBOUND_IN> inboundMessageType, Class<? extends OUTBOUND_IN> outboundMessageType) {
+    Class<? extends INBOUND_IN> inboundMessageType, Class<? extends OUTBOUND_IN> outboundMessageType) {
     inboundMsgMatcher = TypeParameterMatcher.get(inboundMessageType);
     outboundMsgMatcher = TypeParameterMatcher.get(outboundMessageType);
   }
@@ -118,7 +117,6 @@ public abstract class MessageToMessageCodec<INBOUND_IN, OUTBOUND_IN> extends Cha
 
   /**
    * Returns {@code true} if and only if the specified message can be decoded by this codec.
-   *
    * @param msg the message
    */
   public boolean acceptInboundMessage(Object msg) throws Exception {
@@ -127,7 +125,6 @@ public abstract class MessageToMessageCodec<INBOUND_IN, OUTBOUND_IN> extends Cha
 
   /**
    * Returns {@code true} if and only if the specified message can be encoded by this codec.
-   *
    * @param msg the message
    */
   public boolean acceptOutboundMessage(Object msg) throws Exception {
@@ -138,11 +135,11 @@ public abstract class MessageToMessageCodec<INBOUND_IN, OUTBOUND_IN> extends Cha
    * @see MessageToMessageEncoder#encode(ChannelHandlerContext, Object, List)
    */
   protected abstract void encode(ChannelHandlerContext ctx, OUTBOUND_IN msg, List<Object> out)
-      throws Exception;
+    throws Exception;
 
   /**
    * @see MessageToMessageDecoder#decode(ChannelHandlerContext, Object, List)
    */
   protected abstract void decode(ChannelHandlerContext ctx, INBOUND_IN msg, List<Object> out)
-      throws Exception;
+    throws Exception;
 }

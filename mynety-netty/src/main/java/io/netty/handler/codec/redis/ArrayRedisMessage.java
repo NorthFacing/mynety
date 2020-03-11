@@ -38,7 +38,6 @@ public class ArrayRedisMessage extends AbstractReferenceCounted implements Redis
 
   /**
    * Creates a {@link ArrayRedisMessage} for the given {@code content}.
-   *
    * @param children the children.
    */
   public ArrayRedisMessage(List<RedisMessage> children) {
@@ -48,7 +47,6 @@ public class ArrayRedisMessage extends AbstractReferenceCounted implements Redis
 
   /**
    * Get children of this Arrays. It can be null or empty.
-   *
    * @return list of {@link RedisMessage}s.
    */
   public final List<RedisMessage> children() {
@@ -57,7 +55,6 @@ public class ArrayRedisMessage extends AbstractReferenceCounted implements Redis
 
   /**
    * Returns whether the content of this message is {@code null}.
-   *
    * @return indicates whether the content of this message is {@code null}.
    */
   public boolean isNull() {
@@ -82,10 +79,10 @@ public class ArrayRedisMessage extends AbstractReferenceCounted implements Redis
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("children=")
-        .append(children.size())
-        .append(']').toString();
+      .append('[')
+      .append("children=")
+      .append(children.size())
+      .append(']').toString();
   }
 
   /**

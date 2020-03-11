@@ -30,7 +30,6 @@ interface OpenSslSession extends SSLSession {
    * Expand (or increase) the value returned by {@link #getApplicationBufferSize()} if necessary.
    * <p>
    * This is only called in a synchronized block, so no need to use atomic operations.
-   *
    * @param packetLengthDataOnly The packet size which exceeds the current {@link #getApplicationBufferSize()}.
    */
   void tryExpandApplicationBufferSize(int packetLengthDataOnly);

@@ -16,8 +16,18 @@
 package io.netty.handler.codec.http.websocketx;
 
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
-import io.netty.handler.codec.http.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.AttributeKey;
 
 import java.util.List;
@@ -51,7 +61,6 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
   public enum ServerHandshakeStateEvent {
     /**
      * The Handshake was completed successfully and the channel was upgraded to websockets.
-     *
      * @deprecated in favor of {@link HandshakeComplete} class,
      * it provides extra information about the handshake
      */
@@ -92,7 +101,7 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
   }
 
   private static final AttributeKey<WebSocketServerHandshaker> HANDSHAKER_ATTR_KEY =
-      AttributeKey.valueOf(WebSocketServerHandshaker.class, "HANDSHAKER");
+    AttributeKey.valueOf(WebSocketServerHandshaker.class, "HANDSHAKER");
 
   private static final long DEFAULT_HANDSHAKE_TIMEOUT_MS = 10000L;
 
@@ -148,44 +157,44 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols,
                                         boolean allowExtensions, int maxFrameSize, boolean allowMaskMismatch) {
     this(websocketPath, subprotocols, allowExtensions, maxFrameSize, allowMaskMismatch,
-        DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols, boolean allowExtensions,
                                         int maxFrameSize, boolean allowMaskMismatch, long handshakeTimeoutMillis) {
     this(websocketPath, subprotocols, allowExtensions, maxFrameSize, allowMaskMismatch, false,
-        handshakeTimeoutMillis);
+      handshakeTimeoutMillis);
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols,
                                         boolean allowExtensions, int maxFrameSize, boolean allowMaskMismatch, boolean checkStartsWith) {
     this(websocketPath, subprotocols, allowExtensions, maxFrameSize, allowMaskMismatch, checkStartsWith,
-        DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols,
                                         boolean allowExtensions, int maxFrameSize, boolean allowMaskMismatch,
                                         boolean checkStartsWith, long handshakeTimeoutMillis) {
     this(websocketPath, subprotocols, allowExtensions, maxFrameSize, allowMaskMismatch, checkStartsWith, true,
-        handshakeTimeoutMillis);
+      handshakeTimeoutMillis);
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols,
                                         boolean allowExtensions, int maxFrameSize, boolean allowMaskMismatch,
                                         boolean checkStartsWith, boolean dropPongFrames) {
     this(websocketPath, subprotocols, allowExtensions, maxFrameSize, allowMaskMismatch, checkStartsWith,
-        dropPongFrames, DEFAULT_HANDSHAKE_TIMEOUT_MS);
+      dropPongFrames, DEFAULT_HANDSHAKE_TIMEOUT_MS);
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols, boolean allowExtensions,
                                         int maxFrameSize, boolean allowMaskMismatch, boolean checkStartsWith,
                                         boolean dropPongFrames, long handshakeTimeoutMillis) {
     this(websocketPath, subprotocols, checkStartsWith, dropPongFrames, handshakeTimeoutMillis,
-        WebSocketDecoderConfig.newBuilder()
-            .maxFramePayloadLength(maxFrameSize)
-            .allowMaskMismatch(allowMaskMismatch)
-            .allowExtensions(allowExtensions)
-            .build());
+      WebSocketDecoderConfig.newBuilder()
+        .maxFramePayloadLength(maxFrameSize)
+        .allowMaskMismatch(allowMaskMismatch)
+        .allowExtensions(allowExtensions)
+        .build());
   }
 
   public WebSocketServerProtocolHandler(String websocketPath, String subprotocols, boolean checkStartsWith,
@@ -205,13 +214,13 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
     if (cp.get(WebSocketServerProtocolHandshakeHandler.class) == null) {
       // Add the WebSocketHandshakeHandler before this one.
       cp.addBefore(ctx.name(), WebSocketServerProtocolHandshakeHandler.class.getName(),
-          new WebSocketServerProtocolHandshakeHandler(
-              websocketPath, subprotocols, checkStartsWith, handshakeTimeoutMillis, decoderConfig));
+        new WebSocketServerProtocolHandshakeHandler(
+          websocketPath, subprotocols, checkStartsWith, handshakeTimeoutMillis, decoderConfig));
     }
     if (decoderConfig.withUTF8Validator() && cp.get(Utf8FrameValidator.class) == null) {
       // Add the UFT8 checking before this one.
       cp.addBefore(ctx.name(), Utf8FrameValidator.class.getName(),
-          new Utf8FrameValidator());
+        new Utf8FrameValidator());
     }
   }
 
@@ -234,7 +243,7 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
     if (cause instanceof WebSocketHandshakeException) {
       FullHttpResponse response = new DefaultFullHttpResponse(
-          HTTP_1_1, HttpResponseStatus.BAD_REQUEST, Unpooled.wrappedBuffer(cause.getMessage().getBytes()));
+        HTTP_1_1, HttpResponseStatus.BAD_REQUEST, Unpooled.wrappedBuffer(cause.getMessage().getBytes()));
       ctx.channel().writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     } else {
       ctx.fireExceptionCaught(cause);
@@ -257,7 +266,7 @@ public class WebSocketServerProtocolHandler extends WebSocketProtocolHandler {
         if (msg instanceof FullHttpRequest) {
           ((FullHttpRequest) msg).release();
           FullHttpResponse response =
-              new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FORBIDDEN, ctx.alloc().buffer(0));
+            new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.FORBIDDEN, ctx.alloc().buffer(0));
           ctx.channel().writeAndFlush(response);
         } else {
           ctx.fireChannelRead(msg);

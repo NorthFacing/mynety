@@ -57,7 +57,7 @@ public class SpdyProtocolException extends Exception {
   }
 
   @SuppressJava6Requirement(reason = "uses Java 7+ Exception.<init>(String, Throwable, boolean, boolean)" +
-      " but is guarded by version checks")
+    " but is guarded by version checks")
   private SpdyProtocolException(String message, boolean shared) {
     super(message, null, false, true);
     assert shared;

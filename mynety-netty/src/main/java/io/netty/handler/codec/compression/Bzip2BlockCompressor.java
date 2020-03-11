@@ -18,7 +18,9 @@ package io.netty.handler.codec.compression;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ByteProcessor;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.*;
+import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_1;
+import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_2;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SYMBOL_RANGE_SIZE;
 
 /**
  * Compresses and writes a single Bzip2 block.<br><br>
@@ -132,7 +134,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Writes an RLE run to the block array, updating the block CRC and present values array as required.
-   *
    * @param value     The value to write
    * @param runLength The run length of the value to write
    */
@@ -175,7 +176,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Writes a byte to the block, accumulating to an RLE run where possible.
-   *
    * @param value The byte to write
    * @return {@code true} if the byte was written, or {@code false} if the block is already full
    */
@@ -207,7 +207,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Writes an array to the block.
-   *
    * @param buffer The buffer to write
    * @param offset The offset within the input data to write from
    * @param length The number of bytes of input data to write
@@ -249,21 +248,20 @@ final class Bzip2BlockCompressor {
 
     // Perform the Move To Front Transform and Run-Length Encoding[2] stages
     Bzip2MTFAndRLE2StageEncoder mtfEncoder = new Bzip2MTFAndRLE2StageEncoder(bwtBlock, blockLength,
-        blockValuesPresent);
+      blockValuesPresent);
     mtfEncoder.encode();
 
     // Perform the Huffman Encoding stage and write out the encoded data
     Bzip2HuffmanStageEncoder huffmanEncoder = new Bzip2HuffmanStageEncoder(writer,
-        mtfEncoder.mtfBlock(),
-        mtfEncoder.mtfLength(),
-        mtfEncoder.mtfAlphabetSize(),
-        mtfEncoder.mtfSymbolFrequencies());
+      mtfEncoder.mtfBlock(),
+      mtfEncoder.mtfLength(),
+      mtfEncoder.mtfAlphabetSize(),
+      mtfEncoder.mtfSymbolFrequencies());
     huffmanEncoder.encode(out);
   }
 
   /**
    * Gets available size of the current block.
-   *
    * @return Number of available bytes which can be written
    */
   int availableSize() {
@@ -275,7 +273,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Determines if the block is full and ready for compression.
-   *
    * @return {@code true} if the block is full, otherwise {@code false}
    */
   boolean isFull() {
@@ -284,7 +281,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Determines if any bytes have been written to the block.
-   *
    * @return {@code true} if one or more bytes has been written to the block, otherwise {@code false}
    */
   boolean isEmpty() {
@@ -293,7 +289,6 @@ final class Bzip2BlockCompressor {
 
   /**
    * Gets the CRC of the completed block. Only valid after calling {@link #close(ByteBuf)}.
-   *
    * @return The block's CRC
    */
   int crc() {

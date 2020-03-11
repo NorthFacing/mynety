@@ -67,8 +67,8 @@ public class XmlEntityReference {
   @Override
   public String toString() {
     return "XmlEntityReference{" +
-        "name='" + name + '\'' +
-        ", text='" + text + '\'' +
-        '}';
+      "name='" + name + '\'' +
+      ", text='" + text + '\'' +
+      '}';
   }
 }

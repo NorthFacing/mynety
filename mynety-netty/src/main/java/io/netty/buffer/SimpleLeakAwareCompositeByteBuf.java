@@ -120,7 +120,7 @@ class SimpleLeakAwareCompositeByteBuf extends WrappedCompositeByteBuf {
   }
 
   protected SimpleLeakAwareByteBuf newLeakAwareByteBuf(
-      ByteBuf wrapped, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
+    ByteBuf wrapped, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
     return new SimpleLeakAwareByteBuf(wrapped, trackedByteBuf, leakTracker);
   }
 }

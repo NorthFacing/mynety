@@ -49,7 +49,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Set the content from the ChannelBuffer (erase any previous data)
-   *
    * @param buffer must be not null
    * @throws IOException
    */
@@ -57,7 +56,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Add the content from the ChannelBuffer
-   *
    * @param buffer must be not null except if last is set to False
    * @param last   True of the buffer is the last one
    * @throws IOException
@@ -66,7 +64,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Set the content from the file (erase any previous data)
-   *
    * @param file must be not null
    * @throws IOException
    */
@@ -74,7 +71,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Set the content from the inputStream (erase any previous data)
-   *
    * @param inputStream must be not null
    * @throws IOException
    */
@@ -87,7 +83,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Returns the size in byte of the InterfaceHttpData
-   *
    * @return the size of the InterfaceHttpData
    */
   long length();
@@ -103,7 +98,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
    * <p>
    * This method could be used for instance to know the amount of bytes transmitted for
    * one particular HttpData, for example one {@link FileUpload} or any known big {@link Attribute}.
-   *
    * @return the defined length of the HttpData
    */
   long definedLength();
@@ -116,7 +110,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Returns the contents of the file item as an array of bytes.
-   *
    * @return the contents of the file item as an array of bytes.
    * @throws IOException
    */
@@ -124,7 +117,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Returns the content of the file item as a ByteBuf
-   *
    * @return the content of the file item as a ByteBuf
    * @throws IOException
    */
@@ -135,7 +127,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
    * most length read bytes, increasing the current position of the Bytes
    * read. Once it arrives at the end, it returns an EMPTY_BUFFER and it
    * resets the current position to 0.
-   *
    * @return a ChannelBuffer for the content from the current position or an
    * EMPTY_BUFFER if there is no more data to return
    */
@@ -144,7 +135,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
   /**
    * Returns the contents of the file item as a String, using the default
    * character encoding.
-   *
    * @return the contents of the file item as a String, using the default
    * character encoding.
    * @throws IOException
@@ -154,7 +144,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
   /**
    * Returns the contents of the file item as a String, using the specified
    * charset.
-   *
    * @param encoding the charset to use
    * @return the contents of the file item as a String, using the specified
    * charset.
@@ -164,14 +153,12 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
 
   /**
    * Set the Charset passed by the browser if defined
-   *
    * @param charset Charset to set - must be not null
    */
   void setCharset(Charset charset);
 
   /**
    * Returns the Charset passed by the browser or null if not defined.
-   *
    * @return the Charset passed by the browser or null if not defined.
    */
   Charset getCharset();
@@ -181,7 +168,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
    * exists, it will be deleted. Once this getMethod is called, if successful,
    * the new file will be out of the cleaner of the factory that creates the
    * original InterfaceHttpData object.
-   *
    * @param dest destination file - must be not null
    * @return True if the write is successful
    * @throws IOException
@@ -191,7 +177,6 @@ public interface HttpData extends InterfaceHttpData, ByteBufHolder {
   /**
    * Provides a hint as to whether or not the file contents will be read from
    * memory.
-   *
    * @return True if the file contents is in memory.
    */
   boolean isInMemory();

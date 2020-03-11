@@ -22,7 +22,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
 /**
  * OpenSSL {@link ApplicationProtocolNegotiator} for NPN.
- *
  * @deprecated use {@link ApplicationProtocolConfig}
  */
 @Deprecated

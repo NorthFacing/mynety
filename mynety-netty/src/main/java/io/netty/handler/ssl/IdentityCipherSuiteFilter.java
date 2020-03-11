@@ -33,7 +33,7 @@ public final class IdentityCipherSuiteFilter implements CipherSuiteFilter {
    * Defaults to supported ciphers when provided ciphers are null
    */
   public static final IdentityCipherSuiteFilter INSTANCE_DEFAULTING_TO_SUPPORTED_CIPHERS =
-      new IdentityCipherSuiteFilter(false);
+    new IdentityCipherSuiteFilter(false);
 
   private final boolean defaultToDefaultCiphers;
 
@@ -46,8 +46,8 @@ public final class IdentityCipherSuiteFilter implements CipherSuiteFilter {
                                      Set<String> supportedCiphers) {
     if (ciphers == null) {
       return defaultToDefaultCiphers ?
-          defaultCiphers.toArray(new String[0]) :
-          supportedCiphers.toArray(new String[0]);
+        defaultCiphers.toArray(new String[0]) :
+        supportedCiphers.toArray(new String[0]);
     } else {
       List<String> newCiphers = new ArrayList<String>(supportedCiphers.size());
       for (String c : ciphers) {

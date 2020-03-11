@@ -18,7 +18,11 @@ package io.netty.channel.udt.nio;
 import com.barchart.udt.TypeUDT;
 import com.barchart.udt.nio.SocketChannelUDT;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.FileRegion;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.nio.AbstractNioByteChannel;
 import io.netty.channel.udt.DefaultUdtChannelConfig;
 import io.netty.channel.udt.UdtChannel;
@@ -38,14 +42,13 @@ import static java.nio.channels.SelectionKey.OP_CONNECT;
 
 /**
  * Byte Channel Connector for UDT Streams.
- *
  * @deprecated The UDT transport is no longer maintained and will be removed.
  */
 @Deprecated
 public class NioUdtByteConnectorChannel extends AbstractNioByteChannel implements UdtChannel {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(NioUdtByteConnectorChannel.class);
+    InternalLoggerFactory.getInstance(NioUdtByteConnectorChannel.class);
 
   private final UdtChannelConfig config;
 
@@ -110,7 +113,7 @@ public class NioUdtByteConnectorChannel extends AbstractNioByteChannel implement
       final boolean connected = SocketUtils.connect(javaChannel(), remoteAddress);
       if (!connected) {
         selectionKey().interestOps(
-            selectionKey().interestOps() | OP_CONNECT);
+          selectionKey().interestOps() | OP_CONNECT);
       }
       success = true;
       return connected;
@@ -130,10 +133,10 @@ public class NioUdtByteConnectorChannel extends AbstractNioByteChannel implement
   protected void doFinishConnect() throws Exception {
     if (javaChannel().finishConnect()) {
       selectionKey().interestOps(
-          selectionKey().interestOps() & ~OP_CONNECT);
+        selectionKey().interestOps() & ~OP_CONNECT);
     } else {
       throw new Error(
-          "Provider error: failed to finish connect. Provider library should be upgraded.");
+        "Provider error: failed to finish connect. Provider library should be upgraded.");
     }
   }
 
@@ -192,7 +195,7 @@ public class NioUdtByteConnectorChannel extends AbstractNioByteChannel implement
   }
 
   private static void privilegedBind(final SocketChannelUDT socketChannel, final SocketAddress localAddress)
-      throws IOException {
+    throws IOException {
     try {
       AccessController.doPrivileged(new PrivilegedExceptionAction<Void>() {
         @Override

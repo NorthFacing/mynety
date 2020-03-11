@@ -21,11 +21,32 @@ import io.netty.handler.codec.http2.Http2FrameReader.Configuration;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.UnstableApi;
 
-import static io.netty.handler.codec.http2.Http2CodecUtil.*;
-import static io.netty.handler.codec.http2.Http2Error.*;
+import static io.netty.handler.codec.http2.Http2CodecUtil.DEFAULT_MAX_FRAME_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.FRAME_HEADER_LENGTH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.INT_FIELD_LENGTH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.PING_FRAME_PAYLOAD_LENGTH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.PRIORITY_ENTRY_LENGTH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_INITIAL_WINDOW_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTINGS_MAX_FRAME_SIZE;
+import static io.netty.handler.codec.http2.Http2CodecUtil.SETTING_ENTRY_LENGTH;
+import static io.netty.handler.codec.http2.Http2CodecUtil.headerListSizeExceeded;
+import static io.netty.handler.codec.http2.Http2CodecUtil.isMaxFrameSizeValid;
+import static io.netty.handler.codec.http2.Http2CodecUtil.readUnsignedInt;
+import static io.netty.handler.codec.http2.Http2Error.FLOW_CONTROL_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.FRAME_SIZE_ERROR;
+import static io.netty.handler.codec.http2.Http2Error.PROTOCOL_ERROR;
 import static io.netty.handler.codec.http2.Http2Exception.connectionError;
 import static io.netty.handler.codec.http2.Http2Exception.streamError;
-import static io.netty.handler.codec.http2.Http2FrameTypes.*;
+import static io.netty.handler.codec.http2.Http2FrameTypes.CONTINUATION;
+import static io.netty.handler.codec.http2.Http2FrameTypes.DATA;
+import static io.netty.handler.codec.http2.Http2FrameTypes.GO_AWAY;
+import static io.netty.handler.codec.http2.Http2FrameTypes.HEADERS;
+import static io.netty.handler.codec.http2.Http2FrameTypes.PING;
+import static io.netty.handler.codec.http2.Http2FrameTypes.PRIORITY;
+import static io.netty.handler.codec.http2.Http2FrameTypes.PUSH_PROMISE;
+import static io.netty.handler.codec.http2.Http2FrameTypes.RST_STREAM;
+import static io.netty.handler.codec.http2.Http2FrameTypes.SETTINGS;
+import static io.netty.handler.codec.http2.Http2FrameTypes.WINDOW_UPDATE;
 
 /**
  * A {@link Http2FrameReader} that supports all frame types defined by the HTTP/2 specification.
@@ -61,7 +82,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
   /**
    * Create a new instance.
-   *
    * @param validateHeaders {@code true} to validate headers. {@code false} to not validate headers.
    * @see DefaultHttp2HeadersDecoder(boolean)
    */
@@ -93,7 +113,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
   public void maxFrameSize(int max) throws Http2Exception {
     if (!isMaxFrameSizeValid(max)) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Invalid MAX_FRAME_SIZE specified in sent settings: %d", max);
+        "Invalid MAX_FRAME_SIZE specified in sent settings: %d", max);
     }
     maxFrameSize = max;
   }
@@ -117,7 +137,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
   @Override
   public void readFrame(ChannelHandlerContext ctx, ByteBuf input, Http2FrameListener listener)
-      throws Http2Exception {
+    throws Http2Exception {
     if (readError) {
       input.skipBytes(input.readableBytes());
       return;
@@ -165,7 +185,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
     payloadLength = in.readUnsignedMedium();
     if (payloadLength > maxFrameSize) {
       throw connectionError(FRAME_SIZE_ERROR, "Frame length: %d exceeds maximum: %d", payloadLength,
-          maxFrameSize);
+        maxFrameSize);
     }
     frameType = in.readByte();
     flags = new Http2Flags(in.readUnsignedByte());
@@ -213,7 +233,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
   }
 
   private void processPayloadState(ChannelHandlerContext ctx, ByteBuf in, Http2FrameListener listener)
-      throws Http2Exception {
+    throws Http2Exception {
     if (in.readableBytes() < payloadLength) {
       // Wait until the entire payload has been read.
       return;
@@ -271,7 +291,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     if (payloadLength < flags.getPaddingPresenceFieldLength()) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Frame length %d too small.", payloadLength);
+        "Frame length %d too small.", payloadLength);
     }
   }
 
@@ -283,7 +303,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
     int requiredLength = flags.getPaddingPresenceFieldLength() + flags.getNumPriorityBytes();
     if (payloadLength < requiredLength) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Frame length too small." + payloadLength);
+        "Frame length too small." + payloadLength);
     }
   }
 
@@ -293,7 +313,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     if (payloadLength != PRIORITY_ENTRY_LENGTH) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Invalid frame length %d.", payloadLength);
+        "Invalid frame length %d.", payloadLength);
     }
   }
 
@@ -329,7 +349,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
     int minLength = flags.getPaddingPresenceFieldLength() + INT_FIELD_LENGTH;
     if (payloadLength < minLength) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Frame length %d too small.", payloadLength);
+        "Frame length %d too small.", payloadLength);
     }
   }
 
@@ -340,7 +360,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
     }
     if (payloadLength != PING_FRAME_PAYLOAD_LENGTH) {
       throw connectionError(FRAME_SIZE_ERROR,
-          "Frame length %d incorrect size for ping.", payloadLength);
+        "Frame length %d incorrect size for ping.", payloadLength);
     }
   }
 
@@ -371,17 +391,17 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     if (headersContinuation == null) {
       throw connectionError(PROTOCOL_ERROR, "Received %s frame but not currently processing headers.",
-          frameType);
+        frameType);
     }
 
     if (streamId != headersContinuation.getStreamId()) {
       throw connectionError(PROTOCOL_ERROR, "Continuation stream ID does not match pending headers. "
-          + "Expected %d, but received %d.", headersContinuation.getStreamId(), streamId);
+        + "Expected %d, but received %d.", headersContinuation.getStreamId(), streamId);
     }
 
     if (payloadLength < flags.getPaddingPresenceFieldLength()) {
       throw streamError(streamId, FRAME_SIZE_ERROR,
-          "Frame length %d too small for padding.", payloadLength);
+        "Frame length %d too small for padding.", payloadLength);
     }
   }
 
@@ -435,7 +455,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
           hdrBlockBuilder.addFragment(fragment, len, ctx.alloc(), endOfHeaders);
           if (endOfHeaders) {
             listener.onHeadersRead(ctx, headersStreamId, hdrBlockBuilder.headers(), streamDependency,
-                weight, exclusive, padding, headersFlags.endOfStream());
+              weight, exclusive, padding, headersFlags.endOfStream());
           }
         }
       };
@@ -461,7 +481,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
         hdrBlockBuilder.addFragment(fragment, len, ctx.alloc(), endOfHeaders);
         if (endOfHeaders) {
           listener.onHeadersRead(ctx, headersStreamId, hdrBlockBuilder.headers(), padding,
-              headersFlags.endOfStream());
+            headersFlags.endOfStream());
         }
       }
     };
@@ -543,7 +563,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
         headersBlockBuilder().addFragment(fragment, len, ctx.alloc(), endOfHeaders);
         if (endOfHeaders) {
           listener.onPushPromiseRead(ctx, pushPromiseStreamId, promisedStreamId,
-              headersBlockBuilder().headers(), padding);
+            headersBlockBuilder().headers(), padding);
         }
       }
     };
@@ -576,16 +596,16 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
     int windowSizeIncrement = readUnsignedInt(payload);
     if (windowSizeIncrement == 0) {
       throw streamError(streamId, PROTOCOL_ERROR,
-          "Received WINDOW_UPDATE with delta 0 for stream: %d", streamId);
+        "Received WINDOW_UPDATE with delta 0 for stream: %d", streamId);
     }
     listener.onWindowUpdateRead(ctx, streamId, windowSizeIncrement);
   }
 
   private void readContinuationFrame(ByteBuf payload, int payloadEndIndex, Http2FrameListener listener)
-      throws Http2Exception {
+    throws Http2Exception {
     // Process the initial fragment, invoking the listener's callback if end of headers.
     headersContinuation.processFragment(flags.endOfHeaders(), payload,
-        payloadEndIndex - payload.readerIndex(), listener);
+      payloadEndIndex - payload.readerIndex(), listener);
     resetHeadersContinuationIfEnd(flags.endOfHeaders());
   }
 
@@ -619,8 +639,8 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
    */
   private static int lengthWithoutTrailingPadding(int readableBytes, int padding) {
     return padding == 0
-        ? readableBytes
-        : readableBytes - (padding - 1);
+      ? readableBytes
+      : readableBytes - (padding - 1);
   }
 
   /**
@@ -638,7 +658,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     /**
      * Processes the next fragment for the current header block.
-     *
      * @param endOfHeaders whether the fragment is the last in the header block.
      * @param fragment     the fragment of the header block to be added.
      * @param listener     the listener to be notified if the header block is completed.
@@ -667,7 +686,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     /**
      * The local header size maximum has been exceeded while accumulating bytes.
-     *
      * @throws Http2Exception A connection error indicating too much data has been received.
      */
     private void headerSizeExceeded() throws Http2Exception {
@@ -677,7 +695,6 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
     /**
      * Adds a fragment to the block.
-     *
      * @param fragment     the fragment of the headers block to be added.
      * @param alloc        allocator for new blocks if needed.
      * @param endOfHeaders flag indicating whether the current frame is the end of the headers.
@@ -700,7 +717,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
         return;
       }
       if (headersDecoder.configuration().maxHeaderListSizeGoAway() - len <
-          headerBlock.readableBytes()) {
+        headerBlock.readableBytes()) {
         headerSizeExceeded();
       }
       if (headerBlock.isWritable(len)) {
@@ -743,13 +760,12 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
 
   /**
    * Verify that current state is not processing on header block
-   *
    * @throws Http2Exception thrown if {@link #headersContinuation} is not null
    */
   private void verifyNotProcessingHeaders() throws Http2Exception {
     if (headersContinuation != null) {
       throw connectionError(PROTOCOL_ERROR, "Received frame of type %s while processing headers on stream %d.",
-          frameType, headersContinuation.getStreamId());
+        frameType, headersContinuation.getStreamId());
     }
   }
 
@@ -766,7 +782,7 @@ public class DefaultHttp2FrameReader implements Http2FrameReader, Http2FrameSize
   }
 
   private static void verifyStreamOrConnectionId(int streamId, String argumentName)
-      throws Http2Exception {
+    throws Http2Exception {
     if (streamId < 0) {
       throw connectionError(PROTOCOL_ERROR, "%s must be >= 0", argumentName);
     }

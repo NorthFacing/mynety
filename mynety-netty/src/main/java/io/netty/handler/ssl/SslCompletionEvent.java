@@ -48,6 +48,6 @@ public abstract class SslCompletionEvent {
   public String toString() {
     final Throwable cause = cause();
     return cause == null ? getClass().getSimpleName() + "(SUCCESS)" :
-        getClass().getSimpleName() + '(' + cause + ')';
+      getClass().getSimpleName() + '(' + cause + ')';
   }
 }

@@ -26,9 +26,9 @@ import io.netty.util.IllegalReferenceCountException;
 public class MqttPublishMessage extends MqttMessage implements ByteBufHolder {
 
   public MqttPublishMessage(
-      MqttFixedHeader mqttFixedHeader,
-      MqttPublishVariableHeader variableHeader,
-      ByteBuf payload) {
+    MqttFixedHeader mqttFixedHeader,
+    MqttPublishVariableHeader variableHeader,
+    ByteBuf payload) {
     super(mqttFixedHeader, variableHeader, payload);
   }
 

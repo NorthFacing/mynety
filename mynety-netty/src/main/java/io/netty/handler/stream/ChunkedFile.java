@@ -48,7 +48,6 @@ public class ChunkedFile implements ChunkedInput<ByteBuf> {
 
   /**
    * Creates a new instance that fetches data from the specified file.
-   *
    * @param chunkSize the number of bytes to fetch on each
    *                  {@link #readChunk(ChannelHandlerContext)} call
    */
@@ -65,7 +64,6 @@ public class ChunkedFile implements ChunkedInput<ByteBuf> {
 
   /**
    * Creates a new instance that fetches data from the specified file.
-   *
    * @param chunkSize the number of bytes to fetch on each
    *                  {@link #readChunk(ChannelHandlerContext)} call
    */
@@ -75,7 +73,6 @@ public class ChunkedFile implements ChunkedInput<ByteBuf> {
 
   /**
    * Creates a new instance that fetches data from the specified file.
-   *
    * @param offset    the offset of the file where the transfer begins
    * @param length    the number of bytes to transfer
    * @param chunkSize the number of bytes to fetch on each
@@ -87,16 +84,16 @@ public class ChunkedFile implements ChunkedInput<ByteBuf> {
     }
     if (offset < 0) {
       throw new IllegalArgumentException(
-          "offset: " + offset + " (expected: 0 or greater)");
+        "offset: " + offset + " (expected: 0 or greater)");
     }
     if (length < 0) {
       throw new IllegalArgumentException(
-          "length: " + length + " (expected: 0 or greater)");
+        "length: " + length + " (expected: 0 or greater)");
     }
     if (chunkSize <= 0) {
       throw new IllegalArgumentException(
-          "chunkSize: " + chunkSize +
-              " (expected: a positive integer)");
+        "chunkSize: " + chunkSize +
+          " (expected: a positive integer)");
     }
 
     this.file = file;

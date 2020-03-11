@@ -15,7 +15,11 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.CoalescingBufferQueue;
 import io.netty.handler.codec.http.HttpStatusClass;
 import io.netty.handler.codec.http2.Http2CodecUtil.SimpleChannelPromiseAggregator;
 import io.netty.util.internal.UnstableApi;
@@ -83,7 +87,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
     if (pushEnabled != null) {
       if (!connection.isServer() && pushEnabled) {
         throw connectionError(PROTOCOL_ERROR,
-            "Client received a value of ENABLE_PUSH specified to other than 0");
+          "Client received a value of ENABLE_PUSH specified to other than 0");
       }
       connection.remote().allowPushTo(pushEnabled);
     }
@@ -137,7 +141,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
 
     // Hand control of the frame to the flow controller.
     flowController().addFlowControlled(stream,
-        new FlowControlledData(stream, data, padding, endOfStream, promise));
+      new FlowControlledData(stream, data, padding, endOfStream, promise));
     return promise;
   }
 
@@ -188,7 +192,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
             break;
           default:
             throw new IllegalStateException("Stream " + stream.id() + " in unexpected state " +
-                stream.state());
+              stream.state());
         }
       }
 
@@ -202,7 +206,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
         boolean isInformational = validateHeadersSentState(stream, headers, connection.isServer(), endOfStream);
 
         ChannelFuture future = frameWriter.writeHeaders(ctx, streamId, headers, streamDependency,
-            weight, exclusive, padding, endOfStream, promise);
+          weight, exclusive, padding, endOfStream, promise);
         // Writing headers may fail during the encode state if they violate HPACK limits.
         Throwable failureCause = future.cause();
         if (failureCause == null) {
@@ -232,8 +236,8 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
       } else {
         // Pass headers to the flow-controller so it can maintain their sequence relative to DATA frames.
         flowController.addFlowControlled(stream,
-            new FlowControlledHeaders(stream, headers, streamDependency, weight, exclusive, padding,
-                true, promise));
+          new FlowControlledHeaders(stream, headers, streamDependency, weight, exclusive, padding,
+            true, promise));
         return promise;
       }
     } catch (Throwable t) {
@@ -280,10 +284,10 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
     Http2Settings settings = outstandingRemoteSettingsQueue.poll();
     if (settings == null) {
       return promise.setFailure(new Http2Exception(INTERNAL_ERROR, "attempted to write a SETTINGS ACK with no " +
-          " pending SETTINGS"));
+        " pending SETTINGS"));
     }
     SimpleChannelPromiseAggregator aggregator = new SimpleChannelPromiseAggregator(promise, ctx.channel(),
-        ctx.executor());
+      ctx.executor());
     // Acknowledge receipt of the settings. We should do this before we process the settings to ensure our
     // remote peer applies these settings before any subsequent frames that we may send which depend upon
     // these new settings. See https://github.com/netty/netty/issues/6520.
@@ -321,7 +325,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
 
       promise = promise.unvoid();
       ChannelFuture future = frameWriter.writePushPromise(ctx, streamId, promisedStreamId, headers, padding,
-          promise);
+        promise);
       // Writing headers may fail during the encode state if they violate HPACK limits.
       Throwable failureCause = future.cause();
       if (failureCause == null) {
@@ -354,7 +358,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
   public ChannelFuture writeWindowUpdate(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement,
                                          ChannelPromise promise) {
     return promise.setFailure(new UnsupportedOperationException("Use the Http2[Inbound|Outbound]FlowController" +
-        " objects to control window sizes"));
+      " objects to control window sizes"));
   }
 
   @Override
@@ -477,14 +481,14 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
 
       // Write the frame(s).
       frameWriter().writeData(ctx, stream.id(), toWrite, writablePadding,
-          endOfStream && size() == 0, writePromise);
+        endOfStream && size() == 0, writePromise);
     }
 
     @Override
     public boolean merge(ChannelHandlerContext ctx, Http2RemoteFlowController.FlowControlled next) {
       FlowControlledData nextData;
       if (FlowControlledData.class != next.getClass() ||
-          MAX_VALUE - (nextData = (FlowControlledData) next).size() < size()) {
+        MAX_VALUE - (nextData = (FlowControlledData) next).size() < size()) {
         return false;
       }
       nextData.queue.copyTo(queue);
@@ -549,7 +553,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
       promise.addListener(this);
 
       ChannelFuture f = frameWriter.writeHeaders(ctx, stream.id(), headers, streamDependency, weight, exclusive,
-          padding, endOfStream, promise);
+        padding, endOfStream, promise);
       // Writing headers may fail during the encode state if they violate HPACK limits.
       Throwable failureCause = f.cause();
       if (failureCause == null) {
@@ -569,7 +573,7 @@ public class DefaultHttp2ConnectionEncoder implements Http2ConnectionEncoder, Ht
    * Common base type for payloads to deliver via flow-control.
    */
   public abstract class FlowControlledBase implements Http2RemoteFlowController.FlowControlled,
-      ChannelFutureListener {
+    ChannelFutureListener {
     protected final Http2Stream stream;
     protected ChannelPromise promise;
     protected boolean endOfStream;

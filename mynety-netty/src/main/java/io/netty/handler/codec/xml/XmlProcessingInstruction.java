@@ -67,9 +67,9 @@ public class XmlProcessingInstruction {
   @Override
   public String toString() {
     return "XmlProcessingInstruction{" +
-        "data='" + data + '\'' +
-        ", target='" + target + '\'' +
-        '}';
+      "data='" + data + '\'' +
+      ", target='" + target + '\'' +
+      '}';
   }
 
 }

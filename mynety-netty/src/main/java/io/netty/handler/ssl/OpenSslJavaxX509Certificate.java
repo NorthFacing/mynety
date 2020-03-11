@@ -20,7 +20,12 @@ import javax.security.cert.CertificateExpiredException;
 import javax.security.cert.CertificateNotYetValidException;
 import javax.security.cert.X509Certificate;
 import java.math.BigInteger;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Principal;
+import java.security.PublicKey;
+import java.security.SignatureException;
 import java.util.Date;
 
 final class OpenSslJavaxX509Certificate extends X509Certificate {
@@ -93,15 +98,15 @@ final class OpenSslJavaxX509Certificate extends X509Certificate {
 
   @Override
   public void verify(PublicKey key)
-      throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException,
-      SignatureException {
+    throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException,
+    SignatureException {
     unwrap().verify(key);
   }
 
   @Override
   public void verify(PublicKey key, String sigProvider)
-      throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException,
-      SignatureException {
+    throws CertificateException, NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException,
+    SignatureException {
     unwrap().verify(key, sigProvider);
   }
 

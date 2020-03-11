@@ -47,7 +47,6 @@ public interface Timeout {
    * Attempts to cancel the {@link TimerTask} associated with this handle.
    * If the task has been executed or cancelled already, it will return with
    * no side effect.
-   *
    * @return True if the cancellation completed successfully, otherwise false
    */
   boolean cancel();

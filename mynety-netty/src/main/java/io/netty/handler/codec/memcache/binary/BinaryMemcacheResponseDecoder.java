@@ -24,7 +24,7 @@ import io.netty.util.internal.UnstableApi;
  */
 @UnstableApi
 public class BinaryMemcacheResponseDecoder
-    extends AbstractBinaryMemcacheDecoder<BinaryMemcacheResponse> {
+  extends AbstractBinaryMemcacheDecoder<BinaryMemcacheResponse> {
 
   public BinaryMemcacheResponseDecoder() {
     this(DEFAULT_MAX_CHUNK_SIZE);

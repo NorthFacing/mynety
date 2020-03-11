@@ -42,7 +42,7 @@ public final class TelnetClient {
     final SslContext sslCtx;
     if (SSL) {
       sslCtx = SslContextBuilder.forClient()
-          .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
+        .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
     } else {
       sslCtx = null;
     }
@@ -51,8 +51,8 @@ public final class TelnetClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSocketChannel.class)
-          .handler(new TelnetClientInitializer(sslCtx));
+        .channel(NioSocketChannel.class)
+        .handler(new TelnetClientInitializer(sslCtx));
 
       // Start the connection attempt.
       Channel ch = b.connect(HOST, PORT).sync().channel();

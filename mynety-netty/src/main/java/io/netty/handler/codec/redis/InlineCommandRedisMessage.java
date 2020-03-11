@@ -25,7 +25,6 @@ public final class InlineCommandRedisMessage extends AbstractStringRedisMessage 
 
   /**
    * Creates a {@link InlineCommandRedisMessage} for the given {@code content}.
-   *
    * @param content the message content, must not be {@code null}.
    */
   public InlineCommandRedisMessage(String content) {

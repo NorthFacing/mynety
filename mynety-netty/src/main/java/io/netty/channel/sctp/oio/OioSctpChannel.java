@@ -20,9 +20,19 @@ import com.sun.nio.sctp.MessageInfo;
 import com.sun.nio.sctp.NotificationHandler;
 import com.sun.nio.sctp.SctpChannel;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.oio.AbstractOioMessageChannel;
-import io.netty.channel.sctp.*;
+import io.netty.channel.sctp.DefaultSctpChannelConfig;
+import io.netty.channel.sctp.SctpChannelConfig;
+import io.netty.channel.sctp.SctpMessage;
+import io.netty.channel.sctp.SctpNotificationHandler;
+import io.netty.channel.sctp.SctpServerChannel;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.logging.InternalLogger;
@@ -35,7 +45,11 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link io.netty.channel.sctp.SctpChannel} implementation which use blocking mode and allows to read / write
@@ -43,15 +57,14 @@ import java.util.*;
  * <p>
  * Be aware that not all operations systems support SCTP. Please refer to the documentation of your operation system,
  * to understand what you need to do to use it. Also this feature is only supported on Java 7+.
- *
  * @deprecated use {@link io.netty.channel.sctp.nio.NioSctpChannel}.
  */
 @Deprecated
 public class OioSctpChannel extends AbstractOioMessageChannel
-    implements io.netty.channel.sctp.SctpChannel {
+  implements io.netty.channel.sctp.SctpChannel {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(OioSctpChannel.class);
+    InternalLoggerFactory.getInstance(OioSctpChannel.class);
 
   private static final ChannelMetadata METADATA = new ChannelMetadata(false);
   private static final String EXPECTED_TYPE = " (expected: " + StringUtil.simpleClassName(SctpMessage.class) + ')';
@@ -82,7 +95,6 @@ public class OioSctpChannel extends AbstractOioMessageChannel
 
   /**
    * Create a new instance from the given {@link SctpChannel}.
-   *
    * @param ch the {@link SctpChannel} which is used by this instance
    */
   public OioSctpChannel(SctpChannel ch) {
@@ -91,7 +103,6 @@ public class OioSctpChannel extends AbstractOioMessageChannel
 
   /**
    * Create a new instance from the given {@link SctpChannel}.
-   *
    * @param parent the parent {@link Channel} which was used to create this instance. This can be null if the
    *               {@link} has no parent as it was created by your self.
    * @param ch     the {@link SctpChannel} which is used by this instance
@@ -190,7 +201,7 @@ public class OioSctpChannel extends AbstractOioMessageChannel
       data.flip();
       allocHandle.lastBytesRead(data.remaining());
       msgs.add(new SctpMessage(messageInfo,
-          buffer.writerIndex(buffer.writerIndex() + allocHandle.lastBytesRead())));
+        buffer.writerIndex(buffer.writerIndex() + allocHandle.lastBytesRead())));
       free = false;
       ++readMessages;
     } catch (Throwable cause) {
@@ -265,7 +276,7 @@ public class OioSctpChannel extends AbstractOioMessageChannel
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPE);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPE);
   }
 
   @Override

@@ -43,7 +43,7 @@ import java.util.Locale;
 public abstract class AbstractSniHandler<T> extends ByteToMessageDecoder implements ChannelOutboundHandler {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(AbstractSniHandler.class);
+    InternalLoggerFactory.getInstance(AbstractSniHandler.class);
 
   private boolean handshakeFailed;
   private boolean suppressRead;
@@ -71,7 +71,7 @@ public abstract class AbstractSniHandler<T> extends ByteToMessageDecoder impleme
             if (len == SslUtils.NOT_ENCRYPTED) {
               handshakeFailed = true;
               NotSslRecordException e = new NotSslRecordException(
-                  "not an SSL/TLS record: " + ByteBufUtil.hexDump(in));
+                "not an SSL/TLS record: " + ByteBufUtil.hexDump(in));
               in.skipBytes(in.readableBytes());
               ctx.fireUserEventTriggered(new SniCompletionEvent(e));
               SslUtils.handleHandshakeFailure(ctx, e, true);
@@ -90,7 +90,7 @@ public abstract class AbstractSniHandler<T> extends ByteToMessageDecoder impleme
             // SSLv3 or TLS
             if (majorVersion == 3) {
               final int packetLength = in.getUnsignedShort(readerIndex + 3) +
-                  SslUtils.SSL_RECORD_HEADER_LENGTH;
+                SslUtils.SSL_RECORD_HEADER_LENGTH;
 
               if (readableBytes < packetLength) {
                 // client hello incomplete; try again to decode once more data is ready.
@@ -167,7 +167,7 @@ public abstract class AbstractSniHandler<T> extends ByteToMessageDecoder impleme
                         }
 
                         final String hostname =
-                            in.toString(offset, serverNameLength, CharsetUtil.US_ASCII);
+                          in.toString(offset, serverNameLength, CharsetUtil.US_ASCII);
                         try {
                           select(ctx, hostname.toLowerCase(Locale.US));
                         } catch (Throwable t) {
@@ -249,14 +249,12 @@ public abstract class AbstractSniHandler<T> extends ByteToMessageDecoder impleme
   /**
    * Kicks off a lookup for the given SNI value and returns a {@link Future} which in turn will
    * notify the {@link #onLookupComplete(ChannelHandlerContext, String, Future)} on completion.
-   *
    * @see #onLookupComplete(ChannelHandlerContext, String, Future)
    */
   protected abstract Future<T> lookup(ChannelHandlerContext ctx, String hostname) throws Exception;
 
   /**
    * Called upon completion of the {@link #lookup(ChannelHandlerContext, String)} {@link Future}.
-   *
    * @see #lookup(ChannelHandlerContext, String)
    */
   protected abstract void onLookupComplete(ChannelHandlerContext ctx,

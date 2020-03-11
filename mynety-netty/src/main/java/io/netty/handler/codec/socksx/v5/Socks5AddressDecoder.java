@@ -23,7 +23,6 @@ import io.netty.util.NetUtil;
 
 /**
  * Decodes a SOCKS5 address field into its string representation.
- *
  * @see Socks5CommandRequestDecoder
  * @see Socks5CommandResponseDecoder
  */
@@ -62,7 +61,6 @@ public interface Socks5AddressDecoder {
 
   /**
    * Decodes a SOCKS5 address field into its string representation.
-   *
    * @param addrType the type of the address
    * @param in       the input buffer which contains the SOCKS5 address field at its reader index
    */

@@ -26,7 +26,19 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ConnectionPendingException;
 import java.nio.channels.NotYetConnectedException;
 
-import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.*;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoEAGAIN;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoEBADF;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoECONNRESET;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoEINPROGRESS;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoENOENT;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoENOTCONN;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoEPIPE;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errnoEWOULDBLOCK;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errorEALREADY;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errorECONNREFUSED;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errorEISCONN;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.errorENETUNREACH;
+import static io.netty.channel.unix.ErrorsStaticallyReferencedJniMethods.strError;
 
 /**
  * <strong>Internal usage only!</strong>
@@ -109,7 +121,7 @@ public final class Errors {
   }
 
   static void throwConnectException(String method, int err)
-      throws IOException {
+    throws IOException {
     if (err == ERROR_EALREADY_NEGATIVE) {
       throw new ConnectionPendingException();
     }

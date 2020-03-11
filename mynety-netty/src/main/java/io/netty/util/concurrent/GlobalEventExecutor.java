@@ -22,7 +22,12 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -40,7 +45,7 @@ public final class GlobalEventExecutor extends AbstractScheduledEventExecutor im
 
   final BlockingQueue<Runnable> taskQueue = new LinkedBlockingQueue<Runnable>();
   final ScheduledFutureTask<Void> quietPeriodTask = new ScheduledFutureTask<Void>(
-      this, Executors.<Void>callable(new Runnable() {
+    this, Executors.<Void>callable(new Runnable() {
     @Override
     public void run() {
       // NOOP
@@ -61,12 +66,11 @@ public final class GlobalEventExecutor extends AbstractScheduledEventExecutor im
   private GlobalEventExecutor() {
     scheduledTaskQueue().add(quietPeriodTask);
     threadFactory = ThreadExecutorMap.apply(new DefaultThreadFactory(
-        DefaultThreadFactory.toPoolName(getClass()), false, Thread.NORM_PRIORITY, null), this);
+      DefaultThreadFactory.toPoolName(getClass()), false, Thread.NORM_PRIORITY, null), this);
   }
 
   /**
    * Take the next {@link Runnable} from the task queue and so will block if no task is currently present.
-   *
    * @return {@code null} if the executor thread has been interrupted or waken up.
    */
   Runnable takeTask() {
@@ -183,7 +187,6 @@ public final class GlobalEventExecutor extends AbstractScheduledEventExecutor im
    * Because a new worker thread will be started again when a new task is submitted, this operation is only useful
    * when you want to ensure that the worker thread is terminated <strong>after</strong> your application is shut
    * down and there's no chance of submitting a new task afterwards.
-   *
    * @return {@code true} if and only if the worker thread has been terminated
    */
   public boolean awaitInactivity(long timeout, TimeUnit unit) throws InterruptedException {

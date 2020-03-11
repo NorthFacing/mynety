@@ -31,8 +31,8 @@ public final class WebSocketClientCompressionHandler extends WebSocketClientExte
 
   private WebSocketClientCompressionHandler() {
     super(new PerMessageDeflateClientExtensionHandshaker(),
-        new DeflateFrameClientExtensionHandshaker(false),
-        new DeflateFrameClientExtensionHandshaker(true));
+      new DeflateFrameClientExtensionHandshaker(false),
+      new DeflateFrameClientExtensionHandshaker(true));
   }
 
 }

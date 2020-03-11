@@ -23,7 +23,7 @@ import java.util.Map;
  * The default {@link SpdyHeadersFrame} implementation.
  */
 public class DefaultSpdyHeadersFrame extends DefaultSpdyStreamFrame
-    implements SpdyHeadersFrame {
+  implements SpdyHeadersFrame {
 
   private boolean invalid;
   private boolean truncated;
@@ -31,7 +31,6 @@ public class DefaultSpdyHeadersFrame extends DefaultSpdyStreamFrame
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    */
   public DefaultSpdyHeadersFrame(int streamId) {
@@ -40,7 +39,6 @@ public class DefaultSpdyHeadersFrame extends DefaultSpdyStreamFrame
 
   /**
    * Creates a new instance.
-   *
    * @param streamId the Stream-ID of this frame
    * @param validate validate the header names and values when adding them to the {@link SpdyHeaders}
    */
@@ -91,16 +89,16 @@ public class DefaultSpdyHeadersFrame extends DefaultSpdyStreamFrame
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append("(last: ")
-        .append(isLast())
-        .append(')')
-        .append(StringUtil.NEWLINE)
-        .append("--> Stream-ID = ")
-        .append(streamId())
-        .append(StringUtil.NEWLINE)
-        .append("--> Headers:")
-        .append(StringUtil.NEWLINE);
+      .append(StringUtil.simpleClassName(this))
+      .append("(last: ")
+      .append(isLast())
+      .append(')')
+      .append(StringUtil.NEWLINE)
+      .append("--> Stream-ID = ")
+      .append(streamId())
+      .append(StringUtil.NEWLINE)
+      .append("--> Headers:")
+      .append(StringUtil.NEWLINE);
     appendHeaders(buf);
 
     // Remove the last newline.

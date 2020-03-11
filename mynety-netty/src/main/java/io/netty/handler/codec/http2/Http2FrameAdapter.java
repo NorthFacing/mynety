@@ -38,7 +38,7 @@ public class Http2FrameAdapter implements Http2FrameListener {
   @Override
   public void onHeadersRead(ChannelHandlerContext ctx, int streamId, Http2Headers headers,
                             int streamDependency, short weight, boolean exclusive, int padding, boolean endStream)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override
@@ -48,7 +48,7 @@ public class Http2FrameAdapter implements Http2FrameListener {
 
   @Override
   public void onRstStreamRead(ChannelHandlerContext ctx, int streamId, long errorCode)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override
@@ -57,7 +57,7 @@ public class Http2FrameAdapter implements Http2FrameListener {
 
   @Override
   public void onSettingsRead(ChannelHandlerContext ctx, Http2Settings settings)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override
@@ -80,7 +80,7 @@ public class Http2FrameAdapter implements Http2FrameListener {
 
   @Override
   public void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-      throws Http2Exception {
+    throws Http2Exception {
   }
 
   @Override

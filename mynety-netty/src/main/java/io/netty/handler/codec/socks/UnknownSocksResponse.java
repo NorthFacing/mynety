@@ -19,7 +19,6 @@ import io.netty.buffer.ByteBuf;
 
 /**
  * An unknown socks response.
- *
  * @see SocksInitResponseDecoder
  * @see SocksAuthResponseDecoder
  * @see SocksCmdResponseDecoder

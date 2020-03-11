@@ -32,7 +32,6 @@ public interface HostsFileEntriesResolver {
 
   /**
    * Resolve the address of a hostname against the entries in a hosts file, depending on some address types.
-   *
    * @param inetHost             the hostname to resolve
    * @param resolvedAddressTypes the address types to resolve
    * @return the first matching address

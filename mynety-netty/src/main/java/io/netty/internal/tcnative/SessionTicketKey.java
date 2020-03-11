@@ -44,7 +44,6 @@ public final class SessionTicketKey {
 
   /**
    * Construct SessionTicketKey.
-   *
    * @param name    the name of the session ticket key
    * @param hmacKey the HMAC key of the session ticket key
    * @param aesKey  the AES key of the session ticket key
@@ -66,7 +65,6 @@ public final class SessionTicketKey {
 
   /**
    * Get name.
-   *
    * @return the name of the session ticket key
    */
   public byte[] getName() {
@@ -75,7 +73,6 @@ public final class SessionTicketKey {
 
   /**
    * Get HMAC key.
-   *
    * @return the HMAC key of the session ticket key
    */
   public byte[] getHmacKey() {
@@ -84,7 +81,6 @@ public final class SessionTicketKey {
 
   /**
    * Get AES Key.
-   *
    * @return the AES key of the session ticket key
    */
   public byte[] getAesKey() {

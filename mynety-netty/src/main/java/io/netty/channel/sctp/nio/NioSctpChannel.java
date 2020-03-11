@@ -21,9 +21,19 @@ import com.sun.nio.sctp.NotificationHandler;
 import com.sun.nio.sctp.SctpChannel;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.nio.AbstractNioMessageChannel;
-import io.netty.channel.sctp.*;
+import io.netty.channel.sctp.DefaultSctpChannelConfig;
+import io.netty.channel.sctp.SctpChannelConfig;
+import io.netty.channel.sctp.SctpMessage;
+import io.netty.channel.sctp.SctpNotificationHandler;
+import io.netty.channel.sctp.SctpServerChannel;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.logging.InternalLogger;
@@ -35,7 +45,12 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link io.netty.channel.sctp.SctpChannel} implementation which use non-blocking mode and allows to read /
@@ -77,7 +92,6 @@ public class NioSctpChannel extends AbstractNioMessageChannel implements io.nett
 
   /**
    * Create a new instance
-   *
    * @param parent      the {@link Channel} which is the parent of this {@link NioSctpChannel}
    *                    or {@code null}.
    * @param sctpChannel the underlying {@link SctpChannel}
@@ -94,7 +108,7 @@ public class NioSctpChannel extends AbstractNioMessageChannel implements io.nett
       } catch (IOException e2) {
         if (logger.isWarnEnabled()) {
           logger.warn(
-              "Failed to close a partially initialized sctp channel.", e2);
+            "Failed to close a partially initialized sctp channel.", e2);
         }
       }
 
@@ -262,7 +276,7 @@ public class NioSctpChannel extends AbstractNioMessageChannel implements io.nett
 
       allocHandle.lastBytesRead(data.position() - pos);
       buf.add(new SctpMessage(messageInfo,
-          buffer.writerIndex(buffer.writerIndex() + allocHandle.lastBytesRead())));
+        buffer.writerIndex(buffer.writerIndex() + allocHandle.lastBytesRead())));
       free = false;
       return 1;
     } catch (Throwable cause) {
@@ -315,12 +329,12 @@ public class NioSctpChannel extends AbstractNioMessageChannel implements io.nett
       }
 
       return new SctpMessage(m.protocolIdentifier(), m.streamIdentifier(), m.isUnordered(),
-          newDirectBuffer(m, buf));
+        newDirectBuffer(m, buf));
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) +
-            " (expected: " + StringUtil.simpleClassName(SctpMessage.class));
+      "unsupported message type: " + StringUtil.simpleClassName(msg) +
+        " (expected: " + StringUtil.simpleClassName(SctpMessage.class));
   }
 
   @Override

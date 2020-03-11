@@ -16,7 +16,11 @@
 package io.netty.channel.pool;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoop;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
@@ -35,7 +39,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  */
 public class SimpleChannelPool implements ChannelPool {
   private final AttributeKey<SimpleChannelPool> poolKey = AttributeKey.newInstance("channelPool." +
-      System.identityHashCode(this));
+    System.identityHashCode(this));
   private final Deque<Channel> deque = PlatformDependent.newConcurrentDeque();
   private final ChannelPoolHandler handler;
   private final ChannelHealthChecker healthCheck;
@@ -45,7 +49,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Creates a new instance using the {@link ChannelHealthChecker#ACTIVE}.
-   *
    * @param bootstrap the {@link Bootstrap} that is used for connections
    * @param handler   the {@link ChannelPoolHandler} that will be notified for the different pool actions
    */
@@ -55,7 +58,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap   the {@link Bootstrap} that is used for connections
    * @param handler     the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -67,7 +69,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap          the {@link Bootstrap} that is used for connections
    * @param handler            the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck        the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -82,7 +83,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Creates a new instance.
-   *
    * @param bootstrap          the {@link Bootstrap} that is used for connections
    * @param handler            the {@link ChannelPoolHandler} that will be notified for the different pool actions
    * @param healthCheck        the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is
@@ -110,7 +110,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Returns the {@link Bootstrap} this pool will use to open new connections.
-   *
    * @return the {@link Bootstrap} this pool will use to open new connections
    */
   protected Bootstrap bootstrap() {
@@ -119,7 +118,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Returns the {@link ChannelPoolHandler} that will be notified for the different pool actions.
-   *
    * @return the {@link ChannelPoolHandler} that will be notified for the different pool actions
    */
   protected ChannelPoolHandler handler() {
@@ -128,7 +126,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Returns the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is healthy.
-   *
    * @return the {@link ChannelHealthChecker} that will be used to check if a {@link Channel} is healthy
    */
   protected ChannelHealthChecker healthChecker() {
@@ -137,7 +134,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Indicates whether this pool will check the health of channels before offering them back into the pool.
-   *
    * @return {@code true} if this pool will check the health of channels before offering them back into the pool, or
    * {@code false} if channel health is only checked at acquisition time
    */
@@ -158,7 +154,6 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Tries to retrieve healthy channel from the pool if any or creates a new channel otherwise.
-   *
    * @param promise the promise to provide acquire result.
    * @return future for acquiring a channel.
    */
@@ -292,10 +287,10 @@ public class SimpleChannelPool implements ChannelPool {
     // Remove the POOL_KEY attribute from the Channel and check if it was acquired from this pool, if not fail.
     if (channel.attr(poolKey).getAndSet(null) != this) {
       closeAndFail(channel,
-          // Better include a stacktrace here as this is an user error.
-          new IllegalArgumentException(
-              "Channel " + channel + " was not acquired from this ChannelPool"),
-          promise);
+        // Better include a stacktrace here as this is an user error.
+        new IllegalArgumentException(
+          "Channel " + channel + " was not acquired from this ChannelPool"),
+        promise);
     } else {
       try {
         if (releaseHealthCheck) {
@@ -325,14 +320,13 @@ public class SimpleChannelPool implements ChannelPool {
 
   /**
    * Adds the channel back to the pool only if the channel is healthy.
-   *
    * @param channel the channel to put back to the pool
    * @param promise offer operation promise.
    * @param future  the future that contains information fif channel is healthy or not.
    * @throws Exception in case when failed to notify handler about release operation.
    */
   private void releaseAndOfferIfHealthy(Channel channel, Promise<Void> promise, Future<Boolean> future)
-      throws Exception {
+    throws Exception {
     if (future.getNow()) { //channel turns out to be healthy, offering and releasing it.
       releaseAndOffer(channel, promise);
     } else { //channel not healthy, just releasing it.

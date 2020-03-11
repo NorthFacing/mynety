@@ -41,7 +41,6 @@ public final class MacAddressUtil {
    * Obtains the best MAC address found on local network interfaces.
    * Generally speaking, an active network interface used on public
    * networks is better than a local network interface.
-   *
    * @return byte array containing a MAC. null if no MAC can be found.
    */
   public static byte[] bestAvailableMac() {
@@ -140,15 +139,14 @@ public final class MacAddressUtil {
       bestMacAddr = new byte[EUI64_MAC_ADDRESS_LENGTH];
       PlatformDependent.threadLocalRandom().nextBytes(bestMacAddr);
       logger.warn(
-          "Failed to find a usable hardware address from the network interfaces; using random bytes: {}",
-          formatAddress(bestMacAddr));
+        "Failed to find a usable hardware address from the network interfaces; using random bytes: {}",
+        formatAddress(bestMacAddr));
     }
     return bestMacAddr;
   }
 
   /**
    * Parse a EUI-48, MAC-48, or EUI-64 MAC address from a {@link String} and return it as a {@code byte[]}.
-   *
    * @param value The string representation of the MAC address.
    * @return The byte representation of the MAC address.
    */
@@ -177,7 +175,7 @@ public final class MacAddressUtil {
       machineId[i] = StringUtil.decodeHexByte(value, j);
       if (value.charAt(sIndex) != separator) {
         throw new IllegalArgumentException("expected separator '" + separator + " but got '" +
-            value.charAt(sIndex) + "' at index: " + sIndex);
+          value.charAt(sIndex) + "' at index: " + sIndex);
       }
     }
 

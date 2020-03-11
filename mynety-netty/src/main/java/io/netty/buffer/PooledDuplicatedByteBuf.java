@@ -329,38 +329,38 @@ final class PooledDuplicatedByteBuf extends AbstractPooledDerivedByteBuf {
 
   @Override
   public ByteBuf getBytes(int index, OutputStream out, int length)
-      throws IOException {
+    throws IOException {
     unwrap().getBytes(index, out, length);
     return this;
   }
 
   @Override
   public int getBytes(int index, GatheringByteChannel out, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().getBytes(index, out, length);
   }
 
   @Override
   public int getBytes(int index, FileChannel out, long position, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().getBytes(index, out, position, length);
   }
 
   @Override
   public int setBytes(int index, InputStream in, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().setBytes(index, in, length);
   }
 
   @Override
   public int setBytes(int index, ScatteringByteChannel in, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().setBytes(index, in, length);
   }
 
   @Override
   public int setBytes(int index, FileChannel in, long position, int length)
-      throws IOException {
+    throws IOException {
     return unwrap().setBytes(index, in, position, length);
   }
 

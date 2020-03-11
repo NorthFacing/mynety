@@ -27,7 +27,10 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
-import static io.netty.buffer.Unpooled.*;
+import static io.netty.buffer.Unpooled.EMPTY_BUFFER;
+import static io.netty.buffer.Unpooled.buffer;
+import static io.netty.buffer.Unpooled.compositeBuffer;
+import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 /**
  * Abstract Memory HttpData implementation
@@ -50,7 +53,7 @@ public abstract class AbstractMemoryHttpData extends AbstractHttpData {
     checkSize(localsize);
     if (definedSize > 0 && definedSize < localsize) {
       throw new IOException("Out of size: " + localsize + " > " +
-          definedSize);
+        definedSize);
     }
     if (byteBuf != null) {
       byteBuf.release();
@@ -88,13 +91,13 @@ public abstract class AbstractMemoryHttpData extends AbstractHttpData {
 
   @Override
   public void addContent(ByteBuf buffer, boolean last)
-      throws IOException {
+    throws IOException {
     if (buffer != null) {
       long localsize = buffer.readableBytes();
       checkSize(size + localsize);
       if (definedSize > 0 && definedSize < size + localsize) {
         throw new IOException("Out of size: " + (size + localsize) +
-            " > " + definedSize);
+          " > " + definedSize);
       }
       size += localsize;
       if (byteBuf == null) {
@@ -183,7 +186,6 @@ public abstract class AbstractMemoryHttpData extends AbstractHttpData {
   /**
    * Utility to go from a In Memory FileUpload
    * to a Disk (or another implementation) FileUpload
-   *
    * @return the attached ByteBuf containing the actual bytes
    */
   @Override

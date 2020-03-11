@@ -34,7 +34,7 @@ public final class DatagramSocketAddress extends InetSocketAddress {
   private final DatagramSocketAddress localAddress;
 
   DatagramSocketAddress(byte[] addr, int scopeId, int port, int receivedAmount, DatagramSocketAddress local)
-      throws UnknownHostException {
+    throws UnknownHostException {
     super(newAddress(addr, scopeId), port);
     this.receivedAmount = receivedAmount;
     localAddress = local;

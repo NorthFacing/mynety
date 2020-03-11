@@ -19,7 +19,6 @@ import io.netty.buffer.ByteBuf;
 
 /**
  * An socks init response.
- *
  * @see SocksInitRequest
  * @see SocksInitResponseDecoder
  */
@@ -36,7 +35,6 @@ public final class SocksInitResponse extends SocksResponse {
 
   /**
    * Returns the {@link SocksAuthScheme} of this {@link SocksInitResponse}
-   *
    * @return The {@link SocksAuthScheme} of this {@link SocksInitResponse}
    */
   public SocksAuthScheme authScheme() {

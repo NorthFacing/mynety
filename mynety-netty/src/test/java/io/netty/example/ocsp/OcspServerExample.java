@@ -80,9 +80,9 @@ public class OcspServerExample {
 
     // Step 3: Construct the OCSP request
     OCSPReq request = new OcspRequestBuilder()
-        .certificate(certificate)
-        .issuer(issuer)
-        .build();
+      .certificate(certificate)
+      .issuer(issuer)
+      .build();
 
     // Step 4: Do the request to the CA's OCSP responder
     OCSPResp response = OcspUtils.request(uri, request, 5L, TimeUnit.SECONDS);
@@ -125,14 +125,14 @@ public class OcspServerExample {
     }
 
     ReferenceCountedOpenSslContext context
-        = (ReferenceCountedOpenSslContext) SslContextBuilder.forServer(privateKey, keyCertChain)
-        .sslProvider(SslProvider.OPENSSL)
-        .enableOcsp(true)
-        .build();
+      = (ReferenceCountedOpenSslContext) SslContextBuilder.forServer(privateKey, keyCertChain)
+      .sslProvider(SslProvider.OPENSSL)
+      .enableOcsp(true)
+      .build();
 
     try {
       ServerBootstrap bootstrap = new ServerBootstrap()
-          .childHandler(newServerHandler(context, response));
+        .childHandler(newServerHandler(context, response));
 
       // so on and so forth...
     } finally {
@@ -149,7 +149,7 @@ public class OcspServerExample {
 
         if (response != null) {
           ReferenceCountedOpenSslEngine engine
-              = (ReferenceCountedOpenSslEngine) sslHandler.engine();
+            = (ReferenceCountedOpenSslEngine) sslHandler.engine();
 
           engine.setOcspResponse(response.getEncoded());
         }
@@ -183,7 +183,7 @@ public class OcspServerExample {
   private static X509Certificate[] parseCertificates(Reader reader) throws Exception {
 
     JcaX509CertificateConverter converter = new JcaX509CertificateConverter()
-        .setProvider(new BouncyCastleProvider());
+      .setProvider(new BouncyCastleProvider());
 
     List<X509Certificate> dst = new ArrayList<X509Certificate>();
 

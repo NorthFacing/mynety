@@ -19,7 +19,11 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +38,7 @@ public final class WebSocketExtensionUtil {
 
   static boolean isWebsocketUpgrade(HttpHeaders headers) {
     return headers.containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true) &&
-        headers.contains(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET, true);
+      headers.contains(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET, true);
   }
 
   public static List<WebSocketExtensionData> extractExtensions(String extensionHeader) {
@@ -69,7 +73,7 @@ public final class WebSocketExtensionUtil {
                                 Map<String, String> extensionParameters) {
 
     StringBuilder newHeaderValue = new StringBuilder(
-        currentHeaderValue != null ? currentHeaderValue.length() : extensionName.length() + 1);
+      currentHeaderValue != null ? currentHeaderValue.length() : extensionName.length() + 1);
     if (currentHeaderValue != null && !currentHeaderValue.trim().isEmpty()) {
       newHeaderValue.append(currentHeaderValue);
       newHeaderValue.append(EXTENSION_SEPARATOR);

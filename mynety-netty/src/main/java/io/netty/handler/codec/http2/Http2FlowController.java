@@ -27,7 +27,6 @@ public interface Http2FlowController {
    * <p>
    * This <strong>must</strong> be called to properly initialize the {@link Http2FlowController}.
    * Not calling this is considered a programming error.
-   *
    * @param ctx The {@link ChannelHandlerContext} for which to apply flow control on.
    * @throws Http2Exception if any protocol-related error occurred.
    */
@@ -40,7 +39,6 @@ public interface Http2FlowController {
    * Represents the value for
    * <a href="https://tools.ietf.org/html/rfc7540#section-6.5.2">SETTINGS_INITIAL_WINDOW_SIZE</a>. This method should
    * only be called by Netty (not users) as a result of a receiving a {@code SETTINGS} frame.
-   *
    * @param newWindowSize the new initial window size.
    * @throws Http2Exception thrown if any protocol-related error occurred.
    */
@@ -72,7 +70,6 @@ public interface Http2FlowController {
    * For a {@link Http2LocalFlowController} this can be called to request the expansion of the
    * window size published by this endpoint. It is up to the implementation, however, as to when a
    * {@code WINDOW_UPDATE} is actually sent.
-   *
    * @param stream The subject stream. Use {@link Http2Connection#connectionStream()} for
    *               requesting the size of the connection window.
    * @param delta  the change in size of the flow control window.

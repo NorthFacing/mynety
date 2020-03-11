@@ -17,7 +17,13 @@ package io.netty.channel.kqueue;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.AddressedEnvelope;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelMetadata;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.DefaultAddressedEnvelope;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramChannelConfig;
 import io.netty.channel.socket.DatagramPacket;
@@ -29,7 +35,12 @@ import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.UnstableApi;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.PortUnreachableException;
+import java.net.SocketAddress;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 import static io.netty.channel.kqueue.BsdSocket.newSocketDgram;
@@ -38,11 +49,11 @@ import static io.netty.channel.kqueue.BsdSocket.newSocketDgram;
 public final class KQueueDatagramChannel extends AbstractKQueueChannel implements DatagramChannel {
   private static final ChannelMetadata METADATA = new ChannelMetadata(true);
   private static final String EXPECTED_TYPES =
-      " (expected: " + StringUtil.simpleClassName(DatagramPacket.class) + ", " +
-          StringUtil.simpleClassName(AddressedEnvelope.class) + '<' +
-          StringUtil.simpleClassName(ByteBuf.class) + ", " +
-          StringUtil.simpleClassName(InetSocketAddress.class) + ">, " +
-          StringUtil.simpleClassName(ByteBuf.class) + ')';
+    " (expected: " + StringUtil.simpleClassName(DatagramPacket.class) + ", " +
+      StringUtil.simpleClassName(AddressedEnvelope.class) + '<' +
+      StringUtil.simpleClassName(ByteBuf.class) + ", " +
+      StringUtil.simpleClassName(InetSocketAddress.class) + ">, " +
+      StringUtil.simpleClassName(ByteBuf.class) + ')';
 
   private volatile boolean connected;
   private final KQueueDatagramChannelConfig config;
@@ -96,9 +107,9 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
   public ChannelFuture joinGroup(InetAddress multicastAddress, ChannelPromise promise) {
     try {
       return joinGroup(
-          multicastAddress,
-          NetworkInterface.getByInetAddress(localAddress().getAddress()),
-          null, promise);
+        multicastAddress,
+        NetworkInterface.getByInetAddress(localAddress().getAddress()),
+        null, promise);
     } catch (SocketException e) {
       promise.setFailure(e);
     }
@@ -107,27 +118,27 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
 
   @Override
   public ChannelFuture joinGroup(
-      InetSocketAddress multicastAddress, NetworkInterface networkInterface) {
+    InetSocketAddress multicastAddress, NetworkInterface networkInterface) {
     return joinGroup(multicastAddress, networkInterface, newPromise());
   }
 
   @Override
   public ChannelFuture joinGroup(
-      InetSocketAddress multicastAddress, NetworkInterface networkInterface,
-      ChannelPromise promise) {
+    InetSocketAddress multicastAddress, NetworkInterface networkInterface,
+    ChannelPromise promise) {
     return joinGroup(multicastAddress.getAddress(), networkInterface, null, promise);
   }
 
   @Override
   public ChannelFuture joinGroup(
-      InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source) {
+    InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source) {
     return joinGroup(multicastAddress, networkInterface, source, newPromise());
   }
 
   @Override
   public ChannelFuture joinGroup(
-      final InetAddress multicastAddress, final NetworkInterface networkInterface,
-      final InetAddress source, final ChannelPromise promise) {
+    final InetAddress multicastAddress, final NetworkInterface networkInterface,
+    final InetAddress source, final ChannelPromise promise) {
 
     if (multicastAddress == null) {
       throw new NullPointerException("multicastAddress");
@@ -150,7 +161,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
   public ChannelFuture leaveGroup(InetAddress multicastAddress, ChannelPromise promise) {
     try {
       return leaveGroup(
-          multicastAddress, NetworkInterface.getByInetAddress(localAddress().getAddress()), null, promise);
+        multicastAddress, NetworkInterface.getByInetAddress(localAddress().getAddress()), null, promise);
     } catch (SocketException e) {
       promise.setFailure(e);
     }
@@ -159,27 +170,27 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
 
   @Override
   public ChannelFuture leaveGroup(
-      InetSocketAddress multicastAddress, NetworkInterface networkInterface) {
+    InetSocketAddress multicastAddress, NetworkInterface networkInterface) {
     return leaveGroup(multicastAddress, networkInterface, newPromise());
   }
 
   @Override
   public ChannelFuture leaveGroup(
-      InetSocketAddress multicastAddress,
-      NetworkInterface networkInterface, ChannelPromise promise) {
+    InetSocketAddress multicastAddress,
+    NetworkInterface networkInterface, ChannelPromise promise) {
     return leaveGroup(multicastAddress.getAddress(), networkInterface, null, promise);
   }
 
   @Override
   public ChannelFuture leaveGroup(
-      InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source) {
+    InetAddress multicastAddress, NetworkInterface networkInterface, InetAddress source) {
     return leaveGroup(multicastAddress, networkInterface, source, newPromise());
   }
 
   @Override
   public ChannelFuture leaveGroup(
-      final InetAddress multicastAddress, final NetworkInterface networkInterface, final InetAddress source,
-      final ChannelPromise promise) {
+    final InetAddress multicastAddress, final NetworkInterface networkInterface, final InetAddress source,
+    final ChannelPromise promise) {
     if (multicastAddress == null) {
       throw new NullPointerException("multicastAddress");
     }
@@ -194,15 +205,15 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
 
   @Override
   public ChannelFuture block(
-      InetAddress multicastAddress, NetworkInterface networkInterface,
-      InetAddress sourceToBlock) {
+    InetAddress multicastAddress, NetworkInterface networkInterface,
+    InetAddress sourceToBlock) {
     return block(multicastAddress, networkInterface, sourceToBlock, newPromise());
   }
 
   @Override
   public ChannelFuture block(
-      final InetAddress multicastAddress, final NetworkInterface networkInterface,
-      final InetAddress sourceToBlock, final ChannelPromise promise) {
+    final InetAddress multicastAddress, final NetworkInterface networkInterface,
+    final InetAddress sourceToBlock, final ChannelPromise promise) {
     if (multicastAddress == null) {
       throw new NullPointerException("multicastAddress");
     }
@@ -224,12 +235,12 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
 
   @Override
   public ChannelFuture block(
-      InetAddress multicastAddress, InetAddress sourceToBlock, ChannelPromise promise) {
+    InetAddress multicastAddress, InetAddress sourceToBlock, ChannelPromise promise) {
     try {
       return block(
-          multicastAddress,
-          NetworkInterface.getByInetAddress(localAddress().getAddress()),
-          sourceToBlock, promise);
+        multicastAddress,
+        NetworkInterface.getByInetAddress(localAddress().getAddress()),
+        sourceToBlock, promise);
     } catch (Throwable e) {
       promise.setFailure(e);
     }
@@ -288,7 +299,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
     if (msg instanceof AddressedEnvelope) {
       @SuppressWarnings("unchecked")
       AddressedEnvelope<ByteBuf, InetSocketAddress> envelope =
-          (AddressedEnvelope<ByteBuf, InetSocketAddress>) msg;
+        (AddressedEnvelope<ByteBuf, InetSocketAddress>) msg;
       data = envelope.content();
       remoteAddress = envelope.recipient();
     } else {
@@ -308,7 +319,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
         writtenBytes = socket.writeAddress(memoryAddress, data.readerIndex(), data.writerIndex());
       } else {
         writtenBytes = socket.sendToAddress(memoryAddress, data.readerIndex(), data.writerIndex(),
-            remoteAddress.getAddress(), remoteAddress.getPort());
+          remoteAddress.getAddress(), remoteAddress.getPort());
       }
     } else if (data.nioBufferCount() > 1) {
       IovArray array = ((KQueueEventLoop) eventLoop()).cleanArray();
@@ -320,7 +331,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
         writtenBytes = socket.writevAddresses(array.memoryAddress(0), cnt);
       } else {
         writtenBytes = socket.sendToAddresses(array.memoryAddress(0), cnt,
-            remoteAddress.getAddress(), remoteAddress.getPort());
+          remoteAddress.getAddress(), remoteAddress.getPort());
       }
     } else {
       ByteBuffer nioData = data.internalNioBuffer(data.readerIndex(), data.readableBytes());
@@ -328,7 +339,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
         writtenBytes = socket.write(nioData, nioData.position(), nioData.limit());
       } else {
         writtenBytes = socket.sendTo(nioData, nioData.position(), nioData.limit(),
-            remoteAddress.getAddress(), remoteAddress.getPort());
+          remoteAddress.getAddress(), remoteAddress.getPort());
       }
     }
 
@@ -341,7 +352,7 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
       DatagramPacket packet = (DatagramPacket) msg;
       ByteBuf content = packet.content();
       return UnixChannelUtil.isBufferCopyNeededForWrite(content) ?
-          new DatagramPacket(newDirectBuffer(packet, content), packet.recipient()) : msg;
+        new DatagramPacket(newDirectBuffer(packet, content), packet.recipient()) : msg;
     }
 
     if (msg instanceof ByteBuf) {
@@ -353,17 +364,17 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
       @SuppressWarnings("unchecked")
       AddressedEnvelope<Object, SocketAddress> e = (AddressedEnvelope<Object, SocketAddress>) msg;
       if (e.content() instanceof ByteBuf &&
-          (e.recipient() == null || e.recipient() instanceof InetSocketAddress)) {
+        (e.recipient() == null || e.recipient() instanceof InetSocketAddress)) {
 
         ByteBuf content = (ByteBuf) e.content();
         return UnixChannelUtil.isBufferCopyNeededForWrite(content) ?
-            new DefaultAddressedEnvelope<ByteBuf, InetSocketAddress>(
-                newDirectBuffer(e, content), (InetSocketAddress) e.recipient()) : e;
+          new DefaultAddressedEnvelope<ByteBuf, InetSocketAddress>(
+            newDirectBuffer(e, content), (InetSocketAddress) e.recipient()) : e;
       }
     }
 
     throw new UnsupportedOperationException(
-        "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
+      "unsupported message type: " + StringUtil.simpleClassName(msg) + EXPECTED_TYPES);
   }
 
   @Override
@@ -437,16 +448,16 @@ public final class KQueueDatagramChannel extends AbstractKQueueChannel implement
                 break;
               }
               packet = new DatagramPacket(byteBuf,
-                  (InetSocketAddress) localAddress(), (InetSocketAddress) remoteAddress());
+                (InetSocketAddress) localAddress(), (InetSocketAddress) remoteAddress());
             } else {
               final DatagramSocketAddress remoteAddress;
               if (byteBuf.hasMemoryAddress()) {
                 // has a memory address so use optimized call
                 remoteAddress = socket.recvFromAddress(byteBuf.memoryAddress(), byteBuf.writerIndex(),
-                    byteBuf.capacity());
+                  byteBuf.capacity());
               } else {
                 ByteBuffer nioData = byteBuf.internalNioBuffer(
-                    byteBuf.writerIndex(), byteBuf.writableBytes());
+                  byteBuf.writerIndex(), byteBuf.writableBytes());
                 remoteAddress = socket.recvFrom(nioData, nioData.position(), nioData.limit());
               }
 

@@ -20,7 +20,9 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.nio.CharBuffer;
 
-import static io.netty.handler.codec.http.cookie.CookieUtil.*;
+import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieNameOctet;
+import static io.netty.handler.codec.http.cookie.CookieUtil.firstInvalidCookieValueOctet;
+import static io.netty.handler.codec.http.cookie.CookieUtil.unwrapValue;
 
 /**
  * Parent of Client and Server side cookie decoders
@@ -50,7 +52,7 @@ public abstract class CookieDecoder {
     CharSequence unwrappedValue = unwrapValue(wrappedValue);
     if (unwrappedValue == null) {
       logger.debug("Skipping cookie because starting quotes are not properly balanced in '{}'",
-          wrappedValue);
+        wrappedValue);
       return null;
     }
 
@@ -60,7 +62,7 @@ public abstract class CookieDecoder {
     if (strict && (invalidOctetPos = firstInvalidCookieNameOctet(name)) >= 0) {
       if (logger.isDebugEnabled()) {
         logger.debug("Skipping cookie because name '{}' contains invalid char '{}'",
-            name, name.charAt(invalidOctetPos));
+          name, name.charAt(invalidOctetPos));
       }
       return null;
     }
@@ -70,7 +72,7 @@ public abstract class CookieDecoder {
     if (strict && (invalidOctetPos = firstInvalidCookieValueOctet(unwrappedValue)) >= 0) {
       if (logger.isDebugEnabled()) {
         logger.debug("Skipping cookie because value '{}' contains invalid char '{}'",
-            unwrappedValue, unwrappedValue.charAt(invalidOctetPos));
+          unwrappedValue, unwrappedValue.charAt(invalidOctetPos));
       }
       return null;
     }

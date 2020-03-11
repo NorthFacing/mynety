@@ -48,16 +48,16 @@ public final class SctpMultiHomingEchoClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioSctpChannel.class)
-          .option(SctpChannelOption.SCTP_NODELAY, true)
-          .handler(new ChannelInitializer<SctpChannel>() {
-            @Override
-            public void initChannel(SctpChannel ch) throws Exception {
-              ch.pipeline().addLast(
+        .channel(NioSctpChannel.class)
+        .option(SctpChannelOption.SCTP_NODELAY, true)
+        .handler(new ChannelInitializer<SctpChannel>() {
+          @Override
+          public void initChannel(SctpChannel ch) throws Exception {
+            ch.pipeline().addLast(
 //                             new LoggingHandler(LogLevel.INFO),
-                  new SctpEchoClientHandler());
-            }
-          });
+              new SctpEchoClientHandler());
+          }
+        });
 
       InetSocketAddress localAddress = SocketUtils.socketAddress(CLIENT_PRIMARY_HOST, CLIENT_PORT);
       InetAddress localSecondaryAddress = SocketUtils.addressByName(CLIENT_SECONDARY_HOST);

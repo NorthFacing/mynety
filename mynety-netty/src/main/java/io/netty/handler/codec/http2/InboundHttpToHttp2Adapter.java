@@ -37,7 +37,7 @@ public class InboundHttpToHttp2Adapter extends ChannelInboundHandlerAdapter {
 
   private static int getStreamId(Http2Connection connection, HttpHeaders httpHeaders) {
     return httpHeaders.getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(),
-        connection.remote().incrementAndGetNextStreamId());
+      connection.remote().incrementAndGetNextStreamId());
   }
 
   @Override
@@ -65,7 +65,7 @@ public class InboundHttpToHttp2Adapter extends ChannelInboundHandlerAdapter {
       boolean hasContent = message.content().isReadable();
       boolean hasTrailers = !message.trailingHeaders().isEmpty();
       listener.onHeadersRead(
-          ctx, streamId, messageHeaders, 0, !(hasContent || hasTrailers));
+        ctx, streamId, messageHeaders, 0, !(hasContent || hasTrailers));
       if (hasContent) {
         listener.onDataRead(ctx, streamId, message.content(), 0, !hasTrailers);
       }

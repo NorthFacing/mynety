@@ -109,7 +109,7 @@ final class KQueueEventArray {
     } catch (OutOfMemoryError e) {
       if (throwIfFail) {
         OutOfMemoryError error = new OutOfMemoryError(
-            "unable to allocate " + newLength + " new bytes! Existing capacity is: " + capacity);
+          "unable to allocate " + newLength + " new bytes! Existing capacity is: " + capacity);
         error.initCause(e);
         throw error;
       }

@@ -16,7 +16,13 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.UnstableApi;
 
@@ -71,7 +77,6 @@ import static io.netty.handler.codec.http2.Http2Exception.connectionError;
  * does not know about the connection-level flow control window. {@link ChannelHandler}s are free to ignore the
  * channel's writability, in which case the excessive writes will be buffered by the parent channel. It's important to
  * note that only {@link Http2DataFrame}s are subject to HTTP/2 flow control.
- *
  * @deprecated use {@link Http2FrameCodecBuilder} together with {@link Http2MultiplexHandler}.
  */
 @Deprecated
@@ -81,9 +86,9 @@ public class Http2MultiplexCodec extends Http2FrameCodec {
   private final ChannelHandler inboundStreamHandler;
   private final ChannelHandler upgradeStreamHandler;
   private final Queue<AbstractHttp2StreamChannel> readCompletePendingQueue =
-      new MaxCapacityQueue<AbstractHttp2StreamChannel>(new ArrayDeque<AbstractHttp2StreamChannel>(8),
-          // Choose 100 which is what is used most of the times as default.
-          Http2CodecUtil.SMALLEST_MAX_CONCURRENT_STREAMS);
+    new MaxCapacityQueue<AbstractHttp2StreamChannel>(new ArrayDeque<AbstractHttp2StreamChannel>(8),
+      // Choose 100 which is what is used most of the times as default.
+      Http2CodecUtil.SMALLEST_MAX_CONCURRENT_STREAMS);
 
   private boolean parentReadInProgress;
   private int idCount;
@@ -131,7 +136,7 @@ public class Http2MultiplexCodec extends Http2FrameCodec {
     if (frame instanceof Http2StreamFrame) {
       Http2StreamFrame streamFrame = (Http2StreamFrame) frame;
       AbstractHttp2StreamChannel channel = (AbstractHttp2StreamChannel)
-          ((DefaultHttp2FrameStream) streamFrame.stream()).attachment;
+        ((DefaultHttp2FrameStream) streamFrame.stream()).attachment;
       channel.fireChildRead(streamFrame);
       return;
     }
@@ -212,7 +217,7 @@ public class Http2MultiplexCodec extends Http2FrameCodec {
         public boolean visit(Http2FrameStream stream) {
           final int streamId = stream.id();
           AbstractHttp2StreamChannel channel = (AbstractHttp2StreamChannel)
-              ((DefaultHttp2FrameStream) stream).attachment;
+            ((DefaultHttp2FrameStream) stream).attachment;
           if (streamId > goAwayFrame.lastStreamId() && connection().local().isValidStreamId(streamId)) {
             channel.pipeline().fireUserEventTriggered(goAwayFrame.retainedDuplicate());
           }

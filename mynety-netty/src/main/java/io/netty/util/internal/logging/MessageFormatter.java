@@ -123,7 +123,6 @@ final class MessageFormatter {
    * <p/>
    * will return the string "Hi there.".
    * <p/>
-   *
    * @param messagePattern The message pattern which will be parsed and formatted
    * @param arg            The argument to be substituted in place of the formatting anchor
    * @return The formatted message
@@ -143,7 +142,6 @@ final class MessageFormatter {
    * </pre>
    * <p/>
    * will return the string "Hi Alice. My name is Bob.".
-   *
    * @param messagePattern The message pattern which will be parsed and formatted
    * @param argA           The argument to be substituted in place of the first formatting
    *                       anchor
@@ -160,7 +158,6 @@ final class MessageFormatter {
    * Same principle as the {@link #format(String, Object)} and
    * {@link #format(String, Object, Object)} methods except that any number of
    * arguments can be passed in an array.
-   *
    * @param messagePattern The message pattern which will be parsed and formatted
    * @param argArray       An array of arguments to be substituted in place of formatting
    *                       anchors
@@ -276,8 +273,8 @@ final class MessageFormatter {
       sbuf.append(oAsString);
     } catch (Throwable t) {
       System.err
-          .println("SLF4J: Failed toString() invocation on an object of type ["
-              + o.getClass().getName() + ']');
+        .println("SLF4J: Failed toString() invocation on an object of type ["
+          + o.getClass().getName() + ']');
       t.printStackTrace();
       sbuf.append("[FAILED toString()]");
     }

@@ -71,16 +71,16 @@ final class PooledDirectByteBuf extends PooledByteBuf<ByteBuffer> {
   protected int _getUnsignedMedium(int index) {
     index = idx(index);
     return (memory.get(index) & 0xff) << 16 |
-        (memory.get(index + 1) & 0xff) << 8 |
-        memory.get(index + 2) & 0xff;
+      (memory.get(index + 1) & 0xff) << 8 |
+      memory.get(index + 2) & 0xff;
   }
 
   @Override
   protected int _getUnsignedMediumLE(int index) {
     index = idx(index);
     return memory.get(index) & 0xff |
-        (memory.get(index + 1) & 0xff) << 8 |
-        (memory.get(index + 2) & 0xff) << 16;
+      (memory.get(index + 1) & 0xff) << 8 |
+      (memory.get(index + 2) & 0xff) << 16;
   }
 
   @Override

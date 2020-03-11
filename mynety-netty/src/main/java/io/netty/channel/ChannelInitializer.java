@@ -47,7 +47,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * ...
  * </pre>
  * Be aware that this class is marked as {@link Sharable} and so the implementation must be safe to be re-used.
- *
  * @param <C> A sub-type of {@link Channel}
  */
 @Sharable
@@ -57,12 +56,11 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
   // We use a Set as a ChannelInitializer is usually shared between all Channels in a Bootstrap /
   // ServerBootstrap. This way we can reduce the memory usage compared to use Attributes.
   private final Set<ChannelHandlerContext> initMap = Collections.newSetFromMap(
-      new ConcurrentHashMap<ChannelHandlerContext, Boolean>());
+    new ConcurrentHashMap<ChannelHandlerContext, Boolean>());
 
   /**
    * This method will be called once the {@link Channel} was registered. After the method returns this instance
    * will be removed from the {@link ChannelPipeline} of the {@link Channel}.
-   *
    * @param ch the {@link Channel} which was registered.
    * @throws Exception is thrown if an error occurs. In that case it will be handled by
    *                   {@link #exceptionCaught(ChannelHandlerContext, Throwable)} which will by default close

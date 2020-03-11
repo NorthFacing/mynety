@@ -45,7 +45,6 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
 
   /**
    * Create an association between an anticipated response stream id and a {@link io.netty.channel.ChannelPromise}
-   *
    * @param streamId    The stream for which a response is expected
    * @param writeFuture A future that represent the request write operation
    * @param promise     The promise object that will be used to wait/notify events
@@ -58,7 +57,6 @@ public class HttpResponseHandler extends SimpleChannelInboundHandler<FullHttpRes
 
   /**
    * Wait (sequentially) for a time duration for each anticipated response
-   *
    * @param timeout Value of time to wait for each response
    * @param unit    Units associated with {@code timeout}
    * @see HttpResponseHandler#put(int, io.netty.channel.ChannelFuture, io.netty.channel.ChannelPromise)

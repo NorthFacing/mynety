@@ -50,7 +50,6 @@ final class PseudoRandomFunction {
    * A() is defined as:
    * A(0) = seed
    * A(i) = HMAC_hash(secret, A(i-1))
-   *
    * @param secret The starting secret to use for expansion
    * @param label  An ascii string without a length byte or trailing null character.
    * @param seed   The seed of the hash

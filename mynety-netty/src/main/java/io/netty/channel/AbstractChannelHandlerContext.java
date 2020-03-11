@@ -16,17 +16,42 @@
 package io.netty.channel;
 
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.util.*;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
+import io.netty.util.Recycler;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ResourceLeakHint;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.OrderedEventExecutor;
-import io.netty.util.internal.*;
+import io.netty.util.internal.ObjectUtil;
+import io.netty.util.internal.PromiseNotificationUtil;
+import io.netty.util.internal.StringUtil;
+import io.netty.util.internal.SystemPropertyUtil;
+import io.netty.util.internal.ThrowableUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.net.SocketAddress;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
-import static io.netty.channel.ChannelHandlerMask.*;
+import static io.netty.channel.ChannelHandlerMask.MASK_BIND;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_ACTIVE;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_INACTIVE;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_READ;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_READ_COMPLETE;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_REGISTERED;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_UNREGISTERED;
+import static io.netty.channel.ChannelHandlerMask.MASK_CHANNEL_WRITABILITY_CHANGED;
+import static io.netty.channel.ChannelHandlerMask.MASK_CLOSE;
+import static io.netty.channel.ChannelHandlerMask.MASK_CONNECT;
+import static io.netty.channel.ChannelHandlerMask.MASK_DEREGISTER;
+import static io.netty.channel.ChannelHandlerMask.MASK_DISCONNECT;
+import static io.netty.channel.ChannelHandlerMask.MASK_EXCEPTION_CAUGHT;
+import static io.netty.channel.ChannelHandlerMask.MASK_FLUSH;
+import static io.netty.channel.ChannelHandlerMask.MASK_READ;
+import static io.netty.channel.ChannelHandlerMask.MASK_USER_EVENT_TRIGGERED;
+import static io.netty.channel.ChannelHandlerMask.MASK_WRITE;
+import static io.netty.channel.ChannelHandlerMask.mask;
 
 abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, ResourceLeakHint {
 
@@ -35,7 +60,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
   volatile AbstractChannelHandlerContext prev;
 
   private static final AtomicIntegerFieldUpdater<AbstractChannelHandlerContext> HANDLER_STATE_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(AbstractChannelHandlerContext.class, "handlerState");
+    AtomicIntegerFieldUpdater.newUpdater(AbstractChannelHandlerContext.class, "handlerState");
 
   /**
    * {@link ChannelHandler#handlerAdded(ChannelHandlerContext)} is about to be called.
@@ -273,15 +298,15 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
       } catch (Throwable error) {
         if (logger.isDebugEnabled()) {
           logger.debug(
-              "An exception {}" +
-                  "was thrown by a user handler's exceptionCaught() " +
-                  "method while handling the following exception:",
-              ThrowableUtil.stackTraceToString(error), cause);
+            "An exception {}" +
+              "was thrown by a user handler's exceptionCaught() " +
+              "method while handling the following exception:",
+            ThrowableUtil.stackTraceToString(error), cause);
         } else if (logger.isWarnEnabled()) {
           logger.warn(
-              "An exception '{}' [enable DEBUG level for full stacktrace] " +
-                  "was thrown by a user handler's exceptionCaught() " +
-                  "method while handling the following exception:", error, cause);
+            "An exception '{}' [enable DEBUG level for full stacktrace] " +
+              "was thrown by a user handler's exceptionCaught() " +
+              "method while handling the following exception:", error, cause);
         }
       }
     } else {
@@ -491,7 +516,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
 
   @Override
   public ChannelFuture connect(
-      final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
+    final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
 
     if (remoteAddress == null) {
       throw new NullPointerException("remoteAddress");
@@ -756,7 +781,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
     }
 
     final AbstractChannelHandlerContext next = findContextOutbound(flush ?
-        (MASK_WRITE | MASK_FLUSH) : MASK_WRITE);
+      (MASK_WRITE | MASK_FLUSH) : MASK_WRITE);
     final Object m = pipeline.touch(msg, next);
     EventExecutor executor = next.executor();
     if (executor.inEventLoop()) {
@@ -797,8 +822,8 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
     if (inExceptionCaught(cause)) {
       if (logger.isWarnEnabled()) {
         logger.warn(
-            "An exception was thrown by a user handler " +
-                "while handling an exceptionCaught event", cause);
+          "An exception was thrown by a user handler " +
+            "while handling an exceptionCaught event", cause);
       }
       return;
     }
@@ -868,7 +893,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
 
     if (promise.channel() != channel()) {
       throw new IllegalArgumentException(String.format(
-          "promise.channel does not match: %s (expected: %s)", promise.channel(), channel()));
+        "promise.channel does not match: %s (expected: %s)", promise.channel(), channel()));
     }
 
     if (promise.getClass() == DefaultChannelPromise.class) {
@@ -877,12 +902,12 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
 
     if (!allowVoidPromise && promise instanceof VoidChannelPromise) {
       throw new IllegalArgumentException(
-          StringUtil.simpleClassName(VoidChannelPromise.class) + " not allowed for this operation");
+        StringUtil.simpleClassName(VoidChannelPromise.class) + " not allowed for this operation");
     }
 
     if (promise instanceof AbstractChannel.CloseFuture) {
       throw new IllegalArgumentException(
-          StringUtil.simpleClassName(AbstractChannel.CloseFuture.class) + " not allowed in a pipeline");
+        StringUtil.simpleClassName(AbstractChannel.CloseFuture.class) + " not allowed in a pipeline");
     }
     return false;
   }
@@ -1010,11 +1035,11 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
   abstract static class AbstractWriteTask implements Runnable {
 
     private static final boolean ESTIMATE_TASK_SIZE_ON_SUBMIT =
-        SystemPropertyUtil.getBoolean("io.netty.transport.estimateSizeOnSubmit", true);
+      SystemPropertyUtil.getBoolean("io.netty.transport.estimateSizeOnSubmit", true);
 
     // Assuming a 64-bit JVM, 16 bytes object header, 3 reference fields and one int field, plus alignment
     private static final int WRITE_TASK_OVERHEAD =
-        SystemPropertyUtil.getInt("io.netty.transport.writeTaskSizeOverhead", 48);
+      SystemPropertyUtil.getInt("io.netty.transport.writeTaskSizeOverhead", 48);
 
     private final Recycler.Handle<AbstractWriteTask> handle;
     private AbstractChannelHandlerContext ctx;
@@ -1088,7 +1113,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
     };
 
     static WriteTask newInstance(
-        AbstractChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+      AbstractChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
       WriteTask task = RECYCLER.get();
       init(task, ctx, msg, promise);
       return task;
@@ -1109,7 +1134,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
     };
 
     static WriteAndFlushTask newInstance(
-        AbstractChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+      AbstractChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
       WriteAndFlushTask task = RECYCLER.get();
       init(task, ctx, msg, promise);
       return task;

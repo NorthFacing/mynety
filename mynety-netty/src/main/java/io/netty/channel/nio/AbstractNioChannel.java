@@ -19,8 +19,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.AbstractChannel;
 import io.netty.channel.Channel;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelPromise;
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.channel.EventLoop;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.logging.InternalLogger;
@@ -28,7 +34,11 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 
 import java.io.IOException;
 import java.net.SocketAddress;
-import java.nio.channels.*;
+import java.nio.channels.CancelledKeyException;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.ConnectionPendingException;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractNioChannel extends AbstractChannel {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(AbstractNioChannel.class);
+    InternalLoggerFactory.getInstance(AbstractNioChannel.class);
 
   private final SelectableChannel ch;
   protected final int readInterestOp;
@@ -61,7 +71,6 @@ public abstract class AbstractNioChannel extends AbstractChannel {
 
   /**
    * Create a new instance
-   *
    * @param parent         the parent {@link Channel} by which this instance was created. May be {@code null}
    * @param ch             the underlying {@link SelectableChannel} on which it operates
    * @param readInterestOp the ops to set to receive data from the {@link SelectableChannel}
@@ -77,7 +86,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
         ch.close();
       } catch (IOException e2) {
         logger.warn(
-            "Failed to close a partially initialized socket.", e2);
+          "Failed to close a partially initialized socket.", e2);
       }
 
       throw new ChannelException("Failed to enter non-blocking mode.", e);
@@ -223,7 +232,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
 
     @Override
     public final void connect(
-        final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
+      final SocketAddress remoteAddress, final SocketAddress localAddress, final ChannelPromise promise) {
       if (!promise.setUncancellable() || !ensureOpen(promise)) {
         return;
       }
@@ -249,7 +258,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
               public void run() {
                 ChannelPromise connectPromise = AbstractNioChannel.this.connectPromise;
                 ConnectTimeoutException cause =
-                    new ConnectTimeoutException("connection timed out: " + remoteAddress);
+                  new ConnectTimeoutException("connection timed out: " + remoteAddress);
                 if (connectPromise != null && connectPromise.tryFailure(cause)) {
                   close(voidPromise());
                 }

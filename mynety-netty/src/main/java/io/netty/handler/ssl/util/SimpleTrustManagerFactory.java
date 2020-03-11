@@ -20,7 +20,12 @@ import io.netty.util.concurrent.FastThreadLocal;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.SuppressJava6Requirement;
 
-import javax.net.ssl.*;
+import javax.net.ssl.ManagerFactoryParameters;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.TrustManagerFactorySpi;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -44,12 +49,12 @@ public abstract class SimpleTrustManagerFactory extends TrustManagerFactory {
    * To work around this issue, we use an ugly hack which uses a {@link ThreadLocal}.
    */
   private static final FastThreadLocal<SimpleTrustManagerFactorySpi> CURRENT_SPI =
-      new FastThreadLocal<SimpleTrustManagerFactorySpi>() {
-        @Override
-        protected SimpleTrustManagerFactorySpi initialValue() {
-          return new SimpleTrustManagerFactorySpi();
-        }
-      };
+    new FastThreadLocal<SimpleTrustManagerFactorySpi>() {
+      @Override
+      protected SimpleTrustManagerFactorySpi initialValue() {
+        return new SimpleTrustManagerFactorySpi();
+      }
+    };
 
   /**
    * Creates a new instance.
@@ -60,7 +65,6 @@ public abstract class SimpleTrustManagerFactory extends TrustManagerFactory {
 
   /**
    * Creates a new instance.
-   *
    * @param name the name of this {@link TrustManagerFactory}
    */
   protected SimpleTrustManagerFactory(String name) {
@@ -75,21 +79,18 @@ public abstract class SimpleTrustManagerFactory extends TrustManagerFactory {
 
   /**
    * Initializes this factory with a source of certificate authorities and related trust material.
-   *
    * @see TrustManagerFactorySpi#engineInit(KeyStore)
    */
   protected abstract void engineInit(KeyStore keyStore) throws Exception;
 
   /**
    * Initializes this factory with a source of provider-specific key material.
-   *
    * @see TrustManagerFactorySpi#engineInit(ManagerFactoryParameters)
    */
   protected abstract void engineInit(ManagerFactoryParameters managerFactoryParameters) throws Exception;
 
   /**
    * Returns one trust manager for each type of trust material.
-   *
    * @see TrustManagerFactorySpi#engineGetTrustManagers()
    */
   protected abstract TrustManager[] engineGetTrustManagers();
@@ -116,7 +117,7 @@ public abstract class SimpleTrustManagerFactory extends TrustManagerFactory {
 
     @Override
     protected void engineInit(
-        ManagerFactoryParameters managerFactoryParameters) throws InvalidAlgorithmParameterException {
+      ManagerFactoryParameters managerFactoryParameters) throws InvalidAlgorithmParameterException {
       try {
         parent.engineInit(managerFactoryParameters);
       } catch (InvalidAlgorithmParameterException e) {

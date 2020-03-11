@@ -84,45 +84,45 @@ public abstract class AbstractBootstrapConfig<B extends AbstractBootstrap<B, C>,
   @Override
   public String toString() {
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append('(');
+      .append(StringUtil.simpleClassName(this))
+      .append('(');
     EventLoopGroup group = group();
     if (group != null) {
       buf.append("group: ")
-          .append(StringUtil.simpleClassName(group))
-          .append(", ");
+        .append(StringUtil.simpleClassName(group))
+        .append(", ");
     }
     @SuppressWarnings("deprecation")
     ChannelFactory<? extends C> factory = channelFactory();
     if (factory != null) {
       buf.append("channelFactory: ")
-          .append(factory)
-          .append(", ");
+        .append(factory)
+        .append(", ");
     }
     SocketAddress localAddress = localAddress();
     if (localAddress != null) {
       buf.append("localAddress: ")
-          .append(localAddress)
-          .append(", ");
+        .append(localAddress)
+        .append(", ");
     }
 
     Map<ChannelOption<?>, Object> options = options();
     if (!options.isEmpty()) {
       buf.append("options: ")
-          .append(options)
-          .append(", ");
+        .append(options)
+        .append(", ");
     }
     Map<AttributeKey<?>, Object> attrs = attrs();
     if (!attrs.isEmpty()) {
       buf.append("attrs: ")
-          .append(attrs)
-          .append(", ");
+        .append(attrs)
+        .append(", ");
     }
     ChannelHandler handler = handler();
     if (handler != null) {
       buf.append("handler: ")
-          .append(handler)
-          .append(", ");
+        .append(handler)
+        .append(", ");
     }
     if (buf.charAt(buf.length() - 1) == '(') {
       buf.append(')');

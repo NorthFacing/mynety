@@ -38,8 +38,8 @@ public final class Library {
 
   /* Default library names */
   private static final String[] NAMES = {
-      "netty_tcnative",
-      "libnetty_tcnative"
+    "netty_tcnative",
+    "libnetty_tcnative"
   };
 
   private static final String PROVIDED = "provided";
@@ -97,7 +97,6 @@ public final class Library {
 
   /**
    * The shading prefix added to this class's full name.
-   *
    * @throws UnsatisfiedLinkError if the shader used something other than a prefix
    */
   private static String calculatePackagePrefix() {
@@ -106,8 +105,8 @@ public final class Library {
     String expected = "io!netty!internal!tcnative!Library".replace('!', '.');
     if (!maybeShaded.endsWith(expected)) {
       throw new UnsatisfiedLinkError(String.format(
-          "Could not find prefix added to %s to get %s. When shading, only adding a "
-              + "package prefix is supported", expected, maybeShaded));
+        "Could not find prefix added to %s to get %s. When shading, only adding a "
+          + "package prefix is supported", expected, maybeShaded));
     }
     return maybeShaded.substring(0, maybeShaded.length() - expected.length());
   }
@@ -126,7 +125,6 @@ public final class Library {
 
   /**
    * Calls {@link #initialize(String, String)} with {@code "provided"} and {@code null}.
-   *
    * @return {@code true} if initialization was successful
    * @throws Exception if an error happens during initialization
    */
@@ -136,7 +134,6 @@ public final class Library {
 
   /**
    * Setup native library. This is the first method that must be called!
-   *
    * @param libraryName the name of the library to load
    * @param engine      Support for external a Crypto Device ("engine"), usually
    * @return {@code true} if initialization was successful
@@ -148,7 +145,7 @@ public final class Library {
 
       if (aprMajorVersion() < 1) {
         throw new UnsatisfiedLinkError("Unsupported APR Version (" +
-            aprVersionString() + ")");
+          aprVersionString() + ")");
       }
 
       if (!aprHasThreads()) {

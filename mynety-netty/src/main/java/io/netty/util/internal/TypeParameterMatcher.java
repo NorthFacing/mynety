@@ -16,7 +16,11 @@
 
 package io.netty.util.internal;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +35,7 @@ public abstract class TypeParameterMatcher {
 
   public static TypeParameterMatcher get(final Class<?> parameterType) {
     final Map<Class<?>, TypeParameterMatcher> getCache =
-        InternalThreadLocalMap.get().typeParameterMatcherGetCache();
+      InternalThreadLocalMap.get().typeParameterMatcherGetCache();
 
     TypeParameterMatcher matcher = getCache.get(parameterType);
     if (matcher == null) {
@@ -47,10 +51,10 @@ public abstract class TypeParameterMatcher {
   }
 
   public static TypeParameterMatcher find(
-      final Object object, final Class<?> parametrizedSuperclass, final String typeParamName) {
+    final Object object, final Class<?> parametrizedSuperclass, final String typeParamName) {
 
     final Map<Class<?>, Map<String, TypeParameterMatcher>> findCache =
-        InternalThreadLocalMap.get().typeParameterMatcherFindCache();
+      InternalThreadLocalMap.get().typeParameterMatcherFindCache();
     final Class<?> thisClass = object.getClass();
 
     Map<String, TypeParameterMatcher> map = findCache.get(thisClass);
@@ -69,7 +73,7 @@ public abstract class TypeParameterMatcher {
   }
 
   private static Class<?> find0(
-      final Object object, Class<?> parametrizedSuperclass, String typeParamName) {
+    final Object object, Class<?> parametrizedSuperclass, String typeParamName) {
 
     final Class<?> thisClass = object.getClass();
     Class<?> currentClass = thisClass;
@@ -86,7 +90,7 @@ public abstract class TypeParameterMatcher {
 
         if (typeParamIndex < 0) {
           throw new IllegalStateException(
-              "unknown type parameter '" + typeParamName + "': " + parametrizedSuperclass);
+            "unknown type parameter '" + typeParamName + "': " + parametrizedSuperclass);
         }
 
         Type genericSuperType = currentClass.getGenericSuperclass();
@@ -140,7 +144,7 @@ public abstract class TypeParameterMatcher {
 
   private static Class<?> fail(Class<?> type, String typeParamName) {
     throw new IllegalStateException(
-        "cannot determine the type of the type parameter '" + typeParamName + "': " + type);
+      "cannot determine the type of the type parameter '" + typeParamName + "': " + type);
   }
 
   public abstract boolean match(Object msg);

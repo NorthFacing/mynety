@@ -16,14 +16,18 @@
 package io.netty.handler.ssl;
 
 import io.netty.internal.tcnative.SSL;
-import io.netty.util.*;
+import io.netty.util.AbstractReferenceCounted;
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ResourceLeakDetector;
+import io.netty.util.ResourceLeakDetectorFactory;
+import io.netty.util.ResourceLeakTracker;
 
 import java.security.cert.X509Certificate;
 
 final class DefaultOpenSslKeyMaterial extends AbstractReferenceCounted implements OpenSslKeyMaterial {
 
   private static final ResourceLeakDetector<DefaultOpenSslKeyMaterial> leakDetector =
-      ResourceLeakDetectorFactory.instance().newResourceLeakDetector(DefaultOpenSslKeyMaterial.class);
+    ResourceLeakDetectorFactory.instance().newResourceLeakDetector(DefaultOpenSslKeyMaterial.class);
   private final ResourceLeakTracker<DefaultOpenSslKeyMaterial> leak;
   private final X509Certificate[] x509CertificateChain;
   private long chain;

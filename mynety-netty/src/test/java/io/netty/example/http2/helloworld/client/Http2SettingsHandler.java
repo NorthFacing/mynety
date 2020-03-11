@@ -29,7 +29,6 @@ public class Http2SettingsHandler extends SimpleChannelInboundHandler<Http2Setti
 
   /**
    * Create new instance
-   *
    * @param promise Promise object used to notify when first settings are received
    */
   public Http2SettingsHandler(ChannelPromise promise) {
@@ -39,7 +38,6 @@ public class Http2SettingsHandler extends SimpleChannelInboundHandler<Http2Setti
   /**
    * Wait for this handler to be added after the upgrade to HTTP/2, and for initial preface
    * handshake to complete.
-   *
    * @param timeout Time to wait
    * @param unit    {@link java.util.concurrent.TimeUnit} for {@code timeout}
    * @throws Exception if timeout or other failure occurs

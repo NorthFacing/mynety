@@ -33,7 +33,6 @@ public class LocalEventLoopGroup extends DefaultEventLoopGroup {
 
   /**
    * Create a new instance
-   *
    * @param nThreads the number of threads to use
    */
   public LocalEventLoopGroup(int nThreads) {
@@ -42,7 +41,6 @@ public class LocalEventLoopGroup extends DefaultEventLoopGroup {
 
   /**
    * Create a new instance
-   *
    * @param nThreads      the number of threads to use
    * @param threadFactory the {@link ThreadFactory} or {@code null} to use the default
    */

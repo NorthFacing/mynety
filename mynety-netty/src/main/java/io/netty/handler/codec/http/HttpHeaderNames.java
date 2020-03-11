@@ -53,27 +53,27 @@ public final class HttpHeaderNames {
    * {@code "access-control-allow-credentials"}
    */
   public static final AsciiString ACCESS_CONTROL_ALLOW_CREDENTIALS =
-      AsciiString.cached("access-control-allow-credentials");
+    AsciiString.cached("access-control-allow-credentials");
   /**
    * {@code "access-control-allow-headers"}
    */
   public static final AsciiString ACCESS_CONTROL_ALLOW_HEADERS =
-      AsciiString.cached("access-control-allow-headers");
+    AsciiString.cached("access-control-allow-headers");
   /**
    * {@code "access-control-allow-methods"}
    */
   public static final AsciiString ACCESS_CONTROL_ALLOW_METHODS =
-      AsciiString.cached("access-control-allow-methods");
+    AsciiString.cached("access-control-allow-methods");
   /**
    * {@code "access-control-allow-origin"}
    */
   public static final AsciiString ACCESS_CONTROL_ALLOW_ORIGIN =
-      AsciiString.cached("access-control-allow-origin");
+    AsciiString.cached("access-control-allow-origin");
   /**
    * {@code "access-control-expose-headers"}
    */
   public static final AsciiString ACCESS_CONTROL_EXPOSE_HEADERS =
-      AsciiString.cached("access-control-expose-headers");
+    AsciiString.cached("access-control-expose-headers");
   /**
    * {@code "access-control-max-age"}
    */
@@ -82,12 +82,12 @@ public final class HttpHeaderNames {
    * {@code "access-control-request-headers"}
    */
   public static final AsciiString ACCESS_CONTROL_REQUEST_HEADERS =
-      AsciiString.cached("access-control-request-headers");
+    AsciiString.cached("access-control-request-headers");
   /**
    * {@code "access-control-request-method"}
    */
   public static final AsciiString ACCESS_CONTROL_REQUEST_METHOD =
-      AsciiString.cached("access-control-request-method");
+    AsciiString.cached("access-control-request-method");
   /**
    * {@code "age"}
    */

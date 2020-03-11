@@ -51,7 +51,7 @@ public final class CompositeNameResolver<T> extends SimpleNameResolver<T> {
     }
     if (resolvers.length < 2) {
       throw new IllegalArgumentException("resolvers: " + Arrays.asList(resolvers) +
-          " (expected: at least 2 resolvers)");
+        " (expected: at least 2 resolvers)");
     }
     this.resolvers = resolvers.clone();
   }

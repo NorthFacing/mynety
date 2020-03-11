@@ -29,7 +29,7 @@ public final class DnsNameResolverTimeoutException extends DnsNameResolverExcept
   private static final long serialVersionUID = -8826717969627131854L;
 
   public DnsNameResolverTimeoutException(
-      InetSocketAddress remoteAddress, DnsQuestion question, String message) {
+    InetSocketAddress remoteAddress, DnsQuestion question, String message) {
     super(remoteAddress, question, message);
   }
 }

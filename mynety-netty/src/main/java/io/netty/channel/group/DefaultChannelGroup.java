@@ -17,13 +17,22 @@ package io.netty.channel.group;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ServerChannel;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -128,7 +137,7 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
   @Override
   public boolean add(Channel channel) {
     ConcurrentMap<ChannelId, Channel> map =
-        channel instanceof ServerChannel ? serverChannels : nonServerChannels;
+      channel instanceof ServerChannel ? serverChannels : nonServerChannels;
 
     boolean added = map.putIfAbsent(channel.id(), channel) == null;
     if (added) {
@@ -188,8 +197,8 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
   @Override
   public Iterator<Channel> iterator() {
     return new CombinedIterator<Channel>(
-        serverChannels.values().iterator(),
-        nonServerChannels.values().iterator());
+      serverChannels.values().iterator(),
+      nonServerChannels.values().iterator());
   }
 
   @Override
@@ -297,7 +306,7 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
     }
 
     Map<Channel, ChannelFuture> futures =
-        new LinkedHashMap<Channel, ChannelFuture>(size());
+      new LinkedHashMap<Channel, ChannelFuture>(size());
 
     for (Channel c : serverChannels.values()) {
       if (matcher.matches(c)) {
@@ -320,7 +329,7 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
     }
 
     Map<Channel, ChannelFuture> futures =
-        new LinkedHashMap<Channel, ChannelFuture>(size());
+      new LinkedHashMap<Channel, ChannelFuture>(size());
 
     if (stayClosed) {
       // It is important to set the closed to true, before closing channels.
@@ -353,7 +362,7 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
     }
 
     Map<Channel, ChannelFuture> futures =
-        new LinkedHashMap<Channel, ChannelFuture>(size());
+      new LinkedHashMap<Channel, ChannelFuture>(size());
 
     for (Channel c : serverChannels.values()) {
       if (matcher.matches(c)) {
@@ -424,7 +433,7 @@ public class DefaultChannelGroup extends AbstractSet<Channel> implements Channel
   @Override
   public ChannelGroupFuture newCloseFuture(ChannelMatcher matcher) {
     Map<Channel, ChannelFuture> futures =
-        new LinkedHashMap<Channel, ChannelFuture>(size());
+      new LinkedHashMap<Channel, ChannelFuture>(size());
 
     for (Channel c : serverChannels.values()) {
       if (matcher.matches(c)) {

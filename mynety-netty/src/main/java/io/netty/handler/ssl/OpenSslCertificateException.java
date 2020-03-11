@@ -74,7 +74,7 @@ public final class OpenSslCertificateException extends CertificateException {
     // will depend on it. If loading fails we will just skip the validation.
     if (OpenSsl.isAvailable() && !CertificateVerifier.isValid(errorCode)) {
       throw new IllegalArgumentException("errorCode '" + errorCode +
-          "' invalid, see https://www.openssl.org/docs/man1.0.2/apps/verify.html.");
+        "' invalid, see https://www.openssl.org/docs/man1.0.2/apps/verify.html.");
     }
     return errorCode;
   }

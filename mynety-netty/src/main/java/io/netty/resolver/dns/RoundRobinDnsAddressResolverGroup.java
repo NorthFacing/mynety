@@ -41,14 +41,14 @@ public class RoundRobinDnsAddressResolverGroup extends DnsAddressResolverGroup {
   }
 
   public RoundRobinDnsAddressResolverGroup(
-      Class<? extends DatagramChannel> channelType,
-      DnsServerAddressStreamProvider nameServerProvider) {
+    Class<? extends DatagramChannel> channelType,
+    DnsServerAddressStreamProvider nameServerProvider) {
     super(channelType, nameServerProvider);
   }
 
   public RoundRobinDnsAddressResolverGroup(
-      ChannelFactory<? extends DatagramChannel> channelFactory,
-      DnsServerAddressStreamProvider nameServerProvider) {
+    ChannelFactory<? extends DatagramChannel> channelFactory,
+    DnsServerAddressStreamProvider nameServerProvider) {
     super(channelFactory, nameServerProvider);
   }
 
@@ -62,7 +62,7 @@ public class RoundRobinDnsAddressResolverGroup extends DnsAddressResolverGroup {
   @Override
   protected final AddressResolver<InetSocketAddress> newAddressResolver(EventLoop eventLoop,
                                                                         NameResolver<InetAddress> resolver)
-      throws Exception {
+    throws Exception {
     return new RoundRobinInetAddressResolver(eventLoop, resolver).asAddressResolver();
   }
 }

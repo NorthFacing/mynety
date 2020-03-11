@@ -40,7 +40,7 @@ import static io.netty.resolver.dns.DnsServerAddresses.sequential;
 @UnstableApi
 public final class DefaultDnsServerAddressStreamProvider implements DnsServerAddressStreamProvider {
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(DefaultDnsServerAddressStreamProvider.class);
+    InternalLoggerFactory.getInstance(DefaultDnsServerAddressStreamProvider.class);
   public static final DefaultDnsServerAddressStreamProvider INSTANCE = new DefaultDnsServerAddressStreamProvider();
 
   private static final List<InetSocketAddress> DEFAULT_NAME_SERVER_LIST;
@@ -79,28 +79,28 @@ public final class DefaultDnsServerAddressStreamProvider implements DnsServerAdd
     if (!defaultNameServers.isEmpty()) {
       if (logger.isDebugEnabled()) {
         logger.debug(
-            "Default DNS servers: {} (sun.net.dns.ResolverConfiguration)", defaultNameServers);
+          "Default DNS servers: {} (sun.net.dns.ResolverConfiguration)", defaultNameServers);
       }
     } else {
       // Depending if IPv6 or IPv4 is used choose the correct DNS servers provided by google:
       // https://developers.google.com/speed/public-dns/docs/using
       // https://docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
       if (NetUtil.isIpV6AddressesPreferred() ||
-          (NetUtil.LOCALHOST instanceof Inet6Address && !NetUtil.isIpV4StackPreferred())) {
+        (NetUtil.LOCALHOST instanceof Inet6Address && !NetUtil.isIpV4StackPreferred())) {
         Collections.addAll(
-            defaultNameServers,
-            SocketUtils.socketAddress("2001:4860:4860::8888", DNS_PORT),
-            SocketUtils.socketAddress("2001:4860:4860::8844", DNS_PORT));
+          defaultNameServers,
+          SocketUtils.socketAddress("2001:4860:4860::8888", DNS_PORT),
+          SocketUtils.socketAddress("2001:4860:4860::8844", DNS_PORT));
       } else {
         Collections.addAll(
-            defaultNameServers,
-            SocketUtils.socketAddress("8.8.8.8", DNS_PORT),
-            SocketUtils.socketAddress("8.8.4.4", DNS_PORT));
+          defaultNameServers,
+          SocketUtils.socketAddress("8.8.8.8", DNS_PORT),
+          SocketUtils.socketAddress("8.8.4.4", DNS_PORT));
       }
 
       if (logger.isWarnEnabled()) {
         logger.warn(
-            "Default DNS servers: {} (Google Public DNS as a fallback)", defaultNameServers);
+          "Default DNS servers: {} (Google Public DNS as a fallback)", defaultNameServers);
       }
     }
 

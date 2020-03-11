@@ -62,14 +62,12 @@ public interface HttpDataFactory {
   /**
    * Remove the given InterfaceHttpData from clean list (will not delete the file, except if the file
    * is still a temporary one as setup at construction)
-   *
    * @param request associated request
    */
   void removeHttpDataFromClean(HttpRequest request, InterfaceHttpData data);
 
   /**
    * Remove all InterfaceHttpData from virtual File storage from clean list for the request
-   *
    * @param request associated request
    */
   void cleanRequestHttpData(HttpRequest request);

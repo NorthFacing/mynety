@@ -15,8 +15,13 @@
  */
 package io.netty.handler.codec;
 
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.AbstractList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 
@@ -30,7 +35,6 @@ public final class HeadersUtils {
 
   /**
    * {@link Headers#get(Object)} and convert each element of {@link List} to a {@link String}.
-   *
    * @param name the name of the header to retrieve
    * @return a {@link List} of header values or an empty {@link List} if no values are found.
    */
@@ -52,7 +56,6 @@ public final class HeadersUtils {
 
   /**
    * {@link Headers#get(Object)} and convert the result to a {@link String}.
-   *
    * @param headers the headers to get the {@code name} from
    * @param name    the name of the header to retrieve
    * @return the first header value if the header is found. {@code null} if there's no such entry.
@@ -66,13 +69,12 @@ public final class HeadersUtils {
    * {@link Headers#iterator()} which converts each {@link Entry}'s key and value to a {@link String}.
    */
   public static Iterator<Entry<String, String>> iteratorAsString(
-      Iterable<Entry<CharSequence, CharSequence>> headers) {
+    Iterable<Entry<CharSequence, CharSequence>> headers) {
     return new StringEntryIterator(headers.iterator());
   }
 
   /**
    * Helper for implementing toString for {@link DefaultHeaders} and wrappers such as DefaultHttpHeaders.
-   *
    * @param headersClass the class of headers
    * @param headersIt    the iterator on the actual headers
    * @param size         the size of the iterator
@@ -85,8 +87,8 @@ public final class HeadersUtils {
     } else {
       // original capacity assumes 20 chars per headers
       StringBuilder sb = new StringBuilder(simpleName.length() + 2 + size * 20)
-          .append(simpleName)
-          .append('[');
+        .append(simpleName)
+        .append('[');
       while (headersIt.hasNext()) {
         Entry<?, ?> header = headersIt.next();
         sb.append(header.getKey()).append(": ").append(header.getValue()).append(", ");
@@ -98,7 +100,6 @@ public final class HeadersUtils {
 
   /**
    * {@link Headers#names()} and convert each element of {@link Set} to a {@link String}.
-   *
    * @param headers the headers to get the names from
    * @return a {@link Set} of header values or an empty {@link Set} if no values are found.
    */

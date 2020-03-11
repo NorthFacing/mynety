@@ -63,15 +63,15 @@ public class Http2ClientInitializer extends ChannelInitializer<SocketChannel> {
   public void initChannel(SocketChannel ch) throws Exception {
     final Http2Connection connection = new DefaultHttp2Connection(false);
     connectionHandler = new HttpToHttp2ConnectionHandlerBuilder()
-        .frameListener(new DelegatingDecompressorFrameListener(
-            connection,
-            new InboundHttp2ToHttpAdapterBuilder(connection)
-                .maxContentLength(maxContentLength)
-                .propagateSettings(true)
-                .build()))
-        .frameLogger(logger)
-        .connection(connection)
-        .build();
+      .frameListener(new DelegatingDecompressorFrameListener(
+        connection,
+        new InboundHttp2ToHttpAdapterBuilder(connection)
+          .maxContentLength(maxContentLength)
+          .propagateSettings(true)
+          .build()))
+      .frameLogger(logger)
+      .connection(connection)
+      .build();
     responseHandler = new HttpResponseHandler();
     settingsHandler = new Http2SettingsHandler(ch.newPromise());
     if (sslCtx != null) {
@@ -125,9 +125,9 @@ public class Http2ClientInitializer extends ChannelInitializer<SocketChannel> {
     HttpClientUpgradeHandler upgradeHandler = new HttpClientUpgradeHandler(sourceCodec, upgradeCodec, 65536);
 
     ch.pipeline().addLast(sourceCodec,
-        upgradeHandler,
-        new UpgradeRequestHandler(),
-        new UserEventLogger());
+      upgradeHandler,
+      new UpgradeRequestHandler(),
+      new UserEventLogger());
   }
 
   /**
@@ -138,7 +138,7 @@ public class Http2ClientInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
       DefaultFullHttpRequest upgradeRequest =
-          new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
+        new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
 
       // Set HOST header as the remote peer may require it.
       InetSocketAddress remote = (InetSocketAddress) ctx.channel().remoteAddress();

@@ -26,7 +26,7 @@ import java.net.SocketAddress;
  */
 @UnstableApi
 public class DatagramDnsResponse extends DefaultDnsResponse
-    implements AddressedEnvelope<DatagramDnsResponse, InetSocketAddress> {
+  implements AddressedEnvelope<DatagramDnsResponse, InetSocketAddress> {
 
   private final InetSocketAddress sender;
   private final InetSocketAddress recipient;
@@ -34,7 +34,6 @@ public class DatagramDnsResponse extends DefaultDnsResponse
   /**
    * Creates a new instance with the {@link DnsOpCode#QUERY} {@code opCode} and
    * the {@link DnsResponseCode#NOERROR} {@code RCODE}.
-   *
    * @param sender    the address of the sender
    * @param recipient the address of the recipient
    * @param id        the {@code ID} of the DNS response
@@ -45,7 +44,6 @@ public class DatagramDnsResponse extends DefaultDnsResponse
 
   /**
    * Creates a new instance with the {@link DnsResponseCode#NOERROR} responseCode.
-   *
    * @param sender    the address of the sender
    * @param recipient the address of the recipient
    * @param id        the {@code ID} of the DNS response
@@ -57,7 +55,6 @@ public class DatagramDnsResponse extends DefaultDnsResponse
 
   /**
    * Creates a new instance.
-   *
    * @param sender       the address of the sender
    * @param recipient    the address of the recipient
    * @param id           the {@code ID} of the DNS response
@@ -65,8 +62,8 @@ public class DatagramDnsResponse extends DefaultDnsResponse
    * @param responseCode the {@code RCODE} of the DNS response
    */
   public DatagramDnsResponse(
-      InetSocketAddress sender, InetSocketAddress recipient,
-      int id, DnsOpCode opCode, DnsResponseCode responseCode) {
+    InetSocketAddress sender, InetSocketAddress recipient,
+    int id, DnsOpCode opCode, DnsResponseCode responseCode) {
     super(id, opCode, responseCode);
 
     if (recipient == null && sender == null) {

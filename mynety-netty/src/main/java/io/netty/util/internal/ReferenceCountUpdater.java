@@ -125,7 +125,7 @@ public abstract class ReferenceCountUpdater<T extends ReferenceCounted> {
     }
     // don't pass 0!
     if ((oldRef <= 0 && oldRef + rawIncrement >= 0)
-        || (oldRef >= 0 && oldRef + rawIncrement < oldRef)) {
+      || (oldRef >= 0 && oldRef + rawIncrement < oldRef)) {
       // overflow case
       updater().getAndAdd(instance, -rawIncrement);
       throw new IllegalReferenceCountException(realRefCnt(oldRef), increment);
@@ -136,14 +136,14 @@ public abstract class ReferenceCountUpdater<T extends ReferenceCounted> {
   public final boolean release(T instance) {
     int rawCnt = nonVolatileRawCnt(instance);
     return rawCnt == 2 ? tryFinalRelease0(instance, 2) || retryRelease0(instance, 1)
-        : nonFinalRelease0(instance, 1, rawCnt, toLiveRealRefCnt(rawCnt, 1));
+      : nonFinalRelease0(instance, 1, rawCnt, toLiveRealRefCnt(rawCnt, 1));
   }
 
   public final boolean release(T instance, int decrement) {
     int rawCnt = nonVolatileRawCnt(instance);
     int realCnt = toLiveRealRefCnt(rawCnt, checkPositive(decrement, "decrement"));
     return decrement == realCnt ? tryFinalRelease0(instance, rawCnt) || retryRelease0(instance, decrement)
-        : nonFinalRelease0(instance, decrement, rawCnt, realCnt);
+      : nonFinalRelease0(instance, decrement, rawCnt, realCnt);
   }
 
   private boolean tryFinalRelease0(T instance, int expectRawCnt) {
@@ -152,8 +152,8 @@ public abstract class ReferenceCountUpdater<T extends ReferenceCounted> {
 
   private boolean nonFinalRelease0(T instance, int decrement, int rawCnt, int realCnt) {
     if (decrement < realCnt
-        // all changes to the raw count are 2x the "real" change - overflow is OK
-        && updater().compareAndSet(instance, rawCnt, rawCnt - (decrement << 1))) {
+      // all changes to the raw count are 2x the "real" change - overflow is OK
+      && updater().compareAndSet(instance, rawCnt, rawCnt - (decrement << 1))) {
       return false;
     }
     return retryRelease0(instance, decrement);

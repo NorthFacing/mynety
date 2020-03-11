@@ -131,7 +131,7 @@ final class PlatformDependent0 {
           public Object run() {
             try {
               finalUnsafe.getClass().getDeclaredMethod(
-                  "copyMemory", Object.class, long.class, Object.class, long.class, long.class);
+                "copyMemory", Object.class, long.class, Object.class, long.class, long.class);
               return null;
             } catch (NoSuchMethodException e) {
               return e;
@@ -216,24 +216,24 @@ final class PlatformDependent0 {
       long address = -1;
       try {
         final Object maybeDirectBufferConstructor =
-            AccessController.doPrivileged(new PrivilegedAction<Object>() {
-              @Override
-              public Object run() {
-                try {
-                  final Constructor<?> constructor =
-                      direct.getClass().getDeclaredConstructor(long.class, int.class);
-                  Throwable cause = ReflectionUtil.trySetAccessible(constructor, true);
-                  if (cause != null) {
-                    return cause;
-                  }
-                  return constructor;
-                } catch (NoSuchMethodException e) {
-                  return e;
-                } catch (SecurityException e) {
-                  return e;
+          AccessController.doPrivileged(new PrivilegedAction<Object>() {
+            @Override
+            public Object run() {
+              try {
+                final Constructor<?> constructor =
+                  direct.getClass().getDeclaredConstructor(long.class, int.class);
+                Throwable cause = ReflectionUtil.trySetAccessible(constructor, true);
+                if (cause != null) {
+                  return cause;
                 }
+                return constructor;
+              } catch (NoSuchMethodException e) {
+                return e;
+              } catch (SecurityException e) {
+                return e;
               }
-            });
+            }
+          });
 
         if (maybeDirectBufferConstructor instanceof Constructor<?>) {
           address = UNSAFE.allocateMemory(1);
@@ -251,8 +251,8 @@ final class PlatformDependent0 {
           }
         } else {
           logger.debug(
-              "direct buffer constructor: unavailable",
-              (Throwable) maybeDirectBufferConstructor);
+            "direct buffer constructor: unavailable",
+            (Throwable) maybeDirectBufferConstructor);
           directBufferConstructor = null;
         }
       } finally {
@@ -269,7 +269,7 @@ final class PlatformDependent0 {
         public Object run() {
           try {
             Class<?> bitsClass =
-                Class.forName("java.nio.Bits", false, getSystemClassLoader());
+              Class.forName("java.nio.Bits", false, getSystemClassLoader());
             int version = javaVersion();
             if (version >= 9) {
               // Java9/10 use all lowercase and later versions all uppercase.
@@ -330,7 +330,7 @@ final class PlatformDependent0 {
               // Java9 has jdk.internal.misc.Unsafe and not all methods are propagated to
               // sun.misc.Unsafe
               Class<?> internalUnsafeClass = getClassLoader(PlatformDependent0.class)
-                  .loadClass("jdk.internal.misc.Unsafe");
+                .loadClass("jdk.internal.misc.Unsafe");
               Method method = internalUnsafeClass.getDeclaredMethod("getUnsafe");
               return method.invoke(null);
             } catch (Throwable e) {
@@ -346,7 +346,7 @@ final class PlatformDependent0 {
             public Object run() {
               try {
                 return finalInternalUnsafe.getClass().getDeclaredMethod(
-                    "allocateUninitializedArray", Class.class, int.class);
+                  "allocateUninitializedArray", Class.class, int.class);
               } catch (NoSuchMethodException e) {
                 return e;
               } catch (SecurityException e) {
@@ -371,7 +371,7 @@ final class PlatformDependent0 {
 
         if (maybeException instanceof Throwable) {
           logger.debug("jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable",
-              (Throwable) maybeException);
+            (Throwable) maybeException);
         } else {
           logger.debug("jdk.internal.misc.Unsafe.allocateUninitializedArray(int): available");
         }
@@ -384,7 +384,7 @@ final class PlatformDependent0 {
     INTERNAL_UNSAFE = internalUnsafe;
 
     logger.debug("java.nio.DirectByteBuffer.<init>(long, int): {}",
-        DIRECT_BUFFER_CONSTRUCTOR != null ? "available" : "unavailable");
+      DIRECT_BUFFER_CONSTRUCTOR != null ? "available" : "unavailable");
   }
 
   static boolean isExplicitNoUnsafe() {
@@ -604,7 +604,7 @@ final class PlatformDependent0 {
   }
 
   private static void copyMemoryWithSafePointPolling(
-      Object src, long srcOffset, Object dst, long dstOffset, long length) {
+    Object src, long srcOffset, Object dst, long dstOffset, long length) {
     while (length > 0) {
       long size = Math.min(length, UNSAFE_COPY_THRESHOLD);
       UNSAFE.copyMemory(src, srcOffset, dst, dstOffset, size);
@@ -644,11 +644,11 @@ final class PlatformDependent0 {
     final long baseOffset2 = baseOffset1 + diff;
     if (remainingBytes >= 2) {
       return UNSAFE.getChar(bytes1, baseOffset1) == UNSAFE.getChar(bytes2, baseOffset2) &&
-          (remainingBytes == 2 ||
-              UNSAFE.getByte(bytes1, baseOffset1 + 2) == UNSAFE.getByte(bytes2, baseOffset2 + 2));
+        (remainingBytes == 2 ||
+          UNSAFE.getByte(bytes1, baseOffset1 + 2) == UNSAFE.getByte(bytes2, baseOffset2 + 2));
     }
     return remainingBytes == 0 ||
-        UNSAFE.getByte(bytes1, baseOffset1) == UNSAFE.getByte(bytes2, baseOffset2);
+      UNSAFE.getByte(bytes1, baseOffset1) == UNSAFE.getByte(bytes2, baseOffset2);
   }
 
   static int equalsConstantTime(byte[] bytes1, int startPos1, byte[] bytes2, int startPos2, int length) {
@@ -697,7 +697,7 @@ final class PlatformDependent0 {
     }
     if (remainingBytes >= 2) {
       return UNSAFE.getChar(bytes, baseOffset) == 0 &&
-          (remainingBytes == 2 || bytes[startPos + 2] == 0);
+        (remainingBytes == 2 || bytes[startPos + 2] == 0);
     }
     return bytes[startPos] == 0;
   }
@@ -734,10 +734,10 @@ final class PlatformDependent0 {
     // masking with 0x1f reduces the number of overall bits that impact the hash code but makes the hash
     // code the same regardless of character case (upper case or lower case hash is the same).
     return hash * HASH_CODE_C1 +
-        // Low order int
-        hashCodeAsciiSanitize((int) value) * HASH_CODE_C2 +
-        // High order int
-        (int) ((value & 0x1f1f1f1f00000000L) >>> 32);
+      // Low order int
+      hashCodeAsciiSanitize((int) value) * HASH_CODE_C2 +
+      // High order int
+      (int) ((value & 0x1f1f1f1f00000000L) >>> 32);
   }
 
   static int hashCodeAsciiSanitize(int value) {

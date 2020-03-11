@@ -70,10 +70,10 @@ public class DecoderResult {
 
       String cause = cause().toString();
       return new StringBuilder(cause.length() + 17)
-          .append("failure(")
-          .append(cause)
-          .append(')')
-          .toString();
+        .append("failure(")
+        .append(cause)
+        .append(')')
+        .toString();
     } else {
       return "unfinished";
     }

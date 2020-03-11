@@ -45,9 +45,9 @@ public class HexDumpProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     // Start the connection attempt.
     Bootstrap b = new Bootstrap();
     b.group(inboundChannel.eventLoop())
-        .channel(ctx.channel().getClass())
-        .handler(new HexDumpProxyBackendHandler(inboundChannel))
-        .option(ChannelOption.AUTO_READ, false);
+      .channel(ctx.channel().getClass())
+      .handler(new HexDumpProxyBackendHandler(inboundChannel))
+      .option(ChannelOption.AUTO_READ, false);
     ChannelFuture f = b.connect(remoteHost, remotePort);
     outboundChannel = f.channel();
     f.addListener(new ChannelFutureListener() {

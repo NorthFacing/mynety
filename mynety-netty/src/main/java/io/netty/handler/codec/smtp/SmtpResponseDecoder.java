@@ -98,7 +98,7 @@ public final class SmtpResponseDecoder extends LineBasedFrameDecoder {
 
   private static DecoderException newDecoderException(ByteBuf buffer, int readerIndex, int readable) {
     return new DecoderException(
-        "Received invalid line: '" + buffer.toString(readerIndex, readable, CharsetUtil.US_ASCII) + '\'');
+      "Received invalid line: '" + buffer.toString(readerIndex, readable, CharsetUtil.US_ASCII) + '\'');
   }
 
   /**

@@ -82,7 +82,7 @@ public class HelloWorldHttp2Handler extends ChannelDuplexHandler {
    * If receive a frame with end-of-stream set, send a pre-canned response.
    */
   private static void onHeadersRead(ChannelHandlerContext ctx, Http2HeadersFrame headers)
-      throws Exception {
+    throws Exception {
     if (headers.isEndStream()) {
       ByteBuf content = ctx.alloc().buffer();
       content.writeBytes(RESPONSE_BYTES.duplicate());

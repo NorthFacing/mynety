@@ -38,7 +38,6 @@ public class CompatibleMarshallingEncoder extends MessageToByteEncoder<Object> {
 
   /**
    * Create a new instance of the {@link CompatibleMarshallingEncoder}
-   *
    * @param provider the {@link MarshallerProvider} to use to get the {@link Marshaller} for a {@link Channel}
    */
   public CompatibleMarshallingEncoder(MarshallerProvider provider) {

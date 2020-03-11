@@ -17,7 +17,15 @@ package io.netty.handler.stream;
 
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelProgressivePromise;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -60,7 +68,7 @@ import java.util.Queue;
 public class ChunkedWriteHandler extends ChannelDuplexHandler {
 
   private static final InternalLogger logger =
-      InternalLoggerFactory.getInstance(ChunkedWriteHandler.class);
+    InternalLoggerFactory.getInstance(ChunkedWriteHandler.class);
 
   private final Queue<PendingWrite> queue = new ArrayDeque<PendingWrite>();
   private volatile ChannelHandlerContext ctx;
@@ -76,7 +84,7 @@ public class ChunkedWriteHandler extends ChannelDuplexHandler {
   public ChunkedWriteHandler(int maxPendingWrites) {
     if (maxPendingWrites <= 0) {
       throw new IllegalArgumentException(
-          "maxPendingWrites: " + maxPendingWrites + " (expected: > 0)");
+        "maxPendingWrites: " + maxPendingWrites + " (expected: > 0)");
     }
   }
 

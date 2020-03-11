@@ -182,7 +182,6 @@ public abstract class CertificateVerifier {
   /**
    * Returns {@code true} if the passed in certificate chain could be verified and so the handshake
    * should be successful, {@code false} otherwise.
-   *
    * @param ssl           the SSL instance
    * @param x509          the {@code X509} certificate chain
    * @param authAlgorithm the auth algorithm

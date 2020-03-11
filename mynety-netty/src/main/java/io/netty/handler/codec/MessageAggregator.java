@@ -18,7 +18,11 @@ package io.netty.handler.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
 import io.netty.buffer.CompositeByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.util.ReferenceCountUtil;
 
 import java.util.List;
@@ -39,14 +43,13 @@ import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
  * return {@code true} for, the aggregator will finish the aggregation and produce the aggregated message and expect
  * another start message.
  * </p>
- *
  * @param <I> the type that covers both start message and content message
  * @param <S> the type of the start message
  * @param <C> the type of the content message (must be a subtype of {@link ByteBufHolder})
  * @param <O> the type of the aggregated message (must be a subtype of {@code S} and {@link ByteBufHolder})
  */
 public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends ByteBufHolder>
-    extends MessageToMessageDecoder<I> {
+  extends MessageToMessageDecoder<I> {
 
   private static final int DEFAULT_MAX_COMPOSITEBUFFER_COMPONENTS = 1024;
 
@@ -62,7 +65,6 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
 
   /**
    * Creates a new instance.
-   *
    * @param maxContentLength the maximum length of the aggregated content.
    *                         If the length of the aggregated content exceeds this value,
    *                         {@link #handleOversizedMessage(ChannelHandlerContext, Object)} will be called.
@@ -172,15 +174,15 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
   public final void setMaxCumulationBufferComponents(int maxCumulationBufferComponents) {
     if (maxCumulationBufferComponents < 2) {
       throw new IllegalArgumentException(
-          "maxCumulationBufferComponents: " + maxCumulationBufferComponents +
-              " (expected: >= 2)");
+        "maxCumulationBufferComponents: " + maxCumulationBufferComponents +
+          " (expected: >= 2)");
     }
 
     if (ctx == null) {
       this.maxCumulationBufferComponents = maxCumulationBufferComponents;
     } else {
       throw new IllegalStateException(
-          "decoder properties cannot be changed once the decoder is added to a pipeline.");
+        "decoder properties cannot be changed once the decoder is added to a pipeline.");
     }
   }
 
@@ -300,7 +302,7 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
         if (!decoderResult.isSuccess()) {
           if (currentMessage instanceof DecoderResultProvider) {
             ((DecoderResultProvider) currentMessage).setDecoderResult(
-                DecoderResult.failure(decoderResult.cause()));
+              DecoderResult.failure(decoderResult.cause()));
           }
           last = true;
         } else {
@@ -331,7 +333,6 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
   /**
    * Determine if the message {@code start}'s content length is known, and if it greater than
    * {@code maxContentLength}.
-   *
    * @param start            The message which may indicate the content length.
    * @param maxContentLength The maximum allowed content length.
    * @return {@code true} if the message {@code start}'s content length is known, and if it greater than
@@ -342,16 +343,14 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
   /**
    * Returns the 'continue response' for the specified start message if necessary. For example, this method is
    * useful to handle an HTTP 100-continue header.
-   *
    * @return the 'continue response', or {@code null} if there's no message to send
    */
   protected abstract Object newContinueResponse(S start, int maxContentLength, ChannelPipeline pipeline)
-      throws Exception;
+    throws Exception;
 
   /**
    * Determine if the channel should be closed after the result of
    * {@link #newContinueResponse(Object, int, ChannelPipeline)} is written.
-   *
    * @param msg The return value from {@link #newContinueResponse(Object, int, ChannelPipeline)}.
    * @return {@code true} if the channel should be closed after the result of
    * {@link #newContinueResponse(Object, int, ChannelPipeline)} is written. {@code false} otherwise.
@@ -361,7 +360,6 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
   /**
    * Determine if all objects for the current request/response should be ignored or not.
    * Messages will stop being ignored the next time {@link #isContentMessage(Object)} returns {@code true}.
-   *
    * @param msg The return value from {@link #newContinueResponse(Object, int, ChannelPipeline)}.
    * @return {@code true} if all objects for the current request/response should be ignored or not.
    * {@code false} otherwise.
@@ -409,13 +407,12 @@ public abstract class MessageAggregator<I, S, C extends ByteBufHolder, O extends
   /**
    * Invoked when an incoming request exceeds the maximum content length.  The default behvaior is to trigger an
    * {@code exceptionCaught()} event with a {@link TooLongFrameException}.
-   *
    * @param ctx       the {@link ChannelHandlerContext}
    * @param oversized the accumulated message up to this point, whose type is {@code S} or {@code O}
    */
   protected void handleOversizedMessage(ChannelHandlerContext ctx, S oversized) throws Exception {
     ctx.fireExceptionCaught(
-        new TooLongFrameException("content length exceeded " + maxContentLength() + " bytes."));
+      new TooLongFrameException("content length exceeded " + maxContentLength() + " bytes."));
   }
 
   @Override

@@ -17,7 +17,17 @@
 package io.netty.handler.ssl.util;
 
 import io.netty.util.internal.SuppressJava6Requirement;
-import sun.security.x509.*;
+import sun.security.x509.AlgorithmId;
+import sun.security.x509.CertificateAlgorithmId;
+import sun.security.x509.CertificateIssuerName;
+import sun.security.x509.CertificateSerialNumber;
+import sun.security.x509.CertificateSubjectName;
+import sun.security.x509.CertificateValidity;
+import sun.security.x509.CertificateVersion;
+import sun.security.x509.CertificateX509Key;
+import sun.security.x509.X500Name;
+import sun.security.x509.X509CertImpl;
+import sun.security.x509.X509CertInfo;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -35,7 +45,7 @@ final class OpenJdkSelfSignedCertGenerator {
 
   @SuppressJava6Requirement(reason = "Usage guarded by dependency check")
   static String[] generate(String fqdn, KeyPair keypair, SecureRandom random, Date notBefore, Date notAfter)
-      throws Exception {
+    throws Exception {
     PrivateKey key = keypair.getPrivate();
 
     // Prepare the information required for generating an X.509 certificate.
@@ -56,7 +66,7 @@ final class OpenJdkSelfSignedCertGenerator {
     info.set(X509CertInfo.VALIDITY, new CertificateValidity(notBefore, notAfter));
     info.set(X509CertInfo.KEY, new CertificateX509Key(keypair.getPublic()));
     info.set(X509CertInfo.ALGORITHM_ID,
-        new CertificateAlgorithmId(new AlgorithmId(AlgorithmId.sha256WithRSAEncryption_oid)));
+      new CertificateAlgorithmId(new AlgorithmId(AlgorithmId.sha256WithRSAEncryption_oid)));
 
     // Sign the cert to identify the algorithm that's used.
     X509CertImpl cert = new X509CertImpl(info);

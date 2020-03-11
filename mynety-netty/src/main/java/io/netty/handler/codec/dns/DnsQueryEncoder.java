@@ -41,7 +41,6 @@ final class DnsQueryEncoder {
 
   /**
    * Encodes the header that is always 12 bytes long.
-   *
    * @param query the query header being encoded
    * @param buf   the buffer the encoded data should be written to
    */

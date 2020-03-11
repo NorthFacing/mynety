@@ -28,7 +28,6 @@ abstract class SpdyHeaderBlockDecoder {
    * Decodes a SPDY Header Block, adding the Name/Value pairs to the given Headers frame.
    * If the header block is malformed, the Headers frame will be marked as invalid.
    * A stream error with status code PROTOCOL_ERROR must be issued in response to an invalid frame.
-   *
    * @param alloc       the {@link ByteBufAllocator} which can be used to allocate new {@link ByteBuf}s
    * @param headerBlock the HeaderBlock to decode
    * @param frame       the Headers frame that receives the Name/Value pairs

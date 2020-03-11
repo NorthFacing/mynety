@@ -112,7 +112,6 @@ public interface ChannelGroupFuture extends Future<Void>, Iterable<ChannelFuture
   /**
    * Returns the {@link ChannelFuture} of the individual I/O operation which
    * is associated with the specified {@link Channel}.
-   *
    * @return the matching {@link ChannelFuture} if found.
    * {@code null} otherwise.
    */

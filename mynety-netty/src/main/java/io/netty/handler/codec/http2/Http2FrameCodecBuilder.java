@@ -25,7 +25,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  */
 @UnstableApi
 public class Http2FrameCodecBuilder extends
-    AbstractHttp2ConnectionHandlerBuilder<Http2FrameCodec, Http2FrameCodecBuilder> {
+  AbstractHttp2ConnectionHandlerBuilder<Http2FrameCodec, Http2FrameCodecBuilder> {
 
   private Http2FrameWriter frameWriter;
 
@@ -137,7 +137,7 @@ public class Http2FrameCodecBuilder extends
 
   @Override
   public Http2FrameCodecBuilder headerSensitivityDetector(
-      Http2HeadersEncoder.SensitivityDetector headerSensitivityDetector) {
+    Http2HeadersEncoder.SensitivityDetector headerSensitivityDetector) {
     return super.headerSensitivityDetector(headerSensitivityDetector);
   }
 
@@ -189,8 +189,8 @@ public class Http2FrameCodecBuilder extends
       DefaultHttp2Connection connection = new DefaultHttp2Connection(isServer(), maxReservedStreams());
       Long maxHeaderListSize = initialSettings().maxHeaderListSize();
       Http2FrameReader frameReader = new DefaultHttp2FrameReader(maxHeaderListSize == null ?
-          new DefaultHttp2HeadersDecoder(isValidateHeaders()) :
-          new DefaultHttp2HeadersDecoder(isValidateHeaders(), maxHeaderListSize));
+        new DefaultHttp2HeadersDecoder(isValidateHeaders()) :
+        new DefaultHttp2HeadersDecoder(isValidateHeaders(), maxHeaderListSize));
 
       if (frameLogger() != null) {
         frameWriter = new Http2OutboundFrameLogger(frameWriter, frameLogger());
@@ -201,7 +201,7 @@ public class Http2FrameCodecBuilder extends
         encoder = new StreamBufferingEncoder(encoder);
       }
       Http2ConnectionDecoder decoder = new DefaultHttp2ConnectionDecoder(connection, encoder, frameReader,
-          promisedRequestVerifier(), isAutoAckSettingsFrame(), isAutoAckPingFrame());
+        promisedRequestVerifier(), isAutoAckSettingsFrame(), isAutoAckPingFrame());
       int maxConsecutiveEmptyDataFrames = decoderEnforceMaxConsecutiveEmptyDataFrames();
       if (maxConsecutiveEmptyDataFrames > 0) {
         decoder = new Http2EmptyDataFrameConnectionDecoder(decoder, maxConsecutiveEmptyDataFrames);
@@ -213,7 +213,7 @@ public class Http2FrameCodecBuilder extends
 
   @Override
   protected Http2FrameCodec build(
-      Http2ConnectionDecoder decoder, Http2ConnectionEncoder encoder, Http2Settings initialSettings) {
+    Http2ConnectionDecoder decoder, Http2ConnectionEncoder encoder, Http2Settings initialSettings) {
     Http2FrameCodec codec = new Http2FrameCodec(encoder, decoder, initialSettings, decoupleCloseAndGoAway());
     codec.gracefulShutdownTimeoutMillis(gracefulShutdownTimeoutMillis());
     return codec;

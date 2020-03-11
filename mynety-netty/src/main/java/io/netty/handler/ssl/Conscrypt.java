@@ -33,7 +33,7 @@ final class Conscrypt {
   private static Method loadIsConscryptEngine() {
     try {
       Class<?> conscryptClass = Class.forName("org.conscrypt.Conscrypt", true,
-          ConscryptAlpnSslEngine.class.getClassLoader());
+        ConscryptAlpnSslEngine.class.getClassLoader());
       return conscryptClass.getMethod("isConscrypt", SSLEngine.class);
     } catch (Throwable ignore) {
       // Conscrypt was not loaded.
@@ -44,7 +44,7 @@ final class Conscrypt {
   private static boolean canInstanceProvider() {
     try {
       Class<?> providerClass = Class.forName("org.conscrypt.OpenSSLProvider", true,
-          ConscryptAlpnSslEngine.class.getClassLoader());
+        ConscryptAlpnSslEngine.class.getClassLoader());
       providerClass.newInstance();
       return true;
     } catch (Throwable ignore) {

@@ -15,7 +15,14 @@
  */
 package io.netty.handler.flush;
 
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelOutboundInvoker;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 
 import java.util.concurrent.Future;
 
@@ -73,7 +80,6 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
 
   /**
    * Create new instance which doesn't consolidate flushes when no read is in progress.
-   *
    * @param explicitFlushAfterFlushes the number of flushes after which an explicit flush will be done.
    */
   public FlushConsolidationHandler(int explicitFlushAfterFlushes) {
@@ -82,7 +88,6 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
 
   /**
    * Create new instance.
-   *
    * @param explicitFlushAfterFlushes       the number of flushes after which an explicit flush will be done.
    * @param consolidateWhenNoReadInProgress whether to consolidate flushes even when no read loop is currently
    *                                        ongoing.
@@ -90,22 +95,22 @@ public class FlushConsolidationHandler extends ChannelDuplexHandler {
   public FlushConsolidationHandler(int explicitFlushAfterFlushes, boolean consolidateWhenNoReadInProgress) {
     if (explicitFlushAfterFlushes <= 0) {
       throw new IllegalArgumentException("explicitFlushAfterFlushes: "
-          + explicitFlushAfterFlushes + " (expected: > 0)");
+        + explicitFlushAfterFlushes + " (expected: > 0)");
     }
     this.explicitFlushAfterFlushes = explicitFlushAfterFlushes;
     this.consolidateWhenNoReadInProgress = consolidateWhenNoReadInProgress;
     flushTask = consolidateWhenNoReadInProgress ?
-        new Runnable() {
-          @Override
-          public void run() {
-            if (flushPendingCount > 0 && !readInProgress) {
-              flushPendingCount = 0;
-              ctx.flush();
-              nextScheduledFlush = null;
-            } // else we'll flush when the read completes
-          }
+      new Runnable() {
+        @Override
+        public void run() {
+          if (flushPendingCount > 0 && !readInProgress) {
+            flushPendingCount = 0;
+            ctx.flush();
+            nextScheduledFlush = null;
+          } // else we'll flush when the read completes
         }
-        : null;
+      }
+      : null;
   }
 
   @Override

@@ -15,7 +15,13 @@
  */
 package io.netty.handler.codec.http.websocketx;
 
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.CharsetUtil;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -32,7 +38,6 @@ public class WebSocketServerHandshaker13 extends WebSocketServerHandshaker {
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web
    *                              socket frames will be sent to this URL.
    * @param subprotocols          CSV of supported protocols
@@ -41,13 +46,12 @@ public class WebSocketServerHandshaker13 extends WebSocketServerHandshaker {
    *                              requirement may reduce denial of service attacks using long data frames.
    */
   public WebSocketServerHandshaker13(
-      String webSocketURL, String subprotocols, boolean allowExtensions, int maxFramePayloadLength) {
+    String webSocketURL, String subprotocols, boolean allowExtensions, int maxFramePayloadLength) {
     this(webSocketURL, subprotocols, allowExtensions, maxFramePayloadLength, false);
   }
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web
    *                              socket frames will be sent to this URL.
    * @param subprotocols          CSV of supported protocols
@@ -58,25 +62,24 @@ public class WebSocketServerHandshaker13 extends WebSocketServerHandshaker {
    *                              accepted.
    */
   public WebSocketServerHandshaker13(
-      String webSocketURL, String subprotocols, boolean allowExtensions, int maxFramePayloadLength,
-      boolean allowMaskMismatch) {
+    String webSocketURL, String subprotocols, boolean allowExtensions, int maxFramePayloadLength,
+    boolean allowMaskMismatch) {
     this(webSocketURL, subprotocols, WebSocketDecoderConfig.newBuilder()
-        .allowExtensions(allowExtensions)
-        .maxFramePayloadLength(maxFramePayloadLength)
-        .allowMaskMismatch(allowMaskMismatch)
-        .build());
+      .allowExtensions(allowExtensions)
+      .maxFramePayloadLength(maxFramePayloadLength)
+      .allowMaskMismatch(allowMaskMismatch)
+      .build());
   }
 
   /**
    * Constructor specifying the destination web socket location
-   *
    * @param webSocketURL  URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web
    *                      socket frames will be sent to this URL.
    * @param subprotocols  CSV of supported protocols
    * @param decoderConfig Frames decoder configuration.
    */
   public WebSocketServerHandshaker13(
-      String webSocketURL, String subprotocols, WebSocketDecoderConfig decoderConfig) {
+    String webSocketURL, String subprotocols, WebSocketDecoderConfig decoderConfig) {
     super(WebSocketVersion.V13, webSocketURL, subprotocols, decoderConfig);
   }
 
@@ -122,7 +125,7 @@ public class WebSocketServerHandshaker13 extends WebSocketServerHandshaker {
     }
 
     FullHttpResponse res = new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.SWITCHING_PROTOCOLS,
-        req.content().alloc().buffer(0));
+      req.content().alloc().buffer(0));
     if (headers != null) {
       res.headers().add(headers);
     }

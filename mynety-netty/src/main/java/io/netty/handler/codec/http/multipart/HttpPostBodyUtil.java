@@ -122,7 +122,6 @@ final class HttpPostBodyUtil {
 
   /**
    * Find the first non whitespace
-   *
    * @return the rank of the first non whitespace
    */
   static int findNonWhitespace(String sb, int offset) {
@@ -137,7 +136,6 @@ final class HttpPostBodyUtil {
 
   /**
    * Find the end of String
-   *
    * @return the rank of the end of string
    */
   static int findEndOfString(String sb) {

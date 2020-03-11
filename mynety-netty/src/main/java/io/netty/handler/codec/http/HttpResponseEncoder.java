@@ -44,7 +44,7 @@ public class HttpResponseEncoder extends HttpObjectEncoder<HttpResponse> {
     if (isAlwaysEmpty) {
       HttpResponseStatus status = msg.status();
       if (status.codeClass() == HttpStatusClass.INFORMATIONAL ||
-          status.code() == HttpResponseStatus.NO_CONTENT.code()) {
+        status.code() == HttpResponseStatus.NO_CONTENT.code()) {
 
         // Stripping Content-Length:
         // See https://tools.ietf.org/html/rfc7230#section-3.3.2
@@ -82,7 +82,7 @@ public class HttpResponseEncoder extends HttpObjectEncoder<HttpResponse> {
       return true;
     }
     return status.code() == HttpResponseStatus.NO_CONTENT.code() ||
-        status.code() == HttpResponseStatus.NOT_MODIFIED.code() ||
-        status.code() == HttpResponseStatus.RESET_CONTENT.code();
+      status.code() == HttpResponseStatus.NOT_MODIFIED.code() ||
+      status.code() == HttpResponseStatus.RESET_CONTENT.code();
   }
 }

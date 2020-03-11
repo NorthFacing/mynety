@@ -80,10 +80,10 @@ public class OcspClientExample {
     String host = "www.wikipedia.org";
 
     ReferenceCountedOpenSslContext context
-        = (ReferenceCountedOpenSslContext) SslContextBuilder.forClient()
-        .sslProvider(SslProvider.OPENSSL)
-        .enableOcsp(true)
-        .build();
+      = (ReferenceCountedOpenSslContext) SslContextBuilder.forClient()
+      .sslProvider(SslProvider.OPENSSL)
+      .enableOcsp(true)
+      .build();
 
     try {
       EventLoopGroup group = new NioEventLoopGroup();
@@ -91,14 +91,14 @@ public class OcspClientExample {
         Promise<FullHttpResponse> promise = group.next().newPromise();
 
         Bootstrap bootstrap = new Bootstrap()
-            .channel(NioSocketChannel.class)
-            .group(group)
-            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
-            .handler(newClientHandler(context, host, promise));
+          .channel(NioSocketChannel.class)
+          .group(group)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5 * 1000)
+          .handler(newClientHandler(context, host, promise));
 
         Channel channel = bootstrap.connect(host, 443)
-            .syncUninterruptibly()
-            .channel();
+          .syncUninterruptibly()
+          .channel();
 
         try {
           FullHttpResponse response = promise.get();
@@ -122,7 +122,7 @@ public class OcspClientExample {
       protected void initChannel(Channel ch) throws Exception {
         SslHandler sslHandler = context.newHandler(ch.alloc());
         ReferenceCountedOpenSslEngine engine
-            = (ReferenceCountedOpenSslEngine) sslHandler.engine();
+          = (ReferenceCountedOpenSslEngine) sslHandler.engine();
 
         ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast(sslHandler);
@@ -164,7 +164,7 @@ public class OcspClientExample {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
       FullHttpRequest request = new DefaultFullHttpRequest(
-          HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
+        HttpVersion.HTTP_1_1, HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
       request.headers().set(HttpHeaderNames.HOST, host);
       request.headers().set(HttpHeaderNames.USER_AGENT, "netty-ocsp-example/1.0");
 
@@ -231,13 +231,13 @@ public class OcspClientExample {
       CertificateStatus status = first.getCertStatus();
       BigInteger ocspSerial = first.getCertID().getSerialNumber();
       String message = new StringBuilder()
-          .append("OCSP status of ").append(ctx.channel().remoteAddress())
-          .append("\n  Status: ").append(status == CertificateStatus.GOOD ? "Good" : status)
-          .append("\n  This Update: ").append(first.getThisUpdate())
-          .append("\n  Next Update: ").append(first.getNextUpdate())
-          .append("\n  Cert Serial: ").append(certSerial)
-          .append("\n  OCSP Serial: ").append(ocspSerial)
-          .toString();
+        .append("OCSP status of ").append(ctx.channel().remoteAddress())
+        .append("\n  Status: ").append(status == CertificateStatus.GOOD ? "Good" : status)
+        .append("\n  This Update: ").append(first.getThisUpdate())
+        .append("\n  Next Update: ").append(first.getNextUpdate())
+        .append("\n  Cert Serial: ").append(certSerial)
+        .append("\n  OCSP Serial: ").append(ocspSerial)
+        .toString();
       System.out.println(message);
 
       return status == CertificateStatus.GOOD && certSerial.equals(ocspSerial);

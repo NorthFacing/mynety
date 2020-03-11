@@ -23,7 +23,13 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.KeyException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -40,15 +46,15 @@ final class PemReader {
   private static final InternalLogger logger = InternalLoggerFactory.getInstance(PemReader.class);
 
   private static final Pattern CERT_PATTERN = Pattern.compile(
-      "-+BEGIN\\s+.*CERTIFICATE[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-          "([a-z0-9+/=\\r\\n]+)" +                    // Base64 text
-          "-+END\\s+.*CERTIFICATE[^-]*-+",            // Footer
-      Pattern.CASE_INSENSITIVE);
+    "-+BEGIN\\s+.*CERTIFICATE[^-]*-+(?:\\s|\\r|\\n)+" + // Header
+      "([a-z0-9+/=\\r\\n]+)" +                    // Base64 text
+      "-+END\\s+.*CERTIFICATE[^-]*-+",            // Footer
+    Pattern.CASE_INSENSITIVE);
   private static final Pattern KEY_PATTERN = Pattern.compile(
-      "-+BEGIN\\s+.*PRIVATE\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-          "([a-z0-9+/=\\r\\n]+)" +                       // Base64 text
-          "-+END\\s+.*PRIVATE\\s+KEY[^-]*-+",            // Footer
-      Pattern.CASE_INSENSITIVE);
+    "-+BEGIN\\s+.*PRIVATE\\s+KEY[^-]*-+(?:\\s|\\r|\\n)+" + // Header
+      "([a-z0-9+/=\\r\\n]+)" +                       // Base64 text
+      "-+END\\s+.*PRIVATE\\s+KEY[^-]*-+",            // Footer
+    Pattern.CASE_INSENSITIVE);
 
   static ByteBuf[] readCertificates(File file) throws CertificateException {
     try {
@@ -120,7 +126,7 @@ final class PemReader {
     Matcher m = KEY_PATTERN.matcher(content);
     if (!m.find()) {
       throw new KeyException("could not find a PKCS #8 private key in input stream" +
-          " (see https://netty.io/wiki/sslcontextbuilder-and-private-key.html for more information)");
+        " (see https://netty.io/wiki/sslcontextbuilder-and-private-key.html for more information)");
     }
 
     ByteBuf base64 = Unpooled.copiedBuffer(m.group(1), CharsetUtil.US_ASCII);

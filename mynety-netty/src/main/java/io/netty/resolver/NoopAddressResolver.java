@@ -47,7 +47,7 @@ public class NoopAddressResolver extends AbstractAddressResolver<SocketAddress> 
 
   @Override
   protected void doResolveAll(
-      SocketAddress unresolvedAddress, Promise<List<SocketAddress>> promise) throws Exception {
+    SocketAddress unresolvedAddress, Promise<List<SocketAddress>> promise) throws Exception {
     promise.setSuccess(Collections.singletonList(unresolvedAddress));
   }
 }

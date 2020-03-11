@@ -41,8 +41,8 @@ public class DefaultSpdyHeaders extends DefaultHeaders<CharSequence, CharSequenc
   @SuppressWarnings("unchecked")
   public DefaultSpdyHeaders(boolean validate) {
     super(CASE_INSENSITIVE_HASHER,
-        validate ? HeaderValueConverterAndValidator.INSTANCE : CharSequenceValueConverter.INSTANCE,
-        validate ? SpdyNameValidator : NameValidator.NOT_NULL);
+      validate ? HeaderValueConverterAndValidator.INSTANCE : CharSequenceValueConverter.INSTANCE,
+      validate ? SpdyNameValidator : NameValidator.NOT_NULL);
   }
 
   @Override
@@ -68,7 +68,7 @@ public class DefaultSpdyHeaders extends DefaultHeaders<CharSequence, CharSequenc
   @Override
   public boolean contains(CharSequence name, CharSequence value, boolean ignoreCase) {
     return contains(name, value,
-        ignoreCase ? CASE_INSENSITIVE_HASHER : CASE_SENSITIVE_HASHER);
+      ignoreCase ? CASE_INSENSITIVE_HASHER : CASE_SENSITIVE_HASHER);
   }
 
   private static final class HeaderValueConverterAndValidator extends CharSequenceValueConverter {

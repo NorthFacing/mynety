@@ -21,7 +21,20 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.*;
+import static io.netty.handler.codec.compression.Bzip2Constants.BASE_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_1;
+import static io.netty.handler.codec.compression.Bzip2Constants.BLOCK_HEADER_MAGIC_2;
+import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_1;
+import static io.netty.handler.codec.compression.Bzip2Constants.END_OF_STREAM_MAGIC_2;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_MAXIMUM_TABLES;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_MAX_ALPHABET_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_MINIMUM_TABLES;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SELECTOR_LIST_MAX_LENGTH;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SYMBOL_RANGE_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.MAGIC_NUMBER;
+import static io.netty.handler.codec.compression.Bzip2Constants.MAX_BLOCK_SIZE;
+import static io.netty.handler.codec.compression.Bzip2Constants.MAX_SELECTORS;
+import static io.netty.handler.codec.compression.Bzip2Constants.MIN_BLOCK_SIZE;
 
 /**
  * Uncompresses a {@link ByteBuf} encoded with the Bzip2 format.
@@ -95,7 +108,7 @@ public class Bzip2Decoder extends ByteToMessageDecoder {
           int magicNumber = in.readUnsignedMedium();
           if (magicNumber != MAGIC_NUMBER) {
             throw new DecompressionException("Unexpected stream identifier contents. Mismatched bzip2 " +
-                "protocol version?");
+              "protocol version?");
           }
           int blockSize = in.readByte() - '0';
           if (blockSize < MIN_BLOCK_SIZE || blockSize > MAX_BLOCK_SIZE) {
@@ -136,7 +149,7 @@ public class Bzip2Decoder extends ByteToMessageDecoder {
           final int bwtStartPointer = reader.readBits(24);
 
           blockDecompressor = new Bzip2BlockDecompressor(this.blockSize, blockCRC,
-              blockRandomised, bwtStartPointer, reader);
+            blockRandomised, bwtStartPointer, reader);
           currentState = State.RECEIVE_HUFFMAN_USED_MAP;
           // fall through
         case RECEIVE_HUFFMAN_USED_MAP:

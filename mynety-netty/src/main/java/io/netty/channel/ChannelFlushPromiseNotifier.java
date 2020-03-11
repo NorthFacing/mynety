@@ -32,7 +32,6 @@ public final class ChannelFlushPromiseNotifier {
 
   /**
    * Create a new instance
-   *
    * @param tryNotify if {@code true} the {@link ChannelPromise}s will get notified with
    *                  {@link ChannelPromise#trySuccess()} and {@link ChannelPromise#tryFailure(Throwable)}.
    *                  Otherwise {@link ChannelPromise#setSuccess()} and {@link ChannelPromise#setFailure(Throwable)}
@@ -160,7 +159,6 @@ public final class ChannelFlushPromiseNotifier {
    * The rest of the remaining {@link ChannelFuture}s will be failed with the given {@link Throwable}.
    * <p>
    * So after this operation this {@link ChannelFutureListener} is empty.
-   *
    * @param cause1 the {@link Throwable} which will be used to fail all of the {@link ChannelFuture}s which
    *               pendingDataSize is smaller then the current writeCounter returned by {@link #writeCounter()}
    * @param cause2 the {@link Throwable} which will be used to fail the remaining {@link ChannelFuture}s

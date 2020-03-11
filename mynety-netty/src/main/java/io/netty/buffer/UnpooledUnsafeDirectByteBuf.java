@@ -33,7 +33,6 @@ public class UnpooledUnsafeDirectByteBuf extends UnpooledDirectByteBuf {
 
   /**
    * Creates a new direct buffer.
-   *
    * @param initialCapacity the initial capacity of the underlying direct buffer
    * @param maxCapacity     the maximum capacity of the underlying direct buffer
    */
@@ -43,7 +42,6 @@ public class UnpooledUnsafeDirectByteBuf extends UnpooledDirectByteBuf {
 
   /**
    * Creates a new direct buffer by wrapping the specified initial buffer.
-   *
    * @param maxCapacity the maximum capacity of the underlying direct buffer
    */
   protected UnpooledUnsafeDirectByteBuf(ByteBufAllocator alloc, ByteBuffer initialBuffer, int maxCapacity) {

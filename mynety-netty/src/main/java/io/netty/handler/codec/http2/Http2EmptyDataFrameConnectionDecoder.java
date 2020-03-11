@@ -27,7 +27,7 @@ final class Http2EmptyDataFrameConnectionDecoder extends DecoratingHttp2Connecti
   Http2EmptyDataFrameConnectionDecoder(Http2ConnectionDecoder delegate, int maxConsecutiveEmptyFrames) {
     super(delegate);
     this.maxConsecutiveEmptyFrames = ObjectUtil.checkPositive(
-        maxConsecutiveEmptyFrames, "maxConsecutiveEmptyFrames");
+      maxConsecutiveEmptyFrames, "maxConsecutiveEmptyFrames");
   }
 
   @Override

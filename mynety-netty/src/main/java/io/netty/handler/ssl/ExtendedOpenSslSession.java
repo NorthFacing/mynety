@@ -38,8 +38,8 @@ abstract class ExtendedOpenSslSession extends ExtendedSSLSession implements Open
   // https://github.com/google/conscrypt/blob/1.2.0/common/
   // src/main/java/org/conscrypt/Java7ExtendedSSLSession.java#L32
   private static final String[] LOCAL_SUPPORTED_SIGNATURE_ALGORITHMS = {
-      "SHA512withRSA", "SHA512withECDSA", "SHA384withRSA", "SHA384withECDSA", "SHA256withRSA",
-      "SHA256withECDSA", "SHA224withRSA", "SHA224withECDSA", "SHA1withRSA", "SHA1withECDSA",
+    "SHA512withRSA", "SHA512withECDSA", "SHA384withRSA", "SHA384withECDSA", "SHA256withRSA",
+    "SHA256withECDSA", "SHA224withRSA", "SHA224withECDSA", "SHA1withRSA", "SHA1withECDSA",
   };
 
   private final OpenSslSession wrapped;

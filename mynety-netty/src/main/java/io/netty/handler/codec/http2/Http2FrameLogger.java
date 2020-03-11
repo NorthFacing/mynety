@@ -67,7 +67,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                       boolean endStream) {
     if (isEnabled()) {
       logger.log(level, "{} {} DATA: streamId={} padding={} endStream={} length={} bytes={}", ctx.channel(),
-          direction.name(), streamId, padding, endStream, data.readableBytes(), toString(data));
+        direction.name(), streamId, padding, endStream, data.readableBytes(), toString(data));
     }
   }
 
@@ -75,7 +75,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                          int padding, boolean endStream) {
     if (isEnabled()) {
       logger.log(level, "{} {} HEADERS: streamId={} headers={} padding={} endStream={}", ctx.channel(),
-          direction.name(), streamId, headers, padding, endStream);
+        direction.name(), streamId, headers, padding, endStream);
     }
   }
 
@@ -83,8 +83,8 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                          int streamDependency, short weight, boolean exclusive, int padding, boolean endStream) {
     if (isEnabled()) {
       logger.log(level, "{} {} HEADERS: streamId={} headers={} streamDependency={} weight={} exclusive={} " +
-              "padding={} endStream={}", ctx.channel(),
-          direction.name(), streamId, headers, streamDependency, weight, exclusive, padding, endStream);
+          "padding={} endStream={}", ctx.channel(),
+        direction.name(), streamId, headers, streamDependency, weight, exclusive, padding, endStream);
     }
   }
 
@@ -92,14 +92,14 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                           short weight, boolean exclusive) {
     if (isEnabled()) {
       logger.log(level, "{} {} PRIORITY: streamId={} streamDependency={} weight={} exclusive={}", ctx.channel(),
-          direction.name(), streamId, streamDependency, weight, exclusive);
+        direction.name(), streamId, streamDependency, weight, exclusive);
     }
   }
 
   public void logRstStream(Direction direction, ChannelHandlerContext ctx, int streamId, long errorCode) {
     if (isEnabled()) {
       logger.log(level, "{} {} RST_STREAM: streamId={} errorCode={}", ctx.channel(),
-          direction.name(), streamId, errorCode);
+        direction.name(), streamId, errorCode);
     }
   }
 
@@ -116,14 +116,14 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
   public void logPing(Direction direction, ChannelHandlerContext ctx, long data) {
     if (isEnabled()) {
       logger.log(level, "{} {} PING: ack=false bytes={}", ctx.channel(),
-          direction.name(), data);
+        direction.name(), data);
     }
   }
 
   public void logPingAck(Direction direction, ChannelHandlerContext ctx, long data) {
     if (isEnabled()) {
       logger.log(level, "{} {} PING: ack=true bytes={}", ctx.channel(),
-          direction.name(), data);
+        direction.name(), data);
     }
   }
 
@@ -131,7 +131,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                              Http2Headers headers, int padding) {
     if (isEnabled()) {
       logger.log(level, "{} {} PUSH_PROMISE: streamId={} promisedStreamId={} headers={} padding={}",
-          ctx.channel(), direction.name(), streamId, promisedStreamId, headers, padding);
+        ctx.channel(), direction.name(), streamId, promisedStreamId, headers, padding);
     }
   }
 
@@ -139,7 +139,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                         ByteBuf debugData) {
     if (isEnabled()) {
       logger.log(level, "{} {} GO_AWAY: lastStreamId={} errorCode={} length={} bytes={}", ctx.channel(),
-          direction.name(), lastStreamId, errorCode, debugData.readableBytes(), toString(debugData));
+        direction.name(), lastStreamId, errorCode, debugData.readableBytes(), toString(debugData));
     }
   }
 
@@ -147,7 +147,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                                int windowSizeIncrement) {
     if (isEnabled()) {
       logger.log(level, "{} {} WINDOW_UPDATE: streamId={} windowSizeIncrement={}", ctx.channel(),
-          direction.name(), streamId, windowSizeIncrement);
+        direction.name(), streamId, windowSizeIncrement);
     }
   }
 
@@ -155,7 +155,7 @@ public class Http2FrameLogger extends ChannelHandlerAdapter {
                               Http2Flags flags, ByteBuf data) {
     if (isEnabled()) {
       logger.log(level, "{} {} UNKNOWN: frameType={} streamId={} flags={} length={} bytes={}", ctx.channel(),
-          direction.name(), frameType & 0xFF, streamId, flags.value(), data.readableBytes(), toString(data));
+        direction.name(), frameType & 0xFF, streamId, flags.value(), data.readableBytes(), toString(data));
     }
   }
 

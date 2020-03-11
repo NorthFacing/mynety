@@ -91,7 +91,7 @@ public final class SmtpRequests {
   public static SmtpRequest mail(CharSequence sender, CharSequence... mailParameters) {
     if (mailParameters == null || mailParameters.length == 0) {
       return new DefaultSmtpRequest(SmtpCommand.MAIL,
-          sender != null ? "FROM:<" + sender + '>' : FROM_NULL_SENDER);
+        sender != null ? "FROM:<" + sender + '>' : FROM_NULL_SENDER);
     } else {
       List<CharSequence> params = new ArrayList<CharSequence>(mailParameters.length + 1);
       params.add(sender != null ? "FROM:<" + sender + '>' : FROM_NULL_SENDER);

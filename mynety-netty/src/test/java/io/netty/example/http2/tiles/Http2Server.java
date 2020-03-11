@@ -72,16 +72,16 @@ public class Http2Server {
   private static SslContext configureTLS() throws CertificateException, SSLException {
     SelfSignedCertificate ssc = new SelfSignedCertificate();
     ApplicationProtocolConfig apn = new ApplicationProtocolConfig(
-        Protocol.ALPN,
-        // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
-        SelectorFailureBehavior.NO_ADVERTISE,
-        // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
-        SelectedListenerFailureBehavior.ACCEPT,
-        ApplicationProtocolNames.HTTP_2,
-        ApplicationProtocolNames.HTTP_1_1);
+      Protocol.ALPN,
+      // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+      SelectorFailureBehavior.NO_ADVERTISE,
+      // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+      SelectedListenerFailureBehavior.ACCEPT,
+      ApplicationProtocolNames.HTTP_2,
+      ApplicationProtocolNames.HTTP_1_1);
 
     return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey(), null)
-        .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
-        .applicationProtocolConfig(apn).build();
+      .ciphers(CIPHERS, SupportedCipherSuiteFilter.INSTANCE)
+      .applicationProtocolConfig(apn).build();
   }
 }

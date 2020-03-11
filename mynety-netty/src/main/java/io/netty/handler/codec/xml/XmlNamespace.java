@@ -67,9 +67,9 @@ public class XmlNamespace {
   @Override
   public String toString() {
     return "XmlNamespace{" +
-        "prefix='" + prefix + '\'' +
-        ", uri='" + uri + '\'' +
-        '}';
+      "prefix='" + prefix + '\'' +
+      ", uri='" + uri + '\'' +
+      '}';
   }
 
 }

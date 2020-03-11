@@ -16,7 +16,15 @@
 package io.netty.handler.codec.http2;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoop;
+import io.netty.channel.ServerChannel;
 import io.netty.handler.codec.http2.Http2FrameCodec.DefaultHttp2FrameStream;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.internal.ObjectUtil;
@@ -87,9 +95,9 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
   private final ChannelHandler inboundStreamHandler;
   private final ChannelHandler upgradeStreamHandler;
   private final Queue<AbstractHttp2StreamChannel> readCompletePendingQueue =
-      new MaxCapacityQueue<AbstractHttp2StreamChannel>(new ArrayDeque<AbstractHttp2StreamChannel>(8),
-          // Choose 100 which is what is used most of the times as default.
-          Http2CodecUtil.SMALLEST_MAX_CONCURRENT_STREAMS);
+    new MaxCapacityQueue<AbstractHttp2StreamChannel>(new ArrayDeque<AbstractHttp2StreamChannel>(8),
+      // Choose 100 which is what is used most of the times as default.
+      Http2CodecUtil.SMALLEST_MAX_CONCURRENT_STREAMS);
 
   private boolean parentReadInProgress;
   private int idCount;
@@ -99,7 +107,6 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
 
   /**
    * Creates a new instance
-   *
    * @param inboundStreamHandler the {@link ChannelHandler} that will be added to the {@link ChannelPipeline} of
    *                             the {@link Channel}s created for new inbound streams.
    */
@@ -109,7 +116,6 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
 
   /**
    * Creates a new instance
-   *
    * @param inboundStreamHandler the {@link ChannelHandler} that will be added to the {@link ChannelPipeline} of
    *                             the {@link Channel}s created for new inbound streams.
    * @param upgradeStreamHandler the {@link ChannelHandler} that will be added to the {@link ChannelPipeline} of the
@@ -157,7 +163,7 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
       }
       Http2StreamFrame streamFrame = (Http2StreamFrame) msg;
       DefaultHttp2FrameStream s =
-          (DefaultHttp2FrameStream) streamFrame.stream();
+        (DefaultHttp2FrameStream) streamFrame.stream();
 
       AbstractHttp2StreamChannel channel = (AbstractHttp2StreamChannel) s.attachment;
       if (msg instanceof Http2ResetFrame) {
@@ -220,7 +226,7 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
               // We must have an upgrade handler or else we can't handle the stream
               if (upgradeStreamHandler == null) {
                 throw connectionError(INTERNAL_ERROR,
-                    "Client is misconfigured for upgrade requests");
+                  "Client is misconfigured for upgrade requests");
               }
               ch = new Http2MultiplexHandlerStreamChannel(stream, upgradeStreamHandler);
               ch.closeOutbound();
@@ -261,7 +267,7 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
       Http2FrameStreamException exception = (Http2FrameStreamException) cause;
       Http2FrameStream stream = exception.stream();
       AbstractHttp2StreamChannel childChannel = (AbstractHttp2StreamChannel)
-          ((DefaultHttp2FrameStream) stream).attachment;
+        ((DefaultHttp2FrameStream) stream).attachment;
       try {
         childChannel.pipeline().fireExceptionCaught(cause.getCause());
       } finally {
@@ -285,7 +291,7 @@ public final class Http2MultiplexHandler extends Http2ChannelDuplexHandler {
           final int streamId = stream.id();
           if (streamId > goAwayFrame.lastStreamId() && Http2CodecUtil.isStreamIdValid(streamId, server)) {
             final AbstractHttp2StreamChannel childChannel = (AbstractHttp2StreamChannel)
-                ((DefaultHttp2FrameStream) stream).attachment;
+              ((DefaultHttp2FrameStream) stream).attachment;
             childChannel.pipeline().fireUserEventTriggered(goAwayFrame.retainedDuplicate());
           }
           return true;

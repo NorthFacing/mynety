@@ -16,7 +16,15 @@
 package io.netty.handler.codec.http.websocketx;
 
 import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
@@ -44,7 +52,6 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
 
   /**
    * Creates a new instance.
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param version               Version of web socket specification to use to connect to the server
@@ -56,12 +63,11 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
   public WebSocketClientHandshaker08(URI webSocketURL, WebSocketVersion version, String subprotocol,
                                      boolean allowExtensions, HttpHeaders customHeaders, int maxFramePayloadLength) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders, maxFramePayloadLength, true,
-        false, DEFAULT_FORCE_CLOSE_TIMEOUT_MILLIS);
+      false, DEFAULT_FORCE_CLOSE_TIMEOUT_MILLIS);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param webSocketURL          URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                              sent to this URL.
    * @param version               Version of web socket specification to use to connect to the server
@@ -79,12 +85,11 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
                                      boolean allowExtensions, HttpHeaders customHeaders, int maxFramePayloadLength,
                                      boolean performMasking, boolean allowMaskMismatch) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders, maxFramePayloadLength, performMasking,
-        allowMaskMismatch, DEFAULT_FORCE_CLOSE_TIMEOUT_MILLIS);
+      allowMaskMismatch, DEFAULT_FORCE_CLOSE_TIMEOUT_MILLIS);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param webSocketURL            URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                                sent to this URL.
    * @param version                 Version of web socket specification to use to connect to the server
@@ -103,12 +108,11 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
                                      boolean allowExtensions, HttpHeaders customHeaders, int maxFramePayloadLength,
                                      boolean performMasking, boolean allowMaskMismatch, long forceCloseTimeoutMillis) {
     this(webSocketURL, version, subprotocol, allowExtensions, customHeaders, maxFramePayloadLength, performMasking,
-        allowMaskMismatch, forceCloseTimeoutMillis, false);
+      allowMaskMismatch, forceCloseTimeoutMillis, false);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param webSocketURL            URL for web socket communications. e.g "ws://myhost.com/mypath". Subsequent web socket frames will be
    *                                sent to this URL.
    * @param version                 Version of web socket specification to use to connect to the server
@@ -130,7 +134,7 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
                               boolean performMasking, boolean allowMaskMismatch, long forceCloseTimeoutMillis,
                               boolean absoluteUpgradeUrl) {
     super(webSocketURL, version, subprotocol, customHeaders, maxFramePayloadLength, forceCloseTimeoutMillis,
-        absoluteUpgradeUrl);
+      absoluteUpgradeUrl);
     this.allowExtensions = allowExtensions;
     this.performMasking = performMasking;
     this.allowMaskMismatch = allowMaskMismatch;
@@ -167,13 +171,13 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
 
     if (logger.isDebugEnabled()) {
       logger.debug(
-          "WebSocket version 08 client handshake key: {}, expected response: {}",
-          key, expectedChallengeResponseString);
+        "WebSocket version 08 client handshake key: {}, expected response: {}",
+        key, expectedChallengeResponseString);
     }
 
     // Format request
     FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, upgradeUrl(wsURL),
-        Unpooled.EMPTY_BUFFER);
+      Unpooled.EMPTY_BUFFER);
     HttpHeaders headers = request.headers();
 
     if (customHeaders != null) {
@@ -181,9 +185,9 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
     }
 
     headers.set(HttpHeaderNames.UPGRADE, HttpHeaderValues.WEBSOCKET)
-        .set(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE)
-        .set(HttpHeaderNames.SEC_WEBSOCKET_KEY, key)
-        .set(HttpHeaderNames.HOST, websocketHostValue(wsURL));
+      .set(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE)
+      .set(HttpHeaderNames.SEC_WEBSOCKET_KEY, key)
+      .set(HttpHeaderNames.HOST, websocketHostValue(wsURL));
 
     if (!headers.contains(HttpHeaderNames.SEC_WEBSOCKET_ORIGIN)) {
       headers.set(HttpHeaderNames.SEC_WEBSOCKET_ORIGIN, websocketOriginValue(wsURL));
@@ -210,7 +214,6 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
    * Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
    * Sec-WebSocket-Protocol: chat
    * </pre>
-   *
    * @param response HTTP response returned from the server for the request sent by beginOpeningHandshake00().
    * @throws WebSocketHandshakeException
    */
@@ -230,13 +233,13 @@ public class WebSocketClientHandshaker08 extends WebSocketClientHandshaker {
 
     if (!headers.containsValue(HttpHeaderNames.CONNECTION, HttpHeaderValues.UPGRADE, true)) {
       throw new WebSocketHandshakeException("Invalid handshake response connection: "
-          + headers.get(HttpHeaderNames.CONNECTION));
+        + headers.get(HttpHeaderNames.CONNECTION));
     }
 
     CharSequence accept = headers.get(HttpHeaderNames.SEC_WEBSOCKET_ACCEPT);
     if (accept == null || !accept.equals(expectedChallengeResponseString)) {
       throw new WebSocketHandshakeException(String.format(
-          "Invalid challenge. Actual: %s. Expected: %s", accept, expectedChallengeResponseString));
+        "Invalid challenge. Actual: %s. Expected: %s", accept, expectedChallengeResponseString));
     }
   }
 

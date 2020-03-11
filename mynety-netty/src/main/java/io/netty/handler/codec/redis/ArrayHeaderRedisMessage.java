@@ -45,7 +45,6 @@ public class ArrayHeaderRedisMessage implements RedisMessage {
 
   /**
    * Returns whether the content of this message is {@code null}.
-   *
    * @return indicates whether the content of this message is {@code null}.
    */
   public boolean isNull() {
@@ -55,9 +54,9 @@ public class ArrayHeaderRedisMessage implements RedisMessage {
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("length=")
-        .append(length)
-        .append(']').toString();
+      .append('[')
+      .append("length=")
+      .append(length)
+      .append(']').toString();
   }
 }

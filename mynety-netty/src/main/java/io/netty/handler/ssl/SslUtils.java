@@ -28,7 +28,11 @@ import io.netty.util.internal.PlatformDependent;
 import javax.net.ssl.SSLHandshakeException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -38,9 +42,9 @@ import static java.util.Arrays.asList;
 final class SslUtils {
   // See https://tools.ietf.org/html/rfc8446#appendix-B.4
   static final Set<String> TLSV13_CIPHERS = Collections.unmodifiableSet(new LinkedHashSet<String>(
-      asList("TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256",
-          "TLS_AES_128_GCM_SHA256", "TLS_AES_128_CCM_8_SHA256",
-          "TLS_AES_128_CCM_SHA256")));
+    asList("TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256",
+      "TLS_AES_128_GCM_SHA256", "TLS_AES_128_CCM_8_SHA256",
+      "TLS_AES_128_CCM_SHA256")));
   // Protocols
   static final String PROTOCOL_SSL_V2_HELLO = "SSLv2Hello";
   static final String PROTOCOL_SSL_V2 = "SSLv2";
@@ -163,7 +167,6 @@ final class SslUtils {
   /**
    * Return how much bytes can be read out of the encrypted data. Be aware that this method will not increase
    * the readerIndex of the given {@link ByteBuf}.
-   *
    * @param buffer The {@link ByteBuf} to read from. Be aware that it must have at least
    *               {@link #SSL_RECORD_HEADER_LENGTH} bytes to read,
    *               otherwise it will throw an {@link IllegalArgumentException}.
@@ -216,7 +219,7 @@ final class SslUtils {
       if (majorVersion == 2 || majorVersion == 3) {
         // SSLv2
         packetLength = headerLength == 2 ?
-            (shortBE(buffer, offset) & 0x7FFF) + 2 : (shortBE(buffer, offset) & 0x3FFF) + 3;
+          (shortBE(buffer, offset) & 0x7FFF) + 2 : (shortBE(buffer, offset) & 0x3FFF) + 3;
         if (packetLength <= headerLength) {
           return NOT_ENOUGH_DATA;
         }
@@ -231,14 +234,14 @@ final class SslUtils {
   @SuppressWarnings("deprecation")
   private static int unsignedShortBE(ByteBuf buffer, int offset) {
     return buffer.order() == ByteOrder.BIG_ENDIAN ?
-        buffer.getUnsignedShort(offset) : buffer.getUnsignedShortLE(offset);
+      buffer.getUnsignedShort(offset) : buffer.getUnsignedShortLE(offset);
   }
 
   // Reads a big-endian short integer from the buffer
   @SuppressWarnings("deprecation")
   private static short shortBE(ByteBuf buffer, int offset) {
     return buffer.order() == ByteOrder.BIG_ENDIAN ?
-        buffer.getShort(offset) : buffer.getShortLE(offset);
+      buffer.getShort(offset) : buffer.getShortLE(offset);
   }
 
   private static short unsignedByte(byte b) {
@@ -253,7 +256,7 @@ final class SslUtils {
   // Reads a big-endian short integer from the buffer
   private static short shortBE(ByteBuffer buffer, int offset) {
     return buffer.order() == ByteOrder.BIG_ENDIAN ?
-        buffer.getShort(offset) : ByteBufUtil.swapShort(buffer.getShort(offset));
+      buffer.getShort(offset) : ByteBufUtil.swapShort(buffer.getShort(offset));
   }
 
   static int getEncryptedPacketLength(ByteBuffer[] buffers, int offset) {
@@ -321,7 +324,7 @@ final class SslUtils {
       if (majorVersion == 2 || majorVersion == 3) {
         // SSLv2
         packetLength = headerLength == 2 ?
-            (shortBE(buffer, pos) & 0x7FFF) + 2 : (shortBE(buffer, pos) & 0x3FFF) + 3;
+          (shortBE(buffer, pos) & 0x7FFF) + 2 : (shortBE(buffer, pos) & 0x3FFF) + 3;
         if (packetLength <= headerLength) {
           return NOT_ENOUGH_DATA;
         }
@@ -361,12 +364,11 @@ final class SslUtils {
 
   /**
    * Same as {@link Base64#encode(ByteBuf, boolean)} but allows the use of a custom {@link ByteBufAllocator}.
-   *
    * @see Base64#encode(ByteBuf, boolean)
    */
   static ByteBuf toBase64(ByteBufAllocator allocator, ByteBuf src) {
     ByteBuf dst = Base64.encode(src, src.readerIndex(),
-        src.readableBytes(), true, Base64Dialect.STANDARD, allocator);
+      src.readableBytes(), true, Base64Dialect.STANDARD, allocator);
     src.readerIndex(src.writerIndex());
     return dst;
   }
@@ -376,10 +378,10 @@ final class SslUtils {
    */
   static boolean isValidHostNameForSNI(String hostname) {
     return hostname != null &&
-        hostname.indexOf('.') > 0 &&
-        !hostname.endsWith(".") &&
-        !NetUtil.isValidIpV4Address(hostname) &&
-        !NetUtil.isValidIpV6Address(hostname);
+      hostname.indexOf('.') > 0 &&
+      !hostname.endsWith(".") &&
+      !NetUtil.isValidIpV4Address(hostname) &&
+      !NetUtil.isValidIpV6Address(hostname);
   }
 
   /**

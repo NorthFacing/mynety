@@ -88,13 +88,13 @@ public final class ThreadLocalRandom extends Random {
             final byte[] seed = random.generateSeed(8);
             seedGeneratorEndTime = System.nanoTime();
             long s = ((long) seed[0] & 0xff) << 56 |
-                ((long) seed[1] & 0xff) << 48 |
-                ((long) seed[2] & 0xff) << 40 |
-                ((long) seed[3] & 0xff) << 32 |
-                ((long) seed[4] & 0xff) << 24 |
-                ((long) seed[5] & 0xff) << 16 |
-                ((long) seed[6] & 0xff) << 8 |
-                (long) seed[7] & 0xff;
+              ((long) seed[1] & 0xff) << 48 |
+              ((long) seed[2] & 0xff) << 40 |
+              ((long) seed[3] & 0xff) << 32 |
+              ((long) seed[4] & 0xff) << 24 |
+              ((long) seed[5] & 0xff) << 16 |
+              ((long) seed[6] & 0xff) << 8 |
+              (long) seed[7] & 0xff;
             seedQueue.add(s);
           }
         };
@@ -163,8 +163,8 @@ public final class ThreadLocalRandom extends Random {
         if (waitTime <= 0) {
           seedGeneratorThread.interrupt();
           logger.warn(
-              "Failed to generate a seed from SecureRandom within {} seconds. " +
-                  "Not enough entropy?", timeoutSeconds
+            "Failed to generate a seed from SecureRandom within {} seconds. " +
+              "Not enough entropy?", timeoutSeconds
           );
           break;
         }
@@ -205,9 +205,9 @@ public final class ThreadLocalRandom extends Random {
         if (current == 0 && logger.isDebugEnabled()) {
           if (seedGeneratorEndTime != 0) {
             logger.debug(String.format(
-                "-Dio.netty.initialSeedUniquifier: 0x%016x (took %d ms)",
-                actualCurrent,
-                TimeUnit.NANOSECONDS.toMillis(seedGeneratorEndTime - seedGeneratorStartTime)));
+              "-Dio.netty.initialSeedUniquifier: 0x%016x (took %d ms)",
+              actualCurrent,
+              TimeUnit.NANOSECONDS.toMillis(seedGeneratorEndTime - seedGeneratorStartTime)));
           } else {
             logger.debug(String.format("-Dio.netty.initialSeedUniquifier: 0x%016x", actualCurrent));
           }
@@ -258,7 +258,6 @@ public final class ThreadLocalRandom extends Random {
 
   /**
    * Returns the current thread's {@code ThreadLocalRandom}.
-   *
    * @return the current thread's {@code ThreadLocalRandom}
    */
   public static ThreadLocalRandom current() {
@@ -268,7 +267,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Throws {@code UnsupportedOperationException}.  Setting seeds in
    * this generator is not supported.
-   *
    * @throws UnsupportedOperationException always
    */
   @Override
@@ -288,7 +286,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Returns a pseudorandom, uniformly distributed value between the
    * given least value (inclusive) and bound (exclusive).
-   *
    * @param least the least value returned
    * @param bound the upper bound (exclusive)
    * @return the next value
@@ -305,7 +302,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Returns a pseudorandom, uniformly distributed value
    * between 0 (inclusive) and the specified value (exclusive).
-   *
    * @param n the bound on the random number to be returned.  Must be
    *          positive.
    * @return the next value
@@ -337,7 +333,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Returns a pseudorandom, uniformly distributed value between the
    * given least value (inclusive) and bound (exclusive).
-   *
    * @param least the least value returned
    * @param bound the upper bound (exclusive)
    * @return the next value
@@ -354,7 +349,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Returns a pseudorandom, uniformly distributed {@code double} value
    * between 0 (inclusive) and the specified value (exclusive).
-   *
    * @param n the bound on the random number to be returned.  Must be
    *          positive.
    * @return the next value
@@ -370,7 +364,6 @@ public final class ThreadLocalRandom extends Random {
   /**
    * Returns a pseudorandom, uniformly distributed value between the
    * given least value (inclusive) and bound (exclusive).
-   *
    * @param least the least value returned
    * @param bound the upper bound (exclusive)
    * @return the next value

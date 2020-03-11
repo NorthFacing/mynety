@@ -21,7 +21,21 @@ import io.netty.buffer.ByteBufAllocator;
 import java.nio.ByteOrder;
 import java.util.Set;
 
-import static io.netty.handler.codec.spdy.SpdyCodecUtil.*;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_DATA_FLAG_FIN;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_FLAG_FIN;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_FLAG_UNIDIRECTIONAL;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_GOAWAY_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADERS_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_HEADER_SIZE;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_PING_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_RST_STREAM_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_CLEAR;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_PERSISTED;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SETTINGS_PERSIST_VALUE;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SYN_REPLY_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_SYN_STREAM_FRAME;
+import static io.netty.handler.codec.spdy.SpdyCodecUtil.SPDY_WINDOW_UPDATE_FRAME;
 
 /**
  * Encodes a SPDY Frame into a {@link ByteBuf}.
@@ -101,7 +115,7 @@ public class SpdyFrameEncoder {
     int numSettings = ids.size();
 
     byte flags = spdySettingsFrame.clearPreviouslyPersistedSettings() ?
-        SPDY_SETTINGS_CLEAR : 0;
+      SPDY_SETTINGS_CLEAR : 0;
     int length = 4 + 8 * numSettings;
     ByteBuf frame = allocator.ioBuffer(SPDY_HEADER_SIZE + length).order(ByteOrder.BIG_ENDIAN);
     writeControlFrameHeader(frame, SPDY_SETTINGS_FRAME, flags, length);

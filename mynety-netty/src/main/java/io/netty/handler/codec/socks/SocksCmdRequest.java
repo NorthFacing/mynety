@@ -23,7 +23,6 @@ import java.net.IDN;
 
 /**
  * An socks cmd request.
- *
  * @see SocksCmdResponse
  * @see SocksCmdRequestDecoder
  */
@@ -76,7 +75,6 @@ public final class SocksCmdRequest extends SocksRequest {
 
   /**
    * Returns the {@link SocksCmdType} of this {@link SocksCmdRequest}
-   *
    * @return The {@link SocksCmdType} of this {@link SocksCmdRequest}
    */
   public SocksCmdType cmdType() {
@@ -85,7 +83,6 @@ public final class SocksCmdRequest extends SocksRequest {
 
   /**
    * Returns the {@link SocksAddressType} of this {@link SocksCmdRequest}
-   *
    * @return The {@link SocksAddressType} of this {@link SocksCmdRequest}
    */
   public SocksAddressType addressType() {
@@ -94,7 +91,6 @@ public final class SocksCmdRequest extends SocksRequest {
 
   /**
    * Returns host that is used as a parameter in {@link SocksCmdType}
-   *
    * @return host that is used as a parameter in {@link SocksCmdType}
    */
   public String host() {
@@ -103,7 +99,6 @@ public final class SocksCmdRequest extends SocksRequest {
 
   /**
    * Returns port that is used as a parameter in {@link SocksCmdType}
-   *
    * @return port that is used as a parameter in {@link SocksCmdType}
    */
   public int port() {

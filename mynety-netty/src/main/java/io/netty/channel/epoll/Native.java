@@ -27,7 +27,15 @@ import io.netty.util.internal.logging.InternalLoggerFactory;
 import java.io.IOException;
 import java.util.Locale;
 
-import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.*;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollerr;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollet;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollin;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollout;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.epollrdhup;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.isSupportingSendmmsg;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.isSupportingTcpFastopen;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.kernelVersion;
+import static io.netty.channel.epoll.NativeStaticallyReferencedJniMethods.tcpMd5SigMaxKeyLen;
 import static io.netty.channel.unix.Errors.ioResult;
 import static io.netty.channel.unix.Errors.newIOException;
 
@@ -105,7 +113,7 @@ public final class Native {
       timeoutNs = 0;
     }
     int ready = epollWait0(epollFd.intValue(), events.memoryAddress(), events.length(), timerFd.intValue(),
-        timeoutSec, timeoutNs);
+      timeoutSec, timeoutNs);
     if (ready < 0) {
       throw newIOException("epoll_wait", ready);
     }
@@ -200,7 +208,7 @@ public final class Native {
   }
 
   private static native int sendmmsg0(
-      int fd, boolean ipv6, NativeDatagramPacketArray.NativeDatagramPacket[] msgs, int offset, int len);
+    int fd, boolean ipv6, NativeDatagramPacketArray.NativeDatagramPacket[] msgs, int offset, int len);
 
   static int recvmmsg(int fd, boolean ipv6, NativeDatagramPacketArray.NativeDatagramPacket[] msgs,
                       int offset, int len) throws IOException {
@@ -212,7 +220,7 @@ public final class Native {
   }
 
   private static native int recvmmsg0(
-      int fd, boolean ipv6, NativeDatagramPacketArray.NativeDatagramPacket[] msgs, int offset, int len);
+    int fd, boolean ipv6, NativeDatagramPacketArray.NativeDatagramPacket[] msgs, int offset, int len);
 
   // epoll_event related
   public static native int sizeofEpollEvent();

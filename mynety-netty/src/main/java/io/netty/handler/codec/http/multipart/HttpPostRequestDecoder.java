@@ -16,7 +16,11 @@
 package io.netty.handler.codec.http.multipart;
 
 import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpConstants;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.internal.StringUtil;
 
 import java.nio.charset.Charset;
@@ -117,7 +121,6 @@ public class HttpPostRequestDecoder implements InterfaceHttpPostRequestDecoder {
 
   /**
    * Check if the given request is a multipart request
-   *
    * @return True if the request is a Multipart request
    */
   public static boolean isMultipart(HttpRequest request) {
@@ -130,7 +133,6 @@ public class HttpPostRequestDecoder implements InterfaceHttpPostRequestDecoder {
 
   /**
    * Check from the request ContentType if this request is a Multipart request.
-   *
    * @return an array of String if multipartDataBoundary exists with the multipartDataBoundary
    * as first element, charset if any as second (missing if not set), else null
    */
@@ -241,7 +243,6 @@ public class HttpPostRequestDecoder implements InterfaceHttpPostRequestDecoder {
 
   /**
    * Split the very first line (Content-Type value) in 3 Strings
-   *
    * @return the array of 3 Strings
    */
   private static String[] splitHeaderContentType(String sb) {

@@ -18,7 +18,12 @@ package io.netty.channel.sctp;
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpStandardSocketOptions;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.*;
+import io.netty.channel.ChannelException;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.DefaultChannelConfig;
+import io.netty.channel.MessageSizeEstimator;
+import io.netty.channel.RecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.util.internal.PlatformDependent;
 
 import java.io.IOException;
@@ -56,8 +61,8 @@ public class DefaultSctpChannelConfig extends DefaultChannelConfig implements Sc
   @Override
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        super.getOptions(),
-        SO_RCVBUF, SO_SNDBUF, SCTP_NODELAY, SCTP_INIT_MAXSTREAMS);
+      super.getOptions(),
+      SO_RCVBUF, SO_SNDBUF, SCTP_NODELAY, SCTP_INIT_MAXSTREAMS);
   }
 
   @SuppressWarnings("unchecked")

@@ -26,11 +26,10 @@ import java.util.Queue;
 /**
  * A combination of {@link HttpRequestDecoder} and {@link HttpResponseEncoder}
  * which enables easier server side HTTP implementation.
- *
  * @see HttpClientCodec
  */
 public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequestDecoder, HttpResponseEncoder>
-    implements HttpServerUpgradeHandler.SourceCodec {
+  implements HttpServerUpgradeHandler.SourceCodec {
 
   /**
    * A queue that is used for correlating a request and a response.
@@ -51,7 +50,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
    */
   public HttpServerCodec(int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
     init(new HttpServerRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize),
-        new HttpServerResponseEncoder());
+      new HttpServerResponseEncoder());
   }
 
   /**
@@ -59,7 +58,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
    */
   public HttpServerCodec(int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders) {
     init(new HttpServerRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize, validateHeaders),
-        new HttpServerResponseEncoder());
+      new HttpServerResponseEncoder());
   }
 
   /**
@@ -68,9 +67,9 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
   public HttpServerCodec(int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders,
                          int initialBufferSize) {
     init(
-        new HttpServerRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize,
-            validateHeaders, initialBufferSize),
-        new HttpServerResponseEncoder());
+      new HttpServerRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize,
+        validateHeaders, initialBufferSize),
+      new HttpServerResponseEncoder());
   }
 
   /**
@@ -120,7 +119,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     @Override
     protected void sanitizeHeadersBeforeEncode(HttpResponse msg, boolean isAlwaysEmpty) {
       if (!isAlwaysEmpty && HttpMethod.CONNECT.equals(method)
-          && msg.status().codeClass() == HttpStatusClass.SUCCESS) {
+        && msg.status().codeClass() == HttpStatusClass.SUCCESS) {
         // Stripping Transfer-Encoding:
         // See https://tools.ietf.org/html/rfc7230#section-3.3.1
         msg.headers().remove(HttpHeaderNames.TRANSFER_ENCODING);

@@ -114,7 +114,7 @@ public final class FingerprintTrustManagerFactory extends SimpleTrustManagerFact
 
       if (!found) {
         throw new CertificateException(
-            type + " certificate with unknown fingerprint: " + cert.getSubjectDN());
+          type + " certificate with unknown fingerprint: " + cert.getSubjectDN());
       }
     }
 
@@ -134,7 +134,6 @@ public final class FingerprintTrustManagerFactory extends SimpleTrustManagerFact
 
   /**
    * Creates a new instance.
-   *
    * @param fingerprints a list of SHA1 fingerprints in hexadecimal form
    */
   public FingerprintTrustManagerFactory(Iterable<String> fingerprints) {
@@ -143,7 +142,6 @@ public final class FingerprintTrustManagerFactory extends SimpleTrustManagerFact
 
   /**
    * Creates a new instance.
-   *
    * @param fingerprints a list of SHA1 fingerprints in hexadecimal form
    */
   public FingerprintTrustManagerFactory(String... fingerprints) {
@@ -152,7 +150,6 @@ public final class FingerprintTrustManagerFactory extends SimpleTrustManagerFact
 
   /**
    * Creates a new instance.
-   *
    * @param fingerprints a list of SHA1 fingerprints
    */
   public FingerprintTrustManagerFactory(byte[]... fingerprints) {
@@ -167,7 +164,7 @@ public final class FingerprintTrustManagerFactory extends SimpleTrustManagerFact
       }
       if (f.length != SHA1_BYTE_LEN) {
         throw new IllegalArgumentException("malformed fingerprint: " +
-            ByteBufUtil.hexDump(Unpooled.wrappedBuffer(f)) + " (expected: SHA1)");
+          ByteBufUtil.hexDump(Unpooled.wrappedBuffer(f)) + " (expected: SHA1)");
       }
       list.add(f.clone());
     }

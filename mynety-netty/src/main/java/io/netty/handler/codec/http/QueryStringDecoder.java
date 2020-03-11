@@ -25,11 +25,17 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static io.netty.util.internal.ObjectUtil.checkNotNull;
 import static io.netty.util.internal.ObjectUtil.checkPositive;
-import static io.netty.util.internal.StringUtil.*;
+import static io.netty.util.internal.StringUtil.EMPTY_STRING;
+import static io.netty.util.internal.StringUtil.SPACE;
+import static io.netty.util.internal.StringUtil.decodeHexByte;
 
 /**
  * Splits an HTTP query string into a path string and key-value parameter pairs.
@@ -55,7 +61,6 @@ import static io.netty.util.internal.StringUtil.*;
  * limits the maximum number of decoded key-value parameter pairs, up to {@literal 1024} by
  * default, and you can configure it when you construct the decoder by passing an additional
  * integer parameter.
- *
  * @see QueryStringEncoder
  */
 public class QueryStringDecoder {
@@ -292,7 +297,6 @@ public class QueryStringDecoder {
    * <p>
    * This is equivalent to calling {@link #decodeComponent(String, Charset)}
    * with the UTF-8 charset (recommended to comply with RFC 3986, Section 2).
-   *
    * @param s The string to decode (can be empty).
    * @return The decoded string, or {@code s} if there's nothing to decode.
    * If the string to decode is {@code null}, returns an empty string.
@@ -317,7 +321,6 @@ public class QueryStringDecoder {
    * except that it's over 2x faster and generates less garbage for the GC.
    * Actually this function doesn't allocate any memory if there's nothing
    * to decode, the argument itself is returned.
-   *
    * @param s       The string to decode (can be empty).
    * @param charset The charset to use to decode the string (should really
    *                be {@link CharsetUtil#UTF_8}.

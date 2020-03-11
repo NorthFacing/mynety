@@ -76,14 +76,13 @@ public enum HttpStatusClass {
 
   /**
    * Returns the class of the specified HTTP status code.
-   *
    * @param code Just the numeric portion of the http status code.
    */
   public static HttpStatusClass valueOf(CharSequence code) {
     if (code != null && code.length() == 3) {
       char c0 = code.charAt(0);
       return isDigit(c0) && isDigit(code.charAt(1)) && isDigit(code.charAt(2)) ? valueOf(digit(c0) * 100)
-          : UNKNOWN;
+        : UNKNOWN;
     }
     return UNKNOWN;
   }

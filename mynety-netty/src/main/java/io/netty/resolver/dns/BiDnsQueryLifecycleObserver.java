@@ -35,7 +35,6 @@ public final class BiDnsQueryLifecycleObserver implements DnsQueryLifecycleObser
 
   /**
    * Create a new instance.
-   *
    * @param a The {@link DnsQueryLifecycleObserver} that will receive events first.
    * @param b The {@link DnsQueryLifecycleObserver} that will receive events second.
    */

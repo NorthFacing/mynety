@@ -23,7 +23,6 @@ import io.netty.util.internal.ObjectUtil;
 
 /**
  * A PEM encoded value.
- *
  * @see PemEncoded
  * @see PemPrivateKey#toPEM(ByteBufAllocator, boolean, java.security.PrivateKey)
  * @see PemX509Certificate#toPEM(ByteBufAllocator, boolean, java.security.cert.X509Certificate[])

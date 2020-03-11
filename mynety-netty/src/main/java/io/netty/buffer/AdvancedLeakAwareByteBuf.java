@@ -48,7 +48,7 @@ final class AdvancedLeakAwareByteBuf extends SimpleLeakAwareByteBuf {
     }
 
     ResourceLeakDetector.addExclusions(
-        AdvancedLeakAwareByteBuf.class, "touch", "recordLeakNonRefCountingOperation");
+      AdvancedLeakAwareByteBuf.class, "touch", "recordLeakNonRefCountingOperation");
   }
 
   AdvancedLeakAwareByteBuf(ByteBuf buf, ResourceLeakTracker<ByteBuf> leak) {
@@ -961,7 +961,7 @@ final class AdvancedLeakAwareByteBuf extends SimpleLeakAwareByteBuf {
 
   @Override
   protected AdvancedLeakAwareByteBuf newLeakAwareByteBuf(
-      ByteBuf buf, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
+    ByteBuf buf, ByteBuf trackedByteBuf, ResourceLeakTracker<ByteBuf> leakTracker) {
     return new AdvancedLeakAwareByteBuf(buf, trackedByteBuf, leakTracker);
   }
 }

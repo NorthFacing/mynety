@@ -48,33 +48,33 @@ public final class LocalEcho {
       // to reduce the communication latency between socket channels and local channels.
       ServerBootstrap sb = new ServerBootstrap();
       sb.group(serverGroup)
-          .channel(LocalServerChannel.class)
-          .handler(new ChannelInitializer<LocalServerChannel>() {
-            @Override
-            public void initChannel(LocalServerChannel ch) throws Exception {
-              ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
-            }
-          })
-          .childHandler(new ChannelInitializer<LocalChannel>() {
-            @Override
-            public void initChannel(LocalChannel ch) throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new LocalEchoServerHandler());
-            }
-          });
+        .channel(LocalServerChannel.class)
+        .handler(new ChannelInitializer<LocalServerChannel>() {
+          @Override
+          public void initChannel(LocalServerChannel ch) throws Exception {
+            ch.pipeline().addLast(new LoggingHandler(LogLevel.INFO));
+          }
+        })
+        .childHandler(new ChannelInitializer<LocalChannel>() {
+          @Override
+          public void initChannel(LocalChannel ch) throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new LocalEchoServerHandler());
+          }
+        });
 
       Bootstrap cb = new Bootstrap();
       cb.group(clientGroup)
-          .channel(LocalChannel.class)
-          .handler(new ChannelInitializer<LocalChannel>() {
-            @Override
-            public void initChannel(LocalChannel ch) throws Exception {
-              ch.pipeline().addLast(
-                  new LoggingHandler(LogLevel.INFO),
-                  new LocalEchoClientHandler());
-            }
-          });
+        .channel(LocalChannel.class)
+        .handler(new ChannelInitializer<LocalChannel>() {
+          @Override
+          public void initChannel(LocalChannel ch) throws Exception {
+            ch.pipeline().addLast(
+              new LoggingHandler(LogLevel.INFO),
+              new LocalEchoClientHandler());
+          }
+        });
 
       // Start the server.
       sb.bind(addr).sync();

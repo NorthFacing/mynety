@@ -14,7 +14,12 @@
  */
 package io.netty.util.collection;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Utilities for int-based primitive collections.
@@ -133,7 +138,6 @@ public final class IntCollections {
 
   /**
    * An unmodifiable wrapper around a {@link IntObjectMap}.
-   *
    * @param <V> the value type stored in the map.
    */
   private static final class UnmodifiableMap<V> implements IntObjectMap<V> {

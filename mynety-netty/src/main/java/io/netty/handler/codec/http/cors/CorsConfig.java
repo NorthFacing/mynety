@@ -21,8 +21,12 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.internal.StringUtil;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -58,7 +62,6 @@ public final class CorsConfig {
 
   /**
    * Determines if support for CORS is enabled.
-   *
    * @return {@code true} if support for CORS is enabled, false otherwise.
    */
   public boolean isCorsSupportEnabled() {
@@ -67,7 +70,6 @@ public final class CorsConfig {
 
   /**
    * Determines whether a wildcard origin, '*', is supported.
-   *
    * @return {@code boolean} true if any origin is allowed.
    */
   public boolean isAnyOriginSupported() {
@@ -76,7 +78,6 @@ public final class CorsConfig {
 
   /**
    * Returns the allowed origin. This can either be a wildcard or an origin value.
-   *
    * @return the value that will be used for the CORS response header 'Access-Control-Allow-Origin'
    */
   public String origin() {
@@ -85,7 +86,6 @@ public final class CorsConfig {
 
   /**
    * Returns the set of allowed origins.
-   *
    * @return {@code Set} the allowed origins.
    */
   public Set<String> origins() {
@@ -98,7 +98,6 @@ public final class CorsConfig {
    * <p>
    * If isNullOriginAllowed is true then the server will response with the wildcard for the
    * the CORS response header 'Access-Control-Allow-Origin'.
-   *
    * @return {@code true} if a 'null' origin should be supported.
    */
   public boolean isNullOriginAllowed() {
@@ -124,7 +123,6 @@ public final class CorsConfig {
    * </ul>
    * To expose other headers they need to be specified, which is what this method enables by
    * adding the headers names to the CORS 'Access-Control-Expose-Headers' response header.
-   *
    * @return {@code List<String>} a list of the headers to expose.
    */
   public Set<String> exposedHeaders() {
@@ -145,7 +143,6 @@ public final class CorsConfig {
    * </pre>
    * The default value for 'withCredentials' is false in which case no cookies are sent.
    * Setting this to true will included cookies in cross origin requests.
-   *
    * @return {@code true} if cookies are supported.
    */
   public boolean isCredentialsAllowed() {
@@ -159,7 +156,6 @@ public final class CorsConfig {
    * This setting will set the CORS 'Access-Control-Max-Age' response header and enables the
    * caching of the preflight response for the specified time. During this time no preflight
    * request will be made.
-   *
    * @return {@code long} the time in seconds that a preflight request may be cached.
    */
   public long maxAge() {
@@ -169,7 +165,6 @@ public final class CorsConfig {
   /**
    * Returns the allowed set of Request Methods. The Http methods that should be returned in the
    * CORS 'Access-Control-Request-Method' response header.
-   *
    * @return {@code Set} of {@link HttpMethod}s that represent the allowed Request Methods.
    */
   public Set<HttpMethod> allowedRequestMethods() {
@@ -181,7 +176,6 @@ public final class CorsConfig {
    * <p>
    * The header names returned from this method will be used to set the CORS
    * 'Access-Control-Allow-Headers' response header.
-   *
    * @return {@code Set<String>} of strings that represent the allowed Request Headers.
    */
   public Set<String> allowedRequestHeaders() {
@@ -190,7 +184,6 @@ public final class CorsConfig {
 
   /**
    * Returns HTTP response headers that should be added to a CORS preflight response.
-   *
    * @return {@link HttpHeaders} the HTTP response headers to be added.
    */
   public HttpHeaders preflightResponseHeaders() {
@@ -216,7 +209,6 @@ public final class CorsConfig {
    * CORS headers are set after a request is processed. This may not always be desired
    * and this setting will check that the Origin is valid and if it is not valid no
    * further processing will take place, and an error will be returned to the calling client.
-   *
    * @return {@code true} if a CORS request should short-circuit upon receiving an invalid Origin header.
    */
   public boolean isShortCircuit() {
@@ -242,14 +234,14 @@ public final class CorsConfig {
   @Override
   public String toString() {
     return StringUtil.simpleClassName(this) + "[enabled=" + enabled +
-        ", origins=" + origins +
-        ", anyOrigin=" + anyOrigin +
-        ", exposedHeaders=" + exposeHeaders +
-        ", isCredentialsAllowed=" + allowCredentials +
-        ", maxAge=" + maxAge +
-        ", allowedRequestMethods=" + allowedRequestMethods +
-        ", allowedRequestHeaders=" + allowedRequestHeaders +
-        ", preflightHeaders=" + preflightHeaders + ']';
+      ", origins=" + origins +
+      ", anyOrigin=" + anyOrigin +
+      ", exposedHeaders=" + exposeHeaders +
+      ", isCredentialsAllowed=" + allowCredentials +
+      ", maxAge=" + maxAge +
+      ", allowedRequestMethods=" + allowedRequestMethods +
+      ", allowedRequestHeaders=" + allowedRequestHeaders +
+      ", preflightHeaders=" + preflightHeaders + ']';
   }
 
   /**

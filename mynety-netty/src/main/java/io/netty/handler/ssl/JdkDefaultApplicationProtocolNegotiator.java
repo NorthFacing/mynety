@@ -25,7 +25,7 @@ import java.util.List;
  */
 final class JdkDefaultApplicationProtocolNegotiator implements JdkApplicationProtocolNegotiator {
   public static final JdkDefaultApplicationProtocolNegotiator INSTANCE =
-      new JdkDefaultApplicationProtocolNegotiator();
+    new JdkDefaultApplicationProtocolNegotiator();
   private static final SslEngineWrapperFactory DEFAULT_SSL_ENGINE_WRAPPER_FACTORY = new SslEngineWrapperFactory() {
     @Override
     public SSLEngine wrapSslEngine(SSLEngine engine,

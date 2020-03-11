@@ -72,7 +72,6 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -84,7 +83,6 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -93,13 +91,12 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
    * @param delimiter      the delimiter
    */
   public DelimiterBasedFrameDecoder(
-      int maxFrameLength, boolean stripDelimiter, ByteBuf delimiter) {
+    int maxFrameLength, boolean stripDelimiter, ByteBuf delimiter) {
     this(maxFrameLength, stripDelimiter, true, delimiter);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -115,15 +112,14 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
    * @param delimiter      the delimiter
    */
   public DelimiterBasedFrameDecoder(
-      int maxFrameLength, boolean stripDelimiter, boolean failFast,
-      ByteBuf delimiter) {
+    int maxFrameLength, boolean stripDelimiter, boolean failFast,
+    ByteBuf delimiter) {
     this(maxFrameLength, stripDelimiter, failFast, new ByteBuf[]{
-        delimiter.slice(delimiter.readerIndex(), delimiter.readableBytes())});
+      delimiter.slice(delimiter.readerIndex(), delimiter.readableBytes())});
   }
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -135,7 +131,6 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -144,13 +139,12 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
    * @param delimiters     the delimiters
    */
   public DelimiterBasedFrameDecoder(
-      int maxFrameLength, boolean stripDelimiter, ByteBuf... delimiters) {
+    int maxFrameLength, boolean stripDelimiter, ByteBuf... delimiters) {
     this(maxFrameLength, stripDelimiter, true, delimiters);
   }
 
   /**
    * Creates a new instance.
-   *
    * @param maxFrameLength the maximum length of the decoded frame.
    *                       A {@link TooLongFrameException} is thrown if
    *                       the length of the frame exceeds this value.
@@ -166,7 +160,7 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
    * @param delimiters     the delimiters
    */
   public DelimiterBasedFrameDecoder(
-      int maxFrameLength, boolean stripDelimiter, boolean failFast, ByteBuf... delimiters) {
+    int maxFrameLength, boolean stripDelimiter, boolean failFast, ByteBuf... delimiters) {
     validateMaxFrameLength(maxFrameLength);
     if (delimiters == null) {
       throw new NullPointerException("delimiters");
@@ -206,8 +200,8 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
       b = delimiters[0];
     }
     return a.capacity() == 2 && b.capacity() == 1
-        && a.getByte(0) == '\r' && a.getByte(1) == '\n'
-        && b.getByte(0) == '\n';
+      && a.getByte(0) == '\r' && a.getByte(1) == '\n'
+      && b.getByte(0) == '\n';
   }
 
   /**
@@ -227,7 +221,6 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Create a frame out of the {@link ByteBuf} and return it.
-   *
    * @param ctx    the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
    * @param buffer the {@link ByteBuf} from which to read data
    * @return frame           the {@link ByteBuf} which represent the frame or {@code null} if no frame could
@@ -304,12 +297,12 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
   private void fail(long frameLength) {
     if (frameLength > 0) {
       throw new TooLongFrameException(
-          "frame length exceeds " + maxFrameLength +
-              ": " + frameLength + " - discarded");
+        "frame length exceeds " + maxFrameLength +
+          ": " + frameLength + " - discarded");
     } else {
       throw new TooLongFrameException(
-          "frame length exceeds " + maxFrameLength +
-              " - discarding");
+        "frame length exceeds " + maxFrameLength +
+          " - discarding");
     }
   }
 
@@ -328,7 +321,7 @@ public class DelimiterBasedFrameDecoder extends ByteToMessageDecoder {
         } else {
           haystackIndex++;
           if (haystackIndex == haystack.writerIndex() &&
-              needleIndex != needle.capacity() - 1) {
+            needleIndex != needle.capacity() - 1) {
             return -1;
           }
         }

@@ -26,7 +26,6 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  * <p>
  * It will store the way the raw value was wrapped in {@link Cookie#setWrap(boolean)} so it can be
  * eventually sent back to the Origin server as is.
- *
  * @see ClientCookieEncoder
  */
 public final class ClientCookieDecoder extends CookieDecoder {
@@ -48,7 +47,6 @@ public final class ClientCookieDecoder extends CookieDecoder {
 
   /**
    * Decodes the specified Set-Cookie HTTP header value into a {@link Cookie}.
-   *
    * @return the decoded {@link Cookie}
    */
   public Cookie decode(String header) {
@@ -75,7 +73,7 @@ public final class ClientCookieDecoder extends CookieDecoder {
           break loop;
 
         } else if (c == '\t' || c == '\n' || c == 0x0b || c == '\f'
-            || c == '\r' || c == ' ' || c == ';') {
+          || c == '\r' || c == ' ' || c == ';') {
           i++;
           continue;
         }
@@ -187,7 +185,6 @@ public final class ClientCookieDecoder extends CookieDecoder {
     /**
      * Parse and store a key-value pair. First one is considered to be the
      * cookie name/value. Unknown attribute names are silently discarded.
-     *
      * @param keyStart   where the key starts in the header
      * @param keyEnd     where the key ends in the header
      * @param valueStart where the value starts in the header

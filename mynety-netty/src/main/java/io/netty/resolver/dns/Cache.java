@@ -18,7 +18,11 @@ package io.netty.resolver.dns;
 import io.netty.channel.EventLoop;
 import io.netty.util.internal.PlatformDependent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.Delayed;
@@ -31,12 +35,11 @@ import static java.util.Collections.singletonList;
 
 /**
  * Abstract cache that automatically removes entries for a hostname once the TTL for an entry is reached.
- *
  * @param <E>
  */
 abstract class Cache<E> {
   private static final AtomicReferenceFieldUpdater<Cache.Entries, ScheduledFuture> FUTURE_UPDATER =
-      AtomicReferenceFieldUpdater.newUpdater(Cache.Entries.class, ScheduledFuture.class, "expirationFuture");
+    AtomicReferenceFieldUpdater.newUpdater(Cache.Entries.class, ScheduledFuture.class, "expirationFuture");
 
   private static final ScheduledFuture<?> CANCELLED = new ScheduledFuture<Object>() {
 
@@ -145,7 +148,7 @@ abstract class Cache<E> {
    * Sort the {@link List} for a {@code hostname} before caching these.
    */
   protected void sortEntries(
-      @SuppressWarnings("unused") String hostname, @SuppressWarnings("unused") List<E> entries) {
+    @SuppressWarnings("unused") String hostname, @SuppressWarnings("unused") List<E> entries) {
     // NOOP.
   }
 

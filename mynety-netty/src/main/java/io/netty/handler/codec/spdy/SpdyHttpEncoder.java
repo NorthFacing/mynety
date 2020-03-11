@@ -18,7 +18,15 @@ package io.netty.handler.codec.spdy;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.handler.codec.UnsupportedMessageTypeException;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.FullHttpMessage;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMessage;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.AsciiString;
 
 import java.util.Iterator;
@@ -120,7 +128,6 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
 
   /**
    * Creates a new instance.
-   *
    * @param version the protocol version
    */
   public SpdyHttpEncoder(SpdyVersion version) {
@@ -129,7 +136,6 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
 
   /**
    * Creates a new instance.
-   *
    * @param version            the protocol version
    * @param headersToLowerCase convert header names to lowercase. In a controlled environment,
    *                           one can disable the conversion.
@@ -187,7 +193,7 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
           while (itr.hasNext()) {
             Map.Entry<CharSequence, CharSequence> entry = itr.next();
             final CharSequence headerName =
-                headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
+              headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
             spdyHeadersFrame.headers().add(headerName, entry.getValue());
           }
 
@@ -228,7 +234,7 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
     httpHeaders.remove(HttpHeaderNames.TRANSFER_ENCODING);
 
     SpdySynStreamFrame spdySynStreamFrame =
-        new DefaultSpdySynStreamFrame(streamId, associatedToStreamId, priority, validateHeaders);
+      new DefaultSpdySynStreamFrame(streamId, associatedToStreamId, priority, validateHeaders);
 
     // Unfold the first line of the message into name/value pairs
     SpdyHeaders frameHeaders = spdySynStreamFrame.headers();
@@ -252,7 +258,7 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
     while (itr.hasNext()) {
       Map.Entry<CharSequence, CharSequence> entry = itr.next();
       final CharSequence headerName =
-          headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
+        headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
       frameHeaders.add(headerName, entry.getValue());
     }
     currentStreamId = spdySynStreamFrame.streamId();
@@ -295,7 +301,7 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
     while (itr.hasNext()) {
       Map.Entry<CharSequence, CharSequence> entry = itr.next();
       final CharSequence headerName =
-          headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
+        headersToLowerCase ? AsciiString.of(entry.getKey()).toLowerCase() : entry.getKey();
       spdyHeadersFrame.headers().add(headerName, entry.getValue());
     }
 
@@ -307,7 +313,6 @@ public class SpdyHttpEncoder extends MessageToMessageEncoder<HttpObject> {
 
   /**
    * Checks if the given HTTP message should be considered as a last SPDY frame.
-   *
    * @param httpMessage check this HTTP message
    * @return whether the given HTTP message should generate a <em>last</em> SPDY frame.
    */

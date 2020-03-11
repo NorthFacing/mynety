@@ -39,7 +39,7 @@ public class SnappyFrameEncoder extends MessageToByteEncoder<ByteBuf> {
    * type 0xff, a length field of 0x6, and 'sNaPpY' in ASCII.
    */
   private static final byte[] STREAM_START = {
-      (byte) 0xff, 0x06, 0x00, 0x00, 0x73, 0x4e, 0x61, 0x50, 0x70, 0x59
+    (byte) 0xff, 0x06, 0x00, 0x00, 0x73, 0x4e, 0x61, 0x50, 0x70, 0x59
   };
 
   private final Snappy snappy = new Snappy();
@@ -103,7 +103,6 @@ public class SnappyFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Writes the 2-byte chunk length to the output buffer.
-   *
    * @param out         The buffer to write to
    * @param chunkLength The length to write
    */
@@ -113,7 +112,6 @@ public class SnappyFrameEncoder extends MessageToByteEncoder<ByteBuf> {
 
   /**
    * Calculates and writes the 4-byte checksum to the output buffer
-   *
    * @param slice The data to calculate the checksum for
    * @param out   The output buffer to write the checksum to
    */

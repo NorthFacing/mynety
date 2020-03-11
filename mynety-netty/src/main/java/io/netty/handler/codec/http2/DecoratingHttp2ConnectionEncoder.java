@@ -23,7 +23,7 @@ import static io.netty.util.internal.ObjectUtil.checkNotNull;
  */
 @UnstableApi
 public class DecoratingHttp2ConnectionEncoder extends DecoratingHttp2FrameWriter implements Http2ConnectionEncoder,
-    Http2SettingsReceivedConsumer {
+  Http2SettingsReceivedConsumer {
   private final Http2ConnectionEncoder delegate;
 
   public DecoratingHttp2ConnectionEncoder(Http2ConnectionEncoder delegate) {
@@ -67,7 +67,7 @@ public class DecoratingHttp2ConnectionEncoder extends DecoratingHttp2FrameWriter
       ((Http2SettingsReceivedConsumer) delegate).consumeReceivedSettings(settings);
     } else {
       throw new IllegalStateException("delegate " + delegate + " is not an instance of " +
-          Http2SettingsReceivedConsumer.class);
+        Http2SettingsReceivedConsumer.class);
     }
   }
 }

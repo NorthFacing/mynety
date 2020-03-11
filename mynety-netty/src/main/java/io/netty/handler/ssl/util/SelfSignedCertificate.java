@@ -24,8 +24,16 @@ import io.netty.util.internal.SystemPropertyUtil;
 import io.netty.util.internal.logging.InternalLogger;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 
-import java.io.*;
-import java.security.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -56,12 +64,12 @@ public final class SelfSignedCertificate {
    * Current time minus 1 year, just in case software clock goes back due to time synchronization
    */
   private static final Date DEFAULT_NOT_BEFORE = new Date(SystemPropertyUtil.getLong(
-      "io.netty.selfSignedCertificate.defaultNotBefore", System.currentTimeMillis() - 86400000L * 365));
+    "io.netty.selfSignedCertificate.defaultNotBefore", System.currentTimeMillis() - 86400000L * 365));
   /**
    * The maximum possible value in X.509 specification: 9999-12-31 23:59:59
    */
   private static final Date DEFAULT_NOT_AFTER = new Date(SystemPropertyUtil.getLong(
-      "io.netty.selfSignedCertificate.defaultNotAfter", 253402300799000L));
+    "io.netty.selfSignedCertificate.defaultNotAfter", 253402300799000L));
 
   /**
    * FIPS 140-2 encryption requires the key length to be 2048 bits or greater.
@@ -69,7 +77,7 @@ public final class SelfSignedCertificate {
    * for those that need more stringent security requirements.
    */
   private static final int DEFAULT_KEY_LENGTH_BITS =
-      SystemPropertyUtil.getInt("io.netty.handler.ssl.util.selfSignedKeyStrength", 2048);
+    SystemPropertyUtil.getInt("io.netty.handler.ssl.util.selfSignedKeyStrength", 2048);
 
   private final File certificate;
   private final File privateKey;
@@ -85,7 +93,6 @@ public final class SelfSignedCertificate {
 
   /**
    * Creates a new instance.
-   *
    * @param notBefore Certificate is not valid before this time
    * @param notAfter  Certificate is not valid after this time
    */
@@ -95,7 +102,6 @@ public final class SelfSignedCertificate {
 
   /**
    * Creates a new instance.
-   *
    * @param fqdn a fully qualified domain name
    */
   public SelfSignedCertificate(String fqdn) throws CertificateException {
@@ -104,7 +110,6 @@ public final class SelfSignedCertificate {
 
   /**
    * Creates a new instance.
-   *
    * @param fqdn      a fully qualified domain name
    * @param notBefore Certificate is not valid before this time
    * @param notAfter  Certificate is not valid after this time
@@ -117,7 +122,6 @@ public final class SelfSignedCertificate {
 
   /**
    * Creates a new instance.
-   *
    * @param fqdn   a fully qualified domain name
    * @param random the {@link java.security.SecureRandom} to use
    * @param bits   the number of bits of the generated private key
@@ -128,7 +132,6 @@ public final class SelfSignedCertificate {
 
   /**
    * Creates a new instance.
-   *
    * @param fqdn      a fully qualified domain name
    * @param random    the {@link java.security.SecureRandom} to use
    * @param bits      the number of bits of the generated private key
@@ -136,7 +139,7 @@ public final class SelfSignedCertificate {
    * @param notAfter  Certificate is not valid after this time
    */
   public SelfSignedCertificate(String fqdn, SecureRandom random, int bits, Date notBefore, Date notAfter)
-      throws CertificateException {
+    throws CertificateException {
     // Generate an RSA key pair.
     final KeyPair keypair;
     try {
@@ -160,8 +163,8 @@ public final class SelfSignedCertificate {
       } catch (Throwable t2) {
         logger.debug("Failed to generate a self-signed X.509 certificate using Bouncy Castle:", t2);
         throw new CertificateException(
-            "No provider succeeded to generate a self-signed certificate. " +
-                "See debug log for the root cause.", t2);
+          "No provider succeeded to generate a self-signed certificate. " +
+            "See debug log for the root cause.", t2);
         // TODO: consider using Java 7 addSuppressed to append t
       }
     }
@@ -225,7 +228,7 @@ public final class SelfSignedCertificate {
   }
 
   static String[] newSelfSignedCertificate(
-      String fqdn, PrivateKey key, X509Certificate cert) throws IOException, CertificateEncodingException {
+    String fqdn, PrivateKey key, X509Certificate cert) throws IOException, CertificateEncodingException {
     // Encode the private key into a file.
     ByteBuf wrappedBuf = Unpooled.wrappedBuffer(key.getEncoded());
     ByteBuf encodedBuf;
@@ -234,8 +237,8 @@ public final class SelfSignedCertificate {
       encodedBuf = Base64.encode(wrappedBuf, true);
       try {
         keyText = "-----BEGIN PRIVATE KEY-----\n" +
-            encodedBuf.toString(CharsetUtil.US_ASCII) +
-            "\n-----END PRIVATE KEY-----\n";
+          encodedBuf.toString(CharsetUtil.US_ASCII) +
+          "\n-----END PRIVATE KEY-----\n";
       } finally {
         encodedBuf.release();
       }
@@ -265,8 +268,8 @@ public final class SelfSignedCertificate {
       try {
         // Encode the certificate into a CRT file.
         certText = "-----BEGIN CERTIFICATE-----\n" +
-            encodedBuf.toString(CharsetUtil.US_ASCII) +
-            "\n-----END CERTIFICATE-----\n";
+          encodedBuf.toString(CharsetUtil.US_ASCII) +
+          "\n-----END CERTIFICATE-----\n";
       } finally {
         encodedBuf.release();
       }

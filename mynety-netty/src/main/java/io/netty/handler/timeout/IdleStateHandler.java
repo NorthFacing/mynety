@@ -16,8 +16,15 @@
 package io.netty.handler.timeout;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
 import io.netty.channel.Channel.Unsafe;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOutboundBuffer;
+import io.netty.channel.ChannelPromise;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +91,6 @@ import java.util.concurrent.TimeUnit;
  * bootstrap.childHandler(new MyChannelInitializer());
  * ...
  * </pre>
- *
  * @see ReadTimeoutHandler
  * @see WriteTimeoutHandler
  */
@@ -126,7 +132,6 @@ public class IdleStateHandler extends ChannelDuplexHandler {
 
   /**
    * Creates a new instance firing {@link IdleStateEvent}s.
-   *
    * @param readerIdleTimeSeconds an {@link IdleStateEvent} whose state is {@link IdleState#READER_IDLE}
    *                              will be triggered when no read was performed for the specified
    *                              period of time.  Specify {@code 0} to disable.
@@ -138,26 +143,25 @@ public class IdleStateHandler extends ChannelDuplexHandler {
    *                              the specified period of time.  Specify {@code 0} to disable.
    */
   public IdleStateHandler(
-      int readerIdleTimeSeconds,
-      int writerIdleTimeSeconds,
-      int allIdleTimeSeconds) {
+    int readerIdleTimeSeconds,
+    int writerIdleTimeSeconds,
+    int allIdleTimeSeconds) {
 
     this(readerIdleTimeSeconds, writerIdleTimeSeconds, allIdleTimeSeconds,
-        TimeUnit.SECONDS);
+      TimeUnit.SECONDS);
   }
 
   /**
    * @see #IdleStateHandler(boolean, long, long, long, TimeUnit)
    */
   public IdleStateHandler(
-      long readerIdleTime, long writerIdleTime, long allIdleTime,
-      TimeUnit unit) {
+    long readerIdleTime, long writerIdleTime, long allIdleTime,
+    TimeUnit unit) {
     this(false, readerIdleTime, writerIdleTime, allIdleTime, unit);
   }
 
   /**
    * Creates a new instance firing {@link IdleStateEvent}s.
-   *
    * @param observeOutput  whether or not the consumption of {@code bytes} should be taken into
    *                       consideration when assessing write idleness. The default is {@code false}.
    * @param readerIdleTime an {@link IdleStateEvent} whose state is {@link IdleState#READER_IDLE}
@@ -303,15 +307,15 @@ public class IdleStateHandler extends ChannelDuplexHandler {
     lastReadTime = lastWriteTime = ticksInNanos();
     if (readerIdleTimeNanos > 0) {
       readerIdleTimeout = schedule(ctx, new ReaderIdleTimeoutTask(ctx),
-          readerIdleTimeNanos, TimeUnit.NANOSECONDS);
+        readerIdleTimeNanos, TimeUnit.NANOSECONDS);
     }
     if (writerIdleTimeNanos > 0) {
       writerIdleTimeout = schedule(ctx, new WriterIdleTimeoutTask(ctx),
-          writerIdleTimeNanos, TimeUnit.NANOSECONDS);
+        writerIdleTimeNanos, TimeUnit.NANOSECONDS);
     }
     if (allIdleTimeNanos > 0) {
       allIdleTimeout = schedule(ctx, new AllIdleTimeoutTask(ctx),
-          allIdleTimeNanos, TimeUnit.NANOSECONDS);
+        allIdleTimeNanos, TimeUnit.NANOSECONDS);
     }
   }
 

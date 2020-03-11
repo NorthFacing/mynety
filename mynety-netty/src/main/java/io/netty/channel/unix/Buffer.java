@@ -39,7 +39,7 @@ public final class Buffer {
    */
   public static ByteBuffer allocateDirectWithNativeOrder(int capacity) {
     return ByteBuffer.allocateDirect(capacity).order(
-        PlatformDependent.BIG_ENDIAN_NATIVE_ORDER ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+      PlatformDependent.BIG_ENDIAN_NATIVE_ORDER ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
   }
 
   /**

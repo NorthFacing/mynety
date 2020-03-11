@@ -15,7 +15,11 @@
  */
 package io.netty.handler.codec;
 
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 import io.netty.util.ReferenceCounted;
 import io.netty.util.concurrent.PromiseCombiner;
@@ -58,7 +62,6 @@ public abstract class MessageToMessageEncoder<I> extends ChannelOutboundHandlerA
 
   /**
    * Create a new instance
-   *
    * @param outboundMessageType The type of messages to match and so encode
    */
   protected MessageToMessageEncoder(Class<? extends I> outboundMessageType) {
@@ -92,7 +95,7 @@ public abstract class MessageToMessageEncoder<I> extends ChannelOutboundHandlerA
           out = null;
 
           throw new EncoderException(
-              StringUtil.simpleClassName(this) + " must produce at least one message.");
+            StringUtil.simpleClassName(this) + " must produce at least one message.");
         }
       } else {
         ctx.write(msg, promise);
@@ -138,7 +141,6 @@ public abstract class MessageToMessageEncoder<I> extends ChannelOutboundHandlerA
   /**
    * Encode from one message to an other. This method will be called for each written message that can be handled
    * by this encoder.
-   *
    * @param ctx the {@link ChannelHandlerContext} which this {@link MessageToMessageEncoder} belongs to
    * @param msg the message to encode to an other one
    * @param out the {@link List} into which the encoded msg should be added

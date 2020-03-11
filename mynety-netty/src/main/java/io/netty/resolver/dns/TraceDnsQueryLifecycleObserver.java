@@ -47,10 +47,10 @@ final class TraceDnsQueryLifecycleObserver implements DnsQueryLifecycleObserver 
   public void queryCancelled(int queriesRemaining) {
     if (dnsServerAddress != null) {
       logger.log(level, "from {} : {} cancelled with {} queries remaining", dnsServerAddress, question,
-          queriesRemaining);
+        queriesRemaining);
     } else {
       logger.log(level, "{} query never written and cancelled with {} queries remaining", question,
-          queriesRemaining);
+        queriesRemaining);
     }
   }
 

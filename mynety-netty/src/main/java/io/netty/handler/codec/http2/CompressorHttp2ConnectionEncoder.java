@@ -28,7 +28,11 @@ import io.netty.util.internal.UnstableApi;
 
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_ENCODING;
 import static io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH;
-import static io.netty.handler.codec.http.HttpHeaderValues.*;
+import static io.netty.handler.codec.http.HttpHeaderValues.DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.GZIP;
+import static io.netty.handler.codec.http.HttpHeaderValues.IDENTITY;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_DEFLATE;
+import static io.netty.handler.codec.http.HttpHeaderValues.X_GZIP;
 
 /**
  * A decorating HTTP2 encoder that will compress data frames according to the {@code content-encoding} header for each
@@ -97,7 +101,7 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
             buf = nextReadableBuf(channel);
           }
           return super.writeData(ctx, streamId, buf == null ? Unpooled.EMPTY_BUFFER : buf, padding,
-              true, promise);
+            true, promise);
         }
         // END_STREAM is not set and the assumption is data is still forthcoming.
         promise.setSuccess();
@@ -164,7 +168,7 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
 
       // Write the headers and create the stream object.
       ChannelFuture future = super.writeHeaders(ctx, streamId, headers, streamDependency, weight, exclusive,
-          padding, endOfStream, promise);
+        padding, endOfStream, promise);
 
       // After the stream object has been created, then attach the compressor as a property for data compression.
       bindCompressorToStream(compressor, streamId);
@@ -179,7 +183,6 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
   /**
    * Returns a new {@link EmbeddedChannel} that encodes the HTTP2 message content encoded in the specified
    * {@code contentEncoding}.
-   *
    * @param ctx             the context.
    * @param contentEncoding the value of the {@code content-encoding} header
    * @return a new {@link ByteToMessageDecoder} if the specified encoding is supported. {@code null} otherwise
@@ -187,7 +190,7 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
    * @throws Http2Exception If the specified encoding is not not supported and warrants an exception
    */
   protected EmbeddedChannel newContentCompressor(ChannelHandlerContext ctx, CharSequence contentEncoding)
-      throws Http2Exception {
+    throws Http2Exception {
     if (GZIP.contentEqualsIgnoreCase(contentEncoding) || X_GZIP.contentEqualsIgnoreCase(contentEncoding)) {
       return newCompressionChannel(ctx, ZlibWrapper.GZIP);
     }
@@ -201,7 +204,6 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
   /**
    * Returns the expected content encoding of the decoded content. Returning {@code contentEncoding} is the default
    * behavior, which is the case for most compressors.
-   *
    * @param contentEncoding the value of the {@code content-encoding} header
    * @return the expected content encoding of the new content.
    * @throws Http2Exception if the {@code contentEncoding} is not supported and warrants an exception
@@ -212,20 +214,18 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
 
   /**
    * Generate a new instance of an {@link EmbeddedChannel} capable of compressing data
-   *
    * @param ctx     the context.
    * @param wrapper Defines what type of encoder should be used
    */
   private EmbeddedChannel newCompressionChannel(final ChannelHandlerContext ctx, ZlibWrapper wrapper) {
     return new EmbeddedChannel(ctx.channel().id(), ctx.channel().metadata().hasDisconnect(),
-        ctx.channel().config(), ZlibCodecFactory.newZlibEncoder(wrapper, compressionLevel, windowBits,
-        memLevel));
+      ctx.channel().config(), ZlibCodecFactory.newZlibEncoder(wrapper, compressionLevel, windowBits,
+      memLevel));
   }
 
   /**
    * Checks if a new compressor object is needed for the stream identified by {@code streamId}. This method will
    * modify the {@code content-encoding} header contained in {@code headers}.
-   *
    * @param ctx         the context.
    * @param headers     Object representing headers which are to be written
    * @param endOfStream Indicates if the stream has ended
@@ -233,7 +233,7 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
    * @throws Http2Exception if any problems occur during initialization.
    */
   private EmbeddedChannel newCompressor(ChannelHandlerContext ctx, Http2Headers headers, boolean endOfStream)
-      throws Http2Exception {
+    throws Http2Exception {
     if (endOfStream) {
       return null;
     }
@@ -262,7 +262,6 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
 
   /**
    * Called after the super class has written the headers and created any associated stream objects.
-   *
    * @param compressor The compressor associated with the stream identified by {@code streamId}.
    * @param streamId   The stream id for which the headers were written.
    */
@@ -277,7 +276,6 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
 
   /**
    * Release remaining content from {@link EmbeddedChannel} and remove the compressor from the {@link Http2Stream}.
-   *
    * @param stream     The stream for which {@code compressor} is the compressor for
    * @param compressor The compressor for {@code stream}
    */
@@ -297,7 +295,6 @@ public class CompressorHttp2ConnectionEncoder extends DecoratingHttp2ConnectionE
 
   /**
    * Read the next compressed {@link ByteBuf} from the {@link EmbeddedChannel} or {@code null} if one does not exist.
-   *
    * @param compressor The channel to read from
    * @return The next decoded {@link ByteBuf} from the {@link EmbeddedChannel} or {@code null} if one does not exist
    */

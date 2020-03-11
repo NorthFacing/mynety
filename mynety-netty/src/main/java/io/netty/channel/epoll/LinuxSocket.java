@@ -99,10 +99,10 @@ final class LinuxSocket extends Socket {
 
   private static InetAddress inetAddress(int value) {
     byte[] var1 = {
-        (byte) (value >>> 24 & 255),
-        (byte) (value >>> 16 & 255),
-        (byte) (value >>> 8 & 255),
-        (byte) (value & 255)
+      (byte) (value >>> 24 & 255),
+      (byte) (value >>> 16 & 255),
+      (byte) (value >>> 8 & 255),
+      (byte) (value & 255)
     };
 
     try {
@@ -119,7 +119,7 @@ final class LinuxSocket extends Socket {
     if (source != null) {
       final NativeInetAddress s = NativeInetAddress.newInstance(source);
       joinSsmGroup(intValue(), ipv6, g.address(), i.address(),
-          g.scopeId(), interfaceIndex(netInterface), s.address());
+        g.scopeId(), interfaceIndex(netInterface), s.address());
     } else {
       joinGroup(intValue(), ipv6, g.address(), i.address(), g.scopeId(), interfaceIndex(netInterface));
     }
@@ -132,7 +132,7 @@ final class LinuxSocket extends Socket {
     if (source != null) {
       final NativeInetAddress s = NativeInetAddress.newInstance(source);
       leaveSsmGroup(intValue(), ipv6, g.address(), i.address(),
-          g.scopeId(), interfaceIndex(netInterface), s.address());
+        g.scopeId(), interfaceIndex(netInterface), s.address());
     } else {
       leaveGroup(intValue(), ipv6, g.address(), i.address(), g.scopeId(), interfaceIndex(netInterface));
     }
@@ -419,10 +419,10 @@ final class LinuxSocket extends Socket {
   private static native void setIpRecvOrigDestAddr(int fd, int transparent) throws IOException;
 
   private static native void setTcpMd5Sig(
-      int fd, boolean ipv6, byte[] address, int scopeId, byte[] key) throws IOException;
+    int fd, boolean ipv6, byte[] address, int scopeId, byte[] key) throws IOException;
 
   private static native void setInterface(
-      int fd, boolean ipv6, byte[] interfaceAddress, int scopeId, int networkInterfaceIndex) throws IOException;
+    int fd, boolean ipv6, byte[] interfaceAddress, int scopeId, int networkInterfaceIndex) throws IOException;
 
   private static native int getInterface(int fd, boolean ipv6);
 

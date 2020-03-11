@@ -42,16 +42,16 @@ public final class QuoteOfTheMomentClient {
     try {
       Bootstrap b = new Bootstrap();
       b.group(group)
-          .channel(NioDatagramChannel.class)
-          .option(ChannelOption.SO_BROADCAST, true)
-          .handler(new QuoteOfTheMomentClientHandler());
+        .channel(NioDatagramChannel.class)
+        .option(ChannelOption.SO_BROADCAST, true)
+        .handler(new QuoteOfTheMomentClientHandler());
 
       Channel ch = b.bind(0).sync().channel();
 
       // Broadcast the QOTM request to port 8080.
       ch.writeAndFlush(new DatagramPacket(
-          Unpooled.copiedBuffer("QOTM?", CharsetUtil.UTF_8),
-          SocketUtils.socketAddress("255.255.255.255", PORT))).sync();
+        Unpooled.copiedBuffer("QOTM?", CharsetUtil.UTF_8),
+        SocketUtils.socketAddress("255.255.255.255", PORT))).sync();
 
       // QuoteOfTheMomentClientHandler will close the DatagramChannel when a
       // response is received.  If the channel is not closed within 5 seconds,

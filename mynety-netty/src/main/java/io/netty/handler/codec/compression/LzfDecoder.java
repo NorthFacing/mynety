@@ -24,7 +24,11 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 import java.util.List;
 
-import static com.ning.compress.lzf.LZFChunk.*;
+import static com.ning.compress.lzf.LZFChunk.BLOCK_TYPE_COMPRESSED;
+import static com.ning.compress.lzf.LZFChunk.BLOCK_TYPE_NON_COMPRESSED;
+import static com.ning.compress.lzf.LZFChunk.BYTE_V;
+import static com.ning.compress.lzf.LZFChunk.BYTE_Z;
+import static com.ning.compress.lzf.LZFChunk.HEADER_LEN_NOT_COMPRESSED;
 
 /**
  * Uncompresses a {@link ByteBuf} encoded with the LZF format.
@@ -88,7 +92,6 @@ public class LzfDecoder extends ByteToMessageDecoder {
 
   /**
    * Creates a new LZF decoder with specified decoding instance.
-   *
    * @param safeInstance If {@code true} decoder will use {@link ChunkDecoder} that only uses standard JDK access methods,
    *                     and should work on all Java platforms and JVMs.
    *                     Otherwise decoder will try to use highly optimized {@link ChunkDecoder} implementation that uses
@@ -96,8 +99,8 @@ public class LzfDecoder extends ByteToMessageDecoder {
    */
   public LzfDecoder(boolean safeInstance) {
     decoder = safeInstance ?
-        ChunkDecoderFactory.safeInstance()
-        : ChunkDecoderFactory.optimalInstance();
+      ChunkDecoderFactory.safeInstance()
+      : ChunkDecoderFactory.optimalInstance();
 
     recycler = BufferRecycler.instance();
   }
@@ -127,8 +130,8 @@ public class LzfDecoder extends ByteToMessageDecoder {
               break;
             default:
               throw new DecompressionException(String.format(
-                  "unknown type of chunk: %d (expected: %d or %d)",
-                  type, BLOCK_TYPE_NON_COMPRESSED, BLOCK_TYPE_COMPRESSED));
+                "unknown type of chunk: %d (expected: %d or %d)",
+                type, BLOCK_TYPE_NON_COMPRESSED, BLOCK_TYPE_COMPRESSED));
           }
           chunkLength = in.readUnsignedShort();
 

@@ -17,7 +17,6 @@ package io.netty.channel.pool;
 
 /**
  * Allows to map {@link ChannelPool} implementations to a specific key.
- *
  * @param <K> the type of the key
  * @param <P> the type of the {@link ChannelPool}
  */

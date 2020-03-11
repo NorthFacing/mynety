@@ -36,7 +36,6 @@ import java.util.List;
  * | 0xAC02 |  (300 bytes)  |      |  (300 bytes)  |
  * +--------+---------------+      +---------------+
  * </pre>
- *
  * @see CodedInputStream
  * @see CodedInputByteBufferNano
  */
@@ -47,7 +46,7 @@ public class ProtobufVarint32FrameDecoder extends ByteToMessageDecoder {
 
   @Override
   protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out)
-      throws Exception {
+    throws Exception {
     in.markReaderIndex();
     int preIndex = in.readerIndex();
     int length = readRawVarint32(in);
@@ -67,7 +66,6 @@ public class ProtobufVarint32FrameDecoder extends ByteToMessageDecoder {
 
   /**
    * Reads variable length 32bit int from buffer
-   *
    * @return decoded int if buffers readerIndex has been forwarded else nonsense value
    */
   private static int readRawVarint32(ByteBuf buffer) {

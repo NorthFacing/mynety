@@ -23,7 +23,6 @@ public interface WebSocketClientExtensionHandshaker {
 
   /**
    * Return extension configuration to submit to the server.
-   *
    * @return the desired extension configuration.
    */
   WebSocketExtensionData newRequestData();
@@ -31,7 +30,6 @@ public interface WebSocketClientExtensionHandshaker {
   /**
    * Handshake based on server response. It should always succeed because server response
    * should be a request acknowledge.
-   *
    * @param extensionData the extension configuration sent by the server.
    * @return an initialized extension if handshake phase succeed or null if failed.
    */

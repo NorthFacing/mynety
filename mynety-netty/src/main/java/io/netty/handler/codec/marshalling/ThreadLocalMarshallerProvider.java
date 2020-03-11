@@ -34,7 +34,6 @@ public class ThreadLocalMarshallerProvider implements MarshallerProvider {
 
   /**
    * Create a new instance of the {@link ThreadLocalMarshallerProvider}
-   *
    * @param factory the {@link MarshallerFactory} to use to create {@link Marshaller}'s if needed
    * @param config  the {@link MarshallingConfiguration} to use
    */

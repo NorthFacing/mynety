@@ -26,7 +26,6 @@ import io.netty.util.internal.UnstableApi;
 public interface Http2FrameListener {
   /**
    * Handles an inbound {@code DATA} frame.
-   *
    * @param ctx         the context from the handler where the frame was read.
    * @param streamId    the subject stream for the frame.
    * @param data        payload buffer for the frame. This buffer will be released by the codec.
@@ -57,7 +56,6 @@ public interface Http2FrameListener {
    * <p>
    * To say it another way; the {@link Http2Headers} will contain all of the headers
    * for the current message exchange step (additional queuing is not necessary).
-   *
    * @param ctx         the context from the handler where the frame was read.
    * @param streamId    the subject stream for the frame.
    * @param headers     the received headers.
@@ -83,7 +81,6 @@ public interface Http2FrameListener {
    * <p>
    * To say it another way; the {@link Http2Headers} will contain all of the headers
    * for the current message exchange step (additional queuing is not necessary).
-   *
    * @param ctx              the context from the handler where the frame was read.
    * @param streamId         the subject stream for the frame.
    * @param headers          the received headers.
@@ -98,7 +95,7 @@ public interface Http2FrameListener {
    */
   void onHeadersRead(ChannelHandlerContext ctx, int streamId, Http2Headers headers,
                      int streamDependency, short weight, boolean exclusive, int padding, boolean endOfStream)
-      throws Http2Exception;
+    throws Http2Exception;
 
   /**
    * Handles an inbound {@code PRIORITY} frame.
@@ -106,7 +103,6 @@ public interface Http2FrameListener {
    * Note that is it possible to have this method called and no stream object exist for either
    * {@code streamId}, {@code streamDependency}, or both. This is because the {@code PRIORITY} frame can be
    * sent/received when streams are in the {@code CLOSED} state.
-   *
    * @param ctx              the context from the handler where the frame was read.
    * @param streamId         the subject stream for the frame.
    * @param streamDependency the stream on which this stream depends, or 0 if dependent on the
@@ -119,7 +115,6 @@ public interface Http2FrameListener {
 
   /**
    * Handles an inbound {@code RST_STREAM} frame.
-   *
    * @param ctx       the context from the handler where the frame was read.
    * @param streamId  the stream that is terminating.
    * @param errorCode the error code identifying the type of failure.
@@ -128,14 +123,12 @@ public interface Http2FrameListener {
 
   /**
    * Handles an inbound {@code SETTINGS} acknowledgment frame.
-   *
    * @param ctx the context from the handler where the frame was read.
    */
   void onSettingsAckRead(ChannelHandlerContext ctx) throws Http2Exception;
 
   /**
    * Handles an inbound {@code SETTINGS} frame.
-   *
    * @param ctx      the context from the handler where the frame was read.
    * @param settings the settings received from the remote endpoint.
    */
@@ -143,7 +136,6 @@ public interface Http2FrameListener {
 
   /**
    * Handles an inbound {@code PING} frame.
-   *
    * @param ctx  the context from the handler where the frame was read.
    * @param data the payload of the frame.
    */
@@ -151,7 +143,6 @@ public interface Http2FrameListener {
 
   /**
    * Handles an inbound {@code PING} acknowledgment.
-   *
    * @param ctx  the context from the handler where the frame was read.
    * @param data the payload of the frame.
    */
@@ -173,7 +164,6 @@ public interface Http2FrameListener {
    * <p>
    * To say it another way; the {@link Http2Headers} will contain all of the headers
    * for the current message exchange step (additional queuing is not necessary).
-   *
    * @param ctx              the context from the handler where the frame was read.
    * @param streamId         the stream the frame was sent on.
    * @param promisedStreamId the ID of the promised stream.
@@ -186,7 +176,6 @@ public interface Http2FrameListener {
 
   /**
    * Handles an inbound {@code GO_AWAY} frame.
-   *
    * @param ctx          the context from the handler where the frame was read.
    * @param lastStreamId the last known stream of the remote endpoint.
    * @param errorCode    the error code, if abnormal closure.
@@ -194,22 +183,20 @@ public interface Http2FrameListener {
    *                     listener they must make a copy.
    */
   void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData)
-      throws Http2Exception;
+    throws Http2Exception;
 
   /**
    * Handles an inbound {@code WINDOW_UPDATE} frame.
-   *
    * @param ctx                 the context from the handler where the frame was read.
    * @param streamId            the stream the frame was sent on.
    * @param windowSizeIncrement the increased number of bytes of the remote endpoint's flow
    *                            control window.
    */
   void onWindowUpdateRead(ChannelHandlerContext ctx, int streamId, int windowSizeIncrement)
-      throws Http2Exception;
+    throws Http2Exception;
 
   /**
    * Handler for a frame not defined by the HTTP/2 spec.
-   *
    * @param ctx       the context from the handler where the frame was read.
    * @param frameType the frame type from the HTTP/2 header.
    * @param streamId  the stream the frame was sent on.
@@ -217,5 +204,5 @@ public interface Http2FrameListener {
    * @param payload   the payload of the frame.
    */
   void onUnknownFrame(ChannelHandlerContext ctx, byte frameType, int streamId, Http2Flags flags, ByteBuf payload)
-      throws Http2Exception;
+    throws Http2Exception;
 }

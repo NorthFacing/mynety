@@ -28,7 +28,6 @@ public class DefaultBulkStringRedisContent extends DefaultByteBufHolder implemen
 
   /**
    * Creates a {@link DefaultBulkStringRedisContent} for the given {@code content}.
-   *
    * @param content the content, can be {@code null}.
    */
   public DefaultBulkStringRedisContent(ByteBuf content) {
@@ -82,9 +81,9 @@ public class DefaultBulkStringRedisContent extends DefaultByteBufHolder implemen
   @Override
   public String toString() {
     return new StringBuilder(StringUtil.simpleClassName(this))
-        .append('[')
-        .append("content=")
-        .append(content())
-        .append(']').toString();
+      .append('[')
+      .append("content=")
+      .append(content())
+      .append(']').toString();
   }
 }

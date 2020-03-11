@@ -42,10 +42,10 @@ abstract class DnsResponseDecoder<A extends SocketAddress> {
     }
 
     final DnsResponse response = newResponse(
-        sender,
-        recipient,
-        id,
-        DnsOpCode.valueOf((byte) (flags >> 11 & 0xf)), DnsResponseCode.valueOf((byte) (flags & 0xf)));
+      sender,
+      recipient,
+      id,
+      DnsOpCode.valueOf((byte) (flags >> 11 & 0xf)), DnsResponseCode.valueOf((byte) (flags & 0xf)));
 
     response.setRecursionDesired((flags >> 8 & 1) == 1);
     response.setAuthoritativeAnswer((flags >> 10 & 1) == 1);
@@ -90,7 +90,7 @@ abstract class DnsResponseDecoder<A extends SocketAddress> {
   }
 
   private boolean decodeRecords(
-      DnsResponse response, DnsSection section, ByteBuf buf, int count) throws Exception {
+    DnsResponse response, DnsSection section, ByteBuf buf, int count) throws Exception {
     for (int i = count; i > 0; i--) {
       final DnsRecord r = recordDecoder.decodeRecord(buf);
       if (r == null) {

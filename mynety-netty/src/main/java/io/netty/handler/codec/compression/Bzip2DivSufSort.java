@@ -31,14 +31,14 @@ final class Bzip2DivSufSort {
   private static final int INSERTIONSORT_THRESHOLD = 8;
 
   private static final int[] LOG_2_TABLE = {
-      -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
-      5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
-      6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-      6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
-      7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-      7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-      7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
-      7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
+    -1, 0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4,
+    5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+    6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+    7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7
   };
 
   private final int[] SA;
@@ -79,8 +79,8 @@ final class Bzip2DivSufSort {
     }
 
     return U1 < U1n ?
-        U2 < U2n ? (T[U1] & 0xff) - (T[U2] & 0xff) : 1
-        : U2 < U2n ? -1 : 0;
+      U2 < U2n ? (T[U1] & 0xff) - (T[U2] & 0xff) : 1
+      : U2 < U2n ? -1 : 0;
   }
 
   private int ssCompareLast(int pa, int p1, int p2, int depth, int size) {
@@ -112,8 +112,8 @@ final class Bzip2DivSufSort {
     }
 
     return U1 < U1n ?
-        U2 < U2n ? (T[U1] & 0xff) - (T[U2] & 0xff) : 1
-        : U2 < U2n ? -1 : 0;
+      U2 < U2n ? (T[U1] & 0xff) - (T[U2] & 0xff) : 1
+      : U2 < U2n ? -1 : 0;
   }
 
   private void ssInsertionSort(int pa, int first, int last, int depth) {
@@ -295,17 +295,17 @@ final class Bzip2DivSufSort {
     }
     t >>= 3;
     return ssMedian3(
-        td, pa,
-        ssMedian3(td, pa, first, first + t, first + (t << 1)),
-        ssMedian3(td, pa, middle - t, middle, middle + t),
-        ssMedian3(td, pa, last - 1 - (t << 1), last - 1 - t, last - 1)
+      td, pa,
+      ssMedian3(td, pa, first, first + t, first + (t << 1)),
+      ssMedian3(td, pa, middle - t, middle, middle + t),
+      ssMedian3(td, pa, last - 1 - (t << 1), last - 1 - t, last - 1)
     );
   }
 
   private static int ssLog(final int n) {
     return (n & 0xff00) != 0 ?
-        8 + LOG_2_TABLE[n >> 8 & 0xff]
-        : LOG_2_TABLE[n & 0xff];
+      8 + LOG_2_TABLE[n >> 8 & 0xff]
+      : LOG_2_TABLE[n & 0xff];
   }
 
   private int ssSubstringPartition(final int pa, final int first, final int last, final int depth) {
@@ -805,7 +805,7 @@ final class Bzip2DivSufSort {
            len = half, half >>= 1) {
 
         if (ssCompare(pa + getIDX(SA[middle + m + half]),
-            pa + getIDX(SA[middle - m - half - 1]), depth) < 0) {
+          pa + getIDX(SA[middle - m - half - 1]), depth) < 0) {
           m += half + 1;
           half -= (len & 1) ^ 1;
         }
@@ -917,8 +917,8 @@ final class Bzip2DivSufSort {
 
   private int trGetC(final int isa, final int isaD, final int isaN, final int p) {
     return isaD + p < isaN ?
-        SA[isaD + p]
-        : SA[isa + ((isaD - isa + p) % (isaN - isa))];
+      SA[isaD + p]
+      : SA[isa + ((isaD - isa + p) % (isaN - isa))];
   }
 
   private void trFixdown(final int isa, final int isaD, final int isaN, final int sa, int i, final int size) {
@@ -997,8 +997,8 @@ final class Bzip2DivSufSort {
 
   private static int trLog(int n) {
     return (n & 0xffff0000) != 0 ?
-        (n & 0xff000000) != 0 ? 24 + LOG_2_TABLE[n >> 24 & 0xff] : LOG_2_TABLE[n >> 16 & 0xff + 16]
-        : (n & 0x0000ff00) != 0 ? 8 + LOG_2_TABLE[n >> 8 & 0xff] : LOG_2_TABLE[n & 0xff];
+      (n & 0xff000000) != 0 ? 24 + LOG_2_TABLE[n >> 24 & 0xff] : LOG_2_TABLE[n >> 16 & 0xff + 16]
+      : (n & 0x0000ff00) != 0 ? 8 + LOG_2_TABLE[n >> 8 & 0xff] : LOG_2_TABLE[n & 0xff];
   }
 
   private int trMedian3(final int isa, final int isaD, final int isaN, int v1, int v2, int v3) {
@@ -1100,18 +1100,18 @@ final class Bzip2DivSufSort {
       }
       t >>= 2;
       return trMedian5(
-          isa, isaD, isaN,
-          first, first + t,
-          middle,
-          last - 1 - t, last - 1
+        isa, isaD, isaN,
+        first, first + t,
+        middle,
+        last - 1 - t, last - 1
       );
     }
     t >>= 3;
     return trMedian3(
-        isa, isaD, isaN,
-        trMedian3(isa, isaD, isaN, first, first + t, first + (t << 1)),
-        trMedian3(isa, isaD, isaN, middle - t, middle, middle + t),
-        trMedian3(isa, isaD, isaN, last - 1 - (t << 1), last - 1 - t, last - 1)
+      isa, isaD, isaN,
+      trMedian3(isa, isaD, isaN, first, first + t, first + (t << 1)),
+      trMedian3(isa, isaD, isaN, middle - t, middle, middle + t),
+      trMedian3(isa, isaD, isaN, last - 1 - (t << 1), last - 1 - t, last - 1)
     );
   }
 
@@ -2103,7 +2103,6 @@ final class Bzip2DivSufSort {
 
   /**
    * Performs a Burrows Wheeler Transform on the input array.
-   *
    * @return the index of the first character of the input array within the output array
    */
   public int bwt() {

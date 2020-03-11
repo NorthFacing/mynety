@@ -30,7 +30,6 @@ public final class BiDnsQueryLifecycleObserverFactory implements DnsQueryLifecyc
 
   /**
    * Create a new instance.
-   *
    * @param a The {@link DnsQueryLifecycleObserverFactory} that will receive events first.
    * @param b The {@link DnsQueryLifecycleObserverFactory} that will receive events second.
    */
@@ -42,6 +41,6 @@ public final class BiDnsQueryLifecycleObserverFactory implements DnsQueryLifecyc
   @Override
   public DnsQueryLifecycleObserver newDnsQueryLifecycleObserver(DnsQuestion question) {
     return new BiDnsQueryLifecycleObserver(a.newDnsQueryLifecycleObserver(question),
-        b.newDnsQueryLifecycleObserver(question));
+      b.newDnsQueryLifecycleObserver(question));
   }
 }

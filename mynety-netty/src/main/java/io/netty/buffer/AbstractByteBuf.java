@@ -15,7 +15,12 @@
  */
 package io.netty.buffer;
 
-import io.netty.util.*;
+import io.netty.util.AsciiString;
+import io.netty.util.ByteProcessor;
+import io.netty.util.CharsetUtil;
+import io.netty.util.IllegalReferenceCountException;
+import io.netty.util.ResourceLeakDetector;
+import io.netty.util.ResourceLeakDetectorFactory;
 import io.netty.util.internal.PlatformDependent;
 import io.netty.util.internal.StringUtil;
 import io.netty.util.internal.SystemPropertyUtil;
@@ -60,7 +65,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
   }
 
   static final ResourceLeakDetector<ByteBuf> leakDetector =
-      ResourceLeakDetectorFactory.instance().newResourceLeakDetector(ByteBuf.class);
+    ResourceLeakDetectorFactory.instance().newResourceLeakDetector(ByteBuf.class);
 
   int readerIndex;
   int writerIndex;
@@ -104,8 +109,8 @@ public abstract class AbstractByteBuf extends ByteBuf {
   private static void checkIndexBounds(final int readerIndex, final int writerIndex, final int capacity) {
     if (readerIndex < 0 || readerIndex > writerIndex || writerIndex > capacity) {
       throw new IndexOutOfBoundsException(String.format(
-          "readerIndex: %d, writerIndex: %d (expected: 0 <= readerIndex <= writerIndex <= capacity(%d))",
-          readerIndex, writerIndex, capacity));
+        "readerIndex: %d, writerIndex: %d (expected: 0 <= readerIndex <= writerIndex <= capacity(%d))",
+        readerIndex, writerIndex, capacity));
     }
   }
 
@@ -286,8 +291,8 @@ public abstract class AbstractByteBuf extends ByteBuf {
     if (checkBounds) {
       if (minWritableBytes > maxCapacity - writerIndex) {
         throw new IndexOutOfBoundsException(String.format(
-            "writerIndex(%d) + minWritableBytes(%d) exceeds maxCapacity(%d): %s",
-            writerIndex, minWritableBytes, maxCapacity, this));
+          "writerIndex(%d) + minWritableBytes(%d) exceeds maxCapacity(%d): %s",
+          writerIndex, minWritableBytes, maxCapacity, this));
       }
     }
 
@@ -648,7 +653,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
   private static void checkReadableBounds(final ByteBuf src, final int length) {
     if (length > src.readableBytes()) {
       throw new IndexOutOfBoundsException(String.format(
-          "length(%d) exceeds src.readableBytes(%d) where src is: %s", length, src.readableBytes(), src));
+        "length(%d) exceeds src.readableBytes(%d) where src is: %s", length, src.readableBytes(), src));
     }
   }
 
@@ -925,7 +930,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
     if (checkBounds) {
       if (length > dst.writableBytes()) {
         throw new IndexOutOfBoundsException(String.format(
-            "length(%d) exceeds dst.writableBytes(%d) where dst is: %s", length, dst.writableBytes(), dst));
+          "length(%d) exceeds dst.writableBytes(%d) where dst is: %s", length, dst.writableBytes(), dst));
       }
     }
     readBytes(dst, dst.writerIndex(), length);
@@ -952,7 +957,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
 
   @Override
   public int readBytes(GatheringByteChannel out, int length)
-      throws IOException {
+    throws IOException {
     checkReadableBytes(length);
     int readBytes = getBytes(readerIndex, out, length);
     readerIndex += readBytes;
@@ -961,7 +966,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
 
   @Override
   public int readBytes(FileChannel out, long position, int length)
-      throws IOException {
+    throws IOException {
     checkReadableBytes(length);
     int readBytes = getBytes(readerIndex, out, position, length);
     readerIndex += readBytes;
@@ -1127,7 +1132,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
 
   @Override
   public int writeBytes(InputStream in, int length)
-      throws IOException {
+    throws IOException {
     ensureWritable(length);
     int writtenBytes = setBytes(writerIndex, in, length);
     if (writtenBytes > 0) {
@@ -1403,10 +1408,10 @@ public abstract class AbstractByteBuf extends ByteBuf {
     }
 
     StringBuilder buf = new StringBuilder()
-        .append(StringUtil.simpleClassName(this))
-        .append("(ridx: ").append(readerIndex)
-        .append(", widx: ").append(writerIndex)
-        .append(", cap: ").append(capacity());
+      .append(StringUtil.simpleClassName(this))
+      .append("(ridx: ").append(readerIndex)
+      .append(", widx: ").append(writerIndex)
+      .append(", cap: ").append(capacity());
     if (maxCapacity != Integer.MAX_VALUE) {
       buf.append('/').append(maxCapacity);
     }
@@ -1432,7 +1437,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
                                        final int fieldLength, final int capacity) {
     if (isOutOfBounds(index, fieldLength, capacity)) {
       throw new IndexOutOfBoundsException(String.format(
-          "%s: %d, length: %d (expected: range(0, %d))", indexName, index, fieldLength, capacity));
+        "%s: %d, length: %d (expected: range(0, %d))", indexName, index, fieldLength, capacity));
     }
   }
 
@@ -1478,7 +1483,7 @@ public abstract class AbstractByteBuf extends ByteBuf {
     if (checkBounds) {
       if (newCapacity < 0 || newCapacity > maxCapacity()) {
         throw new IllegalArgumentException("newCapacity: " + newCapacity +
-            " (expected: 0-" + maxCapacity() + ')');
+          " (expected: 0-" + maxCapacity() + ')');
       }
     }
   }
@@ -1488,8 +1493,8 @@ public abstract class AbstractByteBuf extends ByteBuf {
     if (checkBounds) {
       if (readerIndex > writerIndex - minimumReadableBytes) {
         throw new IndexOutOfBoundsException(String.format(
-            "readerIndex(%d) + length(%d) exceeds writerIndex(%d): %s",
-            readerIndex, minimumReadableBytes, writerIndex, this));
+          "readerIndex(%d) + length(%d) exceeds writerIndex(%d): %s",
+          readerIndex, minimumReadableBytes, writerIndex, this));
       }
     }
   }

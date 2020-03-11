@@ -185,9 +185,9 @@ public final class Unpooled {
     }
     if (!buffer.isDirect() && buffer.hasArray()) {
       return wrappedBuffer(
-          buffer.array(),
-          buffer.arrayOffset() + buffer.position(),
-          buffer.remaining()).order(buffer.order());
+        buffer.array(),
+        buffer.arrayOffset() + buffer.position(),
+        buffer.remaining()).order(buffer.order());
     } else if (PlatformDependent.hasUnsafe()) {
       if (buffer.isReadOnly()) {
         if (buffer.isDirect()) {
@@ -219,7 +219,6 @@ public final class Unpooled {
    * Creates a new buffer which wraps the specified buffer's readable bytes.
    * A modification on the specified buffer's content will be visible to the
    * returned buffer.
-   *
    * @param buffer The buffer to wrap. Reference count ownership of this variable is transferred to this method.
    * @return The readable portion of the {@code buffer}, or an empty buffer if there is no readable portion.
    * The caller is responsible for releasing this buffer.
@@ -246,7 +245,6 @@ public final class Unpooled {
    * Creates a new big-endian composite buffer which wraps the readable bytes of the
    * specified buffers without copying them.  A modification on the content
    * of the specified buffers will be visible to the returned buffer.
-   *
    * @param buffers The buffers to wrap. Reference count ownership of all variables is transferred to this method.
    * @return The readable portion of the {@code buffers}. The caller is responsible for releasing this buffer.
    */
@@ -300,7 +298,6 @@ public final class Unpooled {
    * Creates a new big-endian composite buffer which wraps the readable bytes of the
    * specified buffers without copying them.  A modification on the content
    * of the specified buffers will be visible to the returned buffer.
-   *
    * @param maxNumComponents Advisement as to how many independent buffers are allowed to exist before
    *                         consolidation occurs.
    * @param buffers          The buffers to wrap. Reference count ownership of all variables is transferred to this method.
@@ -440,7 +437,7 @@ public final class Unpooled {
     for (byte[] a : arrays) {
       if (Integer.MAX_VALUE - length < a.length) {
         throw new IllegalArgumentException(
-            "The total length of the specified arrays is too big.");
+          "The total length of the specified arrays is too big.");
       }
       length += a.length;
     }
@@ -464,7 +461,6 @@ public final class Unpooled {
    * {@code buffers}' readable bytes.  The new buffer's {@code readerIndex}
    * and {@code writerIndex} are {@code 0} and the sum of all buffers'
    * {@code readableBytes} respectively.
-   *
    * @throws IllegalArgumentException if the specified buffers' endianness are different from each
    *                                  other
    */
@@ -486,7 +482,7 @@ public final class Unpooled {
       }
       if (Integer.MAX_VALUE - length < bLen) {
         throw new IllegalArgumentException(
-            "The total length of the specified buffers is too big.");
+          "The total length of the specified buffers is too big.");
       }
       length += bLen;
       if (order != null) {
@@ -518,7 +514,6 @@ public final class Unpooled {
    * {@code buffers}' slices.  The new buffer's {@code readerIndex} and
    * {@code writerIndex} are {@code 0} and the sum of all buffers'
    * {@code remaining} respectively.
-   *
    * @throws IllegalArgumentException if the specified buffers' endianness are different from each
    *                                  other
    */
@@ -540,7 +535,7 @@ public final class Unpooled {
       }
       if (Integer.MAX_VALUE - length < bLen) {
         throw new IllegalArgumentException(
-            "The total length of the specified buffers is too big.");
+          "The total length of the specified buffers is too big.");
       }
       length += bLen;
       if (order != null) {
@@ -594,7 +589,7 @@ public final class Unpooled {
    * {@code 0} and the length of the encoded string respectively.
    */
   public static ByteBuf copiedBuffer(
-      CharSequence string, int offset, int length, Charset charset) {
+    CharSequence string, int offset, int length, Charset charset) {
     if (string == null) {
       throw new NullPointerException("string");
     }
@@ -606,9 +601,9 @@ public final class Unpooled {
       CharBuffer buf = (CharBuffer) string;
       if (buf.hasArray()) {
         return copiedBuffer(
-            buf.array(),
-            buf.arrayOffset() + buf.position() + offset,
-            length, charset);
+          buf.array(),
+          buf.arrayOffset() + buf.position() + offset,
+          length, charset);
       }
 
       buf = buf.slice();
@@ -658,7 +653,6 @@ public final class Unpooled {
    * on the specified {@code buffer}.  The new buffer has the same
    * {@code readerIndex} and {@code writerIndex} with the specified
    * {@code buffer}.
-   *
    * @deprecated Use {@link ByteBuf#asReadOnly()}.
    */
   @Deprecated
@@ -856,7 +850,6 @@ public final class Unpooled {
   /**
    * Wrap the given {@link ByteBuf}s in an unmodifiable {@link ByteBuf}. Be aware the returned {@link ByteBuf} will
    * not try to slice the given {@link ByteBuf}s to reduce GC-Pressure.
-   *
    * @deprecated Use {@link #wrappedUnmodifiableBuffer(ByteBuf...)}.
    */
   @Deprecated

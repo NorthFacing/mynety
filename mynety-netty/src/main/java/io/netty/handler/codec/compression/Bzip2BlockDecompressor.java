@@ -15,7 +15,9 @@
  */
 package io.netty.handler.codec.compression;
 
-import static io.netty.handler.codec.compression.Bzip2Constants.*;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_DECODE_MAX_CODE_LENGTH;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SYMBOL_RUNA;
+import static io.netty.handler.codec.compression.Bzip2Constants.HUFFMAN_SYMBOL_RUNB;
 
 /**
  * Reads and decompresses a single Bzip2 block.<br><br>
@@ -268,7 +270,6 @@ final class Bzip2BlockDecompressor {
   /**
    * Decodes a byte from the final Run-Length Encoding stage, pulling a new byte from the
    * Burrows-Wheeler Transform stage when required.
-   *
    * @return The decoded byte, or -1 if there are no more bytes
    */
   public int read() {
@@ -305,7 +306,6 @@ final class Bzip2BlockDecompressor {
   /**
    * Decodes a byte from the Burrows-Wheeler Transform stage. If the block has randomisation
    * applied, reverses the randomisation.
-   *
    * @return The decoded byte
    */
   private int decodeNextBWTByte() {
@@ -332,7 +332,6 @@ final class Bzip2BlockDecompressor {
   /**
    * Verify and return the block CRC. This method may only be called
    * after all of the block's bytes have been read.
-   *
    * @return The block CRC
    */
   int checkCRC() {

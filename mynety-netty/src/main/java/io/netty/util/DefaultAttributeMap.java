@@ -27,7 +27,7 @@ public class DefaultAttributeMap implements AttributeMap {
 
   @SuppressWarnings("rawtypes")
   private static final AtomicReferenceFieldUpdater<DefaultAttributeMap, AtomicReferenceArray> updater =
-      AtomicReferenceFieldUpdater.newUpdater(DefaultAttributeMap.class, AtomicReferenceArray.class, "attributes");
+    AtomicReferenceFieldUpdater.newUpdater(DefaultAttributeMap.class, AtomicReferenceArray.class, "attributes");
 
   private static final int BUCKET_SIZE = 4;
   private static final int MASK = BUCKET_SIZE - 1;

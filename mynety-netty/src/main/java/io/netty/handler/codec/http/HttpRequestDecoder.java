@@ -66,26 +66,26 @@ public class HttpRequestDecoder extends HttpObjectDecoder {
    * Creates a new instance with the specified parameters.
    */
   public HttpRequestDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true);
   }
 
   public HttpRequestDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true, validateHeaders);
   }
 
   public HttpRequestDecoder(
-      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders,
-      int initialBufferSize) {
+    int maxInitialLineLength, int maxHeaderSize, int maxChunkSize, boolean validateHeaders,
+    int initialBufferSize) {
     super(maxInitialLineLength, maxHeaderSize, maxChunkSize, true, validateHeaders, initialBufferSize);
   }
 
   @Override
   protected HttpMessage createMessage(String[] initialLine) throws Exception {
     return new DefaultHttpRequest(
-        HttpVersion.valueOf(initialLine[2]),
-        HttpMethod.valueOf(initialLine[0]), initialLine[1], validateHeaders);
+      HttpVersion.valueOf(initialLine[2]),
+      HttpMethod.valueOf(initialLine[0]), initialLine[1], validateHeaders);
   }
 
   @Override

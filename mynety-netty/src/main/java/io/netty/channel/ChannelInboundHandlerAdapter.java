@@ -139,7 +139,7 @@ public class ChannelInboundHandlerAdapter extends ChannelHandlerAdapter implemen
   @Override
   @SuppressWarnings("deprecation")
   public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
-      throws Exception {
+    throws Exception {
     ctx.fireExceptionCaught(cause);
   }
 }

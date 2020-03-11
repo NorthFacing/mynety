@@ -19,7 +19,12 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufHolder;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelId;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.EventLoop;
+import io.netty.channel.ServerChannel;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
@@ -97,7 +102,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
 
   /**
    * Returns the {@link Channel} which has the specified {@link ChannelId}.
-   *
    * @return the matching {@link Channel} if found. {@code null} otherwise.
    */
   Channel find(ChannelId id);
@@ -109,7 +113,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * {@linkplain ByteBuf#duplicate() duplicated} to avoid a race
    * condition. The same is true for {@link ByteBufHolder}. Please note that this operation is asynchronous as
    * {@link Channel#write(Object)} is.
-   *
    * @return itself
    */
   ChannelGroupFuture write(Object message);
@@ -121,7 +124,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * {@linkplain ByteBuf#duplicate() duplicated} to avoid a race
    * condition. The same is true for {@link ByteBufHolder}. Please note that this operation is asynchronous as
    * {@link Channel#write(Object)} is.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -137,7 +139,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * <p>
    * If {@code voidPromise} is {@code true} {@link Channel#voidPromise()} is used for the writes and so the same
    * restrictions to the returned {@link ChannelGroupFuture} apply as to a void promise.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -150,7 +151,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * {@linkplain ByteBuf#duplicate() duplicated} to avoid a race
    * condition. Please note that this operation is asynchronous as
    * {@link Channel#write(Object)} is.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -163,7 +163,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * {@linkplain ByteBuf#duplicate() duplicated} to avoid a race
    * condition. Please note that this operation is asynchronous as
    * {@link Channel#write(Object)} is.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -200,7 +199,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
 
   /**
    * Disconnects all {@link Channel}s in this group from their remote peers.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -209,7 +207,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
   /**
    * Disconnects all {@link Channel}s in this group from their remote peers,
    * that are matched by the given {@link ChannelMatcher}.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -219,7 +216,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * Closes all {@link Channel}s in this group.  If the {@link Channel} is
    * connected to a remote peer or bound to a local address, it is
    * automatically disconnected and unbound.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */
@@ -229,7 +225,6 @@ public interface ChannelGroup extends Set<Channel>, Comparable<ChannelGroup> {
    * Closes all {@link Channel}s in this group that are matched by the given {@link ChannelMatcher}.
    * If the {@link Channel} is  connected to a remote peer or bound to a local address, it is
    * automatically disconnected and unbound.
-   *
    * @return the {@link ChannelGroupFuture} instance that notifies when
    * the operation is done for all channels
    */

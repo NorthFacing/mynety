@@ -36,7 +36,6 @@ public interface EventExecutorGroup extends ScheduledExecutorService, Iterable<E
 
   /**
    * Shortcut method for {@link #shutdownGracefully(long, long, TimeUnit)} with sensible default values.
-   *
    * @return the {@link #terminationFuture()}
    */
   Future<?> shutdownGracefully();
@@ -47,7 +46,6 @@ public interface EventExecutorGroup extends ScheduledExecutorService, Iterable<E
    * Unlike {@link #shutdown()}, graceful shutdown ensures that no tasks are submitted for <i>'the quiet period'</i>
    * (usually a couple seconds) before it shuts itself down.  If a task is submitted during the quiet period,
    * it is guaranteed to be accepted and the quiet period will start over.
-   *
    * @param quietPeriod the quiet period as described in the documentation
    * @param timeout     the maximum amount of time to wait until the executor is {@linkplain #shutdown()}
    *                    regardless if a task was submitted during the quiet period

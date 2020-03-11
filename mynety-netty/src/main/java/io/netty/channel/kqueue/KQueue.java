@@ -30,7 +30,7 @@ public final class KQueue {
     Throwable cause = null;
     if (SystemPropertyUtil.getBoolean("io.netty.transport.noNative", false)) {
       cause = new UnsupportedOperationException(
-          "Native transport was explicit disabled with -Dio.netty.transport.noNative=true");
+        "Native transport was explicit disabled with -Dio.netty.transport.noNative=true");
     } else {
       FileDescriptor kqueueFd = null;
       try {
@@ -62,20 +62,18 @@ public final class KQueue {
   /**
    * Ensure that <a href="https://netty.io/wiki/native-transports.html">{@code netty-transport-native-kqueue}</a> is
    * available.
-   *
    * @throws UnsatisfiedLinkError if unavailable
    */
   public static void ensureAvailability() {
     if (UNAVAILABILITY_CAUSE != null) {
       throw (Error) new UnsatisfiedLinkError(
-          "failed to load the required native library").initCause(UNAVAILABILITY_CAUSE);
+        "failed to load the required native library").initCause(UNAVAILABILITY_CAUSE);
     }
   }
 
   /**
    * Returns the cause of unavailability of <a href="https://netty.io/wiki/native-transports.html">{@code
    * netty-transport-native-kqueue}</a>.
-   *
    * @return the cause if unavailable. {@code null} if available.
    */
   public static Throwable unavailabilityCause() {

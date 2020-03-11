@@ -23,8 +23,21 @@ import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
-import static io.netty.channel.ChannelOption.*;
-import static io.netty.util.internal.ObjectUtil.*;
+import static io.netty.channel.ChannelOption.ALLOCATOR;
+import static io.netty.channel.ChannelOption.AUTO_CLOSE;
+import static io.netty.channel.ChannelOption.AUTO_READ;
+import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
+import static io.netty.channel.ChannelOption.MAX_MESSAGES_PER_READ;
+import static io.netty.channel.ChannelOption.MESSAGE_SIZE_ESTIMATOR;
+import static io.netty.channel.ChannelOption.RCVBUF_ALLOCATOR;
+import static io.netty.channel.ChannelOption.SINGLE_EVENTEXECUTOR_PER_GROUP;
+import static io.netty.channel.ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK;
+import static io.netty.channel.ChannelOption.WRITE_BUFFER_LOW_WATER_MARK;
+import static io.netty.channel.ChannelOption.WRITE_BUFFER_WATER_MARK;
+import static io.netty.channel.ChannelOption.WRITE_SPIN_COUNT;
+import static io.netty.util.internal.ObjectUtil.checkNotNull;
+import static io.netty.util.internal.ObjectUtil.checkPositive;
+import static io.netty.util.internal.ObjectUtil.checkPositiveOrZero;
 
 /**
  * The default {@link ChannelConfig} implementation.
@@ -35,10 +48,10 @@ public class DefaultChannelConfig implements ChannelConfig {
   private static final int DEFAULT_CONNECT_TIMEOUT = 30000;
 
   private static final AtomicIntegerFieldUpdater<DefaultChannelConfig> AUTOREAD_UPDATER =
-      AtomicIntegerFieldUpdater.newUpdater(DefaultChannelConfig.class, "autoRead");
+    AtomicIntegerFieldUpdater.newUpdater(DefaultChannelConfig.class, "autoRead");
   private static final AtomicReferenceFieldUpdater<DefaultChannelConfig, WriteBufferWaterMark> WATERMARK_UPDATER =
-      AtomicReferenceFieldUpdater.newUpdater(
-          DefaultChannelConfig.class, WriteBufferWaterMark.class, "writeBufferWaterMark");
+    AtomicReferenceFieldUpdater.newUpdater(
+      DefaultChannelConfig.class, WriteBufferWaterMark.class, "writeBufferWaterMark");
 
   protected final Channel channel;
 
@@ -67,15 +80,15 @@ public class DefaultChannelConfig implements ChannelConfig {
   @SuppressWarnings("deprecation")
   public Map<ChannelOption<?>, Object> getOptions() {
     return getOptions(
-        null,
-        CONNECT_TIMEOUT_MILLIS, MAX_MESSAGES_PER_READ, WRITE_SPIN_COUNT,
-        ALLOCATOR, AUTO_READ, AUTO_CLOSE, RCVBUF_ALLOCATOR, WRITE_BUFFER_HIGH_WATER_MARK,
-        WRITE_BUFFER_LOW_WATER_MARK, WRITE_BUFFER_WATER_MARK, MESSAGE_SIZE_ESTIMATOR,
-        SINGLE_EVENTEXECUTOR_PER_GROUP);
+      null,
+      CONNECT_TIMEOUT_MILLIS, MAX_MESSAGES_PER_READ, WRITE_SPIN_COUNT,
+      ALLOCATOR, AUTO_READ, AUTO_CLOSE, RCVBUF_ALLOCATOR, WRITE_BUFFER_HIGH_WATER_MARK,
+      WRITE_BUFFER_LOW_WATER_MARK, WRITE_BUFFER_WATER_MARK, MESSAGE_SIZE_ESTIMATOR,
+      SINGLE_EVENTEXECUTOR_PER_GROUP);
   }
 
   protected Map<ChannelOption<?>, Object> getOptions(
-      Map<ChannelOption<?>, Object> result, ChannelOption<?>... options) {
+    Map<ChannelOption<?>, Object> result, ChannelOption<?>... options) {
     if (result == null) {
       result = new IdentityHashMap<ChannelOption<?>, Object>();
     }
@@ -206,7 +219,6 @@ public class DefaultChannelConfig implements ChannelConfig {
   /**
    * {@inheritDoc}
    * <p>
-   *
    * @throws IllegalStateException if {@link #getRecvByteBufAllocator()} does not return an object of type
    *                               {@link MaxMessagesRecvByteBufAllocator}.
    */
@@ -218,14 +230,13 @@ public class DefaultChannelConfig implements ChannelConfig {
       return allocator.maxMessagesPerRead();
     } catch (ClassCastException e) {
       throw new IllegalStateException("getRecvByteBufAllocator() must return an object of type " +
-          "MaxMessagesRecvByteBufAllocator", e);
+        "MaxMessagesRecvByteBufAllocator", e);
     }
   }
 
   /**
    * {@inheritDoc}
    * <p>
-   *
    * @throws IllegalStateException if {@link #getRecvByteBufAllocator()} does not return an object of type
    *                               {@link MaxMessagesRecvByteBufAllocator}.
    */
@@ -238,7 +249,7 @@ public class DefaultChannelConfig implements ChannelConfig {
       return this;
     } catch (ClassCastException e) {
       throw new IllegalStateException("getRecvByteBufAllocator() must return an object of type " +
-          "MaxMessagesRecvByteBufAllocator", e);
+        "MaxMessagesRecvByteBufAllocator", e);
     }
   }
 
@@ -289,7 +300,6 @@ public class DefaultChannelConfig implements ChannelConfig {
 
   /**
    * Set the {@link RecvByteBufAllocator} which is used for the channel to allocate receive buffers.
-   *
    * @param allocator the allocator to set.
    * @param metadata  Used to set the {@link ChannelMetadata#defaultMaxMessagesPerRead()} if {@code allocator}
    *                  is of type {@link MaxMessagesRecvByteBufAllocator}.
@@ -349,12 +359,12 @@ public class DefaultChannelConfig implements ChannelConfig {
       WriteBufferWaterMark waterMark = writeBufferWaterMark;
       if (writeBufferHighWaterMark < waterMark.low()) {
         throw new IllegalArgumentException(
-            "writeBufferHighWaterMark cannot be less than " +
-                "writeBufferLowWaterMark (" + waterMark.low() + "): " +
-                writeBufferHighWaterMark);
+          "writeBufferHighWaterMark cannot be less than " +
+            "writeBufferLowWaterMark (" + waterMark.low() + "): " +
+            writeBufferHighWaterMark);
       }
       if (WATERMARK_UPDATER.compareAndSet(this, waterMark,
-          new WriteBufferWaterMark(waterMark.low(), writeBufferHighWaterMark, false))) {
+        new WriteBufferWaterMark(waterMark.low(), writeBufferHighWaterMark, false))) {
         return this;
       }
     }
@@ -372,12 +382,12 @@ public class DefaultChannelConfig implements ChannelConfig {
       WriteBufferWaterMark waterMark = writeBufferWaterMark;
       if (writeBufferLowWaterMark > waterMark.high()) {
         throw new IllegalArgumentException(
-            "writeBufferLowWaterMark cannot be greater than " +
-                "writeBufferHighWaterMark (" + waterMark.high() + "): " +
-                writeBufferLowWaterMark);
+          "writeBufferLowWaterMark cannot be greater than " +
+            "writeBufferHighWaterMark (" + waterMark.high() + "): " +
+            writeBufferLowWaterMark);
       }
       if (WATERMARK_UPDATER.compareAndSet(this, waterMark,
-          new WriteBufferWaterMark(writeBufferLowWaterMark, waterMark.high(), false))) {
+        new WriteBufferWaterMark(writeBufferLowWaterMark, waterMark.high(), false))) {
         return this;
       }
     }

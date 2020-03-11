@@ -87,7 +87,7 @@ public class DefaultStompContentSubframe extends DefaultByteBufHolder implements
   @Override
   public String toString() {
     return "DefaultStompContent{" +
-        "decoderResult=" + decoderResult +
-        '}';
+      "decoderResult=" + decoderResult +
+      '}';
   }
 }

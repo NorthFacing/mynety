@@ -107,7 +107,7 @@ public class JsonObjectDecoder extends ByteToMessageDecoder {
       in.skipBytes(in.readableBytes());
       reset();
       throw new TooLongFrameException(
-          "object length exceeds " + maxObjectLength + ": " + wrtIdx + " bytes discarded");
+        "object length exceeds " + maxObjectLength + ": " + wrtIdx + " bytes discarded");
     }
 
     for (/* use current idx */; idx < wrtIdx; idx++) {
@@ -171,7 +171,7 @@ public class JsonObjectDecoder extends ByteToMessageDecoder {
       } else {
         state = ST_CORRUPTED;
         throw new CorruptedFrameException(
-            "invalid JSON received at byte position " + idx + ": " + ByteBufUtil.hexDump(in));
+          "invalid JSON received at byte position " + idx + ": " + ByteBufUtil.hexDump(in));
       }
     }
 
