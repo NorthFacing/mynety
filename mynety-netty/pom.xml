@@ -45,7 +45,7 @@
     <conscrypt.classifier/>
     <logging.config>${project.basedir}/../common/src/test/resources/logback-test.xml</logging.config>
     <logging.logLevel>debug</logging.logLevel>
-    <log4j2.version>2.13.0</log4j2.version>
+    <log4j2.version>2.13.2</log4j2.version>
     <enforcer.plugin.version>1.4.1</enforcer.plugin.version>
     <skipOsgiTestsuite>false</skipOsgiTestsuite>
     <skipAutobahnTestsuite>false</skipAutobahnTestsuite>
